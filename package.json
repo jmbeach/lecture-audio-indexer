@@ -12,6 +12,7 @@
     "@oclif/config": "^1",
     "@oclif/plugin-help": "^3",
     "conf": "^10.0.2",
+    "conf-cli": "^0.1.9",
     "inversify": "^5.1.1",
     "reflect-metadata": "^0.1.13",
     "tslib": "^1"
@@ -46,7 +47,8 @@
     "commands": "./lib/commands",
     "bin": "lecture-audio-indexer",
     "plugins": [
-      "@oclif/plugin-help"
+      "@oclif/plugin-help",
+      "conf-cli"
     ],
     "hooks": {
       "init": "./lib/hooks/init/init"

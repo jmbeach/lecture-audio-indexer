@@ -25,6 +25,9 @@ export default class Parse extends Command {
 
   async run() {
     const { args, flags } = this.parse(Parse)
-    console.log(this.configurationManager.getGoogleApiKey())
+    if (!this.configurationManager.getGoogleApiKey()) {
+      console.error('No API key configured. Run "lecture-audio-indexer conf google-api-key <your-api-key>"')
+      return;
+    }
   }
 }
