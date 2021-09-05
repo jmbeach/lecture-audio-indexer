@@ -1,10 +1,15 @@
 import { Command, flags } from '@oclif/command'
-import { inject } from 'inversify'
+import { IConfig } from '@oclif/config';
+import { container } from '../hooks/init/init';
 import { TYPES } from '../ioc/types'
 import { ConfigurationManager, ConfigurationProvider } from '../utils/configuration-manager'
 
 export default class Parse extends Command {
-  @inject(TYPES.ConfigurationManager) private configurationManager!: ConfigurationManager;
+  configurationManager: ConfigurationManager;
+  constructor(argv: string[], config: IConfig) {
+    super(argv, config)
+    this.configurationManager = container.get<ConfigurationManager>(TYPES.ConfigurationManager)
+  }
 
   static description = 'Transcribes the audio from a lecture video and saves it'
 

@@ -4,8 +4,9 @@ import { TYPES } from '../../ioc/types';
 import { ConfigurationProviderConf } from '../../utils/configuration-provider-conf';
 import { ConfigurationManager, ConfigurationProvider } from '../../utils/configuration-manager';
 
+export let container: Container;
 const hook: Hook<'init'> = async function (opts) {
-  const container = new Container();
+  container = new Container();
   container.bind<ConfigurationProvider>(TYPES.ConfigurationProvider).to(ConfigurationProviderConf)
   container.bind<ConfigurationManager>(TYPES.ConfigurationManager).to(ConfigurationManager)
 }
