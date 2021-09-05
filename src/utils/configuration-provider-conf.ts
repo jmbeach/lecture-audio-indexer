@@ -1,5 +1,6 @@
 import Conf from 'conf';
-import { ConfigurationProvider } from './configuration-parser';
+import { injectable } from 'inversify';
+import { ConfigurationProvider } from './configuration-manager';
 
 @injectable()
 export class ConfigurationProviderConf implements ConfigurationProvider {

@@ -5,6 +5,7 @@ export interface ConfigurationProvider {
   get(configKey: string): string
 }
 
+@injectable()
 export class ConfigurationManager {
   @inject(TYPES.ConfigurationProvider) private configProvider!: ConfigurationProvider;
 
