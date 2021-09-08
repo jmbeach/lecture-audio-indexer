@@ -8,6 +8,7 @@
   },
   "bugs": "https://github.com/jmbeach/lecture-audio-indexer/issues",
   "dependencies": {
+    "@google-cloud/speech": "^4.8.0",
     "@oclif/command": "^1",
     "@oclif/config": "^1",
     "@oclif/plugin-help": "^3",
