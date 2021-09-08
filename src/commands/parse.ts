@@ -7,6 +7,7 @@ import speech from '@google-cloud/speech';
 import { execSync } from 'child_process'
 import * as fs from 'fs';
 
+
 export default class Parse extends Command {
   configurationManager: ConfigurationManager;
   constructor(argv: string[], config: IConfig) {
@@ -36,7 +37,7 @@ export default class Parse extends Command {
     const client = new speech.SpeechClient({
       key: this.configurationManager.getGoogleApiKey()
     })
-    execSync(`ffmpeg -i ${args.file} ${args.file}.mp3`)
+    execSync(`ffmpeg -i "${args.file}" "${args.file}.mp3"`)
     const base64 = fs.readFileSync(`${args.file}.mp3`, { encoding: 'base64' })
     const result = await client.recognize({
       audio: {

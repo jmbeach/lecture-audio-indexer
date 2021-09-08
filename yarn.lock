@@ -1352,7 +1352,7 @@ google-auth-library@^7.0.2, google-auth-library@^7.6.1:
     jws "^4.0.0"
     lru-cache "^6.0.0"
 
-google-gax@^2.24.1:
+google-gax@^2.24.1, google-gax@^2.25.0:
   version "2.25.0"
   resolved "https://registry.yarnpkg.com/google-gax/-/google-gax-2.25.0.tgz#d45289c878fe356edbeaf66844287fcfc55e06c9"
   integrity sha512-s2V5UA/M5or7PFMpsp159X1FrWgIJZ2TSp+k57giUsiS+idMTtKoVgZ+LI59+UyOkFuDg7IBLRcBwZ1TgavEBw==
