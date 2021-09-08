@@ -46,6 +46,9 @@ export default class Parse extends Command {
     const result = await client.recognize({
       audio: {
         content: base64
+      },
+      config: {
+        languageCode: 'en-US'
       }
     });
     console.log(result);
