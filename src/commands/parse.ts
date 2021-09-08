@@ -43,7 +43,7 @@ export default class Parse extends Command {
     })
     execSync(`ffmpeg -i "${args.file}" "${args.file}.mp3"`)
     const base64 = fs.readFileSync(`${args.file}.mp3`, { encoding: 'base64' })
-    const result = await client.recognize({
+    const result = await client.longRunningRecognize({
       audio: {
         content: base64
       },
