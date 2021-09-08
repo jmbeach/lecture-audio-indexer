@@ -6,7 +6,7 @@ import { ConfigurationManager } from '../utils/configuration-manager'
 import speech from '@google-cloud/speech';
 import { execSync } from 'child_process'
 import * as fs from 'fs';
-
+import { grpc, GoogleAuth } from 'google-gax';
 
 export default class Parse extends Command {
   configurationManager: ConfigurationManager;
@@ -34,8 +34,12 @@ export default class Parse extends Command {
       return;
     }
 
+    const sslCreds = grpc.credentials.createSsl();
+    const googleAuth = new GoogleAuth();
+    const authClient = googleAuth.fromAPIKey(this.configurationManager.getGoogleApiKey());
+    const credentials = grpc.credentials.combineChannelCredentials(sslCreds, grpc.credentials.createFromGoogleCredential(authClient))
     const client = new speech.SpeechClient({
-      key: this.configurationManager.getGoogleApiKey()
+      sslCreds: credentials
     })
     execSync(`ffmpeg -i "${args.file}" "${args.file}.mp3"`)
     const base64 = fs.readFileSync(`${args.file}.mp3`, { encoding: 'base64' })
