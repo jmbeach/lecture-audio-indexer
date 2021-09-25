@@ -41,17 +41,25 @@ export default class Parse extends Command {
     const client = new speech.SpeechClient({
       sslCreds: credentials
     })
-    execSync(`ffmpeg -i "${args.file}" "${args.file}.mp3"`)
-    const base64 = fs.readFileSync(`${args.file}.mp3`, { encoding: 'base64' })
-    const result = await client.longRunningRecognize({
+    // execSync(`ffmpeg -i "${args.file}" -f s16le -c:a pcm_s16le "${args.file}.raw"`)
+    // const base64 = fs.readFileSync(`${args.file}.raw`, { encoding: 'base64' })
+    const [operation] = await client.longRunningRecognize({
       audio: {
-        content: base64
+        // content: base64
+        uri: 'gs://jared-audio-indexer/2.1 Overview of the Week.mp4.raw'
       },
       config: {
-        languageCode: 'en-US'
+        languageCode: 'en-US',
+        encoding: 'LINEAR16',
+        sampleRateHertz: 16000
       }
     });
-    console.log(result);
-    fs.rmdirSync(`${args.file}.mp3`)
+    const result = await operation.promise();
+    if (!fs.existsSync('./out/')) {
+      fs.mkdirSync('./out/');
+    }
+    const name = args.file.split('/')[args.file.split('/').length - 1];
+    fs.writeFileSync(`./out/${name.replace('.mp4', '')}.json`, JSON.stringify(result));
+    fs.unlinkSync(`${args.file}.raw`)
   }
 }
