@@ -1,0 +1,311 @@
+00:00.300 --> 00:11.100
+So now we're going to continue our discussion of how IP addressing works and part with how the prefixes that are used in defining routes and in constructing
+
+00:11.100 --> 00:12.600
+forwarding tables
+
+00:13.900 --> 00:16.000
+So the address host on the internet
+
+00:16.000 --> 00:17.800
+What is the internet again
+
+00:17.800 --> 00:19.300
+while it's a network of networks
+
+00:19.300 --> 00:31.000
+We need to be able to refer to particular hosts in this network as well as to router as well as to Route both routers and networks here
+
+00:31.000 --> 00:31.700
+All right
+
+00:31.700 --> 00:33.300
+so this would be say Network to
+
+00:33.300 --> 00:38.300
+This is Network one and we need to be able to get from any host year to any ghosts here
+
+00:38.300 --> 00:39.400
+So
+
+00:39.400 --> 00:40.000
+how can we do that
+
+00:40.000 --> 00:43.500
+We use the routers to move information
+
+00:43.500 --> 00:45.700
+over the router
+
+00:45.700 --> 00:49.600
+would consist of a set of input interfaces for the packet would come in
+
+00:49.600 --> 00:51.000
+But about put in their faces
+
+00:51.000 --> 00:51.900
+were they depart
+
+00:51.900 --> 00:54.100
+And then some form of interconnect as we've seen
+
+00:54.100 --> 00:55.500
+So
+
+00:55.500 --> 01:00.800
+the router would implement this boarding process to make sure we get to their correct output interface
+
+01:00.800 --> 01:03.500
+but how do we select the right
+
+01:04.400 --> 01:05.700
+I'll put in her face
+
+01:05.700 --> 01:06.500
+Well
+
+01:06.500 --> 01:09.100
+when part use the IP address to do that
+
+01:09.100 --> 01:11.700
+so the forwarding table within the router
+
+01:11.700 --> 01:14.800
+often denoted with this kind of
+
+01:14.800 --> 01:16.700
+annotations us
+
+01:16.700 --> 01:21.100
+a story mapping between IP addresses and output interfaces
+
+01:21.100 --> 01:28.900
+And then what the forwarding table will do is will forward an incoming packet based on its destination address
+
+01:28.900 --> 01:30.100
+So for example
+
+01:30.100 --> 01:34.800
+if this is a router directly connected to a few computers
+
+01:34.800 --> 01:37.500
+if it received a packet
+
+01:37.500 --> 01:43.900
+Dustin 4, 1235, it knows it's in that packet out to interface one
+
+01:44.700 --> 01:46.500
+So
+
+01:46.500 --> 01:46.900
+for example
+
+01:46.900 --> 01:49.400
+if it had this packet intended for one
+
+01:49.400 --> 01:49.600
+two
+
+01:49.600 --> 01:49.800
+three
+
+01:49.800 --> 01:50.100
+four
+
+01:50.100 --> 01:56.700
+which one do we need to send it through while we need to send it over out on interface to because that's how we'll get to that address
+
+01:56.700 --> 02:05.400
+So this whole routing this forwarding process for this table has been constructed by running a routing algorithm
+
+02:05.400 --> 02:06.800
+which we previously seen
+
+02:06.800 --> 02:08.600
+where has this other pack it again
+
+02:08.600 --> 02:11.000
+intended for 5 needs to get Rabbit out through
+
+02:11.000 --> 02:13.500
+Interface up an interface number one
+
+02:15.100 --> 02:20.400
+So there is a big scalability Challenge and which motivates why were using the prefix has
+
+02:20.400 --> 02:21.900
+So let's just suppose for a moment
+
+02:21.900 --> 02:26.400
+We're not doing it with prefixes and that hosts could have totally arbitrary addresses
+
+02:26.400 --> 02:27.400
+Well
+
+02:27.400 --> 02:28.000
+if we did this
+
+02:28.000 --> 02:33.300
+now hosts would rather the routers would need to have a lot of information
+
+02:33.300 --> 02:39.800
+It would need to know how to forward packets directly to where the any particular host ride
+
+02:39.800 --> 02:41.400
+So if I didn't stay organized
+
+02:41.400 --> 02:42.200
+this network
+
+02:42.200 --> 02:44.700
+consisting only of prefixes 123
+
+02:44.700 --> 02:49.400
+If I let there be IP addresses and this network 1 b
+
+02:49.400 --> 02:54.800
+1 2 3 4, maybe 5 6, 7 8, and then likewise over in the second Network
+
+02:54.800 --> 02:56.600
+We allowed addresses
+
+02:56.600 --> 03:02.900
+like 1, 2, 3, 5, and 5 6, 7 9, we would need to remember all of that information in the routers
+
+03:02.900 --> 03:08.300
+So at the forwarding tables would look like safe for really any of these routers here
+
+03:08.300 --> 03:15.100
+If it received a message intended for 1, 2 3 4, it would need it to remember that it needs to four
+
+03:15.100 --> 03:16.100
+Distraction
+
+03:16.100 --> 03:20.000
+if it received a message for 1235, it would need to remember
+
+03:20.000 --> 03:21.600
+it needs to forward it towards the
+
+03:21.600 --> 03:21.800
+right
+
+03:21.800 --> 03:23.300
+So we don't do that
+
+03:23.300 --> 03:34.300
+And the reason we don't as we will use the prefix has to avoid having to remember all that information will have put related hosts
+
+03:34.300 --> 03:37.900
+Are you those in one of the networks on a common subnet
+
+03:37.900 --> 03:38.700
+So
+
+03:38.700 --> 03:39.000
+for example
+
+03:39.000 --> 03:40.900
+all of the horse over here
+
+03:40.900 --> 03:42.300
+we would have signed with addresses
+
+03:42.300 --> 03:42.700
+like one
+
+03:42.700 --> 03:42.900
+two
+
+03:42.900 --> 03:43.000
+three
+
+03:43.000 --> 03:46.400
+starting and all the hosts over here
+
+03:46.400 --> 03:50.700
+We would require them to start with the prefix 567 that way
+
+03:50.700 --> 03:56.700
+if we get any message intended for a host starting with the prefix 123
+
+03:56.700 --> 03:59.400
+We know we send that information to the left
+
+03:59.400 --> 04:09.300
+And if we receive any message intended for an IP address starting with 5 6 7, then we send it over to the right
+
+04:10.100 --> 04:14.200
+The other benefit of this is it's very easy to add new hosts
+
+04:14.200 --> 04:17.200
+Even if I add a new computer in to this network
+
+04:17.200 --> 04:24.300
+to I give it a IP IP address that's reasonably defined as a 5 6 7
+
+04:24.300 --> 04:25.100
+And then some number
+
+04:25.100 --> 04:28.500
+I don't even need to update any information at these routers
+
+04:28.500 --> 04:29.100
+right
+
+04:29.100 --> 04:33.100
+I don't I don't need to update any of the routing information here
+
+04:33.100 --> 04:43.500
+All I need to do is updated for the strictly connected router that's sending that information to that particular host that's been added to the network
+
+04:43.500 --> 04:44.300
+So
+
+04:44.300 --> 04:49.300
+this decomposition into this hierarchy is what I'll allow us in part to scale up
+
+04:50.700 --> 04:57.100
+The IP addressing mechanisms and enable easy routing and it's just an alligator stew
+
+04:57.100 --> 04:57.400
+Things
+
+04:57.400 --> 05:01.500
+You're already familiar with in your day-to-day life such as postal mail
+
+05:01.500 --> 05:07.300
+This is why I come and geographic regions would use the same or similar postal code
+
+05:07.300 --> 05:08.000
+right
+
+05:08.000 --> 05:14.900
+Like that Vanderbilt the ZIP code that gets used for my office
+
+05:14.900 --> 05:18.500
+Has 37 212 and I live fairly close to Vanderbilt
+
+05:18.500 --> 05:22.500
+My home zip code is 37214
+
+05:22.500 --> 05:23.900
+And as you can see
+
+05:23.900 --> 05:26.700
+they both start with 372
+
+05:26.700 --> 05:28.700
+And that's a reason
+
+05:28.700 --> 05:35.600
+the reason for that is exactly the same reason of why IP addresses are using these common prefixes
+
+05:35.600 --> 05:37.300
+It was a totally arbitrary number
+
+05:37.300 --> 05:41.700
+It wouldn't make any sense in terms of helping us a group that
+
+05:41.700 --> 05:43.100
+destinations together

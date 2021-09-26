@@ -1,0 +1,155 @@
+00:00.000 --> 00:03.900
+It's a building on our discussion of hierarchical IP address saying
+
+00:03.900 --> 00:20.900
+we're not going to talk about two different classes of IP addresses and what's called classful routing and then we'll eventually get into some other details about how more complicated modern internet routing actually is so I'm class full address
+
+00:20.900 --> 00:25.800
+Seeing what we do is we assign prefix has to correspond a particular classes
+
+00:25.800 --> 00:31.600
+So Class A would correspond to the first bite
+
+00:31.600 --> 00:43.000
+So this most significant bite being in this range 0 to 1:27, so it'd be / 8 in the / notation
+
+00:43.000 --> 00:49.700
+So what the prefix is required to be as the top most significant bit here is his hero
+
+00:49.700 --> 00:50.800
+So this of course
+
+00:50.800 --> 00:52.300
+find a very large blocks
+
+00:52.300 --> 00:52.900
+So for example
+
+00:52.900 --> 00:56.200
+the mighty as this block of all addresses
+
+00:56.200 --> 00:57.300
+starting with 18
+
+00:57.300 --> 00:58.400
+So 18
+
+00:58.400 --> 00:59.100
+Anything
+
+00:59.100 --> 00:59.700
+Anything
+
+00:59.700 --> 00:59.900
+Any
+
+01:01.100 --> 01:02.500
+Class B
+
+01:02.500 --> 01:10.200
+Then corresponds to the first bite being in the range 128 to 191 again here
+
+01:10.200 --> 01:13.000
+we would now assume in / 60 notation
+
+01:13.000 --> 01:16.800
+And the prefix here would be that the top best AR-10
+
+01:16.800 --> 01:19.000
+So this should be pretty large blocks
+
+01:19.000 --> 01:20.300
+So for example
+
+01:20.300 --> 01:23.300
+of Vanderbilt has this block of IP addresses
+
+01:23.300 --> 01:29.900
+so everything's starting with one 29.50 9.0.0
+
+01:29.900 --> 01:31.200
+Okay
+
+01:31.200 --> 01:33.900
+so so the zeros can be any number
+
+01:35.500 --> 01:46.400
+Classy then corresponds to having this prefix and the top number could be anything in the range 192-2223
+
+01:46.400 --> 01:50.900
+So this would also assume in / 24 notation
+
+01:50.900 --> 01:54.300
+and the prefix here would be the 110
+
+01:54.300 --> 01:55.100
+Okay
+
+01:55.100 --> 01:56.900
+So this should be fairly small blocks
+
+01:56.900 --> 02:02.200
+These are going to be groups of 2:55 or so since it's / 24 notation
+
+02:02.200 --> 02:08.100
+This is groups of two to the 16 or about 60,000 computers could be addressed
+
+02:08.100 --> 02:11.100
+The should be two to the 24
+
+02:11.100 --> 02:14.200
+So a lot of computers could be addressed here
+
+02:14.200 --> 02:16.400
+has to be smaller blocks
+
+02:16.400 --> 02:18.700
+So this would be in part
+
+02:18.700 --> 02:20.300
+Many European networks Judah
+
+02:20.300 --> 02:21.700
+Historical reasons
+
+02:22.300 --> 02:26.200
+There's some other classes class D and classy
+
+02:26.200 --> 02:34.600
+These are less widely used but to to 42239 are the top betzer 1110
+
+02:34.600 --> 02:44.600
+Is it be multicast groups for handling simultaneous communication between multiple receiving nodes or classy in this is mostly reserve for future
+
+02:44.600 --> 02:45.100
+Use
+
+02:45.100 --> 02:46.800
+There are some special purpose
+
+02:46.800 --> 02:57.300
+addresses with them at these rough classes with then basically Define what addresses are going to correspond to which particular networks are the
+
+02:57.300 --> 03:00.100
+Most commonly used ones are going to be a b and c
+
+03:01.700 --> 03:06.000
+So there are some issues that have been classical routing can lead to
+
+03:06.000 --> 03:07.600
+So we only have a few sizes
+
+03:07.600 --> 03:08.600
+basically a b
+
+03:08.600 --> 03:08.900
+and c
+
+03:08.900 --> 03:17.700
+and a problem that can arise as routers can end up knowing a lot about Class C networks because there's so many of them because they're quite small
+
+03:17.700 --> 03:19.400
+So we need to be able to address these issues
+
+03:19.400 --> 03:28.000
+So that the size of the internet can scale up more reasonably as the number of devices and interfaces connected increase

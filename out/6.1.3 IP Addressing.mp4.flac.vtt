@@ -1,0 +1,311 @@
+00:00.200 --> 00:12.000
+So we're going to continue our discussion of IP address swing by next discussing hierarchical addressing and seeing where we're headed with how IP addressing works over
+
+00:13.200 --> 00:14.600
+So IP addresses
+
+00:14.600 --> 00:17.300
+as we've seen examples of typically
+
+00:17.300 --> 00:19.000
+I'm at least an ipv4
+
+00:19.000 --> 00:21.200
+We use this dotted quad notation
+
+00:21.200 --> 00:25.800
+We then use a prefix of the IP address for aggregation
+
+00:25.800 --> 00:29.700
+We saw that in when we discuss forwarding with longest prefixes
+
+00:29.700 --> 00:30.900
+And then
+
+00:30.900 --> 00:42.400
+there are a few different ways that IP addresses can be grouped together either using classful address or using classless interdomain routing or Cedar addressing or not talk about these
+
+00:42.400 --> 00:45.500
+There are also some special purpose address block
+
+00:45.500 --> 00:58.900
+So some reserved addresses that you may be familiar with and then finally will get into a discussion of how Network address translation Works which alleviate some of the issues with having a finite supply of IP addresses
+
+01:00.100 --> 01:06.100
+There's another problem that will discuss a little bit of which is how we assign IP addresses
+
+01:06.100 --> 01:10.500
+How do we pick which address blocks to give out to her
+
+01:10.500 --> 01:13.600
+How do we assign IP addresses to your particular organization
+
+01:13.600 --> 01:14.200
+So
+
+01:14.200 --> 01:15.200
+I'll talk a little bit about that
+
+01:15.200 --> 01:18.900
+So just remind you in the IP packet
+
+01:18.900 --> 01:19.200
+header
+
+01:19.200 --> 01:24.900
+We have 32 bits for a source IP address in 32 bits for a destination IP address
+
+01:24.900 --> 01:28.900
+So this is going to correspond to those
+
+01:28.900 --> 01:29.800
+A quad notation
+
+01:29.800 --> 01:31.300
+where we'll have four
+
+01:33.100 --> 01:37.000
+8-bit numbers in each of those quads
+
+01:37.000 --> 01:38.000
+So we'll see how that looks
+
+01:38.000 --> 01:39.000
+So
+
+01:39.000 --> 01:41.200
+there are two IP addresses there
+
+01:41.200 --> 01:42.100
+The destination address
+
+01:42.100 --> 01:43.500
+again needs to be unique
+
+01:43.500 --> 01:47.600
+identifier locator for the receiving address in the source
+
+01:47.600 --> 01:48.900
+Address needs to be unique
+
+01:48.900 --> 01:51.600
+identifier or a locator for the sending host
+
+01:52.700 --> 01:57.700
+So how should we associate IP addresses with things that we need to address
+
+01:57.700 --> 01:58.300
+So
+
+01:58.300 --> 01:58.500
+for example
+
+01:58.500 --> 02:02.600
+a telephone number is not associated with a person but with a handset typically
+
+02:02.600 --> 02:21.500
+what structure should we also impose on addresses and what implications for different types of structures like that lead to then who determines a particular address is used on the global internet since this is a shared resource
+
+02:21.500 --> 02:24.600
+What implications are there of how that's done
+
+02:24.600 --> 02:33.200
+So I can address some of these issues as we start to look into how IP addresses work and how they're built up
+
+02:33.200 --> 02:34.400
+So
+
+02:34.400 --> 02:36.000
+what's the IP address again in
+
+02:36.000 --> 02:36.600
+Ipv4
+
+02:36.600 --> 02:37.700
+This is a unique
+
+02:37.700 --> 02:43.200
+32-bit number what did identifies as an interface on a particular Hoster router
+
+02:43.200 --> 02:47.400
+And this is because a given router might have multiple interfaces
+
+02:47.400 --> 02:52.100
+likewise it given computer might have multiple network interface cards
+
+02:52.600 --> 02:54.700
+The standard representation of this
+
+02:54.700 --> 02:56.200
+in this dotted quad notation
+
+02:56.200 --> 03:01.400
+Looks like this where each of these bites would correspond
+
+03:01.400 --> 03:07.000
+Aa200 number between 0 and 255 read
+
+03:07.000 --> 03:07.200
+So
+
+03:07.200 --> 03:11.200
+for this number 1234, 15085
+
+03:11.200 --> 03:18.300
+It would look something like this where the first bite corresponding to the 12 II by corresponds to the 34 and so on
+
+03:19.900 --> 03:24.800
+So we do use hierarchical addressing and you're familiar with this already
+
+03:24.800 --> 03:26.500
+We use this and postal mail
+
+03:26.500 --> 03:27.900
+And this is how you should think of
+
+03:27.900 --> 03:29.800
+how some of this is going to work for IP
+
+03:29.800 --> 03:31.400
+For example
+
+03:31.400 --> 03:32.900
+if you want to send something to me
+
+03:32.900 --> 03:33.600
+how do you do that
+
+03:33.600 --> 03:34.400
+Well
+
+03:34.400 --> 03:38.200
+the most important part of this is the zip code that make sure it gets to the right
+
+03:38.200 --> 03:39.500
+General
+
+03:39.500 --> 03:41.400
+Regional location within the US
+
+03:41.400 --> 03:50.900
+And then there's some further more detailed hierarchical information about where my building is actually located what street it's on
+
+03:50.900 --> 03:59.500
+And what the building number is on that street and then a particular room number in that building them since multiple people my chair room
+
+03:59.500 --> 04:05.100
+You probably also put my name on it so that it could actually get delivered to me soon
+
+04:05.100 --> 04:06.400
+Forwarding the u.s
+
+04:06.400 --> 04:07.400
+Mail out this way
+
+04:07.400 --> 04:08.100
+They operate
+
+04:08.100 --> 04:09.900
+It
+
+04:09.900 --> 04:15.000
+Would the letter first or get delivered to the post office in the particular zip code
+
+04:15.000 --> 04:19.400
+then we'd give it to the mail person covering the particular Street
+
+04:19.900 --> 04:26.800
+And I dropped off the mail the letter in the mailbox for that building or Suite then maybe someone would further distribute that
+
+04:26.800 --> 04:33.000
+So this is a hierarchical process going from that high-level getting it to the right post office on the right step code
+
+04:34.300 --> 04:36.200
+Serta hierarchical addressing
+
+04:36.200 --> 04:49.800
+We use a prefix to correspond to what network we're going to talk about and then shorter portion of the address to correspond to a particular host within the within that Network
+
+04:49.800 --> 04:54.000
+So within this hierarchical addressing we break the address into two pieces
+
+04:54.000 --> 04:55.800
+you can think of the left part
+
+04:55.800 --> 05:01.300
+sort of like the zip code and then the right part would be sort of like the particular street address
+
+05:01.300 --> 05:02.300
+Okay
+
+05:02.300 --> 05:08.900
+So this sometimes is referred to as the slash notation
+
+05:08.900 --> 05:10.800
+Like if I have a 24 prefix
+
+05:10.800 --> 05:13.000
+which is what's designated with this example
+
+05:13.000 --> 05:21.700
+or I'm using the first three bites to correspond to the prefix with eight bits allowed for the host
+
+05:21.700 --> 05:26.200
+Then we might call the / 24, cuz we're using a 24-bit prefix
+
+05:27.200 --> 05:31.800
+So what you would do to identify say the host
+
+05:31.800 --> 05:34.200
+then you often work with the subnet mask
+
+05:34.200 --> 05:35.600
+which could be 24 bits
+
+05:35.600 --> 05:41.400
+and we could get rid of any of the information about the particular host
+
+05:41.400 --> 05:45.500
+So if I took the conjunction of these two numbers in binary
+
+05:45.500 --> 05:49.200
+I would zero out all these particular host Fitz
+
+05:49.200 --> 05:57.500
+And then what this first part or prefix of the IP address would correspond to is the network that we need to send the information to
+
+05:57.500 --> 06:00.200
+So this 1234
+
+06:00.200 --> 06:13.300
+158 would correspond to the network again think of this prefix sort of like a zip code and I would first need to get it to the appropriate Network as we're delivering this pocket or piece of information
+
+06:13.300 --> 06:19.400
+And the particular router is along the way
+
+06:19.400 --> 06:22.000
+it wouldn't really need to worry about what the particular host is
+
+06:22.000 --> 06:24.300
+There were just need to get it to the appropriate Network
+
+06:24.300 --> 06:26.700
+And then once it's on the appropriate Network
+
+06:26.700 --> 06:27.100
+then the route
+
+06:27.100 --> 06:28.300
+Words within that Network
+
+06:28.300 --> 06:30.300
+could deliver it to the final in toast
+
+06:30.300 --> 06:30.900
+So
+
+06:30.900 --> 06:39.200
+this is how the hierarchical addressing roughly would work if we were using a fixed-length prefix
+
+06:39.200 --> 06:40.500
+like 24, vets

@@ -74,9 +74,11 @@ export default class Parse extends Command {
     for (let i = 0; i < transcriptions.length; i++) {
       const transcription = transcriptions[i];
       const words = response.results[i].alternatives[0].words;
-      const sentences = transcription?.split('.')
+      const sentences = transcription
+        // periods that aren't part of words
+        ?.split(/\.(?!\w)/)
         // commas that aren't part of numbers
-        .map(x => x.split(/(?<!\d)[,]/))
+        .map(x => x.split(/(?<!\d)[,](?!\d)/))
         .flat(1)
         .map(x => x.split('?'))
         .flat(1)

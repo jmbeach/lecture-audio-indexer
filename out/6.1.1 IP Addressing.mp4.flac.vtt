@@ -13,11 +13,8 @@ So where we're headed with the IP address thing is after we introduced a bit mor
 00:22.400 --> 00:24.700
 When you talk about IP fragmentation
 
-00:24.700 --> 00:28.100
-and then we're going to talk about for ipv4
-
-00:28.100 --> 00:38.000
-how addressing works at particularly a couple more sophisticated addressing mechanisms specifically
+00:24.700 --> 00:38.000
+and then we're going to talk about for ipv4, how addressing works at particularly a couple more sophisticated addressing mechanisms specifically
 
 00:38.000 --> 00:42.300
 classless entered interdomain routing Cedar as well as Network address translation
@@ -76,11 +73,8 @@ Eventually they had her
 01:33.200 --> 01:37.500
 Length would include how many 32-bit words are in the header
 
-01:37.500 --> 01:39.600
-It would typically be 5
-
-01:39.600 --> 01:41.300
-which should correspond to 20 byte
+01:37.500 --> 01:41.300
+It would typically be 5, which should correspond to 20 byte
 
 01:41.300 --> 01:42.900
 ipv4 header

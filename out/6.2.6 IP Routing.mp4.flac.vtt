@@ -1,0 +1,458 @@
+00:00.300 --> 00:00.700
+Now
+
+00:00.700 --> 00:02.300
+we'll discuss Network address translation
+
+00:02.300 --> 00:14.100
+which as we introduced earlier is going to be one of the mechanisms that will be used to address the limited number of IP addresses that are available for usage
+
+00:15.300 --> 00:16.000
+So
+
+00:16.000 --> 00:17.100
+what is Network address translation
+
+00:17.100 --> 00:18.700
+Why do we have it
+
+00:18.700 --> 00:19.300
+Well
+
+00:19.300 --> 00:21.200
+before we had naps
+
+00:21.200 --> 00:23.800
+let's go back to that time every machine
+
+00:23.800 --> 00:26.100
+So every computer that was connected to the internet
+
+00:26.100 --> 00:29.000
+would have a unique IP address
+
+00:29.000 --> 00:29.200
+So
+
+00:29.200 --> 00:29.500
+for example
+
+00:29.500 --> 00:32.900
+if we have two clients connected up to the Internet
+
+00:32.900 --> 00:35.300
+one might have IP address 1, 2, 3 4
+
+00:35.300 --> 00:36.100
+And the other one
+
+00:36.100 --> 00:36.300
+one
+
+00:36.300 --> 00:36.500
+two
+
+00:36.500 --> 00:37.000
+three five
+
+00:37.000 --> 00:45.300
+So that when this computer 1 2 3 4 cents information over
+
+00:45.300 --> 00:49.600
+let's say it's a request for web traffic on Port
+
+00:49.600 --> 01:03.100
+80, it would send as well as a local court that was used for say the web client that sending that request your web server located at over on the server
+
+01:03.100 --> 01:10.300
+And this is just part of what the IP actually the TCP header would look like to this print
+
+01:10.300 --> 01:13.700
+The TCP header that has the transport layer information of the port
+
+01:13.700 --> 01:14.100
+this part
+
+01:14.100 --> 01:15.200
+the IP a door that has
+
+01:15.200 --> 01:21.300
+The information about the particular addressing should send that to the server
+
+01:21.300 --> 01:27.000
+The destination address presumably would get routed over to the server
+
+01:27.800 --> 01:30.400
+And server would figure out what was requested
+
+01:30.400 --> 01:33.600
+It would then produce a message that
+
+01:33.600 --> 01:33.900
+Okay
+
+01:33.900 --> 01:39.200
+I'm sending back to Port 1001 so that the information
+
+01:39.200 --> 01:46.000
+it goes back to the say web client running on computer with address 1234
+
+01:46.000 --> 01:47.400
+So
+
+01:47.400 --> 01:49.500
+that's how things would work before we had napped
+
+01:49.500 --> 01:50.700
+However
+
+01:50.700 --> 01:53.400
+we only have about four billion IP addresses
+
+01:53.400 --> 01:59.300
+So independently a sighting addresses to every computer connected to the Internet isn't going to work
+
+01:59.300 --> 02:03.900
+We have too many devices their way over four billion devices connected
+
+02:03.900 --> 02:06.400
+So instead we'll use a private address block
+
+02:06.400 --> 02:08.300
+One of those special purpose blocks
+
+02:08.300 --> 02:10.100
+We've talked about a standard one
+
+02:10.100 --> 02:11.600
+Is this 192
+
+02:11.600 --> 02:12.600
+168
+
+02:12.600 --> 02:13.200
+0
+
+02:13.200 --> 02:17.400
+0 and then what we'll do is we'll use the additional information
+
+02:17.400 --> 02:19.200
+We have through port numbers
+
+02:19.200 --> 02:20.600
+to perform this
+
+02:20.600 --> 02:23.000
+to perform a multiplexing
+
+02:23.000 --> 02:23.900
+Andy multiplexing
+
+02:23.900 --> 02:27.200
+process to figure out the appropriate internal address
+
+02:27.800 --> 02:31.500
+So now instead of having the clients assigned
+
+02:31.500 --> 02:35.200
+addresses like 1 2 3 4 and 1 2 3 5
+
+02:35.200 --> 02:41.600
+Only the router is assigned a public IP address 1234
+
+02:41.600 --> 02:43.500
+And now the clients are assigned
+
+02:43.500 --> 02:45.100
+Private IP addresses
+
+02:45.100 --> 02:46.600
+starting with 192
+
+02:48.300 --> 02:49.500
+So now
+
+02:49.500 --> 02:53.700
+when client 1 9 2
+
+02:53.700 --> 02:54.200
+2
+
+02:54.200 --> 02:54.500
+3
+
+02:54.500 --> 02:56.100
+4 say
+
+02:56.100 --> 02:58.500
+does the same web request to get information
+
+02:58.500 --> 03:00.900
+It's using Port 1001
+
+03:00.900 --> 03:04.800
+Let's say if it sends that request out the router
+
+03:04.800 --> 03:05.000
+Now
+
+03:05.000 --> 03:21.800
+would take this information and it would rewrite that private address that's used along with the port from the process that sent this request out on host at 4
+
+03:21.800 --> 03:26.300
+It would rewrite that address and replace the IP
+
+03:26.300 --> 03:30.700
+header IP and TCP IP Header information to now
+
+03:30.700 --> 03:35.700
+use the public IP address 1, 2, 3 4 with a Newport
+
+03:35.700 --> 03:36.800
+That it's selected
+
+03:37.700 --> 03:41.600
+So it would modify the package and change the packet header
+
+03:41.600 --> 03:49.100
+to use that new from or Source address for where the information request was coming from
+
+03:49.100 --> 03:52.500
+So that when it sent over to the server
+
+03:52.500 --> 03:55.700
+the server knows how to respond it receives this request
+
+03:55.700 --> 04:01.000
+Rhian codes a response back to send it back to
+
+04:02.500 --> 04:04.900
+The router with address 1234
+
+04:04.900 --> 04:07.200
+I'd also encodes that port address
+
+04:07.200 --> 04:09.600
+That was sent with the request
+
+04:09.600 --> 04:12.100
+So now and the router receives it
+
+04:12.100 --> 04:15.300
+it knows because it kept track of Court
+
+04:15.300 --> 04:16.300
+Mm
+
+04:16.300 --> 04:20.900
+corresponding to the IP address
+
+04:20.900 --> 04:22.300
+192
+
+04:22.300 --> 04:22.700
+2
+
+04:22.700 --> 04:23.000
+3
+
+04:23.000 --> 04:29.100
+4 from the process running at Port 1001 on that client
+
+04:29.100 --> 04:30.100
+Okay
+
+04:30.100 --> 04:32.300
+So now it would have decoded that it would
+
+04:32.300 --> 04:41.900
+Now rewrite the IP address replace the two thousand with the appropriate port and replace the public-address that it received with the appropriate client address
+
+04:43.700 --> 04:44.300
+All right
+
+04:44.300 --> 04:46.000
+so that would go on down to the client
+
+04:46.000 --> 04:54.500
+And basically this is the mechanism that gets used with an app to use the port numbers to do the multiplexing
+
+04:54.500 --> 04:56.900
+Andy multiplexing to internal addresses
+
+04:56.900 --> 04:59.500
+So if we instead had something from the other client
+
+04:59.500 --> 05:02.300
+if it sent two request out
+
+05:02.300 --> 05:21.200
+we could then assign it a different part number and we could rewrite the IP and TCP header is using that Newport number and a similar process would occur at the server would rewrite to send back to the public IP address with this new port
+
+05:21.200 --> 05:24.900
+number that corresponds to the client
+
+05:24.900 --> 05:25.400
+5
+
+05:27.300 --> 05:33.900
+So that as it comes back the router would then rewrite the address
+
+05:33.900 --> 05:35.200
+The 192
+
+05:35.200 --> 05:41.900
+2.3.5 with the appropriate number say 1001, right
+
+05:41.900 --> 05:47.600
+Cuz I did receive a packet that had been labeled with port number 2001
+
+05:47.600 --> 05:50.200
+So now that information would get back to the client
+
+05:51.600 --> 05:53.300
+That's basically how that would work
+
+05:53.300 --> 05:58.700
+That's the general process for that and that is widely used your
+
+05:58.700 --> 06:00.100
+possibly using it
+
+06:00.100 --> 06:00.200
+Now
+
+06:00.200 --> 06:13.600
+if you're connected behind a router and if you're using an ipv4 and IPv6, so let's just come back to a few final issues that we've brought up in terms of scalability of the internet
+
+06:13.600 --> 06:15.500
+So how much address space
+
+06:15.500 --> 06:17.800
+which they should we allocate for particular
+
+06:17.800 --> 06:19.000
+geographic region
+
+06:19.000 --> 06:23.800
+Should it be related to population or should we give every country in equal number
+
+06:23.800 --> 06:25.400
+What about this
+
+06:25.400 --> 06:28.200
+allocation has been going on for a long time
+
+06:28.200 --> 06:30.400
+What do we do about addresses already allocated
+
+06:30.400 --> 06:34.000
+What about address space portability
+
+06:34.000 --> 06:35.700
+Can you keep your address block
+
+06:35.700 --> 06:38.500
+If you change providers sort of like keeping your phone number
+
+06:38.500 --> 06:43.700
+That would be good and that you don't have to remember your network equipment
+
+06:43.700 --> 06:48.200
+but it might might reduce the effectiveness of having address
+
+06:48.200 --> 06:49.600
+Organ aggregation
+
+06:49.600 --> 06:51.500
+What about keeping the ad
+
+06:51.500 --> 06:53.100
+Registries up-to-date
+
+06:53.100 --> 06:53.500
+So
+
+06:53.500 --> 06:55.700
+what if companies merge or acquire
+
+06:55.700 --> 07:01.700
+their lot of potential issues that can arise in determining how to allocate addresses
+
+07:01.700 --> 07:09.300
+So we won't try to solve all these things to be aware of that if made some of the way that IPS IP addresses are allocated
+
+07:09.300 --> 07:10.000
+fairly complicated
+
+07:11.600 --> 07:23.300
+Set of summarize everything we've discussed with IP address thing we talked about for ipv4 how a 32-bit number is to identify interfaces the allocation of these using prefixes
+
+07:23.300 --> 07:42.400
+I sort of like again basically using zip codes with postal mail or area codes with phone numbers using things like Cedar and having a non-uniform hierarchy enable scalability using the prefix has to route to specific networks
+
+07:42.400 --> 07:42.900
+Vs
+
+07:42.900 --> 07:44.900
+Individual hosts is very effective
+
+07:44.900 --> 07:47.400
+And as one of the key drivers of scalability
+
+07:47.400 --> 07:54.600
+there are several special-purpose blocks that we discussed Reserve to a particularly for handling local addressing
+
+07:54.600 --> 08:04.400
+How the addressing allocation occurs is a process involving a variety of organizations such as I can the regional registrars the IP
+
+08:04.400 --> 08:06.900
+isps your service provider
+
+08:06.900 --> 08:10.700
+your own internal organization that work if it's just a home network
+
+08:10.700 --> 08:11.500
+not a big deal
+
+08:11.500 --> 08:13.200
+But if you're not going to station or a business
+
+08:13.200 --> 08:16.600
+some issues there for how to resolve all that
+
+08:16.600 --> 08:26.100
+finally down to a host and what'll be coming up in some of the later lectures that we haven't completely discussed is how a horse would get assigned
+
+08:26.100 --> 08:31.200
+Addresses say on a customer internal Network that's typically done with DHCP
+
+08:32.500 --> 08:37.100
+How we would perform a mapping from an IP address to a link address
+
+08:37.100 --> 08:39.200
+That's done with the protocol called ARP
+
+08:39.200 --> 08:43.500
+And then how we would map from human-readable hosts are domain names
+
+08:43.500 --> 08:44.100
+like
+
+08:44.100 --> 08:44.400
+saved
+
+08:44.400 --> 08:45.300
+vanderbilt.edu
+
+08:45.300 --> 08:49.600
+to a particular IP address and that's done with the DNS server
+
+08:49.600 --> 08:50.100
+In a cover
+
+08:50.100 --> 08:53.100
+these three topics and some later lectures
+
+08:53.100 --> 09:03.000
+which will sort of wrap up how addressing occurs across the various layers that we've seen within the TCP IP and at Westside models

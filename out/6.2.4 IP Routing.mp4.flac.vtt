@@ -1,0 +1,308 @@
+00:00.100 --> 00:00.700
+So next
+
+00:00.700 --> 00:09.800
+we're going to continue some discussion of scalability and how IP addresses get allocated as well as some other special-purpose IP addresses that we haven't yet discussed
+
+00:11.200 --> 00:15.300
+So has reportedly seen with prefixing
+
+00:15.300 --> 00:18.300
+Also noticed this address aggregation
+
+00:18.300 --> 00:23.400
+This is one mechanism through which will enable scalability
+
+00:23.400 --> 00:23.900
+So
+
+00:23.900 --> 00:24.200
+for example
+
+00:24.200 --> 00:29.800
+if a provider has given these two addresses starting 2:01
+
+00:29.800 --> 00:33.300
+10 corresponding to this range of addresses
+
+00:33.300 --> 00:34.400
+201
+
+00:34.400 --> 00:35.900
+10
+
+00:35.900 --> 00:37.300
+0, through
+
+00:37.300 --> 00:38.600
+7 than anything
+
+00:38.600 --> 00:41.300
+And that's based on this 21 mask
+
+00:41.300 --> 00:42.800
+So then
+
+00:42.800 --> 00:49.800
+the provider could assign these in any way they like and the routers and the rest of the internet would only need to know how to reach this provider
+
+00:49.800 --> 00:54.500
+They don't need to know any additional information about these individual customers
+
+00:55.500 --> 00:58.100
+So aggregation definitely helps
+
+00:58.100 --> 00:59.600
+It's not always possible though
+
+00:59.600 --> 01:04.100
+It could be the case that there is what's called a multi Home customer
+
+01:04.100 --> 01:09.600
+So one that's for various reasons might want to have multiple providers for backup
+
+01:09.600 --> 01:10.500
+Reliability etcetera
+
+01:10.500 --> 01:16.300
+So then the internet would need to know how to reach these particular destinations through both providers
+
+01:16.300 --> 01:20.800
+And this this route to this network
+
+01:20.800 --> 01:25.000
+Would need to have the 23 bed masks visible
+
+01:25.000 --> 01:27.300
+instead of just a 24
+
+01:28.300 --> 01:37.700
+So making the scalable is in part based on just the demand growth of devices
+
+01:37.700 --> 01:39.200
+getting connected to the internet
+
+01:39.200 --> 01:48.900
+What what does Charter showing is basically time and years versus how many active bgp in trees
+
+01:48.900 --> 01:49.300
+There are
+
+01:49.300 --> 01:53.100
+And we can I see a bit how this
+
+01:53.100 --> 01:55.300
+how the size of the internet grew
+
+01:55.300 --> 01:56.000
+So initially
+
+01:56.000 --> 01:57.800
+there was a super linear growth
+
+01:57.800 --> 02:00.600
+There wasn't any aggregation Cedar
+
+02:00.600 --> 02:07.200
+which we've discussed was introduced and the aggregation that it allowed and able to linear growth
+
+02:08.100 --> 02:09.300
+The internet
+
+02:09.300 --> 02:12.400
+boom started a little bit before
+
+02:12.400 --> 02:13.500
+Mm
+
+02:13.500 --> 02:18.700
+So there was a super linear growth hear some chili
+
+02:18.700 --> 02:24.100
+Looks like an exponential growth multihoming would drive the super linear growth
+
+02:24.100 --> 02:30.400
+The.com bubble occurred and the growth sort of stopped for a couple years
+
+02:30.400 --> 02:39.500
+but then it's continued and continued on with an exponential growth financial crisis around 2008 caused that to drop a little bit
+
+02:39.500 --> 02:40.900
+but now it's continued to grow
+
+02:40.900 --> 02:45.700
+So all this is really led to why were using things like IPv6 now
+
+02:45.700 --> 02:47.600
+which we haven't talked too much detail about
+
+02:47.600 --> 02:51.400
+but it's a bit more complicated than ipv4 that we focused on
+
+02:51.400 --> 02:54.000
+But it's going to come back to an issue of
+
+02:54.000 --> 02:56.000
+Do we even have enough IP addresses that
+
+02:57.800 --> 03:02.800
+So we need to mention a couple of special-purpose address blocks that we have in particular
+
+03:02.800 --> 03:03.600
+discussed yet
+
+03:03.600 --> 03:08.900
+So their private addresses I'm in this is by standardization or green mint
+
+03:08.900 --> 03:10.900
+These are not route to the public internet
+
+03:10.900 --> 03:12.700
+So these are for networks
+
+03:12.700 --> 03:14.000
+not meant for general
+
+03:14.000 --> 03:14.800
+internet connectivity
+
+03:14.800 --> 03:18.400
+So these to find your standard land
+
+03:18.400 --> 03:21.200
+internal IP addresses
+
+03:21.200 --> 03:23.000
+So thing with anything in this black
+
+03:23.000 --> 03:24.000
+starting with ten
+
+03:24.000 --> 03:25.200
+anything
+
+03:25.200 --> 03:26.800
+starting with 172
+
+03:26.800 --> 03:28.900
+16, and then anyting
+
+03:28.900 --> 03:31.900
+starting with 192
+
+03:31.900 --> 03:32.500
+168
+
+03:34.600 --> 03:35.800
+Additionally
+
+03:35.800 --> 03:38.300
+there's some address blocks that are called link-local
+
+03:38.300 --> 03:40.000
+so I can buy agreement
+
+03:40.000 --> 03:41.300
+These are not forwarded
+
+03:41.300 --> 03:44.000
+Not only not to the Internet by buy any router
+
+03:44.000 --> 03:46.500
+So these are used for single link communication
+
+03:46.500 --> 03:52.100
+Am I so need to be directly connected and this is after doing things like auto-configuration
+
+03:52.100 --> 03:54.200
+So if you've ever seen
+
+03:54.200 --> 03:58.500
+if your device has failed to connect to the internet to connect to a network
+
+03:58.500 --> 04:01.300
+if you get assigned automatically by your operating system
+
+04:01.300 --> 04:04.400
+and I feel like this starting 169
+
+04:04.400 --> 04:05.100
+254
+
+04:05.100 --> 04:08.400
+That's one of the links local standard addresses
+
+04:10.000 --> 04:12.400
+They're a couple other classes are special
+
+04:12.400 --> 04:14.700
+Addresses one is loopback addresses
+
+04:14.700 --> 04:17.300
+So this would correspond to the local machine
+
+04:17.300 --> 04:20.300
+This would be the Black starting 127
+
+04:20.300 --> 04:20.800
+0
+
+04:20.800 --> 04:21.300
+0
+
+04:21.300 --> 04:26.900
+0 usually only one of these was used which is 127
+
+04:26.900 --> 04:27.300
+0
+
+04:27.300 --> 04:27.900
+0.1
+
+04:27.900 --> 04:37.800
+So you'll probably run across that IP address before and the reason it's not going to be forwarded is it's just going to refer back to this local machine directly
+
+04:37.800 --> 04:48.300
+There also limited broadcast special-purpose addresses as well and needs to be sent to every host attached to the local network
+
+04:48.300 --> 04:51.200
+And this is for enabling broadcast to all the notes in the network
+
+04:51.200 --> 04:55.800
+the standard block for this would be 255, repeated
+
+04:56.700 --> 04:59.800
+So to summarize
+
+04:59.800 --> 05:04.500
+some of the scalability of hierarchical addressing has been critical for scalability
+
+05:04.500 --> 05:11.200
+So we don't require every node to know every other node or every router to know how to get to every other note
+
+05:11.200 --> 05:15.000
+It just needs to know how to get to every other network
+
+05:15.000 --> 05:16.000
+So drastically
+
+05:16.000 --> 05:22.000
+Reduces the amount of information required and it also makes it easier to propagate changes
+
+05:22.000 --> 05:25.100
+When something does change such as a failure
+
+05:25.100 --> 05:30.900
+the non-uniform hierarchy is also useful for having heterogeneous
+
+05:30.900 --> 05:35.700
+Networks are different sizes that initial class space addressing was too course
+
+05:35.700 --> 05:42.400
+which led to this development class lesson or two main routing or Cedar
+
+05:42.400 --> 05:43.500
+That's enabled
+
+05:43.500 --> 05:47.600
+Much more flexibility by providing arbitrary length prefixes

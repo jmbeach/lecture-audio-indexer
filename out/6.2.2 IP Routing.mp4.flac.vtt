@@ -1,0 +1,185 @@
+00:00.000 --> 00:07.600
+FedEx are going to continue our discussion of the IP addressing by discussing which called cedar or classless interdomain routing
+
+00:07.600 --> 00:12.800
+I would still be a little bit more complicated than how classful routing worked
+
+00:13.600 --> 00:14.700
+Send Cedar
+
+00:14.700 --> 00:20.600
+I will now use an arbitrary linked prefix to designate a particular Network
+
+00:20.600 --> 00:27.000
+So we'll do this by using to 32-bit numbers to represent the network and the network number
+
+00:27.000 --> 00:31.500
+I'll be composed of the IP address and this 32-bit mask
+
+00:31.500 --> 00:32.200
+So
+
+00:32.200 --> 00:32.600
+for example
+
+00:32.600 --> 00:34.000
+if we have this IP
+
+00:34.000 --> 00:34.400
+address
+
+00:34.400 --> 00:35.200
+12
+
+00:35.200 --> 00:42.500
+4.0.0 and this mask to 55
+
+00:42.500 --> 00:43.500
+254
+
+00:43.500 --> 00:44.100
+0
+
+00:44.100 --> 00:46.100
+0 in binary
+
+00:46.100 --> 00:51.100
+we would encode this address as this numbers for this is 12
+
+00:51.100 --> 00:56.400
+This is the for than the zero and the zero and we would Reserve
+
+00:57.400 --> 01:01.300
+These lower bits essentially the bottom
+
+01:03.200 --> 01:05.600
+About 17 bits for house
+
+01:05.600 --> 01:06.700
+So we would be able to address
+
+01:06.700 --> 01:13.100
+send it to to the 17 host and these upper bits would correspond to the network prefix
+
+01:13.100 --> 01:14.100
+So
+
+01:14.100 --> 01:14.400
+again
+
+01:14.400 --> 01:17.400
+if we took the conjunction of the and between the bits
+
+01:17.400 --> 01:19.400
+making up this address and this mask
+
+01:19.400 --> 01:21.800
+that would then correspond to what network
+
+01:21.800 --> 01:24.100
+we were indexing into and now
+
+01:24.100 --> 01:27.500
+we're using an arbitrary length to prefix that Network
+
+01:27.500 --> 01:30.200
+So notational in that slash notation
+
+01:30.200 --> 01:30.900
+We were at the site
+
+01:30.900 --> 01:31.600
+12
+
+01:31.600 --> 01:32.000
+4
+
+01:32.000 --> 01:32.600
+0
+
+01:32.600 --> 01:35.400
+0, / 15 or 12:00
+
+01:35.400 --> 01:36.700
+4, / 15,
+
+01:37.500 --> 01:45.500
+So this Cedar mechanism is a way that addresses are allocated in a very hierarchical way for the on the internet
+
+01:45.500 --> 01:55.200
+And using these prefix has a variable length is really key to making the internet scalable and how many devices can be connected to it
+
+01:55.200 --> 02:00.700
+Because the addresses are allocated and contiguous chunks the prefixes
+
+02:00.700 --> 02:06.900
+this lets us change the length of those prefixes and not just work with a few classes
+
+02:06.900 --> 02:08.000
+So then the
+
+02:08.000 --> 02:13.900
+the other important aspect of this prefix that's important is that the routing protocols
+
+02:13.900 --> 02:14.800
+and doing packet
+
+02:14.800 --> 02:16.000
+forwarding at the data plan
+
+02:16.000 --> 02:18.500
+as we've seen is based on these prefix
+
+02:18.500 --> 02:19.200
+addresses
+
+02:19.200 --> 02:21.100
+So this is how we will figure out
+
+02:21.100 --> 02:22.200
+okay
+
+02:22.200 --> 02:25.800
+if I need the address to a particular hosts down here
+
+02:25.800 --> 02:27.400
+Let's say this 12
+
+02:27.400 --> 02:28.600
+253
+
+02:28.600 --> 02:29.400
+64
+
+02:29.400 --> 02:29.900
+108
+
+02:29.900 --> 02:31.000
+It's not quite a host there
+
+02:31.000 --> 02:32.500
+so few computers behind there
+
+02:32.500 --> 02:35.700
+but I could first start in this network
+
+02:35.700 --> 02:37.400
+That's named 12.0
+
+02:37.500 --> 02:38.700
+100
+
+02:38.700 --> 02:42.200
+Then I figure out that it's in the 12
+
+02:42.200 --> 02:47.000
+250 3.0.0 Network than that
+
+02:47.000 --> 02:51.000
+It's a particular subnetwork with the mat Network rights to this
+
+02:51.000 --> 02:53.000
+hierarchical design
+
+02:53.000 --> 03:02.600
+With these prefixes is how will enable scalability within the internet and that's what the cedar process allows us to do

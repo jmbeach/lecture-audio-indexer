@@ -1,0 +1,278 @@
+00:00.300 --> 00:00.900
+FedEx
+
+00:00.900 --> 00:01.600
+will discuss
+
+00:01.600 --> 00:03.700
+How IP addresses are allocated
+
+00:03.700 --> 00:05.300
+Particularly how
+
+00:05.300 --> 00:07.200
+the allocation of blocks of addresses
+
+00:07.200 --> 00:12.500
+worker will eventually get into how an IP address gets allocated for your own
+
+00:12.500 --> 00:13.600
+individual computer
+
+00:13.600 --> 00:14.600
+Say using a protocol
+
+00:14.600 --> 00:15.600
+like DHCP
+
+00:16.600 --> 00:17.100
+So
+
+00:17.100 --> 00:22.300
+how do you get one of these large blocks of addresses that we've talked about say for an organization
+
+00:22.300 --> 00:23.200
+Well
+
+00:23.200 --> 00:25.500
+we've seen how in class
+
+00:25.500 --> 00:28.600
+Classical addressing
+
+00:28.600 --> 00:31.300
+There's an assignment of a prefix to a particular institution
+
+00:31.300 --> 00:32.000
+like
+
+00:32.000 --> 00:34.900
+Vanderbilt as we discussed addresses
+
+00:34.900 --> 00:40.600
+then are assigned by those institutions to their notes inside of their network
+
+00:40.600 --> 00:43.600
+but who assigns these prefixes
+
+00:43.600 --> 00:44.900
+So
+
+00:44.900 --> 00:47.800
+there's an organization that does this
+
+00:47.800 --> 00:54.000
+So I can does this and it allocates large address box to Regional internet
+
+00:54.000 --> 00:54.800
+Registries
+
+00:54.800 --> 00:55.100
+but
+
+00:55.100 --> 00:58.700
+there's some politics involved in this there
+
+00:58.700 --> 01:00.100
+Then Regional internet
+
+01:00.100 --> 01:02.400
+registries are ours
+
+01:02.400 --> 01:04.000
+Such as Aaron
+
+01:04.000 --> 01:05.700
+in the United States
+
+01:05.700 --> 01:09.000
+this allocate address blocks within their given regions
+
+01:09.800 --> 01:13.000
+You should be say allocated to isps
+
+01:13.000 --> 01:14.200
+as well as large institutions
+
+01:14.200 --> 01:16.800
+Both of which should be done for her payment
+
+01:16.800 --> 01:18.800
+Then is PS
+
+01:18.800 --> 01:21.600
+So say your service provider at your
+
+01:21.600 --> 01:22.600
+for your home internet
+
+01:22.600 --> 01:29.900
+These would allocate address box for their customers could be recursive in this typically is going to be a recurring
+
+01:29.900 --> 01:31.500
+sort of
+
+01:31.500 --> 01:35.600
+without additional charge beyond what you already paid for your internet service
+
+01:35.600 --> 01:37.200
+but for example
+
+01:37.200 --> 01:40.200
+sometimes if you wanted to have such a dedicated IP address
+
+01:40.200 --> 01:45.500
+you might pay for that service to have that IP address assigned to your home
+
+01:45.500 --> 01:48.400
+If you say ran a server that needed
+
+01:48.400 --> 01:50.600
+that kind of a dedicated IP address
+
+01:51.800 --> 01:56.100
+So how do we figure out who owns an address while their address Registries
+
+01:56.100 --> 02:00.200
+This is a public record of how the addresses are allocated
+
+02:00.200 --> 02:03.300
+This is how this is in part how
+
+02:03.300 --> 02:04.000
+For example
+
+02:04.000 --> 02:17.400
+if you browse to a website these days it'll automatically detect what country or what location you're in a potentially even what organization you're with the ISP should also update if they're giving addresses to customers
+
+02:17.400 --> 02:20.600
+But these records of course there are often out of date
+
+02:20.600 --> 02:25.900
+So there are a couple ways to figure out who owns that address so you can run a command like
+
+02:25.900 --> 02:36.400
+who is there a variety of tools to run who has and you could look up who owns a particular IP address or block of IP addresses
+
+02:36.400 --> 02:39.100
+And what organization is a sign that block
+
+02:40.100 --> 02:47.700
+So you probably inferred and our discussion of ipv4 versus IPv6
+
+02:47.700 --> 02:51.700
+Probably having 32-bit addresses isn't quite enough
+
+02:51.700 --> 02:54.700
+So this is a lot of unique addresses
+
+02:54.700 --> 02:57.600
+but it's not enough for how many devices are connected to the internet
+
+02:57.600 --> 03:00.800
+So how many addresses could we
+
+03:00.800 --> 03:04.100
+how many different computers are notes
+
+03:04.100 --> 03:05.900
+When we represent with 32 bits
+
+03:05.900 --> 03:06.500
+While to
+
+03:06.500 --> 03:08.600
+to the 32 is a bit over four million
+
+03:08.600 --> 03:13.600
+So we could have four billion unique addresses for devices connected to the internet
+
+03:13.600 --> 03:14.900
+But as we saw
+
+03:14.900 --> 03:17.100
+there are reserved special purpose
+
+03:17.100 --> 03:17.700
+blocks
+
+03:17.700 --> 03:22.200
+and some addresses are allocated in large blocks to organizations
+
+03:22.200 --> 03:24.100
+perhaps that are using all of them
+
+03:25.000 --> 03:28.600
+But now because we're connecting more and more things to the internet
+
+03:28.600 --> 03:29.500
+many of
+
+03:29.500 --> 03:30.500
+which fact
+
+03:30.500 --> 03:33.200
+all of which are going to need IP addresses of some form
+
+03:33.200 --> 03:35.300
+such as an internet of things
+
+03:35.300 --> 03:40.400
+We do already have more than four billion devices connected to the internet
+
+03:40.400 --> 03:42.900
+So a longer-term solution
+
+03:42.900 --> 03:47.800
+which is in part will lead to IPv6, is that we now have a 128 bits for addresses
+
+03:47.800 --> 03:52.900
+So that should be about 3.4 x 10 to the 38th devices
+
+03:52.900 --> 03:57.700
+So hopefully this larger at address space will be sufficient for handling
+
+03:57.700 --> 04:01.400
+The scalability growth of the number of devices connected to the internet
+
+04:01.400 --> 04:08.400
+There are some other shorter-term solutions for continuing to use ipv4 because it is still widely used
+
+04:08.400 --> 04:15.000
+As we discussed trying to switch the internet layer protocol have ipv4 the network layer protocol
+
+04:15.000 --> 04:23.300
+That ipv4s is very difficult because it's the commonality between the link later and lower layer
+
+04:23.300 --> 04:24.100
+Protocols
+
+04:24.100 --> 04:25.000
+and the applique
+
+04:24.900 --> 04:26.100
+10 layer protocols
+
+04:26.100 --> 04:28.300
+So using private addresses
+
+04:28.300 --> 04:30.500
+as one solution using network
+
+04:30.500 --> 04:30.900
+address translation
+
+04:30.900 --> 04:33.200
+which will discuss shortly is another solution
+
+04:33.200 --> 04:40.900
+And partially using a dynamic assignment of addresses which enables unique private addresses
+
+04:40.900 --> 04:43.200
+say hidden behind a router
+
+04:43.200 --> 04:48.900
+If you have saved several computers at your home connected behind one router
+
+04:48.900 --> 04:59.900
+so we're going to talk more next about how Network address translation would work and would help us address this limitation of only having 32-bit addresses
