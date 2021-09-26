@@ -30,11 +30,11 @@ export default class Parse extends Command {
   nanosToTimestamp(seconds: number, nanos: number) {
     const secondsInMinute = 60;
     const nanosInSecond = 1000000000.0;
-    const minutes = Math.floor(seconds / secondsInMinute);
+    const minutes = Math.floor((seconds || 0) / secondsInMinute);
     const minutesString = minutes < 10 ? `0${minutes}` : minutes.toString();
-    seconds = seconds - (minutes * secondsInMinute);
+    seconds = (seconds || 0) - (minutes * secondsInMinute);
     const secondsString = seconds < 10 ? `0${seconds}` : seconds
-    const nanoString = Math.floor((nanos / nanosInSecond) * 1000)
+    const nanoString = (nanos || 0) < 1 ? '000' : Math.floor((nanos / nanosInSecond) * 1000)
     return `${minutesString}:${secondsString}.${nanoString}`
   }
 
@@ -55,19 +55,21 @@ export default class Parse extends Command {
     // execSync(`ffmpeg -i "${args.file}" -f s16le -c:a pcm_s16le "${args.file}.raw"`)
     // const base64 = fs.readFileSync(`${args.file}.raw`, { encoding: 'base64' })
     const name = '6.1.1 IP Addressing.mp4.flac'
-    const [operation] = await client.longRunningRecognize({
-      audio: {
-        // content: base64
-        uri: `gs://jared-audio-indexer/${name}`
-      },
-      config: {
-        languageCode: 'en-US',
-        enableWordTimeOffsets: true,
-        enableAutomaticPunctuation: true,
-        encoding: 'FLAC'
-      }
-    });
-    const [response] = await operation.promise();
+    // const [operation] = await client.longRunningRecognize({
+    //   audio: {
+    //     // content: base64
+    //     uri: `gs://jared-audio-indexer/${name}`
+    //   },
+    //   config: {
+    //     languageCode: 'en-US',
+    //     enableWordTimeOffsets: true,
+    //     enableAutomaticPunctuation: true,
+    //     encoding: 'FLAC'
+    //   }
+    // });
+    // const [response] = await operation.promise();
+    // fs.writeFileSync(`./out/${name}.json`, JSON.stringify(response));
+    const response = JSON.parse(fs.readFileSync(`./out/${name}.json`, { encoding: 'UTF-8' }));
     const transcriptions = response.results
       .map(result => result.alternatives[0].transcript);
     let vttChunks = []
@@ -76,22 +78,22 @@ export default class Parse extends Command {
       const words = response.results[i].alternatives[0].words;
       const sentences = transcription?.split('.')
         .map(x => x.split(','))
-        // flatmap
-        .reduce((a, b) => [...b, ...a], [])
+        .flat(1)
         .map(x => x.split('?'))
-        // flatmap
-        .reduce((a, b) => [...b, ...a], [])
+        .flat(1)
         .filter(x => x).map(x => x.trim());
       let wordStart = 0;
       for (let j = 0; j < sentences?.length; j++) {
         const sentence = sentences[j];
         const sentenceWords = sentence.split(' ');
-        const startTimeStamp = this.nanosToTimestamp(words[wordStart].startTime?.seconds, words[wordStart].startTime?.nanos);
-        const endTimeStamp = this.nanosToTimestamp(words[wordStart + sentenceWords.length - 1].endTime?.seconds, words[wordStart + sentenceWords.length - 1].endTime?.nanos);
+        const startWord = words[wordStart];
+        const endWord = words[wordStart + sentenceWords.length - 1]
+        const startTimeStamp = this.nanosToTimestamp(startWord.startTime?.seconds, startWord.startTime?.nanos);
+        const endTimeStamp = this.nanosToTimestamp(endWord.endTime?.seconds, endWord.endTime?.nanos);
         const vttChunk = `${startTimeStamp} --> ${endTimeStamp}
-- ${sentence.split('\n').join('\n- ')}`
+${sentence}`
         vttChunks.push(vttChunk);
-        wordStart += sentenceWords.length - 1;
+        wordStart += sentenceWords.length;
       }
     }
     if (!fs.existsSync('./out/')) {

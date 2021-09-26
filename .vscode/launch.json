@@ -10,6 +10,16 @@
       "request": "attach",
       "skipFiles": ["<node_internals>/**"],
       "type": "pwa-node"
+    },
+    {
+      "name": "Debug Parse",
+      "port": 9229,
+      "request": "launch",
+      "type": "pwa-node",
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "runtimeArgs": ["--inspect-brk", "./bin/run"],
+      "args": ["parse"]
     }
   ]
 }
