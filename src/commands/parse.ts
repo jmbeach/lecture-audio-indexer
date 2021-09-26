@@ -52,24 +52,21 @@ export default class Parse extends Command {
     const client = new speech.SpeechClient({
       sslCreds: credentials
     })
-    // execSync(`ffmpeg -i "${args.file}" -f s16le -c:a pcm_s16le "${args.file}.raw"`)
-    // const base64 = fs.readFileSync(`${args.file}.raw`, { encoding: 'base64' })
-    const name = '6.1.1 IP Addressing.mp4.flac'
-    // const [operation] = await client.longRunningRecognize({
-    //   audio: {
-    //     // content: base64
-    //     uri: `gs://jared-audio-indexer/${name}`
-    //   },
-    //   config: {
-    //     languageCode: 'en-US',
-    //     enableWordTimeOffsets: true,
-    //     enableAutomaticPunctuation: true,
-    //     encoding: 'FLAC'
-    //   }
-    // });
-    // const [response] = await operation.promise();
-    // fs.writeFileSync(`./out/${name}.json`, JSON.stringify(response));
-    const response = JSON.parse(fs.readFileSync(`./out/${name}.json`, { encoding: 'UTF-8' }));
+    const name = args.file
+    const [operation] = await client.longRunningRecognize({
+      audio: {
+        uri: `gs://jared-audio-indexer/${name}`
+      },
+      config: {
+        languageCode: 'en-US',
+        enableWordTimeOffsets: true,
+        enableAutomaticPunctuation: true,
+        encoding: 'FLAC'
+      }
+    });
+    const [response] = await operation.promise();
+    fs.writeFileSync(`./out/${name}.json`, JSON.stringify(response));
+    // const response = JSON.parse(fs.readFileSync(`./out/${name}.json`, { encoding: 'UTF-8' }));
     const transcriptions = response.results
       .map(result => result.alternatives[0].transcript);
     let vttChunks = []
