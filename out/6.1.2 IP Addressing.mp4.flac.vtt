@@ -1,0 +1,737 @@
+00:00.200 --> 00:03.400
+Serena continue our discussion to the IP address thing
+
+00:03.400 --> 00:07.700
+And impart start to talk about an issue that can arise as soon as i p fragmentation
+
+00:07.700 --> 00:09.100
+As we do that
+
+00:09.100 --> 00:15.300
+We need to continue talking about the IP headers for a couple other aspects
+
+00:15.300 --> 00:18.100
+We had mentioned in the IP Hatteras or what
+
+00:18.100 --> 00:19.400
+the total length of the header is
+
+00:19.400 --> 00:20.600
+So
+
+00:20.600 --> 00:22.300
+it's 16 bits in this winter coat
+
+00:22.300 --> 00:23.800
+How many bytes are in the packet
+
+00:23.800 --> 00:24.500
+So
+
+00:24.500 --> 00:26.200
+the maximum pocket-sized
+
+00:26.200 --> 00:35.500
+then I would be to to the 16 - 1 since we have 16 bits or 650 5535 bites
+
+00:35.500 --> 00:36.400
+So
+
+00:36.400 --> 00:37.400
+underlying links
+
+00:37.400 --> 00:37.600
+however
+
+00:37.600 --> 00:41.900
+might impose smaller limits and this is where fragmentation starts to come into play
+
+00:41.900 --> 00:44.200
+So fragmentation occurs
+
+00:44.200 --> 00:51.000
+when boarding a packet and internet router may need to split or fragment that packet into multiple pieces
+
+00:51.000 --> 00:53.300
+If it's too large for the next top link
+
+00:53.800 --> 00:59.900
+So fragmentation information includes 32 bits of information in the header
+
+00:59.900 --> 01:05.000
+which includes a packet identifier flags as well as that fragment offset
+
+01:06.600 --> 01:09.000
+So is an illustrative example
+
+01:09.000 --> 01:10.200
+Suppose
+
+01:10.200 --> 01:21.600
+we're sending this packet that's length of a thousand and suppose the maximum transfer unit or MTU of each of these links
+
+01:21.600 --> 01:25.800
+Along the way this link is 1000 bytes
+
+01:25.800 --> 01:28.000
+This link is 500 bytes
+
+01:28.000 --> 01:29.600
+This link is 1,000 bytes
+
+01:29.600 --> 01:33.600
+So this would be the max packet size that can be handled by that link
+
+01:33.600 --> 01:38.400
+And this could be a function of the underlying physical media that's being used
+
+01:38.400 --> 01:40.200
+So
+
+01:40.200 --> 01:42.600
+as we're trim transferring from the hosts
+
+01:42.600 --> 01:43.500
+the router one
+
+01:43.500 --> 01:46.900
+Now at this router because the maximum transfer units
+
+01:46.900 --> 01:47.700
+500 by its
+
+01:47.700 --> 01:49.400
+we're going to have to split this packet
+
+01:49.400 --> 01:56.700
+We could say split into two packets each link 500 and then they could be sent along the way
+
+01:56.700 --> 01:58.100
+So at this point
+
+01:58.100 --> 02:01.500
+we could potentially reassemble these
+
+02:01.500 --> 02:04.800
+So that would be where we might put these packets back together
+
+02:06.600 --> 02:16.400
+So that we could then continue on with the with the packet reassembled being sent from router to to host be
+
+02:16.400 --> 02:19.800
+but it doesn't necessarily have to happen there
+
+02:19.800 --> 02:27.300
+So it could have happened that we just send two packets through the link between our two and host
+
+02:27.300 --> 02:31.100
+Be even though we have a larger maximum transfer unit allowed
+
+02:31.100 --> 02:33.500
+We went ahead and just didn't do the reassemble
+
+02:33.500 --> 02:35.400
+Maybe we could just do it at the receiver
+
+02:35.400 --> 02:37.000
+So where does that occur
+
+02:39.300 --> 02:49.300
+So what the correct answer is typically is it at Whitaker at the end coast and the reason being is that the fragments could travel across different paths
+
+02:49.300 --> 02:53.300
+So why would we do the reassembly in the network if it could be further fragmented
+
+02:53.300 --> 02:54.000
+later as well
+
+02:54.000 --> 02:58.000
+If we already took the processing effort to split the pack it up
+
+02:58.000 --> 02:59.000
+supposing
+
+02:59.000 --> 03:01.600
+our networks been modified and we have two links
+
+03:01.600 --> 03:03.100
+We could simultaneously
+
+03:03.100 --> 03:04.600
+send this information
+
+03:04.600 --> 03:12.400
+That's a long routes through router to and router 3, maybe they could arrive at different times
+
+03:12.400 --> 03:13.200
+Soho speed
+
+03:13.200 --> 03:15.000
+and then the reassembly could happen there
+
+03:15.000 --> 03:18.200
+So we'd prefer to do it at the Final Destination
+
+03:18.200 --> 03:23.300
+So that we would avoid extra overhead from doing the splitting
+
+03:23.300 --> 03:24.600
+and reassembly in the network
+
+03:24.600 --> 03:31.100
+especially because it could further be subject to fragmentation further down in the path of the network
+
+03:32.200 --> 03:39.400
+So this is where this information is stored in the IP packet
+
+03:39.400 --> 03:42.300
+had her what offset would be there as well
+
+03:42.300 --> 03:49.100
+Some ID numbers are going to talk a little bit more about so what are these portions of the header
+
+03:49.100 --> 03:52.400
+So the identifier is used to tell which fragments belong together
+
+03:52.400 --> 04:02.800
+So basically what packets been split up and which fragments are going to correspond to which original packet
+
+04:02.800 --> 04:08.400
+The flags are three bets can be a variety of things
+
+04:08.400 --> 04:08.800
+Like dog
+
+04:08.800 --> 04:11.400
+fragment instruct routers
+
+04:11.400 --> 04:13.500
+not to fragment the packet even if it would fit
+
+04:13.500 --> 04:16.400
+they could drop it instead and send back a two
+
+04:16.400 --> 04:19.000
+large icmp message
+
+04:19.000 --> 04:25.200
+This could form the basis for doing the maximum transfer unit discovery
+
+04:25.200 --> 04:26.900
+which will talk some about later
+
+04:28.000 --> 04:33.600
+So the other portion is the offset to the offsets 13 bets
+
+04:33.600 --> 04:40.000
+So what part of the data gram would be covered by this fragment in a fight
+
+04:40.000 --> 04:46.400
+your nuts and how could the receiver differentiate between the last fragment of a packet and a nun fragmented packet
+
+04:46.400 --> 04:48.200
+So there's some special offset
+
+04:48.200 --> 04:55.700
+So neither one of them would have this mf4 fragmented Flagstaff and if the offset of zero then it corresponds to it being a nun
+
+04:55.700 --> 04:56.800
+fragmented packet
+
+04:56.800 --> 04:57.500
+Otherwise
+
+04:57.500 --> 04:59.600
+it needs to be the last fragment
+
+04:59.600 --> 05:01.200
+So it has been coded that specially
+
+05:02.800 --> 05:03.300
+So
+
+05:03.300 --> 05:05.200
+let's just look at an example of fragmentation
+
+05:05.200 --> 05:07.800
+So supposed to have a 4,000 by theater
+
+05:07.800 --> 05:08.500
+Grandma package
+
+05:08.500 --> 05:09.300
+sent from host
+
+05:09.300 --> 05:09.900
+One
+
+05:09.900 --> 05:10.000
+two
+
+05:10.000 --> 05:10.200
+three
+
+05:10.200 --> 05:10.400
+four
+
+05:10.400 --> 05:11.100
+Two Hosts
+
+05:11.100 --> 05:11.300
+three
+
+05:11.300 --> 05:11.400
+four
+
+05:11.400 --> 05:11.700
+five
+
+05:11.700 --> 05:11.900
+six
+
+05:11.900 --> 05:13.200
+So
+
+05:13.200 --> 05:15.800
+we have the source and destination address is encoded
+
+05:15.800 --> 05:17.500
+We have extra information
+
+05:17.500 --> 05:20.500
+included beyond the 20 bite
+
+05:20.500 --> 05:20.800
+Header
+
+05:20.800 --> 05:22.600
+The total length includes the header link
+
+05:22.600 --> 05:25.700
+Plus the additional payload lengths
+
+05:25.700 --> 05:27.600
+study identification
+
+05:27.600 --> 05:32.000
+That's the fragmented ID and then an offset
+
+05:32.000 --> 05:35.900
+And then this other flags within the fragmentation aren't set
+
+05:35.900 --> 05:41.100
+currently there's a check some guy that's been plugged in corresponding to this
+
+05:42.000 --> 05:45.200
+Check some of the data encoded in the message
+
+05:45.200 --> 05:50.200
+Let's suppose that traverses are linked that limits datagrams to 1500 bytes
+
+05:51.100 --> 05:54.700
+So what would occur in this the date of Grant would need to be split into pieces
+
+05:54.700 --> 06:09.000
+So as an example we have from by zero up two by four thousand so we could split this into three different chunks or three different datagrams
+
+06:09.000 --> 06:11.800
+So one correspondent again
+
+06:11.800 --> 06:14.100
+the maximum transfer it was 1500
+
+06:14.100 --> 06:24.500
+So one could correspond to filling up that whole $1,500, or 20 bites have had her information and 1480 bytes of packet payload
+
+06:24.500 --> 06:28.000
+The next packet
+
+06:28.000 --> 06:30.600
+Perhaps could be split up into 12:20 total
+
+06:30.600 --> 06:32.300
+So 1200 for the payload
+
+06:32.300 --> 06:33.000
+20 for the header
+
+06:33.000 --> 06:35.800
+and the last could be split up
+
+06:35.800 --> 06:38.600
+Let's stay in to 1301 for this total length
+
+06:38.600 --> 06:41.300
+Length of 4001 bytes
+
+06:42.200 --> 06:45.700
+So the possible first piece then could look something like this
+
+06:45.700 --> 06:47.500
+So we have an ID for what packet
+
+06:47.500 --> 06:50.900
+this corresponds to the total length would get encoded
+
+06:50.900 --> 06:56.300
+Here's the 1500 and then the fragment offset could be 0
+
+06:56.300 --> 06:59.400
+Corresponding to it being the first part of the fragment
+
+07:01.200 --> 07:11.000
+So the possible second piece then the as we can see the ID number stays the same or at so that ID number would stay the same
+
+07:11.000 --> 07:12.900
+The total length is now changed
+
+07:12.900 --> 07:15.800
+And then the fragment offset where this would appear
+
+07:15.800 --> 07:18.200
+we are counting in bites here
+
+07:18.200 --> 07:22.800
+So the fragment offset here would need to be 185 cuz 185 times
+
+07:22.800 --> 07:27.800
+So it would be the 14 80 and that correspond to the length minus
+
+07:27.800 --> 07:31.700
+the header length of the previous fragment
+
+07:31.700 --> 07:34.100
+so that we can put things back together appropriately
+
+07:34.100 --> 07:38.800
+So then the possible third piece of this could look like this
+
+07:38.800 --> 07:41.000
+So the fragment offset for this now
+
+07:41.000 --> 07:43.600
+would be the sum
+
+07:44.500 --> 07:52.800
+Of the prior two fragments for the 1,200 plus the 1480 would be where we're getting this 2680 from
+
+07:53.800 --> 07:57.200
+So that would be the fragment offset
+
+07:57.200 --> 08:02.700
+So 3:35 bites would correspond to that 2680
+
+08:02.700 --> 08:03.200
+Right
+
+08:03.200 --> 08:03.200
+So
+
+08:03.200 --> 08:09.200
+this is how we know that this portion of the fragment would be the last one based on that offset
+
+08:11.500 --> 08:16.900
+So there are designed the decisions that we can make it with respect to fragmentation
+
+08:16.900 --> 08:18.000
+So 1 ways
+
+08:18.000 --> 08:19.400
+where would we assembly occur
+
+08:19.400 --> 08:21.300
+We've mentioned that a little bit so far
+
+08:21.300 --> 08:23.800
+So usually we want to do that at the Final Destination
+
+08:23.800 --> 08:25.500
+There's several reasons
+
+08:25.500 --> 08:25.900
+Why
+
+08:25.900 --> 08:30.100
+Because different fragments could drop Traverse different paths through the network
+
+08:30.100 --> 08:33.700
+The whole collection may only be available at the receiver
+
+08:33.700 --> 08:40.300
+So maybe not possible to actually do the reassembly inside of the network
+
+08:40.300 --> 08:41.700
+Another reason
+
+08:41.700 --> 08:41.900
+Is that
+
+08:41.900 --> 08:42.900
+Reassembly it any
+
+08:42.900 --> 08:45.900
+No could be premature as we've discussed subsequent
+
+08:45.900 --> 08:48.300
+Links might require further fragmentation
+
+08:50.100 --> 08:54.800
+So why should we use the spite offset as well for fragments rather than number in each
+
+08:54.800 --> 08:55.800
+Well
+
+08:55.800 --> 08:57.200
+the first answer would be
+
+08:57.200 --> 08:59.400
+it allows further fragmentation of the fragments
+
+08:59.400 --> 09:00.500
+Okay
+
+09:00.500 --> 09:02.100
+So just because one package
+
+09:02.100 --> 09:02.900
+already been fragmented
+
+09:02.900 --> 09:03.500
+Perhaps
+
+09:03.500 --> 09:05.400
+we need to further fragment that fragment
+
+09:05.400 --> 09:07.100
+So
+
+09:07.100 --> 09:08.600
+another answer is with
+
+09:08.600 --> 09:09.600
+despite offset
+
+09:09.600 --> 09:12.900
+The receiver can then lay down the bites and memory when they arrive
+
+09:12.900 --> 09:16.100
+So we could just basically allocate the total length
+
+09:16.100 --> 09:20.100
+and then put these
+
+09:20.100 --> 09:23.000
+where they would need to go in that memory
+
+09:23.000 --> 09:28.900
+Eraser wouldn't need to be moving the received at or around so we could avoid things like them copies
+
+09:30.700 --> 09:31.200
+So
+
+09:31.200 --> 09:39.300
+some final portions of the packet header that we haven't discussed too much chatter time to live in the check sums were going to wrap those up now
+
+09:39.300 --> 09:47.300
+So the time to live field is used to address a potentially serious problem that can arise
+
+09:47.300 --> 09:54.000
+And in IP forwarding Loops could cause packets to cycle in the network forever
+
+09:54.000 --> 09:56.100
+And as these would accumulate
+
+09:56.100 --> 09:58.600
+it could consume all network capacity
+
+09:58.600 --> 10:02.700
+So we we keep the time to live field in the packet
+
+10:02.700 --> 10:03.000
+header
+
+10:03.000 --> 10:05.000
+and this gets decremented each hop
+
+10:05.000 --> 10:06.900
+If that ever reaches zero
+
+10:06.900 --> 10:08.400
+then the package gets discarded
+
+10:08.400 --> 10:12.500
+The time exceeded message would then be sent back to the source
+
+10:12.500 --> 10:20.100
+So this is this abuse a using icmp control messages and would be the basis for how traceroute would work
+
+10:21.400 --> 10:25.700
+I'm so because as we've seen with some of the routing protocols
+
+10:25.700 --> 10:27.200
+we could wind up with these Cycles
+
+10:27.200 --> 10:28.900
+We need to avoid having the cyclist
+
+10:28.900 --> 10:29.500
+Go on forever
+
+10:31.300 --> 10:36.000
+The protocol would identify a higher layer protocol the transport layer protocol typically
+
+10:36.000 --> 10:36.900
+So
+
+10:36.900 --> 10:37.700
+for TCP
+
+10:37.700 --> 10:42.600
+we wouldn't go to 6 in the header or UDP would encode a 17 and a header
+
+10:42.600 --> 10:46.200
+For that particular protocol is a standard that would define where these come from
+
+10:46.200 --> 10:50.700
+This can be important for doing D multiplexing at the receiving host
+
+10:50.700 --> 10:51.800
+Is it indicate
+
+10:51.800 --> 10:58.500
+What kind of pattern to expect next after that hire layer transport layer protocol
+
+11:00.700 --> 11:04.700
+The most of the last parts of the packet
+
+11:04.700 --> 11:06.700
+Her we haven't yet discussed should be the checksum
+
+11:06.700 --> 11:08.300
+What happens with the checksum
+
+11:08.300 --> 11:16.300
+It's basically making sure date has not been corrupted what how this is computed and be computed as taking the ones compliments
+
+11:16.300 --> 11:20.900
+Some of all of the 16-bit words in the IP packet had her right
+
+11:20.900 --> 11:22.700
+So use 16-bit words in the ticket
+
+11:22.700 --> 11:23.800
+That one's compliments
+
+11:23.800 --> 11:24.800
+I'm over all of them
+
+11:24.800 --> 11:30.400
+Are the results of this should be a zero or in Hexxit should be ones
+
+11:30.400 --> 11:33.000
+If it's not
+
+11:33.000 --> 11:38.200
+then the router with describe the packet is having been corrupted so that we don't act on bogus information
+
+11:38.200 --> 11:40.000
+For example
+
+11:40.000 --> 11:41.200
+of just a single bit
+
+11:41.200 --> 11:43.600
+or a single portion of that IP packet
+
+11:43.600 --> 11:44.700
+had her spend modified
+
+11:45.700 --> 11:48.500
+So the last Parts we've already talked about it
+
+11:48.500 --> 11:50.800
+A fair amount would be the actual IP addresses
+
+11:50.800 --> 11:55.200
+So the two that appear there in the IP packet
+
+11:55.200 --> 11:56.200
+headers for the source
+
+11:56.200 --> 11:57.300
+So where did it come from
+
+11:57.300 --> 12:03.500
+Like the return address in postal mail and the destination or where we're sending to the to address in postal mail
+
+12:03.500 --> 12:06.300
+So these destination address is
+
+12:06.300 --> 12:10.300
+there should be a unique identifier locator for the receiving host
+
+12:10.300 --> 12:17.100
+so that we can have this forwarded appropriately at each router
+
+12:17.100 --> 12:19.200
+Where node in the Network's remember
+
+12:19.200 --> 12:20.600
+All this is packet-switched
+
+12:20.600 --> 12:24.000
+So each no needs to know how to get it to that destination
+
+12:24.000 --> 12:27.900
+or at least to get it to the next link along the way to the destination
+
+12:27.900 --> 12:33.400
+The Source address also needs to be unique so that the recipient can decide
+
+12:33.400 --> 12:35.100
+Let's say whether to accept the packet
+
+12:35.100 --> 12:38.500
+Maybe if it's coming from an unknown IP address or an IP address
+
+12:38.500 --> 12:39.000
+you know
+
+12:39.000 --> 12:39.600
+as bad
+
+12:39.600 --> 12:40.600
+you were a few Zack
+
+12:40.600 --> 12:44.400
+the receiving host would say
+
+12:44.400 --> 12:45.500
+refuse
+
+12:45.600 --> 12:46.600
+Something the packet
+
+12:46.600 --> 12:47.200
+So
+
+12:47.200 --> 12:51.100
+this would also enable the recipient to send reply messages back to the source
+
+12:51.100 --> 12:52.500
+For example
+
+12:52.500 --> 12:54.900
+if it needs to acknowledge something
+
+12:54.900 --> 12:59.500
+or make sure some information was received or whatever other purpose might be necessary
+
+12:59.500 --> 13:03.900
+So that should conclude about everything about IP fragmentation
+
+13:03.900 --> 13:08.300
+as well as a few more details about a couple parts of the IP packet
+
+13:08.300 --> 13:10.800
+headers that we hadn't previously covered

@@ -52,7 +52,8 @@ export default class Parse extends Command {
     const client = new speech.SpeechClient({
       sslCreds: credentials
     })
-    const name = args.file
+    const name = '6.1.2 IP Addressing.mp4.flac'
+    // const name = args.file
     const [operation] = await client.longRunningRecognize({
       audio: {
         uri: `gs://jared-audio-indexer/${name}`
@@ -64,9 +65,9 @@ export default class Parse extends Command {
         encoding: 'FLAC'
       }
     });
-    const [response] = await operation.promise();
-    fs.writeFileSync(`./out/${name}.json`, JSON.stringify(response));
-    // const response = JSON.parse(fs.readFileSync(`./out/${name}.json`, { encoding: 'UTF-8' }));
+    // const [response] = await operation.promise();
+    // fs.writeFileSync(`./out/${name}.json`, JSON.stringify(response));
+    const response = JSON.parse(fs.readFileSync(`./out/${name}.json`, { encoding: 'UTF-8' }));
     const transcriptions = response.results
       .map(result => result.alternatives[0].transcript);
     let vttChunks = []
@@ -74,7 +75,8 @@ export default class Parse extends Command {
       const transcription = transcriptions[i];
       const words = response.results[i].alternatives[0].words;
       const sentences = transcription?.split('.')
-        .map(x => x.split(','))
+        // commas that aren't part of numbers
+        .map(x => x.split(/(?<!\d)[,]/))
         .flat(1)
         .map(x => x.split('?'))
         .flat(1)
@@ -90,6 +92,12 @@ export default class Parse extends Command {
         const vttChunk = `${startTimeStamp} --> ${endTimeStamp}
 ${sentence}`
         vttChunks.push(vttChunk);
+        if (startWord.word.replace(/[.?,]/g, '').trim() !== sentenceWords[0].trim()) {
+          debugger;
+        }
+        if (endWord.word.replace(/[.?,]/g, '').trim() !== sentenceWords[sentenceWords.length - 1].trim()) {
+          debugger;
+        }
         wordStart += sentenceWords.length;
       }
     }
