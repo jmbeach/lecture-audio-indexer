@@ -1,0 +1,137 @@
+00:00.200 --> 00:05.100
+- The next we're going to discuss IP address setting in a bit more detail into
+
+00:04.200 --> 00:05.500
+- Begin that discussion
+
+00:05.300 --> 00:12.200
+- We were going to talk a little more depth about what some of that content is included in the IP pocket headers
+
+00:11.700 --> 00:20.700
+- So where we're headed with the IP address thing is after we introduced a bit more detail in the iip had her information
+
+00:20.600 --> 00:25.300
+- classless entered interdomain routing Cedar as well as Network address translation
+
+00:24.700 --> 00:29.800
+- how addressing works at particularly a couple more sophisticated addressing mechanisms specifically
+
+00:29.400 --> 00:37.400
+- and then we're going to talk about for ipv4
+
+00:35.500 --> 00:40.100
+- When you talk about IP fragmentation
+
+00:44.0 --> 00:48.200
+- there's some Heather information and then there's also a payload
+
+00:47.700 --> 00:48.800
+- but it looks like this
+
+00:48.500 --> 00:52.400
+- So the IP packet header we've seen this before
+
+00:52.0 --> 00:54.900
+- as well as types of service
+
+00:54.500 --> 00:57.800
+- with the length of the header is
+
+00:57.400 --> 00:58.200
+- at cetera
+
+00:57.800 --> 00:58.200
+- sex
+
+00:57.800 --> 01:00.200
+- what's included in this Header
+
+00:59.900 --> 01:05.300
+- Information would include things like the version of Ip being used to sit before me
+
+01:05.0 --> 01:05.300
+- So
+
+01:05.0 --> 01:08.100
+- So what are some of those things mean
+
+01:07.600 --> 01:15.400
+- So the version number would be encoded with four bits and it would indicate what version of the IP protocols being used
+
+01:15.200 --> 01:18.500
+- So this would be necessary to know what other fields to expect
+
+01:18.0 --> 01:19.700
+- Cuz it could change
+
+01:19.400 --> 01:21.0
+- So typically it's still ipv4
+
+01:20.900 --> 01:24.700
+- But increasingly IPv6 going to talk about why things would move to IPv6
+
+01:24.300 --> 01:26.800
+- Eventually they had her
+
+01:26.0 --> 01:30.200
+- Length would include how many 32-bit words are in the header
+
+01:30.100 --> 01:30.400
+- ipv4 header
+
+01:30.200 --> 01:33.200
+- which should correspond to 20 byte
+
+01:33.100 --> 01:34.900
+- It would typically be 5
+
+01:34.600 --> 01:36.200
+- It could be
+
+01:43.900 --> 01:52.400
+- then is eight bits in the header and it would allow packets to be treated differently based on what needs are
+
+01:52.200 --> 01:52.800
+- the type of service
+
+01:52.600 --> 01:55.0
+- More when various IP options are used as though
+
+01:54.800 --> 01:57.800
+- along the way as well as for a destination node
+
+01:57.400 --> 01:59.800
+- that may be useful for routers to know
+
+01:59.500 --> 02:02.400
+- another type type of service criteria
+
+02:02.300 --> 02:09.300
+- maybe they're slow delay for audio high bandwidth for a bulk transfer
+
+02:09.100 --> 02:09.500
+- for example
+
+02:09.300 --> 02:09.500
+- So
+
+02:09.300 --> 02:10.100
+- That's receiving information
+
+02:18.200 --> 02:31.400
+- So if your other pieces have been the total length corresponding to how big the payload is some additional information for whether the tea packet has been fragmented
+
+02:31.0 --> 02:33.400
+- And we're going to talk in more depth about that shortly
+
+02:33.0 --> 02:36.0
+- or with the destination IP address is
+
+02:35.600 --> 02:41.200
+- some of the other critical information like what the source IP addresses that we talked about previously
+
+02:40.800 --> 02:41.700
+- of course
+
+02:41.200 --> 02:41.800
+- And then
