@@ -1,0 +1,506 @@
+00:00.700 --> 00:01.100
+Now
+
+00:01.100 --> 00:05.600
+that I've given you a little taste of the job of parallel streams programming model
+
+00:05.600 --> 00:07.900
+and you see a little bit about how it works with a hood
+
+00:07.900 --> 00:12.400
+Let's spend a few minutes talking about how to avoid common programming hazards
+
+00:12.400 --> 00:15.700
+When try to apply this framework in practice
+
+00:15.700 --> 00:16.800
+And
+
+00:16.800 --> 00:17.200
+of course
+
+00:17.200 --> 00:17.700
+they're the goal
+
+00:17.700 --> 00:22.600
+Here is to try to help you learn the common mistakes that the beginners
+
+00:22.600 --> 00:24.500
+make like myself when I was running this
+
+00:24.500 --> 00:30.800
+So you'll hopefully right more robust and resilient and scalable Java Carlos dreams code
+
+00:30.800 --> 00:33.000
+This is essentially an extension
+
+00:33.000 --> 00:35.700
+in an augmentation of some of the earlier discussions
+
+00:35.700 --> 00:42.400
+We had in the streams lessons or we talked about some of the common program in the steaks for sequential stripes
+
+00:43.700 --> 00:44.500
+So course
+
+00:44.500 --> 00:52.900
+one of those the key is used to watch out for one of the key hazards in any type of concurrent or pillow program is how to avoid the dreaded race conditions
+
+00:52.900 --> 00:59.400
+which arise when an application depends on the sequence or the timing of the threads
+
+00:59.400 --> 01:08.300
+In order for it to operate properly and we really want to avoid race conditions to the end of corrupting the data in very subtle and pernicious ways
+
+01:08.300 --> 01:09.300
+Now
+
+01:09.300 --> 01:09.700
+the job
+
+01:09.700 --> 01:12.600
+a parallel streams framework has a very fundamental assumption
+
+01:12.600 --> 01:17.600
+It assumes that the behaviors that you give it to Ron and its aggregate operations
+
+01:17.600 --> 01:19.700
+Don't incur race conditions
+
+01:20.800 --> 01:24.000
+The easiest way to do this is simply to avoid behaviors
+
+01:24.000 --> 01:25.400
+that have any side effects
+
+01:25.400 --> 01:30.700
+So if you make sure you use stateless Lambda expressions or method references
+
+01:30.700 --> 01:33.700
+that's one of the easiest ways to avoid these problems
+
+01:34.900 --> 01:41.200
+You get yourself into trouble when the results depend on shared wheedle States
+
+01:41.200 --> 01:44.500
+If you have shared Lambda expressions or shared method
+
+01:44.500 --> 01:47.000
+references really bad things could happen
+
+01:47.000 --> 01:50.900
+So let's take a look at an example that illustrates this problem
+
+01:50.900 --> 01:52.700
+I've shown this example before
+
+01:52.700 --> 01:55.200
+but now that were talking that parallel streams
+
+01:55.200 --> 02:00.400
+It's probably going to be a little bit more meaningful for you to get a deeper understanding of what it's about
+
+02:01.500 --> 02:09.600
+What is examples actually in the ex16 folder in my GitHub repository and it's the buggy factorial class
+
+02:09.600 --> 02:11.300
+And as you'll see here
+
+02:11.300 --> 02:12.700
+what will happen is
+
+02:12.700 --> 02:23.100
+we'll have a state that's not protected by any synchronizer that gets changed by different threads during the parallel execution of a stream Pipeline
+
+02:23.100 --> 02:26.000
+and that's going to cause chaos and Insanity
+
+02:26.000 --> 02:26.600
+Surprisingly
+
+02:26.600 --> 02:28.000
+So
+
+02:28.000 --> 02:29.700
+here's the method factorial
+
+02:29.700 --> 02:31.400
+this buggy is incorrect
+
+02:31.400 --> 02:36.100
+and it's incorrect not because the logic is wrong because it isn't properly synchronized
+
+02:37.700 --> 02:38.500
+As you can see
+
+02:38.500 --> 02:42.200
+we make ourselves an instance of a class called total
+
+02:42.200 --> 02:43.400
+And as you can see
+
+02:43.400 --> 02:44.000
+if you look at the total
+
+02:44.000 --> 02:50.800
+total is a class that has a field called M total which is initialize to one and we create one
+
+02:50.800 --> 02:52.400
+And it only one instance of this
+
+02:52.400 --> 02:54.900
+this total class
+
+02:56.000 --> 02:57.100
+If you take a close look
+
+02:57.100 --> 02:59.900
+just see that the most method in the total class
+
+02:59.900 --> 03:01.200
+takes the M
+
+03:01.200 --> 03:06.800
+total field and auto multiplies it by end
+
+03:06.800 --> 03:10.800
+So it multiplies and total by Anton and stores the results back into M
+
+03:10.800 --> 03:15.100
+Total steps with the the x equal operator does in Java
+
+03:16.000 --> 03:17.700
+Now everything's fine at this
+
+03:17.700 --> 03:18.400
+run sequentially
+
+03:18.400 --> 03:21.000
+But if we put the parallel keyword in here
+
+03:21.000 --> 03:23.700
+if you put the parallel call to the function parallel
+
+03:23.700 --> 03:26.200
+which makes the stream parallel what'll happen
+
+03:26.200 --> 03:31.500
+then it'll be a group of threads in a pool that will run and those threads all simultaneously
+
+03:31.500 --> 03:36.100
+Be calling the molt method on the M total field
+
+03:36.100 --> 03:38.100
+which is shared mutable State
+
+03:38.100 --> 03:38.500
+Cuz obviously
+
+03:38.500 --> 03:39.200
+it's being changed
+
+03:39.200 --> 03:41.500
+but it's not synchronized
+
+03:41.500 --> 03:42.500
+There was a result
+
+03:42.500 --> 03:47.500
+you'll end up with race conditions Galore and all kinds of horrible things will happen for
+
+03:47.500 --> 03:48.100
+Just for kicks
+
+03:48.100 --> 03:50.100
+Try running this program and see what the results are
+
+03:50.100 --> 03:51.500
+You're probably get strange results
+
+03:51.500 --> 03:52.500
+May differ
+
+03:52.500 --> 03:53.400
+Every time you run
+
+03:53.400 --> 03:59.100
+is also some other subtle issues here with respect to memory visibility for trying to return
+
+03:59.100 --> 03:59.900
+The T
+
+03:59.900 --> 04:00.200
+M
+
+04:00.200 --> 04:04.200
+Total feel that also is not properly locked but just rest assured
+
+04:04.200 --> 04:08.400
+This code is full of bugs and it looks very cool at first glance
+
+04:08.400 --> 04:10.100
+but it's actually really bad
+
+04:12.500 --> 04:13.500
+Not surprisingly
+
+04:13.500 --> 04:18.200
+We'll come back later and try to fix this code by using other features like that job at Terminal operations
+
+04:18.200 --> 04:20.800
+such as collected works properly for this case
+
+04:22.200 --> 04:23.100
+Another problem
+
+04:23.100 --> 04:26.600
+which I've also outline before the context of sequential streams
+
+04:26.600 --> 04:40.300
+but becomes even more problematic in the context of parallel streams is so-called interference with the data source and this occurs when the source of a stream is modified with in the pipeline
+
+04:40.300 --> 04:48.500
+So that the real key thing here is don't change your data sources while they're working while they're being worked upon by a stream
+
+04:48.500 --> 04:50.400
+either a sequential streamer apparel strength
+
+04:51.300 --> 04:57.300
+This example goes ahead and create a list of 10 integers with the value of 0 through 9
+
+04:57.300 --> 05:04.500
+And you can see this is just ever so different from the one I showed before when we talked about common problems with sequential streams
+
+05:04.500 --> 05:07.400
+What we do here is to make it in stream of the values
+
+05:07.400 --> 05:09.500
+0 through 9, Wii box
+
+05:09.500 --> 05:13.300
+Those primitive in sin two integers with your reference types
+
+05:13.300 --> 05:14.900
+And then we collect them
+
+05:14.900 --> 05:24.100
+Using the two collection Factor method from the collectors utility class passing in the arraylist Constructor reference
+
+05:24.100 --> 05:26.700
+which will allocate the list using an arraylist
+
+05:26.700 --> 05:30.800
+So now we have an arraylist of zero through nine integers
+
+05:31.800 --> 05:32.500
+So far so good
+
+05:32.500 --> 05:35.400
+Here's where the cat and the chaos and Insanity breaks out
+
+05:35.400 --> 05:45.100
+So what we do now is we create a parallel stream and we call Pete because I think I mentioned before is really just stood about the bugging aided
+
+05:45.100 --> 05:46.800
+It just is supposed to log
+
+05:46.800 --> 05:47.200
+something
+
+05:47.200 --> 05:48.200
+Or look at the values
+
+05:48.200 --> 05:50.800
+It's not supposed to do anything with side effects
+
+05:50.800 --> 05:54.100
+But just to cause problems we pass in the list
+
+05:54.100 --> 05:55.700
+colon colon removed method refer
+
+05:55.700 --> 05:56.800
+which of course
+
+05:56.800 --> 06:04.300
+will be removing elements from the list as we're iterating through them in parallel and try to print them out
+
+06:04.300 --> 06:06.900
+And so really bad things will happen
+
+06:06.900 --> 06:09.900
+You'll probably get exceptions
+
+06:09.900 --> 06:11.700
+You'll get weird results
+
+06:11.700 --> 06:16.900
+So the bottom line is do not use code in that right code
+
+06:16.900 --> 06:21.300
+that has interference with a data source for either sequential or parallel streams
+
+06:24.400 --> 06:27.800
+If you have behaviors that don't have shirt State
+
+06:27.800 --> 06:32.000
+and don't have any side effects other than just simply returning a result
+
+06:32.000 --> 06:38.800
+These are what you want to use for parallel streams because they require no explicit synchronization
+
+06:38.800 --> 06:40.400
+You can just run them
+
+06:40.400 --> 06:43.300
+The parallel streams framework less than running parallel
+
+06:43.300 --> 06:48.600
+They're effectively embarrassingly parallel computations with no dependents sees
+
+06:48.600 --> 06:48.900
+No
+
+06:48.900 --> 06:53.800
+need to communicate anything else and that's really what the streams framework would prefer that you do
+
+06:55.200 --> 06:56.400
+Here are some examples
+
+06:56.400 --> 07:05.000
+We've seen some of these from before for example of that the search for phrase method that we talked about when we discussed
+
+07:05.000 --> 07:08.300
+are sequential search screen example
+
+07:08.300 --> 07:12.200
+goes ahead and uses this phrase match splitter Raider
+
+07:12.200 --> 07:13.400
+As you can see
+
+07:13.400 --> 07:14.700
+there's really no side effects here
+
+07:14.700 --> 07:17.900
+Just goes ahead and returns an object of type of search results
+
+07:17.900 --> 07:19.800
+So that's all nice and pure
+
+07:19.800 --> 07:21.200
+Likewise
+
+07:21.200 --> 07:21.400
+The
+
+07:21.400 --> 07:27.100
+the is empty method from search results to check to see if those sizes listed zero
+
+07:27.100 --> 07:28.000
+That's also pure
+
+07:28.000 --> 07:32.500
+So these are things that we don't have to worry about being being buggy
+
+07:32.500 --> 07:34.500
+having concurrency hazards
+
+07:34.500 --> 07:36.300
+parallelism hazards race conditions in someone
+
+07:37.600 --> 07:39.800
+If you need to access and update
+
+07:39.800 --> 07:42.200
+shared middle state in apparel stream
+
+07:42.200 --> 07:43.400
+which sometimes does happen
+
+07:43.400 --> 07:44.000
+For example
+
+07:44.000 --> 07:44.500
+of say
+
+07:44.500 --> 07:47.700
+you have some kind of a cash like a Casper images
+
+07:47.700 --> 07:48.400
+For instance
+
+07:48.400 --> 07:51.100
+Make sure that it's properly synchronized
+
+07:51.100 --> 07:55.200
+We might have an image of cash to fuse to cash
+
+07:55.200 --> 08:07.900
+the content of downloaded images that are downloaded from remote servers and probably the best way to do this to protect that cached data in the face of multiple threads running in parallel
+
+08:07.900 --> 08:11.300
+is simply to use a concurrent hashmap
+
+08:11.300 --> 08:13.500
+which is a concurrent collection
+
+08:13.500 --> 08:16.600
+It comes out of the Java Collections framework
+
+08:16.600 --> 08:18.300
+which is really well
+
+08:18.300 --> 08:25.000
+designed and optimized to work effectively for multiple access from thread
+
+08:25.000 --> 08:27.900
+both reading and writing to it as you can see what it thinks
+
+08:27.900 --> 08:29.000
+It makes it efficient
+
+08:29.000 --> 08:33.600
+is it has a bunch of different locks so you don't end up with single points of contention
+
+08:33.600 --> 08:37.500
+And it's also very carefully designed to allow multiple
+
+08:37.600 --> 08:42.000
+He accesses to all going parallel and even if you do right accesses
+
+08:42.000 --> 08:44.000
+if you don't end up writing to the same bucket
+
+08:44.000 --> 08:47.900
+wear something else is writing to once again is No contention for the locks
+
+08:47.900 --> 08:50.400
+So it's super fast super Optimizer
+
+08:50.400 --> 08:57.600
+scalable and a great way to protect your data without having to do the synchronization yourself in your own coat
+
+08:57.600 --> 08:59.100
+And of course
+
+08:59.100 --> 09:03.300
+if you really do have to synchronize data structures in your own code
+
+09:03.300 --> 09:04.000
+in Palestine
+
+09:04.000 --> 09:07.500
+make sure that you use the appropriate synchronizers that we've covered in
+
+09:07.500 --> 09:08.500
+In other courses
+
+09:08.500 --> 09:11.600
+such as my second run object-oriented programming course
+
+09:11.600 --> 09:16.500
+which will teach you how to use synchronizers like ranch with locks or monitor locks
+
+09:16.500 --> 09:16.800
+and so on

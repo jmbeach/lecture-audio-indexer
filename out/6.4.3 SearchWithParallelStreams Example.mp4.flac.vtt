@@ -1,0 +1,266 @@
+00:00.500 --> 00:07.400
+Now that we talked about how to visualize the hook methods for the search with parallel streams case
+
+00:07.400 --> 00:08.100
+Study example
+
+00:08.100 --> 00:11.800
+let's go ahead and take a look at how to implement these hook methods
+
+00:11.800 --> 00:13.500
+And again
+
+00:13.500 --> 00:16.400
+just to remind you that the reason for doing what we're doing here
+
+00:16.400 --> 00:20.800
+The reason for using parallel streams is to get this massive speed up and performance
+
+00:20.800 --> 00:29.600
+which if you take a look at this is basically not linear superlinear in the number of cores on the laptop
+
+00:29.600 --> 00:38.600
+I ran the experiments on the reason why the results are actually superlinear in the better than linear is because I even though I have four cores
+
+00:38.600 --> 00:40.100
+their hyper-threaded
+
+00:40.100 --> 00:50.800
+which means they're able to do some overlapping of instructions and pipe lining in order to get the performance even higher than just a factor of and it's really not quite a double end
+
+00:50.800 --> 00:52.200
+but it's more than end
+
+00:52.200 --> 00:53.600
+So if it were and is a member
+
+00:53.600 --> 00:54.100
+of course
+
+00:54.100 --> 00:59.200
+so this really does give you a big win and we'll talk more about the reasons why that is little bit later
+
+01:00.700 --> 01:05.000
+Let's talk about how we might implement the process stream method
+
+01:05.000 --> 01:07.000
+Now that the key thing to know it
+
+01:07.000 --> 01:11.900
+before we talked with anything here is his only one minuscule change to process
+
+01:13.300 --> 01:14.800
+Stream in this implementation
+
+01:16.000 --> 01:21.100
+All we're doing is replacing the use of stream with parallel strength
+
+01:21.100 --> 01:27.900
+And what that does under the hood is that goes ahead and uses the arraylist split erator
+
+01:29.000 --> 01:30.700
+To create a parallel stream
+
+01:30.700 --> 01:36.400
+that will search the array list of input strings in multiple worker threats
+
+01:37.300 --> 01:42.000
+So basically each as the way the arraylist splitter works as well as well
+
+01:42.000 --> 01:49.000
+Look at Royal actually walk through the source code for the arraylists literator to show you exactly how it works
+
+01:49.000 --> 01:49.800
+But basically what it is
+
+01:49.800 --> 01:50.300
+it's doing
+
+01:50.300 --> 01:51.700
+Is it ends up splitting
+
+01:51.700 --> 02:06.400
+The arraylist up into chunks were each chunk is a single element in the array list and each of those elements will then be processed by separate worker thread or some workers read in the common folk doing full
+
+02:06.400 --> 02:06.800
+So
+
+02:06.800 --> 02:08.700
+this is very efficient
+
+02:08.700 --> 02:09.800
+Very fine
+
+02:09.800 --> 02:12.700
+Grain and has received gives us this wonderful speed up
+
+02:14.200 --> 02:16.900
+You can put string is that's that's broken up
+
+02:16.900 --> 02:20.400
+Using a splitter is processed in parallel using to come and Fork join pool
+
+02:20.400 --> 02:21.800
+And so we'll see that
+
+02:21.800 --> 02:24.200
+Again is very fine-grained level of parallels
+
+02:24.200 --> 02:27.800
+And basically each work of Shakespeare will have its own thread in the pool
+
+02:27.800 --> 02:29.200
+that will get a chance to run when
+
+02:29.200 --> 02:30.300
+when it's time to run
+
+02:32.000 --> 02:40.000
+What then happens basically like we saw before the map intermediate operation gets called passing in the process input
+
+02:41.200 --> 02:50.900
+Helper method which will then turn around and search that give an input string to locate all the phrases that we care about in Hamlet or what not
+
+02:52.700 --> 02:53.800
+and then that will
+
+02:53.800 --> 02:54.100
+of course
+
+02:54.100 --> 02:55.700
+come back with a
+
+02:57.200 --> 03:01.400
+list or other extreme of lists
+
+03:02.300 --> 03:03.700
+Search results
+
+03:03.700 --> 03:11.500
+And then the collector operation gets called and it uses the to list Factor method to return it on
+
+03:11.500 --> 03:13.900
+concurrent collector which obeys encounter order
+
+03:13.900 --> 03:23.800
+And we'll end up basically creating a list of lists that merge everything back together and return that as the result from process string
+
+03:25.200 --> 03:26.200
+Pretty much the same as before
+
+03:26.200 --> 03:27.500
+Honestly
+
+03:27.500 --> 03:31.700
+the only real difference here is the fact that we changed stream two parallel streams
+
+03:31.700 --> 03:35.200
+use a different Factor method and that's often not always
+
+03:35.200 --> 03:37.200
+but often the way things work
+
+03:37.200 --> 03:38.100
+with Carol Streams
+
+03:38.100 --> 03:39.500
+It's almost dropped
+
+03:39.500 --> 03:41.700
+It easy to go from a sequential stream to a parallel stream
+
+03:41.700 --> 03:44.200
+which is one of the virtues of this is functional
+
+03:44.200 --> 03:45.200
+programming abstraction
+
+03:46.300 --> 03:49.600
+Let's take a quick look at process input as before
+
+03:49.600 --> 03:53.200
+It also has just one minuscule change
+
+03:54.200 --> 04:00.500
+It goes ahead and uses parallel stream on the phrases to find which once again
+
+04:00.500 --> 04:04.700
+uses the arraylists literator to create a parallel stream
+
+04:04.700 --> 04:12.400
+that will search giving him put string in a given work of Shakespeare to locate all the phrase occurrences
+
+04:12.400 --> 04:14.800
+I keep saying these occurrences have got to fix this
+
+04:14.800 --> 04:15.500
+Sorry about that
+
+04:15.500 --> 04:17.800
+As you can see here
+
+04:17.800 --> 04:22.800
+what we do when we call the search for phrase method
+
+04:22.800 --> 04:27.600
+in the context of the Lambda expression passed into the map intermediate operation
+
+04:27.600 --> 04:34.900
+We end up passing the false parameter as the fourth argument to search for phrase
+
+04:34.900 --> 04:42.600
+And what that does is that will use a sequential screen to search for the phrase
+
+04:42.600 --> 04:51.300
+So it'll generate a sequential stream of results when we come back later in subsequent weeks and talk about the search with parallel
+
+04:51.300 --> 04:52.800
+splitter example
+
+04:52.800 --> 04:53.600
+you'll see how
+
+04:54.100 --> 04:57.400
+Play the false with true here
+
+04:57.400 --> 05:03.700
+which will cause search for phrase to go ahead and return a parallel screen
+
+05:03.700 --> 05:09.200
+So it'll do the searching in even more find degrees of paralyzation
+
+05:09.200 --> 05:09.900
+which is really cool
+
+05:11.700 --> 05:13.500
+Then as you can see here
+
+05:13.500 --> 05:16.800
+each phrase and input string is processed in parallel
+
+05:16.800 --> 05:17.800
+in the common Fork
+
+05:17.800 --> 05:18.400
+join pool
+
+05:19.400 --> 05:23.700
+And as before we go ahead and filter out things that are empty
+
+05:23.700 --> 05:33.300
+We collect the results back that triggers are me that operation processing and then merge is all the results into a single list of search results
+
+05:33.300 --> 05:39.000
+which is what gets returned as the result of the process input method
+
+05:39.000 --> 05:40.000
+So once again
+
+05:40.000 --> 05:41.800
+just to kind of recapped this
+
+05:41.800 --> 05:44.200
+it's very much identical to what type of four with just
+
+05:44.200 --> 05:48.800
+those tiny minuscule changes to go from stream to Carol Stream

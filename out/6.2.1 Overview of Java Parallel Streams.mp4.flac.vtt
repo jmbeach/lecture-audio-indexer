@@ -1,0 +1,170 @@
+00:00.400 --> 00:03.900
+We're now ready to begin the transition to parallelism
+
+00:05.400 --> 00:06.400
+In this part of the lesson
+
+00:06.400 --> 00:09.900
+I'll explain how I do get operations from java
+
+00:09.900 --> 00:16.500
+Sequential streams that we've covered in previous weeks are applied in the context of the job of parallel streams framework
+
+00:18.000 --> 00:19.900
+Just a quick recap from earlier
+
+00:19.900 --> 00:20.900
+recalled
+
+00:20.900 --> 00:24.300
+that a Java stream is a pipeline of aggregate operations
+
+00:24.300 --> 00:25.300
+That process
+
+00:25.300 --> 00:28.500
+A sequence of elements also known as values or data
+
+00:30.000 --> 00:34.400
+Is a career in operations use internal iteration and behaviors
+
+00:34.400 --> 00:37.700
+The process elements that flow through a stream
+
+00:38.900 --> 00:40.900
+But Depot stream
+
+00:40.900 --> 00:42.000
+execute sequentially
+
+00:42.000 --> 00:47.400
+So all of it aggregate operations run their behaviors in one thread of control
+
+00:49.300 --> 00:50.400
+In contrast
+
+00:50.400 --> 00:57.900
+when a stream executes in parallel is partitioned into multiple substream chunks that run in the common Fork
+
+00:57.900 --> 00:58.500
+join pool
+
+01:00.400 --> 01:02.300
+The present is worth joining pool
+
+01:02.300 --> 01:04.800
+9 to terminus tikli process
+
+01:04.800 --> 01:06.900
+These different chunks in parallel
+
+01:08.500 --> 01:13.700
+The intermediate operations iterate over and process the papers on these chunks in parallel as well
+
+01:14.800 --> 01:15.600
+And finally
+
+01:15.600 --> 01:21.400
+the strange terminal operation is used to combine the chunks into a single reduce result
+
+01:23.400 --> 01:24.500
+Stateless Java
+
+01:24.500 --> 01:25.900
+8 Lambda expressions
+
+01:25.900 --> 01:31.300
+and Method references are used to pass behaviors into the aggregate operations
+
+01:33.100 --> 01:36.000
+Ideally only minuscule changes are needed
+
+01:36.000 --> 01:40.200
+Trying to transition from a sequential to a parallel stream
+
+01:40.200 --> 01:48.300
+Although we'll see later that you can do more Advanced Techniques in order to ring even further parallelism out of your Solutions
+
+01:48.300 --> 01:51.500
+which will ideally help improve performance even further
+
+01:52.800 --> 01:55.400
+The same aggregate operations
+
+01:55.400 --> 02:05.400
+we've talked about earlier to be used for both sequential and parallel streams and that's reassuring because it means all the things we've covered in the previous week's don't have to be relearn from scratch
+
+02:07.000 --> 02:09.100
+In particular the search screen
+
+02:09.100 --> 02:10.800
+gang example
+
+02:10.800 --> 02:11.300
+case study
+
+02:11.300 --> 02:16.100
+we've been focusing on uses the same aggregate operations for both
+
+02:16.100 --> 02:22.700
+The search was sequential streams class and the search with Carol Streams class that will be looking at shortly
+
+02:24.800 --> 02:25.400
+Therefore
+
+02:25.400 --> 02:31.100
+you can treat parallelism as an optimization in Java streams and use it to leverage
+
+02:31.100 --> 02:36.500
+All of the available Kors at your disposal to talk later about how you can limit the number
+
+02:36.500 --> 02:36.900
+of course
+
+02:36.900 --> 02:38.200
+that are used as well
+
+02:38.200 --> 02:38.500
+Although
+
+02:38.500 --> 02:40.700
+typically you try to use as many cars as possible
+
+02:40.700 --> 02:42.500
+If your goal is to get maximum
+
+02:42.500 --> 02:46.200
+throughput scalability and latency out of your Solutions
+
+02:47.700 --> 02:48.400
+Naturally
+
+02:48.400 --> 02:50.000
+the behaviors that you passed
+
+02:50.000 --> 02:55.300
+the aggregate operations have to be very carefully designed to avoid accessing any
+
+02:55.300 --> 02:58.200
+Unsynchronized shared mutable state
+
+02:58.200 --> 02:59.100
+which of course
+
+02:59.100 --> 03:02.700
+is the root of all evil in parallel and concurrent programs
+
+03:02.700 --> 03:04.500
+As we talked about many talents
+
+03:04.500 --> 03:05.300
+In fact
+
+03:05.300 --> 03:09.500
+will also see if we go through these slides in this lesson and other lessons
+
+03:09.500 --> 03:20.000
+that is very important to understand how to avoid various spellings of Hazzard by programming properly to make sure you share as little beautiful state as possible
+
+03:20.000 --> 03:21.200
+Ideally none

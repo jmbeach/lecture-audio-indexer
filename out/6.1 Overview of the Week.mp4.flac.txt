@@ -1,0 +1,14 @@
+Welcome to the next week of our course on Parallel. Functional programming with Java.
+ Now that we've finished our coverage of java sequential streams. We can finally turn our attention to Java parallel streams, which is the first of several job apparels and Frameworks we cover in this course.
+ This week's lesson start by outlining the structure and functionality of a parallel stream, which partition to data source in multiple chunks.
+ Process of these chunks in a pool of Fred's and combines the results of this parallel processing into a final reduce result.
+ Key, benefit of the Java streams framework is its ability to automatically and transparently map behaviors in a parallel stream to multiple processor course without requiring programmers to spawn explicitly or even apply synchronization mechanisms in many cases. In fact converting a sequential stream to a parallel stream. Often just requires a minuscule changes, such as replacing your call to the screen Factor method with a call to the parallel stream Factory method.
+ This week's lesson to visualize and demonstrate the Simplicity of converting sequential. The parallel streams in the context of the search screen, game case study.
+ This case, study underscores, the fact that all the aggregate operations recovered in prior week's work will work seamlessly with parallel streams.
+ Not surprisingly. However, the three phases of a parallel stream, operate somewhat differently than a sequential stream.
+ This week's lesson there for giving an overview of parallel streams internals.
+ Which particularly important understand When developing performance critical Java programs on Modern multi-core processors?
+ In particular we examine how the streams framework first invokes predefined or you to find splitter, Raiders competition, a data source into multiple Chucks.
+ We next show how these chunks are processed in parallel by running the streams intermediate operations, in the job, Fork. Join.
+ Finally, we Outline by the streams framework uses terminal operations, like collect together with predefined. Are you to find collectors to join? Partial sub results into a final reduce result?
+ To maximize the performance of the Java parallel streams framework. It's important to know which aspects of these phases can be controlled and which cat. So we walked through many code examples to illustrate key points.

@@ -1,0 +1,404 @@
+00:00.200 --> 00:04.500
+So now you've had a chance to look at the parallel stream implementation
+
+00:04.500 --> 00:08.300
+evaluate the pros and cons of this approach
+
+00:09.600 --> 00:10.000
+And
+
+00:10.000 --> 00:10.100
+of course
+
+00:10.100 --> 00:12.500
+we're going to evaluate it in a couple ways when evaluated
+
+00:12.500 --> 00:16.000
+in terms of comparing it to search for sequential streams
+
+00:16.000 --> 00:17.300
+version in the law
+
+00:17.300 --> 00:18.200
+Also evaluated
+
+00:18.200 --> 00:20.800
+in terms of other approaches that may be even more scalable
+
+00:21.900 --> 00:23.300
+Let's take a look at the pros
+
+00:23.300 --> 00:23.800
+first
+
+00:23.800 --> 00:24.800
+I think
+
+00:24.800 --> 00:32.700
+clearly this example demonstrates the minuscule differences between sequential and parallel streams
+
+00:34.000 --> 00:39.300
+Here's what it looked like with the surface sequential stream implementation
+
+00:39.300 --> 00:39.900
+We saw earlier
+
+00:41.000 --> 00:45.000
+And here's what it looks like with search with parallel streams
+
+00:45.000 --> 00:46.200
+And as you can see
+
+00:46.200 --> 00:51.300
+there's just one tiny minuscule difference and that's often the way things are so cool
+
+00:51.300 --> 01:00.600
+You really have to step back and tip your hat and admire the genius of the people who came up with this framework because it's so powerful
+
+01:00.600 --> 01:01.800
+So
+
+01:01.800 --> 01:03.500
+convenient and scale
+
+01:03.500 --> 01:04.100
+so nicely with
+
+01:04.100 --> 01:07.600
+so little work on the part of a programmer
+
+01:07.600 --> 01:14.700
+So I really am endlessly impressed with how clever the designers of java streams were to come up with this model
+
+01:14.700 --> 01:17.600
+That was so easy to optimize and that's really the heart
+
+01:17.600 --> 01:23.700
+Of course of parallel functional programming being able to keep a functional programming veneer of
+
+01:23.700 --> 01:28.100
+of design and implementation and then magically paralyzed stuff
+
+01:28.100 --> 01:29.400
+With very little work on your part
+
+01:29.400 --> 01:32.500
+All the details are pushed into the infrastructure
+
+01:32.500 --> 01:36.100
+which is the whole point of declarative programming in the first place
+
+01:37.900 --> 01:40.200
+Even though we made very simple changes
+
+01:40.200 --> 01:43.800
+We ended up with substantial speedups on the multi-core processor
+
+01:43.800 --> 01:45.600
+If you take a close
+
+01:45.600 --> 01:48.400
+look at this little screen and I show here
+
+01:48.400 --> 01:53.500
+you can see that the best performance of the sequential streams model was roughly
+
+01:53.500 --> 01:58.000
+I think about two thousand milliseconds on my quad core laptop
+
+01:58.000 --> 02:04.200
+with lots of memory and the performance of The Parallel streams version with that little minuscule
+
+02:04.200 --> 02:07.400
+change was about five times faster
+
+02:07.400 --> 02:08.400
+four to five times faster
+
+02:08.400 --> 02:13.200
+So is quite a big speed up and this is with a 2.7 gigahertz quad-core
+
+02:14.700 --> 02:16.200
+Do a machine running Windows
+
+02:16.200 --> 02:18.700
+I also have a MacBook Pro
+
+02:18.700 --> 02:23.000
+which is a 2.9 gigahertz quad-core machine
+
+02:23.000 --> 02:24.400
+which doesn't have as much memory
+
+02:24.400 --> 02:25.700
+but the processes are faster
+
+02:25.700 --> 02:27.700
+And if you look at the performance results
+
+02:27.700 --> 02:30.600
+you'll see a similar Trend in terms of speed up
+
+02:30.600 --> 02:35.300
+but you'll see that the performance is actually higher because it's a faster processor
+
+02:35.300 --> 02:37.500
+So the key Point here is just
+
+02:37.500 --> 02:37.800
+you know
+
+02:37.800 --> 02:43.900
+your mileage may vary as a don't be surprised if that you run this on your machine and you get slightly different results
+
+02:43.900 --> 02:46.100
+but I would expect if you've got multiple cores
+
+02:46.100 --> 02:49.100
+that the parallel version will run considerably faster
+
+02:49.100 --> 03:02.300
+And because it's inherently and embarrassingly parallel program searching for these different strains in in the works of Shakespeare searching for the phrases of the works of Shakespeare is embarrassing parallel
+
+03:02.300 --> 03:05.600
+You would expect to see this type of Skillet
+
+03:05.600 --> 03:09.500
+I should also point out to the searching for strings in the work of Shakespeare
+
+03:10.800 --> 03:17.000
+Is a compute bound processes to compute Brown problem
+
+03:17.000 --> 03:19.600
+And so there's really no Ayo happening here
+
+03:19.600 --> 03:23.700
+We're just searching in memory to look for those those phrases of strength
+
+03:25.100 --> 03:27.700
+The reason why we get there kind of super linear speed up
+
+03:27.700 --> 03:32.600
+arises from the use of hyper threading in modern
+
+03:32.600 --> 03:33.600
+multi-core processors
+
+03:33.600 --> 03:36.000
+So these are what are also from school virtual cores
+
+03:36.000 --> 03:45.100
+And the basic idea is that the piper threaded model increases the number of independent instructions that can run in parallel
+
+03:45.100 --> 03:48.700
+by using what's known as a super Skinner architecture
+
+03:48.700 --> 03:57.600
+And what does basically does is it allows more than one instruction to execute per clock cycle by simultaneously dispatching
+
+03:57.600 --> 03:59.800
+multiple instructions to different execution units
+
+03:59.800 --> 04:00.400
+So
+
+04:00.400 --> 04:02.300
+if you take a look at that picture that's here
+
+04:02.300 --> 04:07.000
+which you can read about at the Wikipedia link at the bottom of the slide
+
+04:07.000 --> 04:12.200
+It's basically able to run the various operations in pipelines
+
+04:12.200 --> 04:13.500
+where they end up running in parallel
+
+04:13.500 --> 04:14.000
+Now
+
+04:14.000 --> 04:19.000
+you don't typically get as much of a parallel boost as you do by having a physical core
+
+04:19.000 --> 04:21.800
+but in the right circumstances things to do
+
+04:21.800 --> 04:22.000
+in fact
+
+04:22.000 --> 04:23.800
+run faster as we can see here
+
+04:24.900 --> 04:26.300
+Well
+
+04:26.300 --> 04:26.500
+as always
+
+04:26.500 --> 04:30.100
+things are never entirely unicorns and rainbows as I like to say
+
+04:30.100 --> 04:33.900
+so just because two miniscule
+
+04:33.900 --> 04:38.200
+changes were needed to go from sequential street names to Carol Streams
+
+04:38.200 --> 04:40.300
+doesn't mean it's the best way to go
+
+04:40.300 --> 04:44.600
+So it turns out that there's other job of Frameworks
+
+04:44.600 --> 04:45.400
+other concurrency
+
+04:45.400 --> 04:51.700
+and parallelism Frameworks and strategies that are even more efficient than those simple changes
+
+04:51.700 --> 04:54.600
+We made with a parallel streams of limitation
+
+04:54.600 --> 04:55.500
+Now
+
+04:55.500 --> 04:58.000
+before I bash the parallel streams version too much
+
+04:58.000 --> 04:59.700
+Let's just know the couple things
+
+04:59.700 --> 05:00.600
+First live performance
+
+05:00.600 --> 05:03.900
+radically better with these other approaches if they're better
+
+05:03.900 --> 05:05.000
+but they're not radically better
+
+05:05.600 --> 05:14.900
+The other approaches took more work to implement and being able to get basically at Super linear speed up might be sufficient to meet your requirements
+
+05:14.900 --> 05:22.200
+So it's not always necessary to rain in every last nanosecond of performance out of your software
+
+05:22.200 --> 05:27.000
+You may just need to get it to the point where it meets the requirements of the customer of the user's
+
+05:27.000 --> 05:32.800
+So this discussion really is not to throw shade on Parallel streams
+
+05:32.800 --> 05:36.900
+It's to say that there's more advanced ways which we will cover
+
+05:36.900 --> 05:38.300
+of course of making things
+
+05:38.300 --> 05:38.600
+right
+
+05:38.600 --> 05:40.900
+Even faster if you're willing to put a bit more work into it
+
+05:42.000 --> 05:42.400
+Now
+
+05:42.400 --> 05:43.100
+naturally
+
+05:43.100 --> 05:47.400
+your mileage may vary and different factors like the amount of memory that you've got
+
+05:47.400 --> 05:48.900
+and the version of the
+
+05:48.900 --> 05:50.100
+the Java
+
+05:50.100 --> 05:54.000
+Jdk you have will make a difference job
+
+05:54.000 --> 05:58.200
+You were job aversions almost invariably add performance enhancements
+
+05:58.200 --> 05:59.200
+They fix bugs
+
+05:59.200 --> 06:00.400
+They optimize things
+
+06:00.400 --> 06:02.600
+they make things run in parallel better
+
+06:02.600 --> 06:05.000
+They removed internal locks and so on and so forth
+
+06:05.000 --> 06:07.700
+So there's no substitute for systematic
+
+06:07.700 --> 06:09.200
+benchmarking and experimentation
+
+06:09.200 --> 06:14.500
+So just be aware of the fact that that's always important when you when you write parallel code
+
+06:16.300 --> 06:19.900
+We will see in an upcoming lesson in the upcoming week
+
+06:19.900 --> 06:21.200
+There is yet another
+
+06:21.200 --> 06:23.100
+even more efficient way of doing this
+
+06:23.100 --> 06:25.400
+which we have named search with parallel
+
+06:25.400 --> 06:26.200
+split a writer
+
+06:26.200 --> 06:28.400
+And as a name implies
+
+06:28.400 --> 06:29.500
+This uses
+
+06:29.500 --> 06:31.300
+the Perils of the techniques
+
+06:31.300 --> 06:36.200
+We talked about so far plus adding the concept of parallel splitter Riders
+
+06:36.200 --> 06:37.500
+And so
+
+06:37.500 --> 06:38.600
+this turns out to be the
+
+06:38.600 --> 06:39.800
+most aggressive pros
+
+06:39.800 --> 06:41.900
+and strategy that we Implement
+
+06:41.900 --> 06:43.800
+And as a consequence
+
+06:43.800 --> 06:45.400
+it ends up being much finer-grained
+
+06:45.400 --> 06:48.800
+And able to take you to more advantage of multiple course
+
+06:48.800 --> 06:50.000
+And as you might expect
+
+06:50.000 --> 06:51.200
+the more cores
+
+06:51.200 --> 06:55.000
+you have the bigger when you will get from using even more perilous
+
+06:55.000 --> 06:58.800
+That's another kind of tip to kind of keep in the back of your mind

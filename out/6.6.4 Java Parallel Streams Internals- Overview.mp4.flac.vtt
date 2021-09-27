@@ -1,0 +1,164 @@
+00:00.700 --> 00:05.600
+So continuing on with our discussion of the order of processing
+
+00:05.600 --> 00:10.200
+I mentioned earlier that you have no control or little control over the order of processing
+
+00:10.200 --> 00:12.300
+but not trying to talk about the control
+
+00:12.300 --> 00:14.000
+You have over the order of results
+
+00:14.000 --> 00:16.300
+That turns out that as we'll see
+
+00:16.300 --> 00:20.200
+you actually do have some control over the order of the results
+
+00:20.200 --> 00:23.500
+Start by giving an overview of
+
+00:23.500 --> 00:26.700
+what does it mean to have results ordering in the first place
+
+00:28.200 --> 00:29.300
+So first and foremost
+
+00:29.300 --> 00:38.700
+the processing results of the parallel stream can be controlled More deterministic Lie than the ordering of the processing
+
+00:39.900 --> 00:42.600
+So this is very important thing to keep in mind
+
+00:42.600 --> 00:48.800
+programmers can control if the results will be presented in
+
+00:48.800 --> 00:50.600
+what's known as encounter order
+
+00:50.600 --> 00:53.200
+And encounter order is
+
+00:53.200 --> 00:58.400
+simply the order in which the streams Source native elements available
+
+00:58.400 --> 01:00.700
+So using our example
+
+01:00.700 --> 01:04.400
+from the search stream gang history
+
+01:04.400 --> 01:11.300
+Remember we had the situation is where we had the works of Shakespeare coming in in a list of strengths
+
+01:11.300 --> 01:12.100
+So
+
+01:12.100 --> 01:18.000
+encounter order would be the order in which each work of Shakespeare occurred in that original list
+
+01:18.000 --> 01:22.000
+So if Julius Caesar came first followed by Hamlet
+
+01:22.000 --> 01:22.700
+followed by Macbeth
+
+01:22.700 --> 01:24.800
+followed by Henry
+
+01:24.800 --> 01:25.800
+the 5th or whatnot
+
+01:25.800 --> 01:37.100
+then that would be the encounter order and you can dictate whether encounter order should be preserved or not when the results come back from the terminal operation
+
+01:37.100 --> 01:37.400
+say
+
+01:37.400 --> 01:37.900
+collect
+
+01:38.600 --> 01:39.100
+No
+
+01:39.100 --> 01:40.300
+encounter order
+
+01:40.300 --> 01:43.500
+Oreo will be maintained under certain circumstances
+
+01:43.500 --> 01:47.600
+And those circumstances are the original Source
+
+01:47.600 --> 01:53.000
+Has ordered properties ordered characteristic is set builder
+
+01:53.000 --> 02:05.500
+Flag is set and at the aggregate operations that are used as part of the stream pipeline are obliged to maintain order and think just kind of think back to our earlier discussions
+
+02:05.500 --> 02:16.800
+about how the streams framework internals process a stream where you end up with these flags that set properties at each of the stages in the pipeline
+
+02:16.800 --> 02:18.100
+That's kind of what we're talking about here
+
+02:19.500 --> 02:26.400
+It turns out that the semantics in terms of whether you get the same results will be identical
+
+02:26.400 --> 02:31.300
+irrespective of whether the stream runs in parallel or other ones sequentially
+
+02:31.300 --> 02:32.800
+but it's kind of like
+
+02:32.800 --> 02:37.100
+know if you have miles per hour in kilometers per hour
+
+02:37.100 --> 02:44.300
+If you can have a car going the same speed but one will be read in miles per hour when we were in kilometers per hour
+
+02:44.300 --> 02:46.300
+but it's the same speed of the result is the same
+
+02:46.300 --> 02:53.800
+So similar Concepts hear the semantics of the same irrespective of whether the stream is power or sequential
+
+02:53.800 --> 02:56.600
+If doctor order must be preserved
+
+02:56.600 --> 02:59.100
+If encounter order does not need to be reserved
+
+02:59.100 --> 03:00.500
+then you make it different result
+
+03:00.500 --> 03:01.100
+But again
+
+03:01.100 --> 03:02.000
+that's that's by Design
+
+03:03.500 --> 03:06.800
+The main reason for keeping track of whether you want
+
+03:06.800 --> 03:08.300
+encounter order to be preserved
+
+03:08.300 --> 03:11.000
+However really comes down to Performance
+
+03:11.000 --> 03:14.700
+So the more you need encounter order to be preserved
+
+03:14.700 --> 03:16.600
+the bigger the performance hit
+
+03:16.600 --> 03:19.100
+the less you care about encounter order
+
+03:20.000 --> 03:23.200
+Lower the performance hit things will actually run a lot faster
+
+03:23.200 --> 03:25.600
+If you don't care about the order in which the results show up

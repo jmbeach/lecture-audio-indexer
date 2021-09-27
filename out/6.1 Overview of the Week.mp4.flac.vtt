@@ -1,0 +1,119 @@
+00:00.400 --> 00:03.700
+Welcome to the next week of our course on Parallel
+
+00:03.700 --> 00:04.800
+Functional programming with Java
+
+00:06.200 --> 00:09.100
+Now that we've finished our coverage of java sequential streams
+
+00:09.100 --> 00:12.300
+We can finally turn our attention to Java parallel streams
+
+00:12.300 --> 00:17.600
+which is the first of several job apparels and Frameworks we cover in this course
+
+00:18.800 --> 00:23.400
+This week's lesson start by outlining the structure and functionality of a parallel stream
+
+00:23.400 --> 00:26.800
+which partition to data source in multiple chunks
+
+00:27.800 --> 00:35.000
+Process of these chunks in a pool of Fred's and combines the results of this parallel processing into a final reduce result
+
+00:36.000 --> 00:36.600
+Key
+
+00:36.600 --> 00:51.700
+benefit of the Java streams framework is its ability to automatically and transparently map behaviors in a parallel stream to multiple processor course without requiring programmers to spawn explicitly or even apply synchronization mechanisms in many cases
+
+00:51.700 --> 00:56.000
+In fact converting a sequential stream to a parallel stream
+
+00:56.000 --> 00:58.300
+Often just requires a minuscule changes
+
+00:58.300 --> 01:04.300
+such as replacing your call to the screen Factor method with a call to the parallel stream Factory method
+
+01:05.500 --> 01:10.600
+This week's lesson to visualize and demonstrate the Simplicity of converting sequential
+
+01:10.600 --> 01:13.900
+The parallel streams in the context of the search screen
+
+01:13.900 --> 01:14.900
+game case study
+
+01:15.800 --> 01:16.500
+This case
+
+01:16.500 --> 01:17.200
+study underscores
+
+01:17.200 --> 01:25.000
+the fact that all the aggregate operations recovered in prior week's work will work seamlessly with parallel streams
+
+01:26.000 --> 01:26.900
+Not surprisingly
+
+01:26.900 --> 01:27.200
+However
+
+01:27.200 --> 01:29.600
+the three phases of a parallel stream
+
+01:29.600 --> 01:32.000
+operate somewhat differently than a sequential stream
+
+01:33.400 --> 01:37.800
+This week's lesson there for giving an overview of parallel streams internals
+
+01:38.800 --> 01:45.600
+Which particularly important understand When developing performance critical Java programs on Modern multi-core processors
+
+01:46.400 --> 01:52.900
+In particular we examine how the streams framework first invokes predefined or you to find splitter
+
+01:52.900 --> 01:54.200
+Raiders competition
+
+01:54.200 --> 01:55.800
+a data source into multiple Chucks
+
+01:56.700 --> 02:02.100
+We next show how these chunks are processed in parallel by running the streams intermediate operations
+
+02:02.100 --> 02:03.200
+in the job
+
+02:03.200 --> 02:03.700
+Fork
+
+02:03.700 --> 02:04.100
+Join
+
+02:05.100 --> 02:05.800
+Finally
+
+02:05.800 --> 02:09.000
+we Outline by the streams framework uses terminal operations
+
+02:09.000 --> 02:11.800
+like collect together with predefined
+
+02:11.800 --> 02:14.200
+Are you to find collectors to join
+
+02:14.200 --> 02:17.100
+Partial sub results into a final reduce result
+
+02:18.200 --> 02:21.600
+To maximize the performance of the Java parallel streams framework
+
+02:21.600 --> 02:27.000
+It's important to know which aspects of these phases can be controlled and which cat
+
+02:27.000 --> 02:31.500
+So we walked through many code examples to illustrate key points

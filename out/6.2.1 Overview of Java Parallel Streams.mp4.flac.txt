@@ -1,0 +1,15 @@
+We're now ready to begin the transition to parallelism.
+ In this part of the lesson, I'll explain how I do get operations from java. Sequential streams that we've covered in previous weeks are applied in the context of the job of parallel streams framework.
+ Just a quick recap from earlier, recalled, that a Java stream is a pipeline of aggregate operations. That process. A sequence of elements also known as values or data.
+ Is a career in operations use internal iteration and behaviors. The process elements that flow through a stream.
+ But Depot stream, execute sequentially. So all of it aggregate operations run their behaviors in one thread of control.
+ In contrast, when a stream executes in parallel is partitioned into multiple substream chunks that run in the common Fork, join pool.
+ The present is worth joining pool, 9 to terminus tikli process. These different chunks in parallel.
+ The intermediate operations iterate over and process the papers on these chunks in parallel as well.
+ And finally, the strange terminal operation is used to combine the chunks into a single reduce result.
+ Stateless Java. 8 Lambda expressions, and Method references are used to pass behaviors into the aggregate operations.
+ Ideally only minuscule changes are needed. Trying to transition from a sequential to a parallel stream. Although we'll see later that you can do more Advanced Techniques in order to ring even further parallelism out of your Solutions, which will ideally help improve performance even further.
+ The same aggregate operations, we've talked about earlier to be used for both sequential and parallel streams and that's reassuring because it means all the things we've covered in the previous week's don't have to be relearn from scratch.
+ In particular the search screen, gang example, case study, we've been focusing on uses the same aggregate operations for both. The search was sequential streams class and the search with Carol Streams class that will be looking at shortly.
+ Therefore, you can treat parallelism as an optimization in Java streams and use it to leverage. All of the available Kors at your disposal to talk later about how you can limit the number, of course, that are used as well. Although, typically you try to use as many cars as possible. If your goal is to get maximum, throughput scalability and latency out of your Solutions.
+ Naturally, the behaviors that you passed, the aggregate operations have to be very carefully designed to avoid accessing any. Unsynchronized shared mutable state, which of course, is the root of all evil in parallel and concurrent programs. As we talked about many talents. In fact, will also see if we go through these slides in this lesson and other lessons, that is very important to understand how to avoid various spellings of Hazzard by programming properly to make sure you share as little beautiful state as possible. Ideally none.

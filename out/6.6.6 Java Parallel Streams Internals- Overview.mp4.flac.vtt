@@ -1,0 +1,329 @@
+00:00.500 --> 00:01.300
+We're going to do now
+
+00:01.300 --> 00:04.600
+We're going to talk about the order of results for operations
+
+00:05.700 --> 00:06.200
+So
+
+00:06.200 --> 00:09.600
+before we talked about the order results for collections
+
+00:09.600 --> 00:10.300
+now
+
+00:10.300 --> 00:16.600
+we're going to talk about the order of results that are affected by the operations that you may happen to choose
+
+00:17.600 --> 00:18.400
+And again
+
+00:18.400 --> 00:20.200
+we're going to look it up a bunch of examples
+
+00:20.200 --> 00:22.800
+This is actually kind of fun is lots of interesting things here
+
+00:23.900 --> 00:25.600
+As was the case earlier
+
+00:25.600 --> 00:30.000
+if you take a look at the ex21 folder in my GitHub repository
+
+00:30.000 --> 00:32.900
+you'll find all the examples there
+
+00:34.900 --> 00:35.400
+So
+
+00:35.400 --> 00:37.100
+certain intermediate operations
+
+00:37.100 --> 00:43.200
+affect ordering behavior and we'll take a look and see what they are
+
+00:43.200 --> 00:46.800
+We'll start by looking at sorehead
+
+00:46.800 --> 00:48.000
+unordered
+
+00:48.000 --> 00:56.900
+Skip and limit and I'll demonstrate some of these things in the context of several examples that kind of difference of each other
+
+00:58.000 --> 00:59.000
+So once again
+
+00:59.000 --> 01:03.300
+we'll start by looking at some input
+
+01:03.300 --> 01:04.100
+In this case
+
+01:04.100 --> 01:04.900
+We're going to have
+
+01:06.000 --> 01:09.400
+A list created that has the values
+
+01:09.400 --> 01:11.900
+23142 in that order
+
+01:13.400 --> 01:20.400
+And that will be the encounter order and that's because a list is both ordered and non-unique
+
+01:20.400 --> 01:22.300
+So we have to worry about having duplicates
+
+01:23.900 --> 01:27.000
+The next thing we do is we call distinct
+
+01:27.000 --> 01:35.000
+So we create a parallel stream from that original list and then we called distinct and distinct is a stateful
+
+01:35.000 --> 01:37.500
+intermediate operation
+
+01:37.500 --> 01:38.800
+and that will
+
+01:38.800 --> 01:39.000
+of course
+
+01:39.000 --> 01:42.500
+go ahead and remove duplicate elements
+
+01:42.500 --> 01:47.000
+So now will end up with the stream that will be busy p2314
+
+01:48.800 --> 01:54.100
+And then we're also going to go ahead and limit the amount of processing
+
+01:54.100 --> 02:00.300
+It takes place here to some parameter passed into the limit intermediate operation
+
+02:00.300 --> 02:05.700
+So let's assume s output limit had the value of two or something like that
+
+02:05.700 --> 02:09.100
+That would then also be a stateful
+
+02:09.100 --> 02:10.400
+intermediate operation
+
+02:10.400 --> 02:14.100
+And that means we're only going to process that many elements in the Stream
+
+02:14.100 --> 02:17.400
+So it's what color short-circuiting stateful
+
+02:17.400 --> 02:18.900
+intermediate operation
+
+02:20.300 --> 02:20.700
+Now
+
+02:20.700 --> 02:35.500
+after all of this stuff will end up with a result that will be eight followed by 4, and that's because we're going to end up with with the duplicates are removed
+
+02:35.500 --> 02:36.600
+And
+
+02:37.800 --> 02:43.200
+This will be the encounter order because everything we saw along the way preserved
+
+02:43.200 --> 02:45.000
+the ordering property
+
+02:45.000 --> 02:46.500
+However
+
+02:46.500 --> 03:00.500
+the performance of this code will be rather slow because limit and distinct have so-called stateful semantics which require additional processing in parallel streams
+
+03:00.500 --> 03:03.700
+So be aware that the choice of the interview
+
+03:03.700 --> 03:09.900
+Operation can affect the behavior as well as also affect the performance as well
+
+03:10.900 --> 03:11.300
+Now
+
+03:11.300 --> 03:18.200
+if we go ahead and insert the unordered call after we make a parallel stream
+
+03:18.200 --> 03:26.300
+this will end up allowing the code to run more efficiently because there's no need to preserve the encounter order
+
+03:26.300 --> 03:27.000
+So
+
+03:27.000 --> 03:27.300
+therefore
+
+03:27.300 --> 03:32.600
+these animated operations like limit and distinct can incur less overhead
+
+03:32.600 --> 03:40.300
+And that's not a good thing at the wind because we made things faster by not caring about the order in which things occur
+
+03:42.000 --> 03:44.700
+Since the encounter order doesn't have to be maintained
+
+03:44.700 --> 03:48.600
+the result could be eight followed by 4 or 4 elevate
+
+03:48.600 --> 03:49.700
+It doesn't really matter
+
+03:52.200 --> 03:53.500
+Certain terminal operations
+
+03:53.500 --> 03:54.400
+also
+
+03:54.400 --> 03:56.500
+affect ordering Behavior
+
+03:56.500 --> 03:58.700
+So we already saw how intermediate
+
+03:58.700 --> 03:59.300
+operations
+
+03:59.300 --> 04:00.200
+affected the Behavior
+
+04:00.200 --> 04:00.800
+Now
+
+04:00.800 --> 04:04.800
+we're going to take a look and see how criminal operations affect the ordering Behavior
+
+04:06.100 --> 04:08.000
+The most obvious Journal operation
+
+04:08.000 --> 04:11.500
+that will affect ordering behavior is the for each ordered method
+
+04:11.500 --> 04:13.200
+And the whole purpose of
+
+04:13.200 --> 04:19.800
+for each ordered is to ensure that we end up with ordering preserve
+
+04:19.800 --> 04:22.100
+We want to preserve the encounter order
+
+04:22.900 --> 04:26.800
+So you can take a look here and see that if we
+
+04:26.800 --> 04:35.400
+if we write this code and we use the arraylist to be 2314 to run this thing and parallel
+
+04:35.400 --> 04:39.900
+We use for each ordered then we'll be able to have the results
+
+04:39.900 --> 04:40.300
+The order
+
+04:40.300 --> 04:42.500
+However
+
+04:42.500 --> 04:52.500
+we have to be very careful here because this list is only going to support unsynchronized insertion and removal of elements because it's just a plain old Ray list
+
+04:53.900 --> 04:54.400
+Now
+
+04:54.400 --> 04:56.300
+the thing is so wacky here
+
+04:56.300 --> 05:01.000
+Is that even though we're using a parallel stream here
+
+05:01.000 --> 05:07.100
+We will still end up getting results that don't have race conditions
+
+05:07.100 --> 05:10.800
+and that's because the results must appear in encounter order
+
+05:11.600 --> 05:13.100
+Now this is really strange
+
+05:13.100 --> 05:16.700
+This will work properly using for each ordered
+
+05:16.700 --> 05:18.400
+but it will be slow
+
+05:18.400 --> 05:21.000
+and that's because there's implicit synchronization
+
+05:21.000 --> 05:24.800
+It's performed in the for each ordered method
+
+05:24.800 --> 05:27.700
+Were you to use the for each method here
+
+05:27.700 --> 05:33.900
+then chaos and Insanity with him soon because we would be simultaneously accessing and unsynchronized
+
+05:33.900 --> 05:35.100
+arraylist
+
+05:37.100 --> 05:44.900
+Let's go take a look at how you could use for each properly that member for each does not attempt to preserve encounter order
+
+05:45.900 --> 05:56.100
+And instead what we do here as we create the results variable to be a concurrent linked to rather than an arraylist
+
+05:56.100 --> 06:05.700
+If you showed here and this code will work properly because results will be properly synchronized but the order doesn't have to be preserved
+
+06:05.700 --> 06:10.400
+So it might be faster than for each ordered
+
+06:10.400 --> 06:14.800
+It might be about the same because we're still using synchronized data structure
+
+06:14.800 --> 06:25.500
+Is it just kind of depends on whether concurrently accuse synchronizers any faster than for each ordered linked for each ordered synchronizer
+
+06:25.500 --> 06:27.700
+So you can have to pick your poison there
+
+06:27.700 --> 06:35.300
+I would probably not recommend writing any of this code with a for each Loop and a results
+
+06:35.900 --> 06:37.800
+Do our results list
+
+06:37.800 --> 06:40.300
+It's just there better ways to do it using collect
+
+06:40.300 --> 06:43.600
+So I'm just kind of showing you that the ordering of for each
+
+06:43.600 --> 06:45.700
+And for each all difference
+
+06:48.100 --> 06:48.600
+Okay
+
+06:50.200 --> 06:54.600
+So that basically wraps up our discussion about ordering results for operations
+
+06:54.600 --> 06:56.400
+which is one of the things that you can
+
+06:56.400 --> 06:56.700
+in fact
+
+06:56.700 --> 06:59.600
+control in Java Carol Streams
+
+06:59.600 --> 07:04.600
+even though ordering a processing is not really something that you can control

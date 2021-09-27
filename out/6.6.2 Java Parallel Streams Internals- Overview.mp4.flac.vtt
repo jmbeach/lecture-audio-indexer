@@ -1,0 +1,242 @@
+00:00.500 --> 00:03.000
+We'll continue our discussion of parallel streams
+
+00:03.000 --> 00:05.800
+internals by focusing on splitting
+
+00:05.800 --> 00:08.400
+combining and pooling
+
+00:09.600 --> 00:10.000
+So
+
+00:10.000 --> 00:10.200
+once again
+
+00:10.200 --> 00:12.100
+we'll talk about what you can change
+
+00:12.100 --> 00:14.300
+what you can't change in the context of splitting
+
+00:14.300 --> 00:16.000
+combining and pulling
+
+00:18.600 --> 00:24.000
+So that the splitting and combining and pulling mechanisms by default are invisible
+
+00:24.000 --> 00:30.400
+If you if you don't do anything and you just program of Pella screen by saying Carol Stream is a stream
+
+00:30.400 --> 00:38.500
+Good things happen without you having to be much concerned with how or why is good things happen and that's again intentional
+
+00:38.500 --> 00:38.900
+It's by Design
+
+00:40.600 --> 00:41.000
+Why
+
+00:41.000 --> 00:49.900
+This is the case is that all Java Collections you get out of the box in the Java class library on the Java platform all come with predefined splitter
+
+00:49.900 --> 00:50.200
+Raiders
+
+00:50.200 --> 00:52.200
+that can create parallel streams
+
+00:52.200 --> 00:53.200
+So that's great
+
+00:54.000 --> 00:54.800
+You can see her again
+
+00:54.800 --> 00:57.700
+split a writer and then here's parallel stream
+
+00:57.700 --> 01:02.400
+which uses the splitter Raider method in conjunction with stream support
+
+01:02.400 --> 01:05.600
+Stream and the true flag in the cape
+
+01:05.600 --> 01:06.900
+You want to make a Pearl Street
+
+01:08.400 --> 01:10.500
+Likewise Java also
+
+01:10.500 --> 01:12.800
+predefined various collector
+
+01:12.800 --> 01:17.300
+Factory methods in the collectors utility class
+
+01:17.300 --> 01:18.700
+And so
+
+01:18.700 --> 01:19.600
+we have various methods
+
+01:19.600 --> 01:21.700
+you could do things like create lists
+
+01:21.700 --> 01:23.300
+create sets
+
+01:23.300 --> 01:23.800
+and so on
+
+01:23.800 --> 01:26.400
+And these Factory methods
+
+01:26.400 --> 01:32.400
+even though they create non concurrent collectors can work seamlessly with parallel streams
+
+01:32.400 --> 01:34.000
+as we'll talk about here shortly
+
+01:35.600 --> 01:36.300
+And of course
+
+01:36.300 --> 01:37.000
+the common Fork
+
+01:37.000 --> 01:39.400
+join pool is also provided
+
+01:39.400 --> 01:40.600
+And in fact
+
+01:40.600 --> 01:40.800
+it's
+
+01:40.800 --> 01:45.900
+it's mandated to be used with Carol Streams in order to run the intermediate operations
+
+01:45.900 --> 01:49.000
+on the chunks of data created by the Pearl splitter
+
+01:49.000 --> 01:49.300
+Raiders
+
+01:50.200 --> 01:53.700
+This is the one that doesn't give you as many customization options
+
+01:53.700 --> 02:00.500
+You can customize the heck out of the first two and we'll talk a bit about how to customize these things
+
+02:00.500 --> 02:02.400
+Although we'll talk in more detail later on
+
+02:02.400 --> 02:03.200
+We get a little further along
+
+02:05.300 --> 02:11.000
+You can customize split Raider by basically either directly implementing these
+
+02:11.000 --> 02:20.700
+put her in her face or extending the abstract splitter abstract class and then filling in the appropriate hook methods advance
+
+02:20.700 --> 02:22.700
+And as we mentioned before
+
+02:22.700 --> 02:26.200
+that try Advanced method is used by the streams framework
+
+02:26.200 --> 02:27.700
+The process elements
+
+02:27.700 --> 02:37.700
+One of the time in Boston right now in Carol Streams talk about that when we talked about splitter Raiders for sequential streams and the try split method of course
+
+02:37.700 --> 02:46.800
+is what's used to partition elements in a parallel stream and we'll talk a lot more about how try split Works in a couple of different lessons in particular
+
+02:46.800 --> 02:47.700
+will talk about it
+
+02:47.700 --> 02:49.500
+Generally in the partitioning lesson
+
+02:49.500 --> 02:51.400
+and then we will go and show a very
+
+02:51.400 --> 02:53.200
+very detailed and cool example
+
+02:53.200 --> 02:57.100
+When we talked about the search with parallel splitter
+
+02:57.100 --> 03:05.100
+raider-class which implements a super Advanced version of try split to take a work of Shakespeare and
+
+03:05.300 --> 03:06.100
+Put it up into chunks
+
+03:06.100 --> 03:07.500
+that can be searched in parallel
+
+03:07.500 --> 03:14.000
+So that's going to give us really high-end high-performance fine-grained parallel processor
+
+03:15.800 --> 03:18.400
+Likewise there's also the collector interface
+
+03:18.400 --> 03:31.700
+We've talked before about non concurrent collectors and it has all these methods that you can use will also be talking about concurrent collectors here shortly and you get a chance to compare and contrast the performance characteristics
+
+03:33.300 --> 03:41.700
+And then there's also this mechanism which we briefly talked about earlier to talk about in a lot more detail in this left
+
+03:41.700 --> 03:46.100
+this section on Parallel streams as well as the section on the fork
+
+03:46.100 --> 03:54.100
+join pool framework and this is basically used to add new threads to the color for joined pool
+
+03:54.100 --> 03:57.000
+If operations Block
+
+03:57.000 --> 03:59.200
+it's called interesting enough
+
+03:59.200 --> 04:02.100
+They manage blocker interface and it's pretty cool
+
+04:02.100 --> 04:06.800
+It's something that most people who program a job and don't know much about
+
+04:06.800 --> 04:07.700
+In fact
+
+04:07.700 --> 04:14.800
+there's a lot of misleading folklore out there that that you can't use parallel streams and you can't use the fork
+
+04:14.800 --> 04:16.600
+Join pool for blocking operations
+
+04:16.600 --> 04:18.600
+Nothing could be further from the truth
+
+04:18.600 --> 04:22.000
+They work perfectly well for blocking operation things
+
+04:22.000 --> 04:22.800
+like blocking Ayo
+
+04:22.800 --> 04:26.400
+or blocking on synchronizers are blocking on blocking cues
+
+04:26.400 --> 04:30.700
+And so it's just that you have to know how to use to manage block her properly
+
+04:30.700 --> 04:32.900
+So I will help to dispel those
+
+04:33.200 --> 04:34.000
+Mistaken
+
+04:34.000 --> 04:39.800
+folklore myths and give you very solid grounding for how to use these features in practice

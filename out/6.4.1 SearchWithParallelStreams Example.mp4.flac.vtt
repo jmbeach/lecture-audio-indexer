@@ -1,0 +1,146 @@
+00:00.400 --> 00:04.700
+Now that I'm giving you a quick overview of the Java parallel streams framework
+
+00:04.700 --> 00:11.600
+Let's just jump right in Two showing how to apply it to our search stream
+
+00:11.600 --> 00:14.000
+game application case study
+
+00:14.000 --> 00:19.200
+And now we're going to talk about the search with parallel streams implementation
+
+00:19.200 --> 00:21.100
+and this implementation
+
+00:21.100 --> 00:22.100
+As you can see
+
+00:22.100 --> 00:29.300
+if you look kind of squinted the the performance output shown in that little screen there on the on your slide
+
+00:29.300 --> 00:38.300
+This implementation performs substantially better than the previous sequential stream implementation that we talked about in Prior weeks
+
+00:39.700 --> 00:43.400
+So we'll see that the implementation here is very
+
+00:43.400 --> 00:44.200
+very similar
+
+00:44.200 --> 00:44.700
+It's almost identical
+
+00:44.700 --> 00:53.800
+In fact to the sequential streams version as before the two key methods were going to focus on will be process stream and process input
+
+00:53.800 --> 00:55.000
+Except now
+
+00:55.000 --> 01:00.600
+these are part of the search with Carol Streams class as opposed to the search for sequential streams class
+
+01:01.700 --> 01:10.300
+Hear the method implementations just kind of shown very simply and as before will focus on map filter and collect
+
+01:10.300 --> 01:15.500
+Except this time will be calling parallel stream instead of calling stream
+
+01:15.500 --> 01:19.300
+which natural generator parallel streams of thought about cyclical strength
+
+01:20.700 --> 01:25.800
+Let's put a recap what these methods do and kind of visualize them at a high-level
+
+01:25.800 --> 01:34.800
+The parallel that the process stream that the uses of parallel stream to search a list of inputs and each of those inputs dreams
+
+01:34.800 --> 01:35.200
+of course
+
+01:35.200 --> 01:38.000
+contains a work of our favorite author
+
+01:38.000 --> 01:38.900
+William Shakespeare
+
+01:38.900 --> 01:41.400
+So one string would have the text for Hamlet
+
+01:41.400 --> 01:46.000
+Another string would have the text from Macbeth of the string would have the text
+
+01:46.000 --> 01:46.500
+For King Lear
+
+01:46.500 --> 01:47.300
+etc
+
+01:47.300 --> 01:47.400
+etc
+
+01:48.900 --> 01:50.000
+The Perla stream
+
+01:50.000 --> 01:50.500
+of course
+
+01:50.500 --> 01:51.700
+uses the common Fork
+
+01:51.700 --> 01:53.000
+Join pool of workers thread
+
+01:53.000 --> 01:54.500
+so it runs and process these
+
+01:54.500 --> 01:56.500
+These inputs dreams in parallel
+
+01:57.500 --> 01:59.700
+And as with the sequential version
+
+01:59.700 --> 02:05.300
+it returns a list of lists of search results and not surprisingly
+
+02:05.300 --> 02:12.300
+the print phrases method that we've covered in previous weeks can be used in order to be able to flatten the contents
+
+02:12.300 --> 02:16.300
+therein print them out and then nicely formatted way for each work of Shakespeare
+
+02:16.300 --> 02:18.900
+All the quotes that came from that work will be display
+
+02:20.300 --> 02:23.600
+Process input also uses a parallel stream
+
+02:23.600 --> 02:25.900
+except that uses apparel stream to search
+
+02:25.900 --> 02:31.600
+Each input strain and locate all occurrences of the phase
+
+02:31.600 --> 02:36.700
+the phrases that shouldn't be a phase has its phrases his all occurrences of phrases
+
+02:36.700 --> 02:42.800
+obviously thinking too much about the streams phases as opposed to the search screen
+
+02:42.800 --> 02:44.700
+gang phases and phrases
+
+02:46.000 --> 02:47.700
+As before the parallel stream
+
+02:47.700 --> 02:49.400
+Here also uses the common Fork
+
+02:49.400 --> 02:55.900
+Join pool of workers threads to run this capitation these computations in parallel and process
+
+02:55.900 --> 02:57.500
+input returns a list of search results
+
+02:57.500 --> 03:04.000
+which then gets collected into a list of list of search results by process string

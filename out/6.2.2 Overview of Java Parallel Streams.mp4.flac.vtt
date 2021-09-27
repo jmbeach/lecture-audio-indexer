@@ -1,0 +1,404 @@
+00:00.500 --> 00:08.400
+We're going to do now is start taking a look at the various phases in a Java parallel streams and peek under the hood and this of course
+
+00:08.400 --> 00:15.700
+is important to give you a bigger and better understanding with actually taking place behind the scenes when you run your pedals dreams programs
+
+00:17.100 --> 00:18.700
+A job apparel stream
+
+00:18.700 --> 00:23.300
+Implements a variant of the famous mapreduce model
+
+00:23.300 --> 00:26.800
+which is optimized for multi-core processors
+
+00:26.800 --> 00:29.700
+If you're familiar with mapreduce from other context
+
+00:29.700 --> 00:34.100
+you probably know it's used for things like cluster basic Computing
+
+00:34.100 --> 00:44.400
+What do you end up being able to map your tasks your jobs to multiple computers in a cluster and then be able to get the results back and reduce them to a final result
+
+00:44.400 --> 00:49.800
+A good example of this would be something like Google's search engine which uses many computers to do
+
+00:49.800 --> 00:51.400
+the searching efficiently and Impala
+
+00:51.400 --> 00:54.400
+It turns out that job at parallel streams
+
+00:54.400 --> 00:55.200
+Works a little differently
+
+00:55.200 --> 00:58.500
+I'll do the basic concept is very similar in particular
+
+00:58.500 --> 01:00.600
+the mapreduce model for Java
+
+01:00.600 --> 01:06.300
+Carol Streams works on a multi-core processor rather than a cluster
+
+01:06.300 --> 01:08.400
+If you want to use cluster stop programming
+
+01:08.400 --> 01:12.500
+you have to work with a different type of programming Middle where things like
+
+01:12.500 --> 01:17.000
+perhaps Hadoop or Sparks naturally the topics
+
+01:17.100 --> 01:18.500
+Over here for Palace dreams
+
+01:18.500 --> 01:20.200
+could also work in that context as well
+
+01:20.200 --> 01:28.800
+This diagram gives a somewhat Whimsical but fairly realistic rendition of the mapreduce process
+
+01:28.800 --> 01:34.800
+So imagine we want to make a sandwich and we've got a bunch of various components
+
+01:34.800 --> 01:35.900
+In our refrigerator
+
+01:35.900 --> 01:39.000
+We have bread and lettuce and meat
+
+01:39.000 --> 01:40.300
+and cheese and tomatoes
+
+01:40.300 --> 01:47.600
+So the first phase of this is basically to partition the elements in our fridge and put them out on the table
+
+01:47.600 --> 01:54.900
+And then we're going to do is do the map phase where props in parallel different people could slice up the bread
+
+01:54.900 --> 01:56.300
+Shred the lettuce slice
+
+01:56.300 --> 01:57.400
+the meat spicy cheese
+
+01:57.400 --> 01:58.400
+slice
+
+01:58.400 --> 01:58.700
+the tomatoes
+
+01:58.700 --> 01:59.300
+and so on
+
+01:59.300 --> 02:08.200
+And then a different group of people could take those various slices and shredded lettuce and then reduce them by putting together sandwiches
+
+02:08.200 --> 02:09.100
+And if you play your cards
+
+02:09.100 --> 02:09.400
+right
+
+02:09.400 --> 02:12.400
+you could end up having a nice little pipeline of parallel processing
+
+02:12.400 --> 02:15.800
+in order to be able to make your sandwiches more quickly and more effectively
+
+02:16.900 --> 02:17.800
+Obviously
+
+02:17.800 --> 02:19.800
+we're not dealing with making sandwiches here
+
+02:19.800 --> 02:20.900
+Would you lie was ready
+
+02:20.900 --> 02:24.900
+Ready for Peter programs that wants to take good advantage of multi-core processors
+
+02:24.900 --> 02:26.800
+So what actually happens
+
+02:26.800 --> 02:39.600
+of course in a parallel stream is this split apply and combine data processing strategy that we've talked about multiple times earlier and now we're really going to get a chance to talk about the parallel aspects of that
+
+02:40.800 --> 02:43.600
+So if you recall the three phases in the split
+
+02:43.600 --> 02:51.600
+apply combine Paradigm are first split which will end up recursively partitioning a data source up into chunks
+
+02:51.600 --> 02:57.000
+And even think of this kind of like they're slicing up pieces of pizza as we showed her the picture
+
+02:58.100 --> 03:02.300
+We'll be talking about this in more detail in an upcoming lesson
+
+03:02.300 --> 03:03.500
+But for right now
+
+03:03.500 --> 03:07.800
+is part of the overview basically went out with a bunch of chunks that is independent
+
+03:07.800 --> 03:09.300
+and essentially
+
+03:09.300 --> 03:15.100
+an atomic subset of a portion or partition of the original data source
+
+03:15.100 --> 03:25.600
+and this partition in may take place recursively in multiple steps in order to be able to get the original data into smaller pieces to be processed effectively in parallel
+
+03:26.800 --> 03:27.700
+The way this is
+
+03:27.700 --> 03:27.900
+Of course
+
+03:27.900 --> 03:32.100
+in Java and JavaScript teams is through split
+
+03:32.100 --> 03:32.500
+Raiders
+
+03:32.500 --> 03:33.700
+the split Raiders
+
+03:33.700 --> 03:38.300
+They used to partition data sources in particular collections in Java
+
+03:39.700 --> 03:46.200
+The try Advance method which we talked about in previous weeks is used for both sequential and parallel streams
+
+03:46.200 --> 03:47.700
+And of course
+
+03:47.700 --> 03:52.900
+the other important methods which is called Tri split is only used for palestrina's
+
+03:52.900 --> 03:58.100
+and we'll talk a lot about that as we go further in these lessons in this week in subsequent weeks
+
+03:59.800 --> 04:03.400
+Each job Collection comes with a predefined split writer
+
+04:03.400 --> 04:04.200
+as I've mentioned
+
+04:04.200 --> 04:06.300
+before this split erator
+
+04:06.300 --> 04:11.400
+implementation is provided as a default method in the Java collection interface
+
+04:11.400 --> 04:15.600
+And you can see how split writer has a default implementation there
+
+04:15.600 --> 04:16.400
+which of course
+
+04:16.400 --> 04:23.800
+can be overridden by various containers and elections that will Implement collection either directly or indirectly
+
+04:23.800 --> 04:29.600
+And you could also see how the Pearl stream method uses splitter Ator
+
+04:30.500 --> 04:31.600
+So if you take a look here
+
+04:31.600 --> 04:36.300
+you can see how the travel screen method uses a splitter ater along with the stream support
+
+04:36.300 --> 04:39.800
+Stream method to create a parallel stream
+
+04:39.800 --> 04:45.700
+And you can see it's a perilous train because the trooper amateur is passed into stream support
+
+04:45.700 --> 04:46.100
+Stream
+
+04:47.400 --> 04:51.300
+It's also possible to Define your own custom Splitters
+
+04:51.300 --> 04:55.800
+We've shown some examples of this before in the context of our phrase
+
+04:55.800 --> 04:59.100
+Matt's literator from the sequential search screen
+
+04:59.100 --> 04:59.800
+get an application
+
+04:59.800 --> 05:05.200
+And also with the splitter that we used earlier for the simple search stream
+
+05:05.200 --> 05:06.000
+example
+
+05:06.000 --> 05:10.100
+we're going to be looking at other aspects of Customs split Raiders here
+
+05:10.100 --> 05:11.400
+In the parallel string section is
+
+05:13.100 --> 05:14.200
+Not surprisingly
+
+05:14.200 --> 05:17.000
+parallel streams will perform best
+
+05:17.000 --> 05:27.300
+If your data sources can be split efficiently and can be split evenly and I'll have a whole discussion of that later and I'll show you some results from performance analysis
+
+05:27.300 --> 05:29.200
+That quantifies
+
+05:29.200 --> 05:36.500
+the differences between different Java Collections in terms of how evenly and how efficiently they split up their data
+
+05:38.200 --> 05:41.700
+The second phase in this process is the apply phase
+
+05:41.700 --> 05:44.300
+And unlike the earlier discussions
+
+05:44.300 --> 05:48.900
+We had for sequential streams were there was only one Fred think that a lot more interesting
+
+05:48.900 --> 05:50.100
+We start dealing
+
+05:50.100 --> 05:52.500
+with parallel streams in this context
+
+05:52.500 --> 05:55.400
+The process chunks
+
+05:55.400 --> 05:57.100
+The chunks that are created by the split
+
+05:57.100 --> 06:00.000
+Aerator are processed in parallel
+
+06:00.000 --> 06:01.900
+in the common
+
+06:01.900 --> 06:03.800
+for joints Red Bull
+
+06:03.800 --> 06:06.000
+and it has to be the coming-forth joint for
+
+06:06.000 --> 06:07.900
+That's the way that streams are designed to work
+
+06:09.100 --> 06:12.900
+It turns out that the splitting and applying phases actually
+
+06:12.900 --> 06:16.200
+run simultaneously after certain limit their men
+
+06:16.200 --> 06:18.500
+after you've created enough chunks
+
+06:18.500 --> 06:19.400
+as part of splitting
+
+06:19.400 --> 06:24.000
+those get fed into the 4th drawing for and then they start to run in parallel
+
+06:24.000 --> 06:26.600
+This is not a purely sequential thing
+
+06:26.600 --> 06:30.300
+But the splitting doesn't take place first followed by all the applying instead
+
+06:30.300 --> 06:31.800
+They're there interleague
+
+06:31.800 --> 06:35.800
+Thereby allowing the program to start running were quickly and get results were quickly
+
+06:37.300 --> 06:40.700
+The way that this works under the hood is we'll talk about in much more detail
+
+06:40.700 --> 06:44.800
+Later is by using something called work stealing
+
+06:44.800 --> 06:51.400
+and this is designed intentionally to maximize CPU processor core utilization
+
+06:51.400 --> 06:54.000
+The goal is to keep things as busy as possible
+
+06:54.000 --> 06:56.400
+and never let the threads of the process
+
+06:56.400 --> 06:56.700
+of course
+
+06:56.700 --> 06:58.600
+block or sleep for any length of time
+
+06:58.600 --> 06:59.900
+Is that tested
+
+06:59.900 --> 07:03.600
+Great performance quite a bit on Modern multi-core processors
+
+07:04.800 --> 07:05.500
+Programmers
+
+07:05.500 --> 07:09.700
+get some degree of control of the number of threads in the common Fork
+
+07:09.700 --> 07:12.200
+Join pool will will talk extensively about how to do this
+
+07:12.200 --> 07:14.600
+Both here in the parallel streams discussion
+
+07:14.600 --> 07:20.600
+as well as also later when we cover the job of work joint for framework itself
+
+07:20.600 --> 07:25.300
+So you'll get a number of different perspectives on how to control the number of threads in the pool
+
+07:26.900 --> 07:36.800
+The third and final phase is the combined phase which works by joining the partial results with your credit in the different threads running in the pool
+
+07:36.800 --> 07:44.600
+As part of the apply phase into a single so-called reduced result has been a lot of time talking about this as well
+
+07:45.600 --> 07:48.000
+This is typically done by terminal operations
+
+07:48.000 --> 07:50.300
+like collect and reduce
+
+07:51.500 --> 07:57.800
+And as we'll see that the collectors that are used by collect can be either concurrent
+
+07:57.800 --> 08:00.100
+which means that they have to be synchronized
+
+08:00.100 --> 08:05.900
+They have to use accumulators that synchronized access to a single shared
+
+08:05.900 --> 08:12.000
+beautiful result container or they can collections don't
+
+08:12.000 --> 08:13.900
+The collectors don't have to be synchronized
+
+08:13.900 --> 08:14.900
+Of course
+
+08:14.900 --> 08:16.800
+we'll also talked extensively about that as well
