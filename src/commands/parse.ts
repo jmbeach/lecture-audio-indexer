@@ -52,8 +52,8 @@ export default class Parse extends Command {
     const client = new speech.SpeechClient({
       sslCreds: credentials
     })
-    const name = '6.1.2 IP Addressing.mp4.flac'
-    // const name = args.file
+    // const name = '6.1.2 IP Addressing.mp4.flac'
+    const name = args.file
     const [operation] = await client.longRunningRecognize({
       audio: {
         uri: `gs://jared-audio-indexer/${name}`
@@ -65,9 +65,9 @@ export default class Parse extends Command {
         encoding: 'FLAC'
       }
     });
-    // const [response] = await operation.promise();
-    // fs.writeFileSync(`./out/${name}.json`, JSON.stringify(response));
-    const response = JSON.parse(fs.readFileSync(`./out/${name}.json`, { encoding: 'UTF-8' }));
+    const [response] = await operation.promise();
+    fs.writeFileSync(`./out/${name}.json`, JSON.stringify(response));
+    // const response = JSON.parse(fs.readFileSync(`./out/${name}.json`, { encoding: 'UTF-8' }));
     const transcriptions = response.results
       .map(result => result.alternatives[0].transcript);
     let vttChunks = []
