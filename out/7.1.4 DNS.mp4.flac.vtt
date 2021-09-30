@@ -1,0 +1,446 @@
+00:00.400 --> 00:03.200
+so what continue discussing DNS and next
+
+00:03.200 --> 00:09.100
+we'll discuss some of the DNS protocol and what some of the data and commands
+
+00:09.100 --> 00:14.300
+the sends and receives requests replies in the DNS protocol with us are going to look like
+
+00:15.700 --> 00:19.300
+So what the information in DNS
+
+00:19.300 --> 00:21.800
+this typically called or called resource records
+
+00:21.800 --> 00:23.600
+and remember
+
+00:23.600 --> 00:25.500
+as we've introduced DNS
+
+00:25.500 --> 00:27.700
+we've described it as being a distributed database
+
+00:27.700 --> 00:31.500
+that stores information in this case of storing
+
+00:31.500 --> 00:32.800
+these resource records
+
+00:32.800 --> 00:33.300
+So
+
+00:33.300 --> 00:36.800
+there's a format of these consisting of the name of value
+
+00:36.800 --> 00:37.500
+a type
+
+00:37.500 --> 00:39.600
+and a time to live
+
+00:39.600 --> 00:41.300
+So
+
+00:41.300 --> 00:47.200
+there are several types of DNS records Taipei is kind of the simplest type in
+
+00:47.200 --> 00:49.400
+that would consist of a name
+
+00:49.400 --> 00:53.300
+That is the host name
+
+00:53.300 --> 00:54.700
+and a value
+
+00:54.700 --> 00:55.800
+That's the IP address
+
+00:55.800 --> 00:59.000
+So this is the direct mapping from a hostname into an IP address
+
+01:00.200 --> 01:08.000
+Another type in these record resource formats as a type B & S hear the name is a domain
+
+01:08.000 --> 01:08.900
+So
+
+01:08.900 --> 01:09.600
+say food.com
+
+01:09.600 --> 01:16.800
+And the value is a hostname of an authoritative name server for that domain
+
+01:18.300 --> 01:22.700
+For the reverse lookups that type PTR would be the name
+
+01:22.700 --> 01:25.700
+Represented in that River Squad
+
+01:25.700 --> 01:27.500
+notation for doing reverse lookups
+
+01:27.500 --> 01:33.500
+And then the value would be the corresponding host name so that we can go from IP address into that hostname
+
+01:33.500 --> 01:46.200
+Another type is called a cname or for which stands for canonical name and what this corresponds to an a mapping to a canonical value ride
+
+01:46.200 --> 01:46.700
+So for example
+
+01:46.700 --> 01:57.300
+the address www.ccs.edu really could correspond to the canonical name
+
+01:57.300 --> 01:58.800
+eecs web.mit.edu
+
+01:58.800 --> 02:05.700
+So this would let you give that some of the Alias is essentially a final type with you and talk to you much about
+
+02:05.700 --> 02:14.300
+But is a m x type and the value for this would be the name of a male server associated with a particular domain
+
+02:14.300 --> 02:17.900
+Name could include some other option one formation as well
+
+02:18.800 --> 02:21.600
+So within the DNS protocol there
+
+02:21.600 --> 02:27.200
+two types of messages queries and replies and they both have the same message for Matt which looks like this
+
+02:27.200 --> 02:33.500
+So the message header consists of the variety of pieces of information
+
+02:33.500 --> 02:37.700
+These are broken into 16-bit portions
+
+02:37.700 --> 02:39.200
+the message
+
+02:39.200 --> 02:42.300
+Heather includes a 16-bit number corresponding to the query
+
+02:42.300 --> 02:43.500
+the reply
+
+02:43.500 --> 02:45.400
+to this query with and use that same number
+
+02:45.400 --> 02:45.900
+So
+
+02:45.900 --> 02:46.100
+you know
+
+02:46.100 --> 02:47.500
+you're getting a response back
+
+02:47.500 --> 02:49.700
+basically just labeling
+
+02:49.700 --> 02:50.000
+right
+
+02:50.000 --> 02:56.000
+Then applying the back where number if you will flags that could be said for options
+
+02:56.000 --> 03:01.000
+Like whether whether the type of message is a query or reply
+
+03:01.000 --> 03:01.900
+weather
+
+03:01.900 --> 03:03.400
+recursion is De loud
+
+03:03.400 --> 03:08.800
+Is desired or aloud whether reply is it from an authoritative Source or not
+
+03:10.200 --> 03:11.600
+There'd be other fields
+
+03:11.600 --> 03:16.200
+including the size of optional header elements that we want
+
+03:16.200 --> 03:17.100
+Talk about in depth
+
+03:18.000 --> 03:22.000
+So we're going to do next to try to understand a little bit more about how DNS works as well
+
+03:22.000 --> 03:22.900
+Go through an interactive
+
+03:22.900 --> 03:27.300
+look up using the Unix program called dig with us
+
+03:27.300 --> 03:30.200
+Lets you do is that lets you query the DNS system
+
+03:30.200 --> 03:34.400
+and then it'll dump the field from the DNS responses
+
+03:34.400 --> 03:34.700
+So
+
+03:34.700 --> 03:37.700
+basically looking at these DNS protocol messages
+
+03:37.700 --> 03:40.900
+so by default that would execute workers Aquarius
+
+03:40.900 --> 03:41.800
+which you can disable
+
+03:41.800 --> 03:46.300
+We have this option just to set that it's not recursive
+
+03:46.300 --> 03:48.100
+So it's just going to operate one step at a time
+
+03:48.100 --> 03:53.300
+So that's what we're going to do it through this quick demonstration of this
+
+03:53.300 --> 03:58.200
+So let's suppose we want to look up the IP address for cnn.com
+
+03:58.200 --> 04:01.000
+specifically www.cnn.com
+
+04:01.000 --> 04:03.400
+And we're going to query
+
+04:03.400 --> 04:04.300
+one of the root servers
+
+04:04.300 --> 04:06.000
+The root servers are down
+
+04:06.000 --> 04:07.500
+They're labeled a through M
+
+04:07.500 --> 04:11.800
+And you can access them through this route Dash servers
+
+04:11.800 --> 04:13.500
+Net domain name
+
+04:14.600 --> 04:20.200
+So if you run this command you to get back some responses
+
+04:20.200 --> 04:21.900
+some Header information
+
+04:21.900 --> 04:22.300
+Of course
+
+04:22.300 --> 04:23.900
+In this case
+
+04:23.900 --> 04:25.400
+you're sending a query out
+
+04:25.400 --> 04:28.200
+The question that you're looking for
+
+04:28.200 --> 04:30.700
+is what is the a name
+
+04:30.700 --> 04:31.200
+Basically
+
+04:31.200 --> 04:32.000
+What's the IP address
+
+04:32.000 --> 04:33.500
+Corresponding to cnn.com
+
+04:33.500 --> 04:36.000
+It was no answer section yet
+
+04:36.000 --> 04:40.000
+Then there's some Authority authoritative information
+
+04:40.000 --> 04:43.400
+which is just representing the various
+
+04:45.700 --> 04:47.400
+For this top-level domain
+
+04:47.400 --> 04:49.800
+where you could look up to figure out that answer
+
+04:49.800 --> 04:50.500
+So
+
+04:50.500 --> 04:52.100
+just going on within the same query
+
+04:52.100 --> 05:01.700
+other would be additional information corresponding to what those top level with the top level domain name
+
+05:01.700 --> 05:11.300
+server names would correspond to in IP addresses so I can see that's a this suck at the G1
+
+05:11.300 --> 05:11.900
+The g
+
+05:11.900 --> 05:13.600
+Gtld - service
+
+05:13.600 --> 05:17.500
+Net the A&M record for that would correspond to this IP address
+
+05:17.500 --> 05:18.800
+This one 92
+
+05:18.800 --> 05:19.300
+42
+
+05:19.300 --> 05:20.200
+93
+
+05:20.200 --> 05:25.500
+30 timing information for this in which server had replied
+
+05:25.500 --> 05:29.900
+If we go back and look we ask ask the root server labeled a
+
+05:29.900 --> 05:32.800
+That's the server that had replied
+
+05:34.000 --> 05:34.600
+Brett
+
+05:34.600 --> 05:36.400
+So after we figure it out
+
+05:36.400 --> 05:36.700
+Okay
+
+05:36.700 --> 05:41.200
+I can go look up at a what what this response means is it
+
+05:41.200 --> 05:41.800
+I can go
+
+05:41.800 --> 05:45.200
+Ask now this route server with the subdomain
+
+05:45.200 --> 05:45.500
+a
+
+05:45.500 --> 05:48.000
+how to get to cnn.com again
+
+05:48.000 --> 05:50.500
+We didn't run this in the in the recursive mode
+
+05:51.300 --> 05:51.800
+So now
+
+05:51.800 --> 05:55.300
+if I ask one of the top level domain servers
+
+05:55.300 --> 05:56.300
+how to get to cnn.com
+
+05:56.300 --> 05:58.600
+I just pick one of them that had replied
+
+05:58.600 --> 06:03.100
+what will see now
+
+06:03.100 --> 06:05.700
+And in some of the responses for cnn.com
+
+06:05.700 --> 06:10.100
+we could access that with this other domain name
+
+06:10.100 --> 06:12.700
+for this TW
+
+06:12.700 --> 06:13.100
+DNS
+
+06:13.100 --> 06:13.500
+Text
+
+06:13.500 --> 06:14.100
+your one
+
+06:14.100 --> 06:15.500
+And ask that aol.com
+
+06:15.500 --> 06:17.100
+So that be that the
+
+06:19.000 --> 06:24.000
+Domain name server for cnn.com then
+
+06:24.000 --> 06:26.100
+There'd be some additional information and coding
+
+06:26.100 --> 06:31.700
+What were the actual IP addresses corresponding to those hosts names for those two servers
+
+06:33.200 --> 06:35.200
+Rats are moving along then
+
+06:35.200 --> 06:36.900
+So we'll do one more query
+
+06:36.900 --> 06:42.200
+If we now go query one of those particular domain name servers
+
+06:42.200 --> 06:43.200
+We just picked one of them
+
+06:43.200 --> 06:51.400
+Random arbitrarily out of the four that came back with the response and we ask it what the IP address for www.cnn.com has
+
+06:51.400 --> 06:58.700
+That was the question that we ask that the NS server and we're asking at what is the IP address
+
+06:58.700 --> 07:00.300
+Corresponding to that domain name
+
+07:00.300 --> 07:04.300
+the response back that we get and the answer
+
+07:05.200 --> 07:12.500
+From the DNS system is that www.cnn.com is a c name or an alias for cnn.com
+
+07:12.500 --> 07:19.200
+And then any of these IP addresses should work if you want to access www.cnn.com
+
+07:19.200 --> 07:23.500
+So if you typed in your web browser any of these addresses
+
+07:23.500 --> 07:25.800
+they should all take you to cnn.com
+
+07:25.800 --> 07:43.600
+So there could be more than one as you can see and this could be for various load-balancing reasons that we mentioned a little bit earlier having these geographically distributed so that perhaps we'll look up or accessing that website would be faster in a certain region of the world
+
+07:43.600 --> 07:50.300
+You you might be directed to use a particular one of those servers based on that kind of criteria
+
+07:50.300 --> 07:51.400
+right
+
+07:51.400 --> 07:54.300
+But this is how we would have started manual
+
+07:54.300 --> 07:59.900
+Gone through that process of getting what IP address correspondent to www.cnn.com
+
+08:01.400 --> 08:04.800
+So that's a little bit of an overview of the DNS protocol
+
+08:04.800 --> 08:15.700
+all the different types of resource record so I can eat AMC names and what some of the information would look like when the queries in the DNS system were actually occurring

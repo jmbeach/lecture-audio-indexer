@@ -1,0 +1,434 @@
+00:00.600 --> 00:03.900
+So next we'll discuss the address resolution protocol
+
+00:03.900 --> 00:09.600
+which is used to come up with a mapping between Mac addresses and IP addresses
+
+00:09.600 --> 00:15.500
+So let's first give a little bit of an overview of how the process works
+
+00:15.500 --> 00:19.000
+So we're call that we have 32-bit IP addresses
+
+00:19.000 --> 00:21.400
+This is used for Network layer Services
+
+00:21.400 --> 00:21.800
+right
+
+00:21.800 --> 00:27.800
+So for IP type of services for doing a forwarding of information through the network
+
+00:27.800 --> 00:31.300
+the MAC address or land
+
+00:31.300 --> 00:35.400
+physical or ethernet address would be some other common terms for this
+
+00:35.400 --> 00:49.000
+This would be used locally to get access to an interface and send it out in her that information that's necessary to be sent to another interface in the same network
+
+00:49.000 --> 00:56.800
+So very low-level sort of Link layer type of an address
+
+00:56.800 --> 00:58.200
+So we'll see some more details
+
+00:58.200 --> 01:00.400
+So the 48 bit
+
+01:00.600 --> 01:04.900
+Mac address is put into the network interface cards
+
+01:04.900 --> 01:05.500
+read-only memory
+
+01:05.500 --> 01:08.100
+but sometimes it software setup
+
+01:08.100 --> 01:08.200
+Oh
+
+01:08.200 --> 01:11.900
+so you may know how to change the sand in a higher-level operating system
+
+01:11.900 --> 01:14.700
+So what
+
+01:14.700 --> 01:18.100
+what would this look like with these lanter Mac address is
+
+01:18.100 --> 01:26.400
+So every computer on the network would be associated with a Mac address
+
+01:26.400 --> 01:27.100
+right
+
+01:27.100 --> 01:28.200
+Every interface card
+
+01:28.200 --> 01:31.800
+And then if we want to send information between hosts
+
+01:31.800 --> 01:34.300
+we use this Mac address
+
+01:34.300 --> 01:37.100
+This is what the adapters actually understand
+
+01:37.100 --> 01:38.700
+They don't understand IP addresses
+
+01:40.000 --> 01:42.000
+So
+
+01:42.000 --> 01:47.000
+how Mac addresses are assigned or allocated is administered by a Trip Lee
+
+01:47.000 --> 01:52.900
+When someone wants to produce network interface cards
+
+01:52.900 --> 01:57.200
+they buy a portion of the MAC address space to try to ensure uniqueness
+
+01:57.200 --> 01:57.900
+although occasionally
+
+01:57.900 --> 02:04.000
+there can be duplicate Mac addresses and it can cause all sorts of interesting Network problem
+
+02:04.000 --> 02:05.800
+But analogously
+
+02:05.800 --> 02:08.000
+you can think of the MAC address for the Vodka
+
+02:08.000 --> 02:10.000
+social security number and IP address
+
+02:10.000 --> 02:11.600
+sort of like a postal address
+
+02:11.600 --> 02:13.900
+The Mac addresses are flat
+
+02:13.900 --> 02:17.800
+which enables portability so you can move between different networks
+
+02:17.800 --> 02:23.700
+Whereas the IP address space was hierarchical and it's not really portable
+
+02:23.700 --> 02:26.400
+It depends on what IP subnet
+
+02:26.400 --> 02:27.900
+The note is attached to
+
+02:29.300 --> 02:32.600
+So what's the address resolution protocol dies
+
+02:32.600 --> 02:37.900
+His that would determine and interfaces Mac address knowing its IP address
+
+02:37.900 --> 02:38.700
+or at
+
+02:38.700 --> 02:39.600
+So this is basically
+
+02:39.600 --> 02:41.800
+I would operate
+
+02:41.800 --> 02:43.500
+So I have all these hosts
+
+02:43.500 --> 02:45.000
+They have IP addresses
+
+02:45.000 --> 02:48.800
+and Mac addresses assigned to them
+
+02:48.800 --> 02:52.600
+So this is done through the usage of a table called the ARP table
+
+02:52.600 --> 02:53.800
+For this each
+
+02:53.800 --> 02:55.300
+i p notes are hosta
+
+02:55.300 --> 02:56.300
+Router on the land
+
+02:56.300 --> 03:01.100
+with the network would have this table and this would only be the local network
+
+03:01.100 --> 03:01.400
+Right
+
+03:01.400 --> 03:03.100
+So we don't do this over the Internet
+
+03:03.100 --> 03:05.700
+the IP and Mac address
+
+03:05.700 --> 03:11.000
+Mappings for some landlords would basically appear like IP address
+
+03:11.000 --> 03:13.100
+Mac address and a time to live
+
+03:13.100 --> 03:17.600
+So this would be the time after which the address is mapping
+
+03:17.600 --> 03:18.500
+would get forgotten
+
+03:18.500 --> 03:19.500
+typically
+
+03:19.500 --> 03:20.800
+set to about 20 minutes
+
+03:21.800 --> 03:28.500
+So let's go over some of the usage of the our protocol on the same land
+
+03:28.500 --> 03:32.100
+So suppose a wants to send information to be bees
+
+03:32.100 --> 03:34.400
+Mac address is not an Aesop Fable
+
+03:34.400 --> 03:41.600
+So what would occur is a wood broadcast and art querry packet containing bees IP address
+
+03:41.600 --> 03:44.800
+It would send it out to the broadcast Mac address
+
+03:44.800 --> 03:46.700
+which is all at all
+
+03:46.700 --> 03:48.900
+The notes on the land would receive that query
+
+03:48.900 --> 03:53.700
+Be would receive that are packaged as well and it would reply to a with it
+
+03:53.700 --> 03:55.700
+Maybe is Mac address
+
+03:55.700 --> 04:01.300
+So that would be sent to a smack address because a head attached
+
+04:01.300 --> 04:03.700
+It's Mac address in that broadcast query
+
+04:03.700 --> 04:06.800
+he would then cash the IP to MAC address
+
+04:06.800 --> 04:10.900
+Parents are table until that information expired or became hold
+
+04:11.600 --> 04:12.400
+So
+
+04:12.400 --> 04:13.500
+our biggest plug-and-play
+
+04:13.500 --> 04:20.000
+so the nodes do create their own ARP tables without intervention from the network administrator
+
+04:21.400 --> 04:23.700
+So let's walk through an example of how this would work
+
+04:23.700 --> 04:37.600
+So let's suppose we want to send the information from A to B through router are and where to focus on all the addressing aspects are both the IP addressing in the Mac addressing portions
+
+04:37.600 --> 04:40.000
+So let's assume that a nose
+
+04:40.000 --> 04:41.600
+B's IP address already
+
+04:41.600 --> 04:45.800
+Let's also assume that a nosey IP address of the first router
+
+04:45.800 --> 04:49.200
+I wish you could have been determined say with DHCP is
+
+04:49.200 --> 04:51.800
+So may also knows ours Mac address
+
+04:51.800 --> 04:57.400
+which it could have already discovered through that are process that we just discussed
+
+04:58.600 --> 04:59.200
+So
+
+04:59.200 --> 05:08.700
+what would happen as a would create a message or an IP datagram with its source a and its destination be using those IP addresses
+
+05:08.700 --> 05:11.600
+So we have the IP address for a source IP address
+
+05:11.600 --> 05:14.900
+The IP address for B is the destination IP address
+
+05:16.400 --> 05:21.800
+Then what would happen if it would create a link layer frame with ours Mac address
+
+05:21.800 --> 05:22.600
+That's the router
+
+05:22.600 --> 05:32.900
+we need to route through as the destination address and then the frame would contain the ETA to be IP layer message
+
+05:32.900 --> 05:33.500
+right
+
+05:33.500 --> 05:34.000
+So
+
+05:34.000 --> 05:38.500
+what we can see here is the source Mac address has been set to a smack address
+
+05:38.500 --> 05:44.700
+The destination Mac address has been set to the incoming length of router are right
+
+05:44.700 --> 05:46.900
+So we can see the C6 starting here
+
+05:48.400 --> 05:51.700
+So that frame would get sent from a two
+
+05:51.700 --> 05:54.600
+are over this low-level lower layer protocol
+
+05:54.600 --> 05:55.200
+the link
+
+05:56.200 --> 06:04.500
+Lincoln Physical layer protocols when when that's received by the router
+
+06:04.500 --> 06:08.600
+it would remove the data
+
+06:08.600 --> 06:08.900
+Graham
+
+06:08.900 --> 06:14.800
+It would see that the information was intended for it because it's destination Mac address had been set to it
+
+06:14.800 --> 06:18.600
+Then it would pass this information up to the hype helaire
+
+06:18.600 --> 06:23.200
+We'd see the destination address is 22, repeated
+
+06:23.200 --> 06:28.000
+We know that needs to be routed out through this outgoing link after we've constructed
+
+06:28.000 --> 06:30.900
+a routing table are within forward
+
+06:30.900 --> 06:31.900
+the state of Graham
+
+06:31.900 --> 06:38.300
+This message with the IP source as A's are at so
+
+06:38.300 --> 06:43.700
+leaving by PMS which basically the same and leaving the destination is BS
+
+06:43.700 --> 06:44.500
+IP address
+
+06:45.600 --> 06:47.200
+Are wood
+
+06:47.200 --> 06:49.300
+then a prefix in front of that
+
+06:49.300 --> 06:52.200
+The link layer Freeman formation with bees Mac addresses
+
+06:52.200 --> 06:53.200
+the destination address
+
+06:53.200 --> 06:57.500
+So that the Springwood now contain the 8 to be datagram
+
+06:57.500 --> 07:03.100
+So we can see is that the source address is this incoming
+
+07:03.100 --> 07:13.600
+from the perspective of be its this interface on the routers Mac address and the destination Mac address is the MAC address of be rats in this way
+
+07:13.600 --> 07:23.700
+The information could get sent over to be from a and the addressing all the way down to the link layer would have been accommodated be with and strip off the link later
+
+07:23.700 --> 07:27.700
+Had her information and pull out the IP layer information
+
+07:28.600 --> 07:30.000
+So that summarizes
+
+07:30.000 --> 07:32.000
+the way that our quirks
+
+07:32.000 --> 07:32.600
+And again
+
+07:32.600 --> 07:38.100
+what this would do is come up with the mapping between IP addresses and Mac address pierce
+
+07:38.100 --> 07:41.100
+It does this in the ARP table in a packet
+
+07:41.100 --> 07:41.900
+needs to be sent
+
+07:41.900 --> 07:49.600
+It would consult the ARP table so that it could look up the actual Mac address of the destination and then
+
+07:49.600 --> 07:50.500
+it wouldn't capsulated
+
+07:50.500 --> 07:50.800
+So
+
+07:50.800 --> 07:51.400
+this again
+
+07:51.400 --> 07:54.700
+just would be put in front of the packet
+
+07:54.700 --> 07:55.700
+header of the IP Hider
+
+07:55.700 --> 07:56.100
+say
+
+07:56.100 --> 07:58.100
+for the link layer header
+
+07:58.100 --> 08:02.300
+So if we didn't have the IP address on the table
+
+08:02.300 --> 08:05.800
+I will Whitaker is the sender would request you
+
+08:05.800 --> 08:07.000
+How's that IP address
+
+08:07.000 --> 08:11.000
+The receiver would respond back and then this Underwood cash that result
+
+08:11.000 --> 08:14.000
+So they're more details for this link layer protocol
+
+08:14.000 --> 08:20.100
+but its necessary to be able to connect things up and do bootstrap
+
+08:20.100 --> 08:21.400
+the IP connectivity
