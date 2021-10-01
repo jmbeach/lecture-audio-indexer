@@ -1,146 +1,301 @@
-00:00.400 --> 00:04.700
-Now that I'm giving you a quick overview of the Java parallel streams framework
+WEBVTT
 
-00:04.700 --> 00:11.600
-Let's just jump right in Two showing how to apply it to our search stream
+1
+00:00:00.000 --> 00:00:00.660 align:middle line:90%
 
-00:11.600 --> 00:14.000
-game application case study
 
-00:14.000 --> 00:19.200
-And now we're going to talk about the search with parallel streams implementation
+2
+00:00:00.660 --> 00:00:03.300 align:middle line:84%
+So now that I've given you
+a quick overview of the Java
 
-00:19.200 --> 00:21.100
-and this implementation
+3
+00:00:03.300 --> 00:00:05.250 align:middle line:84%
+parallel streams
+framework, let's
 
-00:21.100 --> 00:22.100
-As you can see
+4
+00:00:05.250 --> 00:00:08.010 align:middle line:84%
+just jump right in
+to showing how
 
-00:22.100 --> 00:29.300
-if you look kind of squinted the the performance output shown in that little screen there on the on your slide
+5
+00:00:08.010 --> 00:00:14.460 align:middle line:84%
+to apply it to our search stream
+game application case study.
 
-00:29.300 --> 00:38.300
-This implementation performs substantially better than the previous sequential stream implementation that we talked about in Prior weeks
+6
+00:00:14.460 --> 00:00:16.830 align:middle line:84%
+And now we're going to
+talk about the search
 
-00:39.700 --> 00:43.400
-So we'll see that the implementation here is very
+7
+00:00:16.830 --> 00:00:20.070 align:middle line:84%
+with parallel streams
+implementation.
 
-00:43.400 --> 00:44.200
-very similar
+8
+00:00:20.070 --> 00:00:23.370 align:middle line:84%
+And this implementation, as
+you can see if you look--
 
-00:44.200 --> 00:44.700
-It's almost identical
+9
+00:00:23.370 --> 00:00:27.690 align:middle line:84%
+squint at the performance output
+shown in that little screen
 
-00:44.700 --> 00:53.800
-In fact to the sequential streams version as before the two key methods were going to focus on will be process stream and process input
+10
+00:00:27.690 --> 00:00:29.580 align:middle line:90%
+there on your slide--
 
-00:53.800 --> 00:55.000
-Except now
+11
+00:00:29.580 --> 00:00:32.729 align:middle line:84%
+this implementation performs
+substantially better
 
-00:55.000 --> 01:00.600
-these are part of the search with Carol Streams class as opposed to the search for sequential streams class
+12
+00:00:32.729 --> 00:00:36.210 align:middle line:84%
+than the previous sequential
+stream implementation
 
-01:01.700 --> 01:10.300
-Hear the method implementations just kind of shown very simply and as before will focus on map filter and collect
+13
+00:00:36.210 --> 00:00:39.930 align:middle line:84%
+that we've talked
+about in prior weeks.
 
-01:10.300 --> 01:15.500
-Except this time will be calling parallel stream instead of calling stream
+14
+00:00:39.930 --> 00:00:42.960 align:middle line:84%
+So we'll see that the
+implementation here
 
-01:15.500 --> 01:19.300
-which natural generator parallel streams of thought about cyclical strength
+15
+00:00:42.960 --> 00:00:44.250 align:middle line:90%
+is very, very similar.
 
-01:20.700 --> 01:25.800
-Let's put a recap what these methods do and kind of visualize them at a high-level
+16
+00:00:44.250 --> 00:00:46.740 align:middle line:84%
+It's almost identical, in fact,
+to the sequential stream's
 
-01:25.800 --> 01:34.800
-The parallel that the process stream that the uses of parallel stream to search a list of inputs and each of those inputs dreams
+17
+00:00:46.740 --> 00:00:48.060 align:middle line:90%
+version.
 
-01:34.800 --> 01:35.200
-of course
+18
+00:00:48.060 --> 00:00:51.150 align:middle line:84%
+As before, the two key methods
+we're going to focus on
 
-01:35.200 --> 01:38.000
-contains a work of our favorite author
+19
+00:00:51.150 --> 00:00:54.505 align:middle line:84%
+will be process stream
+and process input.
 
-01:38.000 --> 01:38.900
-William Shakespeare
+20
+00:00:54.505 --> 00:00:56.130 align:middle line:84%
+Except now these are
+part of the search
 
-01:38.900 --> 01:41.400
-So one string would have the text for Hamlet
+21
+00:00:56.130 --> 00:00:58.470 align:middle line:84%
+with parallel streams
+class as opposed
 
-01:41.400 --> 01:46.000
-Another string would have the text from Macbeth of the string would have the text
+22
+00:00:58.470 --> 00:01:01.890 align:middle line:84%
+to the search with
+sequential streams class.
 
-01:46.000 --> 01:46.500
-For King Lear
+23
+00:01:01.890 --> 00:01:06.060 align:middle line:84%
+Here the method implementations
+just shown very simply.
 
-01:46.500 --> 01:47.300
-etc
+24
+00:01:06.060 --> 00:01:10.410 align:middle line:84%
+And as before we'll focus
+on map, filter, and collect.
 
-01:47.300 --> 01:47.400
-etc
+25
+00:01:10.410 --> 00:01:13.950 align:middle line:84%
+Except this time, we'll
+be calling parallel stream
 
-01:48.900 --> 01:50.000
-The Perla stream
+26
+00:01:13.950 --> 00:01:16.590 align:middle line:84%
+instead of calling
+stream, which naturally
 
-01:50.000 --> 01:50.500
-of course
+27
+00:01:16.590 --> 00:01:20.970 align:middle line:84%
+will generate a parallel stream
+instead of sequential stream.
 
-01:50.500 --> 01:51.700
-uses the common Fork
+28
+00:01:20.970 --> 00:01:25.440 align:middle line:84%
+Let's quickly recap what these
+methods do and visualize them
 
-01:51.700 --> 01:53.000
-Join pool of workers thread
+29
+00:01:25.440 --> 00:01:26.670 align:middle line:90%
+at a high level.
 
-01:53.000 --> 01:54.500
-so it runs and process these
+30
+00:01:26.670 --> 00:01:29.040 align:middle line:84%
+The parallel-- the
+process stream method
 
-01:54.500 --> 01:56.500
-These inputs dreams in parallel
+31
+00:01:29.040 --> 00:01:33.458 align:middle line:84%
+uses a parallel stream to
+search a list of input strings.
 
-01:57.500 --> 01:59.700
-And as with the sequential version
+32
+00:01:33.458 --> 00:01:35.250 align:middle line:84%
+And each of those input
+strings, of course,
 
-01:59.700 --> 02:05.300
-it returns a list of lists of search results and not surprisingly
+33
+00:01:35.250 --> 00:01:39.450 align:middle line:84%
+contains a work of our favorite
+author William Shakespeare.
 
-02:05.300 --> 02:12.300
-the print phrases method that we've covered in previous weeks can be used in order to be able to flatten the contents
+34
+00:01:39.450 --> 00:01:41.820 align:middle line:84%
+So one string would have
+the text for Hamlet.
 
-02:12.300 --> 02:16.300
-therein print them out and then nicely formatted way for each work of Shakespeare
+35
+00:01:41.820 --> 00:01:44.210 align:middle line:84%
+Another string would have
+the text for Macbeth.
 
-02:16.300 --> 02:18.900
-All the quotes that came from that work will be display
+36
+00:01:44.210 --> 00:01:46.860 align:middle line:84%
+Another string would have
+the text for King Lear,
 
-02:20.300 --> 02:23.600
-Process input also uses a parallel stream
+37
+00:01:46.860 --> 00:01:49.150 align:middle line:90%
+et cetera, et cetera.
 
-02:23.600 --> 02:25.900
-except that uses apparel stream to search
+38
+00:01:49.150 --> 00:01:52.270 align:middle line:84%
+The parallel stream, of course,
+uses the common fork-join pool
 
-02:25.900 --> 02:31.600
-Each input strain and locate all occurrences of the phase
+39
+00:01:52.270 --> 00:01:55.960 align:middle line:84%
+of worker thread, so it runs and
+processes these input strings
 
-02:31.600 --> 02:36.700
-the phrases that shouldn't be a phase has its phrases his all occurrences of phrases
+40
+00:01:55.960 --> 00:01:57.710 align:middle line:90%
+in parallel.
 
-02:36.700 --> 02:42.800
-obviously thinking too much about the streams phases as opposed to the search screen
+41
+00:01:57.710 --> 00:02:00.140 align:middle line:84%
+And as with the
+sequential version,
 
-02:42.800 --> 02:44.700
-gang phases and phrases
+42
+00:02:00.140 --> 00:02:04.070 align:middle line:84%
+it returns a list of
+lists of search results.
 
-02:46.000 --> 02:47.700
-As before the parallel stream
+43
+00:02:04.070 --> 00:02:06.800 align:middle line:84%
+And not surprisingly
+the print phrases method
 
-02:47.700 --> 02:49.400
-Here also uses the common Fork
+44
+00:02:06.800 --> 00:02:08.990 align:middle line:84%
+that we've covered
+in previous weeks
 
-02:49.400 --> 02:55.900
-Join pool of workers threads to run this capitation these computations in parallel and process
+45
+00:02:08.990 --> 00:02:11.648 align:middle line:84%
+can be used in order
+to be able to flatten
 
-02:55.900 --> 02:57.500
-input returns a list of search results
+46
+00:02:11.648 --> 00:02:13.190 align:middle line:84%
+the contents there
+and print them out
 
-02:57.500 --> 03:04.000
-which then gets collected into a list of list of search results by process string
+47
+00:02:13.190 --> 00:02:15.080 align:middle line:90%
+in a nicely formatted way.
+
+48
+00:02:15.080 --> 00:02:17.420 align:middle line:84%
+For each work of
+Shakespeare, all the quotes
+
+49
+00:02:17.420 --> 00:02:20.450 align:middle line:84%
+that came from that
+work will be displayed.
+
+50
+00:02:20.450 --> 00:02:24.110 align:middle line:84%
+Process input also
+uses a parallel stream
+
+51
+00:02:24.110 --> 00:02:27.890 align:middle line:84%
+except it uses a parallel stream
+to search each input string
+
+52
+00:02:27.890 --> 00:02:31.880 align:middle line:84%
+and locate all
+occurrences of the phase--
+
+53
+00:02:31.880 --> 00:02:34.760 align:middle line:84%
+the phrases-- that should
+be phases, its phrases--
+
+54
+00:02:34.760 --> 00:02:37.260 align:middle line:90%
+so all occurrences of phrases.
+
+55
+00:02:37.260 --> 00:02:40.580 align:middle line:84%
+I'm obviously thinking too
+much about streams phases
+
+56
+00:02:40.580 --> 00:02:46.320 align:middle line:84%
+as opposed to the search
+stream game phases and phrases.
+
+57
+00:02:46.320 --> 00:02:47.910 align:middle line:84%
+As before, the
+parallel stream here
+
+58
+00:02:47.910 --> 00:02:51.390 align:middle line:84%
+also uses the common fork-join
+pool of worker threads
+
+59
+00:02:51.390 --> 00:02:54.810 align:middle line:84%
+to run this computation, these
+computations in parallel.
+
+60
+00:02:54.810 --> 00:02:58.500 align:middle line:84%
+And process input returns a
+list of search results, which
+
+61
+00:02:58.500 --> 00:03:02.190 align:middle line:84%
+then gets collected into a
+list of list of search results
+
+62
+00:03:02.190 --> 00:03:05.120 align:middle line:90%
+by process stream.
