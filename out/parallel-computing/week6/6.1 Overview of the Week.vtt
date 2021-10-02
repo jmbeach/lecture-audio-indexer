@@ -1,119 +1,254 @@
-00:00.400 --> 00:03.700
-Welcome to the next week of our course on Parallel
+WEBVTT
 
-00:03.700 --> 00:04.800
-Functional programming with Java
+1
+00:00:00.000 --> 00:00:00.670 align:middle line:90%
 
-00:06.200 --> 00:09.100
-Now that we've finished our coverage of java sequential streams
 
-00:09.100 --> 00:12.300
-We can finally turn our attention to Java parallel streams
+2
+00:00:00.670 --> 00:00:03.070 align:middle line:84%
+Welcome to the next
+week of our course
 
-00:12.300 --> 00:17.600
-which is the first of several job apparels and Frameworks we cover in this course
+3
+00:00:03.070 --> 00:00:06.268 align:middle line:84%
+on parallel functional
+programming with Java.
 
-00:18.800 --> 00:23.400
-This week's lesson start by outlining the structure and functionality of a parallel stream
+4
+00:00:06.268 --> 00:00:08.560 align:middle line:84%
+Now that we've finished our
+coverage of Java sequential
 
-00:23.400 --> 00:26.800
-which partition to data source in multiple chunks
+5
+00:00:08.560 --> 00:00:11.140 align:middle line:84%
+streams, we can finally
+turn our attention
 
-00:27.800 --> 00:35.000
-Process of these chunks in a pool of Fred's and combines the results of this parallel processing into a final reduce result
+6
+00:00:11.140 --> 00:00:15.130 align:middle line:84%
+to Java parallel streams, which
+is the first of several Java
 
-00:36.000 --> 00:36.600
-Key
+7
+00:00:15.130 --> 00:00:19.010 align:middle line:84%
+parallels and frameworks
+we cover in this course.
 
-00:36.600 --> 00:51.700
-benefit of the Java streams framework is its ability to automatically and transparently map behaviors in a parallel stream to multiple processor course without requiring programmers to spawn explicitly or even apply synchronization mechanisms in many cases
+8
+00:00:19.010 --> 00:00:21.740 align:middle line:84%
+This week's lessons start
+by outlining the structure
 
-00:51.700 --> 00:56.000
-In fact converting a sequential stream to a parallel stream
+9
+00:00:21.740 --> 00:00:25.310 align:middle line:84%
+and functionality of a parallel
+stream, which partitions a data
 
-00:56.000 --> 00:58.300
-Often just requires a minuscule changes
+10
+00:00:25.310 --> 00:00:28.480 align:middle line:84%
+source into multiple
+chunks, processes
 
-00:58.300 --> 01:04.300
-such as replacing your call to the screen Factor method with a call to the parallel stream Factory method
+11
+00:00:28.480 --> 00:00:30.730 align:middle line:84%
+these chunks in a
+pool of threads,
 
-01:05.500 --> 01:10.600
-This week's lesson to visualize and demonstrate the Simplicity of converting sequential
+12
+00:00:30.730 --> 00:00:33.400 align:middle line:84%
+and combines the results
+of this parallel processing
 
-01:10.600 --> 01:13.900
-The parallel streams in the context of the search screen
+13
+00:00:33.400 --> 00:00:36.280 align:middle line:90%
+into a final, reduced result.
 
-01:13.900 --> 01:14.900
-game case study
+14
+00:00:36.280 --> 00:00:38.650 align:middle line:84%
+A key benefit of the
+Java streams framework
 
-01:15.800 --> 01:16.500
-This case
+15
+00:00:38.650 --> 00:00:42.640 align:middle line:84%
+is its ability to automatically
+and transparently map behaviors
 
-01:16.500 --> 01:17.200
-study underscores
+16
+00:00:42.640 --> 00:00:46.180 align:middle line:84%
+in a parallel stream to
+multiple processor cores
 
-01:17.200 --> 01:25.000
-the fact that all the aggregate operations recovered in prior week's work will work seamlessly with parallel streams
+17
+00:00:46.180 --> 00:00:48.250 align:middle line:84%
+without requiring
+programmers to spawn threads
 
-01:26.000 --> 01:26.900
-Not surprisingly
+18
+00:00:48.250 --> 00:00:51.280 align:middle line:84%
+explicitly or even apply
+synchronization mechanisms,
 
-01:26.900 --> 01:27.200
-However
+19
+00:00:51.280 --> 00:00:53.000 align:middle line:90%
+in many cases.
 
-01:27.200 --> 01:29.600
-the three phases of a parallel stream
+20
+00:00:53.000 --> 00:00:56.180 align:middle line:84%
+In fact, converting a sequential
+stream to a parallel stream
 
-01:29.600 --> 01:32.000
-operate somewhat differently than a sequential stream
+21
+00:00:56.180 --> 00:00:59.180 align:middle line:84%
+often just requires
+minuscule changes,
 
-01:33.400 --> 01:37.800
-This week's lesson there for giving an overview of parallel streams internals
+22
+00:00:59.180 --> 00:01:01.520 align:middle line:84%
+such as replacing a call
+to the stream factory
 
-01:38.800 --> 01:45.600
-Which particularly important understand When developing performance critical Java programs on Modern multi-core processors
+23
+00:01:01.520 --> 00:01:05.780 align:middle line:84%
+method or the call to the
+parallel stream factory method.
 
-01:46.400 --> 01:52.900
-In particular we examine how the streams framework first invokes predefined or you to find splitter
+24
+00:01:05.780 --> 00:01:09.470 align:middle line:84%
+This week's lessons visualize
+and demonstrate the simplicity
 
-01:52.900 --> 01:54.200
-Raiders competition
+25
+00:01:09.470 --> 00:01:12.260 align:middle line:84%
+of converting
+sequential-to-parallel streams
 
-01:54.200 --> 01:55.800
-a data source into multiple Chucks
+26
+00:01:12.260 --> 00:01:16.020 align:middle line:84%
+in the context of the search
+stream [? gang ?] case study.
 
-01:56.700 --> 02:02.100
-We next show how these chunks are processed in parallel by running the streams intermediate operations
+27
+00:01:16.020 --> 00:01:18.390 align:middle line:84%
+This case study
+underscores the fact
 
-02:02.100 --> 02:03.200
-in the job
+28
+00:01:18.390 --> 00:01:19.980 align:middle line:84%
+that all the
+aggregate operations
 
-02:03.200 --> 02:03.700
-Fork
+29
+00:01:19.980 --> 00:01:24.000 align:middle line:84%
+we covered in prior weeks'
+work will work seamlessly
 
-02:03.700 --> 02:04.100
-Join
+30
+00:01:24.000 --> 00:01:26.240 align:middle line:90%
+with parallel streams.
 
-02:05.100 --> 02:05.800
-Finally
+31
+00:01:26.240 --> 00:01:28.640 align:middle line:84%
+Not surprisingly,
+however, the three phases
 
-02:05.800 --> 02:09.000
-we Outline by the streams framework uses terminal operations
+32
+00:01:28.640 --> 00:01:31.130 align:middle line:84%
+of a parallel stream
+operate somewhat differently
 
-02:09.000 --> 02:11.800
-like collect together with predefined
+33
+00:01:31.130 --> 00:01:33.630 align:middle line:90%
+than a sequential stream.
 
-02:11.800 --> 02:14.200
-Are you to find collectors to join
+34
+00:01:33.630 --> 00:01:36.150 align:middle line:84%
+This week's lessons,
+therefore, give an overview
 
-02:14.200 --> 02:17.100
-Partial sub results into a final reduce result
+35
+00:01:36.150 --> 00:01:39.150 align:middle line:84%
+of parallel streams'
+internals, which
 
-02:18.200 --> 02:21.600
-To maximize the performance of the Java parallel streams framework
+36
+00:01:39.150 --> 00:01:41.580 align:middle line:84%
+are particularly important
+to understand when developing
 
-02:21.600 --> 02:27.000
-It's important to know which aspects of these phases can be controlled and which cat
+37
+00:01:41.580 --> 00:01:45.030 align:middle line:84%
+performance-critical Java
+programs on modern multicore
 
-02:27.000 --> 02:31.500
-So we walked through many code examples to illustrate key points
+38
+00:01:45.030 --> 00:01:46.730 align:middle line:90%
+processors.
+
+39
+00:01:46.730 --> 00:01:49.580 align:middle line:84%
+In particular, we examine
+how the streams framework
+
+40
+00:01:49.580 --> 00:01:53.690 align:middle line:84%
+first invokes predefined or
+user-defined spliterators
+
+41
+00:01:53.690 --> 00:01:56.930 align:middle line:84%
+to partition a data source
+into multiple chunks.
+
+42
+00:01:56.930 --> 00:01:59.990 align:middle line:84%
+We next show how these chunks
+are processed in parallel
+
+43
+00:01:59.990 --> 00:02:02.540 align:middle line:84%
+by running the streams
+intermediate operations
+
+44
+00:02:02.540 --> 00:02:05.360 align:middle line:84%
+in the Java common
+fork-joint pool.
+
+45
+00:02:05.360 --> 00:02:08.810 align:middle line:84%
+Finally, we outline how the
+streams framework uses terminal
+
+46
+00:02:08.810 --> 00:02:12.720 align:middle line:84%
+operations like collect together
+with predefined or user-defined
+
+47
+00:02:12.720 --> 00:02:16.340 align:middle line:84%
+collectors the join partial
+sub-results into a final,
+
+48
+00:02:16.340 --> 00:02:20.420 align:middle line:84%
+reduced result. To maximize
+the performance of the Java
+
+49
+00:02:20.420 --> 00:02:24.050 align:middle line:84%
+parallel streams framework, it's
+important to know which aspects
+
+50
+00:02:24.050 --> 00:02:27.980 align:middle line:84%
+of these phases can be
+controlled and which can't.
+
+51
+00:02:27.980 --> 00:02:30.170 align:middle line:84%
+So we walked through
+many code examples
+
+52
+00:02:30.170 --> 00:02:32.650 align:middle line:90%
+to illustrate key points.

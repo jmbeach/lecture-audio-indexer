@@ -1,242 +1,465 @@
-00:00.500 --> 00:03.000
-We'll continue our discussion of parallel streams
-
-00:03.000 --> 00:05.800
-internals by focusing on splitting
-
-00:05.800 --> 00:08.400
-combining and pooling
-
-00:09.600 --> 00:10.000
-So
-
-00:10.000 --> 00:10.200
-once again
-
-00:10.200 --> 00:12.100
-we'll talk about what you can change
-
-00:12.100 --> 00:14.300
-what you can't change in the context of splitting
-
-00:14.300 --> 00:16.000
-combining and pulling
-
-00:18.600 --> 00:24.000
-So that the splitting and combining and pulling mechanisms by default are invisible
-
-00:24.000 --> 00:30.400
-If you if you don't do anything and you just program of Pella screen by saying Carol Stream is a stream
-
-00:30.400 --> 00:38.500
-Good things happen without you having to be much concerned with how or why is good things happen and that's again intentional
-
-00:38.500 --> 00:38.900
-It's by Design
-
-00:40.600 --> 00:41.000
-Why
-
-00:41.000 --> 00:49.900
-This is the case is that all Java Collections you get out of the box in the Java class library on the Java platform all come with predefined splitter
-
-00:49.900 --> 00:50.200
-Raiders
-
-00:50.200 --> 00:52.200
-that can create parallel streams
-
-00:52.200 --> 00:53.200
-So that's great
-
-00:54.000 --> 00:54.800
-You can see her again
-
-00:54.800 --> 00:57.700
-split a writer and then here's parallel stream
-
-00:57.700 --> 01:02.400
-which uses the splitter Raider method in conjunction with stream support
-
-01:02.400 --> 01:05.600
-Stream and the true flag in the cape
-
-01:05.600 --> 01:06.900
-You want to make a Pearl Street
-
-01:08.400 --> 01:10.500
-Likewise Java also
-
-01:10.500 --> 01:12.800
-predefined various collector
-
-01:12.800 --> 01:17.300
-Factory methods in the collectors utility class
-
-01:17.300 --> 01:18.700
-And so
-
-01:18.700 --> 01:19.600
-we have various methods
-
-01:19.600 --> 01:21.700
-you could do things like create lists
-
-01:21.700 --> 01:23.300
-create sets
-
-01:23.300 --> 01:23.800
-and so on
-
-01:23.800 --> 01:26.400
-And these Factory methods
-
-01:26.400 --> 01:32.400
-even though they create non concurrent collectors can work seamlessly with parallel streams
-
-01:32.400 --> 01:34.000
-as we'll talk about here shortly
-
-01:35.600 --> 01:36.300
-And of course
-
-01:36.300 --> 01:37.000
-the common Fork
-
-01:37.000 --> 01:39.400
-join pool is also provided
-
-01:39.400 --> 01:40.600
-And in fact
-
-01:40.600 --> 01:40.800
-it's
-
-01:40.800 --> 01:45.900
-it's mandated to be used with Carol Streams in order to run the intermediate operations
-
-01:45.900 --> 01:49.000
-on the chunks of data created by the Pearl splitter
-
-01:49.000 --> 01:49.300
-Raiders
-
-01:50.200 --> 01:53.700
-This is the one that doesn't give you as many customization options
-
-01:53.700 --> 02:00.500
-You can customize the heck out of the first two and we'll talk a bit about how to customize these things
-
-02:00.500 --> 02:02.400
-Although we'll talk in more detail later on
-
-02:02.400 --> 02:03.200
-We get a little further along
-
-02:05.300 --> 02:11.000
-You can customize split Raider by basically either directly implementing these
-
-02:11.000 --> 02:20.700
-put her in her face or extending the abstract splitter abstract class and then filling in the appropriate hook methods advance
-
-02:20.700 --> 02:22.700
-And as we mentioned before
-
-02:22.700 --> 02:26.200
-that try Advanced method is used by the streams framework
-
-02:26.200 --> 02:27.700
-The process elements
-
-02:27.700 --> 02:37.700
-One of the time in Boston right now in Carol Streams talk about that when we talked about splitter Raiders for sequential streams and the try split method of course
-
-02:37.700 --> 02:46.800
-is what's used to partition elements in a parallel stream and we'll talk a lot more about how try split Works in a couple of different lessons in particular
-
-02:46.800 --> 02:47.700
-will talk about it
-
-02:47.700 --> 02:49.500
-Generally in the partitioning lesson
-
-02:49.500 --> 02:51.400
-and then we will go and show a very
-
-02:51.400 --> 02:53.200
-very detailed and cool example
-
-02:53.200 --> 02:57.100
-When we talked about the search with parallel splitter
-
-02:57.100 --> 03:05.100
-raider-class which implements a super Advanced version of try split to take a work of Shakespeare and
-
-03:05.300 --> 03:06.100
-Put it up into chunks
-
-03:06.100 --> 03:07.500
-that can be searched in parallel
-
-03:07.500 --> 03:14.000
-So that's going to give us really high-end high-performance fine-grained parallel processor
-
-03:15.800 --> 03:18.400
-Likewise there's also the collector interface
-
-03:18.400 --> 03:31.700
-We've talked before about non concurrent collectors and it has all these methods that you can use will also be talking about concurrent collectors here shortly and you get a chance to compare and contrast the performance characteristics
-
-03:33.300 --> 03:41.700
-And then there's also this mechanism which we briefly talked about earlier to talk about in a lot more detail in this left
-
-03:41.700 --> 03:46.100
-this section on Parallel streams as well as the section on the fork
-
-03:46.100 --> 03:54.100
-join pool framework and this is basically used to add new threads to the color for joined pool
-
-03:54.100 --> 03:57.000
-If operations Block
-
-03:57.000 --> 03:59.200
-it's called interesting enough
-
-03:59.200 --> 04:02.100
-They manage blocker interface and it's pretty cool
-
-04:02.100 --> 04:06.800
-It's something that most people who program a job and don't know much about
-
-04:06.800 --> 04:07.700
-In fact
-
-04:07.700 --> 04:14.800
-there's a lot of misleading folklore out there that that you can't use parallel streams and you can't use the fork
-
-04:14.800 --> 04:16.600
-Join pool for blocking operations
-
-04:16.600 --> 04:18.600
-Nothing could be further from the truth
-
-04:18.600 --> 04:22.000
-They work perfectly well for blocking operation things
-
-04:22.000 --> 04:22.800
-like blocking Ayo
-
-04:22.800 --> 04:26.400
-or blocking on synchronizers are blocking on blocking cues
-
-04:26.400 --> 04:30.700
-And so it's just that you have to know how to use to manage block her properly
-
-04:30.700 --> 04:32.900
-So I will help to dispel those
-
-04:33.200 --> 04:34.000
-Mistaken
-
-04:34.000 --> 04:39.800
-folklore myths and give you very solid grounding for how to use these features in practice
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.720 align:middle line:90%
+
+
+2
+00:00:00.720 --> 00:00:04.140 align:middle line:84%
+We'll continue our discussion
+of parallel streams internals
+
+3
+00:00:04.140 --> 00:00:09.800 align:middle line:84%
+by focusing on splitting,
+combining, and pooling.
+
+4
+00:00:09.800 --> 00:00:11.925 align:middle line:84%
+So once again, we'll talk
+about what you can change
+
+5
+00:00:11.925 --> 00:00:14.730 align:middle line:84%
+and what you can't change
+in the context of splitting,
+
+6
+00:00:14.730 --> 00:00:15.990 align:middle line:90%
+combining, and pooling.
+
+7
+00:00:15.990 --> 00:00:18.780 align:middle line:90%
+
+
+8
+00:00:18.780 --> 00:00:20.790 align:middle line:84%
+So that the splitting,
+and combining,
+
+9
+00:00:20.790 --> 00:00:24.090 align:middle line:84%
+and pooling mechanisms,
+by default, are invisible.
+
+10
+00:00:24.090 --> 00:00:28.380 align:middle line:84%
+If you don't do anything and you
+just program a parallel stream
+
+11
+00:00:28.380 --> 00:00:31.080 align:middle line:84%
+by saying parallelStream
+instead of stream,
+
+12
+00:00:31.080 --> 00:00:33.150 align:middle line:84%
+good things happen
+without you having
+
+13
+00:00:33.150 --> 00:00:37.110 align:middle line:84%
+to be much concerned with how
+or why these good things happen.
+
+14
+00:00:37.110 --> 00:00:40.790 align:middle line:84%
+And that's, again,
+intentional-- it's by design.
+
+15
+00:00:40.790 --> 00:00:44.880 align:middle line:84%
+Why this is the case is that
+all Java collections you get out
+
+16
+00:00:44.880 --> 00:00:48.090 align:middle line:84%
+of the box in the Java class
+library on the Java platform
+
+17
+00:00:48.090 --> 00:00:50.430 align:middle line:84%
+all come with
+predefined spliterators
+
+18
+00:00:50.430 --> 00:00:54.240 align:middle line:84%
+that can create parallel
+streams, so that's great.
+
+19
+00:00:54.240 --> 00:00:56.130 align:middle line:84%
+You can see here,
+again, spliterator,
+
+20
+00:00:56.130 --> 00:00:59.940 align:middle line:84%
+and then here's parallel stream
+which uses the spliterator
+
+21
+00:00:59.940 --> 00:01:02.910 align:middle line:84%
+method in conjunction
+with StreamSupport.stream
+
+22
+00:01:02.910 --> 00:01:05.640 align:middle line:84%
+and the true flag
+to indicate you
+
+23
+00:01:05.640 --> 00:01:08.690 align:middle line:90%
+want to make a parallel stream.
+
+24
+00:01:08.690 --> 00:01:13.490 align:middle line:84%
+Likewise, Java also predefined
+various collector factory
+
+25
+00:01:13.490 --> 00:01:18.330 align:middle line:84%
+methods in the
+Collectors utility class.
+
+26
+00:01:18.330 --> 00:01:19.850 align:middle line:84%
+And so we have
+various methods that
+
+27
+00:01:19.850 --> 00:01:24.360 align:middle line:84%
+can do things like create
+lists, create sets, and so on.
+
+28
+00:01:24.360 --> 00:01:27.260 align:middle line:84%
+And these factory
+methods, even though they
+
+29
+00:01:27.260 --> 00:01:29.630 align:middle line:84%
+create non-concurrent
+collectors,
+
+30
+00:01:29.630 --> 00:01:32.480 align:middle line:84%
+can work seamlessly
+with parallel streams,
+
+31
+00:01:32.480 --> 00:01:35.940 align:middle line:84%
+as we'll talk
+about here shortly.
+
+32
+00:01:35.940 --> 00:01:38.340 align:middle line:84%
+And then, of course, the
+common fork-join pool
+
+33
+00:01:38.340 --> 00:01:40.060 align:middle line:90%
+is also provided.
+
+34
+00:01:40.060 --> 00:01:43.950 align:middle line:84%
+And in fact, it's mandated to
+be used with parallel streams
+
+35
+00:01:43.950 --> 00:01:46.380 align:middle line:84%
+in order to run the
+intermediate operations
+
+36
+00:01:46.380 --> 00:01:50.510 align:middle line:84%
+on the chunks of data created
+by the parallel spliterators.
+
+37
+00:01:50.510 --> 00:01:52.550 align:middle line:84%
+This is the one that
+doesn't give you
+
+38
+00:01:52.550 --> 00:01:53.960 align:middle line:90%
+as many customization options.
+
+39
+00:01:53.960 --> 00:01:56.690 align:middle line:84%
+You can customize the
+heck out of the first two.
+
+40
+00:01:56.690 --> 00:02:00.515 align:middle line:84%
+And we'll talk a bit about
+how to customize these things,
+
+41
+00:02:00.515 --> 00:02:02.390 align:middle line:84%
+although we'll talk in
+more detail later when
+
+42
+00:02:02.390 --> 00:02:05.670 align:middle line:90%
+we get a little further along.
+
+43
+00:02:05.670 --> 00:02:09.259 align:middle line:84%
+You can customize
+spliterator by basically
+
+44
+00:02:09.259 --> 00:02:12.170 align:middle line:84%
+either directly implementing
+the spliterator interface
+
+45
+00:02:12.170 --> 00:02:15.140 align:middle line:84%
+or extending the
+AbstractSpliterator
+
+46
+00:02:15.140 --> 00:02:18.620 align:middle line:84%
+abstract class, and then
+filling in the appropriate hook
+
+47
+00:02:18.620 --> 00:02:22.070 align:middle line:84%
+methods, such as
+tryAdvance and trySplit.
+
+48
+00:02:22.070 --> 00:02:24.590 align:middle line:84%
+As we've mentioned before,
+the tryAdvance method
+
+49
+00:02:24.590 --> 00:02:27.530 align:middle line:84%
+is used by the streams
+framework to process
+
+50
+00:02:27.530 --> 00:02:30.080 align:middle line:84%
+elements one at the
+time in both sequential
+
+51
+00:02:30.080 --> 00:02:31.460 align:middle line:90%
+and parallel streams.
+
+52
+00:02:31.460 --> 00:02:34.040 align:middle line:84%
+We've talked about that when
+we talked about spliterators
+
+53
+00:02:34.040 --> 00:02:35.810 align:middle line:90%
+for sequential streams.
+
+54
+00:02:35.810 --> 00:02:37.910 align:middle line:84%
+And the trySplit
+method, of course,
+
+55
+00:02:37.910 --> 00:02:41.300 align:middle line:84%
+is what's used to partition
+elements in a parallel stream.
+
+56
+00:02:41.300 --> 00:02:43.010 align:middle line:84%
+And we'll talk a
+lot more about how
+
+57
+00:02:43.010 --> 00:02:46.160 align:middle line:84%
+trySplit works in a couple
+of different lessons.
+
+58
+00:02:46.160 --> 00:02:48.320 align:middle line:84%
+In particular, we'll
+talk about it generally
+
+59
+00:02:48.320 --> 00:02:50.210 align:middle line:84%
+in the partitioning
+lesson, and then we
+
+60
+00:02:50.210 --> 00:02:53.870 align:middle line:84%
+will go and show a very, very
+detailed and cool example when
+
+61
+00:02:53.870 --> 00:02:57.680 align:middle line:84%
+we talk about the
+SearchWithParallelSpliterator
+
+62
+00:02:57.680 --> 00:03:02.480 align:middle line:84%
+class, which implements a super
+advanced version of trySplit
+
+63
+00:03:02.480 --> 00:03:05.660 align:middle line:84%
+to take a look of
+Shakespeare and split it up
+
+64
+00:03:05.660 --> 00:03:07.890 align:middle line:84%
+into chunks that can be
+searched in parallel.
+
+65
+00:03:07.890 --> 00:03:09.950 align:middle line:84%
+So that's going
+to give us really
+
+66
+00:03:09.950 --> 00:03:13.490 align:middle line:84%
+high-end, high-performance,
+fine-grained parallel
+
+67
+00:03:13.490 --> 00:03:16.020 align:middle line:90%
+processing.
+
+68
+00:03:16.020 --> 00:03:18.390 align:middle line:84%
+Likewise, there's also
+the collector interface.
+
+69
+00:03:18.390 --> 00:03:22.260 align:middle line:84%
+We've talked before about
+non-concurrent collectors.
+
+70
+00:03:22.260 --> 00:03:25.660 align:middle line:84%
+And it has all these
+methods that you can use.
+
+71
+00:03:25.660 --> 00:03:27.978 align:middle line:84%
+We'll also be talking
+about concurrent collectors
+
+72
+00:03:27.978 --> 00:03:29.520 align:middle line:84%
+here shortly, and
+you'll get a chance
+
+73
+00:03:29.520 --> 00:03:33.540 align:middle line:84%
+to compare and contrast the
+performance characteristics.
+
+74
+00:03:33.540 --> 00:03:37.015 align:middle line:84%
+And then there's also this
+mechanism which we briefly
+
+75
+00:03:37.015 --> 00:03:37.890 align:middle line:90%
+talked about earlier.
+
+76
+00:03:37.890 --> 00:03:43.230 align:middle line:84%
+We're going to talk about it a
+lot more detail in this section
+
+77
+00:03:43.230 --> 00:03:45.090 align:middle line:84%
+on parallel streams
+as well as the section
+
+78
+00:03:45.090 --> 00:03:48.420 align:middle line:90%
+on the fork-join pool framework.
+
+79
+00:03:48.420 --> 00:03:51.750 align:middle line:84%
+And this is
+basically used to add
+
+80
+00:03:51.750 --> 00:03:54.930 align:middle line:84%
+new threads to the
+common fork-join pool
+
+81
+00:03:54.930 --> 00:03:57.500 align:middle line:90%
+if operations block.
+
+82
+00:03:57.500 --> 00:03:59.280 align:middle line:84%
+And it's called,
+interesting enough,
+
+83
+00:03:59.280 --> 00:04:02.830 align:middle line:84%
+the manage blocker interface,
+and it's very cool.
+
+84
+00:04:02.830 --> 00:04:05.850 align:middle line:84%
+It's something that most
+people who program with Java
+
+85
+00:04:05.850 --> 00:04:07.320 align:middle line:90%
+don't know much about.
+
+86
+00:04:07.320 --> 00:04:10.530 align:middle line:84%
+In fact, there's a lot of
+misleading folklore out there
+
+87
+00:04:10.530 --> 00:04:13.020 align:middle line:84%
+that you can't use
+parallel streams
+
+88
+00:04:13.020 --> 00:04:17.160 align:middle line:84%
+and you can't use the fork-join
+pool for blocking operations.
+
+89
+00:04:17.160 --> 00:04:18.930 align:middle line:84%
+Nothing could be
+further from the truth.
+
+90
+00:04:18.930 --> 00:04:21.959 align:middle line:84%
+They work perfectly well for
+blocking operations, things
+
+91
+00:04:21.959 --> 00:04:25.980 align:middle line:84%
+like blocking I/O, or blocking
+unsynchronizers, or blocking
+
+92
+00:04:25.980 --> 00:04:27.450 align:middle line:90%
+queues, and so on.
+
+93
+00:04:27.450 --> 00:04:30.300 align:middle line:84%
+It's just that you have to
+know how to use manage blocker
+
+94
+00:04:30.300 --> 00:04:34.830 align:middle line:84%
+properly so I will help to
+dispel those mistaken folklore
+
+95
+00:04:34.830 --> 00:04:38.550 align:middle line:84%
+myths and give you very solid
+grounding for how to use
+
+96
+00:04:38.550 --> 00:04:40.880 align:middle line:90%
+these features in practice.

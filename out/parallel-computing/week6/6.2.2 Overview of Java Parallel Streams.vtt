@@ -1,404 +1,842 @@
-00:00.500 --> 00:08.400
-We're going to do now is start taking a look at the various phases in a Java parallel streams and peek under the hood and this of course
-
-00:08.400 --> 00:15.700
-is important to give you a bigger and better understanding with actually taking place behind the scenes when you run your pedals dreams programs
-
-00:17.100 --> 00:18.700
-A job apparel stream
-
-00:18.700 --> 00:23.300
-Implements a variant of the famous mapreduce model
-
-00:23.300 --> 00:26.800
-which is optimized for multi-core processors
-
-00:26.800 --> 00:29.700
-If you're familiar with mapreduce from other context
-
-00:29.700 --> 00:34.100
-you probably know it's used for things like cluster basic Computing
-
-00:34.100 --> 00:44.400
-What do you end up being able to map your tasks your jobs to multiple computers in a cluster and then be able to get the results back and reduce them to a final result
-
-00:44.400 --> 00:49.800
-A good example of this would be something like Google's search engine which uses many computers to do
-
-00:49.800 --> 00:51.400
-the searching efficiently and Impala
-
-00:51.400 --> 00:54.400
-It turns out that job at parallel streams
-
-00:54.400 --> 00:55.200
-Works a little differently
-
-00:55.200 --> 00:58.500
-I'll do the basic concept is very similar in particular
-
-00:58.500 --> 01:00.600
-the mapreduce model for Java
-
-01:00.600 --> 01:06.300
-Carol Streams works on a multi-core processor rather than a cluster
-
-01:06.300 --> 01:08.400
-If you want to use cluster stop programming
-
-01:08.400 --> 01:12.500
-you have to work with a different type of programming Middle where things like
-
-01:12.500 --> 01:17.000
-perhaps Hadoop or Sparks naturally the topics
-
-01:17.100 --> 01:18.500
-Over here for Palace dreams
-
-01:18.500 --> 01:20.200
-could also work in that context as well
-
-01:20.200 --> 01:28.800
-This diagram gives a somewhat Whimsical but fairly realistic rendition of the mapreduce process
-
-01:28.800 --> 01:34.800
-So imagine we want to make a sandwich and we've got a bunch of various components
-
-01:34.800 --> 01:35.900
-In our refrigerator
-
-01:35.900 --> 01:39.000
-We have bread and lettuce and meat
-
-01:39.000 --> 01:40.300
-and cheese and tomatoes
-
-01:40.300 --> 01:47.600
-So the first phase of this is basically to partition the elements in our fridge and put them out on the table
-
-01:47.600 --> 01:54.900
-And then we're going to do is do the map phase where props in parallel different people could slice up the bread
-
-01:54.900 --> 01:56.300
-Shred the lettuce slice
-
-01:56.300 --> 01:57.400
-the meat spicy cheese
-
-01:57.400 --> 01:58.400
-slice
-
-01:58.400 --> 01:58.700
-the tomatoes
-
-01:58.700 --> 01:59.300
-and so on
-
-01:59.300 --> 02:08.200
-And then a different group of people could take those various slices and shredded lettuce and then reduce them by putting together sandwiches
-
-02:08.200 --> 02:09.100
-And if you play your cards
-
-02:09.100 --> 02:09.400
-right
-
-02:09.400 --> 02:12.400
-you could end up having a nice little pipeline of parallel processing
-
-02:12.400 --> 02:15.800
-in order to be able to make your sandwiches more quickly and more effectively
-
-02:16.900 --> 02:17.800
-Obviously
-
-02:17.800 --> 02:19.800
-we're not dealing with making sandwiches here
-
-02:19.800 --> 02:20.900
-Would you lie was ready
-
-02:20.900 --> 02:24.900
-Ready for Peter programs that wants to take good advantage of multi-core processors
-
-02:24.900 --> 02:26.800
-So what actually happens
-
-02:26.800 --> 02:39.600
-of course in a parallel stream is this split apply and combine data processing strategy that we've talked about multiple times earlier and now we're really going to get a chance to talk about the parallel aspects of that
-
-02:40.800 --> 02:43.600
-So if you recall the three phases in the split
-
-02:43.600 --> 02:51.600
-apply combine Paradigm are first split which will end up recursively partitioning a data source up into chunks
-
-02:51.600 --> 02:57.000
-And even think of this kind of like they're slicing up pieces of pizza as we showed her the picture
-
-02:58.100 --> 03:02.300
-We'll be talking about this in more detail in an upcoming lesson
-
-03:02.300 --> 03:03.500
-But for right now
-
-03:03.500 --> 03:07.800
-is part of the overview basically went out with a bunch of chunks that is independent
-
-03:07.800 --> 03:09.300
-and essentially
-
-03:09.300 --> 03:15.100
-an atomic subset of a portion or partition of the original data source
-
-03:15.100 --> 03:25.600
-and this partition in may take place recursively in multiple steps in order to be able to get the original data into smaller pieces to be processed effectively in parallel
-
-03:26.800 --> 03:27.700
-The way this is
-
-03:27.700 --> 03:27.900
-Of course
-
-03:27.900 --> 03:32.100
-in Java and JavaScript teams is through split
-
-03:32.100 --> 03:32.500
-Raiders
-
-03:32.500 --> 03:33.700
-the split Raiders
-
-03:33.700 --> 03:38.300
-They used to partition data sources in particular collections in Java
-
-03:39.700 --> 03:46.200
-The try Advance method which we talked about in previous weeks is used for both sequential and parallel streams
-
-03:46.200 --> 03:47.700
-And of course
-
-03:47.700 --> 03:52.900
-the other important methods which is called Tri split is only used for palestrina's
-
-03:52.900 --> 03:58.100
-and we'll talk a lot about that as we go further in these lessons in this week in subsequent weeks
-
-03:59.800 --> 04:03.400
-Each job Collection comes with a predefined split writer
-
-04:03.400 --> 04:04.200
-as I've mentioned
-
-04:04.200 --> 04:06.300
-before this split erator
-
-04:06.300 --> 04:11.400
-implementation is provided as a default method in the Java collection interface
-
-04:11.400 --> 04:15.600
-And you can see how split writer has a default implementation there
-
-04:15.600 --> 04:16.400
-which of course
-
-04:16.400 --> 04:23.800
-can be overridden by various containers and elections that will Implement collection either directly or indirectly
-
-04:23.800 --> 04:29.600
-And you could also see how the Pearl stream method uses splitter Ator
-
-04:30.500 --> 04:31.600
-So if you take a look here
-
-04:31.600 --> 04:36.300
-you can see how the travel screen method uses a splitter ater along with the stream support
-
-04:36.300 --> 04:39.800
-Stream method to create a parallel stream
-
-04:39.800 --> 04:45.700
-And you can see it's a perilous train because the trooper amateur is passed into stream support
-
-04:45.700 --> 04:46.100
-Stream
-
-04:47.400 --> 04:51.300
-It's also possible to Define your own custom Splitters
-
-04:51.300 --> 04:55.800
-We've shown some examples of this before in the context of our phrase
-
-04:55.800 --> 04:59.100
-Matt's literator from the sequential search screen
-
-04:59.100 --> 04:59.800
-get an application
-
-04:59.800 --> 05:05.200
-And also with the splitter that we used earlier for the simple search stream
-
-05:05.200 --> 05:06.000
-example
-
-05:06.000 --> 05:10.100
-we're going to be looking at other aspects of Customs split Raiders here
-
-05:10.100 --> 05:11.400
-In the parallel string section is
-
-05:13.100 --> 05:14.200
-Not surprisingly
-
-05:14.200 --> 05:17.000
-parallel streams will perform best
-
-05:17.000 --> 05:27.300
-If your data sources can be split efficiently and can be split evenly and I'll have a whole discussion of that later and I'll show you some results from performance analysis
-
-05:27.300 --> 05:29.200
-That quantifies
-
-05:29.200 --> 05:36.500
-the differences between different Java Collections in terms of how evenly and how efficiently they split up their data
-
-05:38.200 --> 05:41.700
-The second phase in this process is the apply phase
-
-05:41.700 --> 05:44.300
-And unlike the earlier discussions
-
-05:44.300 --> 05:48.900
-We had for sequential streams were there was only one Fred think that a lot more interesting
-
-05:48.900 --> 05:50.100
-We start dealing
-
-05:50.100 --> 05:52.500
-with parallel streams in this context
-
-05:52.500 --> 05:55.400
-The process chunks
-
-05:55.400 --> 05:57.100
-The chunks that are created by the split
-
-05:57.100 --> 06:00.000
-Aerator are processed in parallel
-
-06:00.000 --> 06:01.900
-in the common
-
-06:01.900 --> 06:03.800
-for joints Red Bull
-
-06:03.800 --> 06:06.000
-and it has to be the coming-forth joint for
-
-06:06.000 --> 06:07.900
-That's the way that streams are designed to work
-
-06:09.100 --> 06:12.900
-It turns out that the splitting and applying phases actually
-
-06:12.900 --> 06:16.200
-run simultaneously after certain limit their men
-
-06:16.200 --> 06:18.500
-after you've created enough chunks
-
-06:18.500 --> 06:19.400
-as part of splitting
-
-06:19.400 --> 06:24.000
-those get fed into the 4th drawing for and then they start to run in parallel
-
-06:24.000 --> 06:26.600
-This is not a purely sequential thing
-
-06:26.600 --> 06:30.300
-But the splitting doesn't take place first followed by all the applying instead
-
-06:30.300 --> 06:31.800
-They're there interleague
-
-06:31.800 --> 06:35.800
-Thereby allowing the program to start running were quickly and get results were quickly
-
-06:37.300 --> 06:40.700
-The way that this works under the hood is we'll talk about in much more detail
-
-06:40.700 --> 06:44.800
-Later is by using something called work stealing
-
-06:44.800 --> 06:51.400
-and this is designed intentionally to maximize CPU processor core utilization
-
-06:51.400 --> 06:54.000
-The goal is to keep things as busy as possible
-
-06:54.000 --> 06:56.400
-and never let the threads of the process
-
-06:56.400 --> 06:56.700
-of course
-
-06:56.700 --> 06:58.600
-block or sleep for any length of time
-
-06:58.600 --> 06:59.900
-Is that tested
-
-06:59.900 --> 07:03.600
-Great performance quite a bit on Modern multi-core processors
-
-07:04.800 --> 07:05.500
-Programmers
-
-07:05.500 --> 07:09.700
-get some degree of control of the number of threads in the common Fork
-
-07:09.700 --> 07:12.200
-Join pool will will talk extensively about how to do this
-
-07:12.200 --> 07:14.600
-Both here in the parallel streams discussion
-
-07:14.600 --> 07:20.600
-as well as also later when we cover the job of work joint for framework itself
-
-07:20.600 --> 07:25.300
-So you'll get a number of different perspectives on how to control the number of threads in the pool
-
-07:26.900 --> 07:36.800
-The third and final phase is the combined phase which works by joining the partial results with your credit in the different threads running in the pool
-
-07:36.800 --> 07:44.600
-As part of the apply phase into a single so-called reduced result has been a lot of time talking about this as well
-
-07:45.600 --> 07:48.000
-This is typically done by terminal operations
-
-07:48.000 --> 07:50.300
-like collect and reduce
-
-07:51.500 --> 07:57.800
-And as we'll see that the collectors that are used by collect can be either concurrent
-
-07:57.800 --> 08:00.100
-which means that they have to be synchronized
-
-08:00.100 --> 08:05.900
-They have to use accumulators that synchronized access to a single shared
-
-08:05.900 --> 08:12.000
-beautiful result container or they can collections don't
-
-08:12.000 --> 08:13.900
-The collectors don't have to be synchronized
-
-08:13.900 --> 08:14.900
-Of course
-
-08:14.900 --> 08:16.800
-we'll also talked extensively about that as well
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.518 align:middle line:90%
+
+
+2
+00:00:00.518 --> 00:00:02.560 align:middle line:84%
+What we're going to do
+now is start taking a look
+
+3
+00:00:02.560 --> 00:00:06.460 align:middle line:84%
+at the various phases in Java
+parallel streams and peek
+
+4
+00:00:06.460 --> 00:00:07.525 align:middle line:90%
+under the hood.
+
+5
+00:00:07.525 --> 00:00:09.400 align:middle line:84%
+And this, of course, is
+important to give you
+
+6
+00:00:09.400 --> 00:00:11.290 align:middle line:84%
+a bigger and better
+understanding of what's
+
+7
+00:00:11.290 --> 00:00:14.410 align:middle line:84%
+actually taking place behind
+the scenes when you run
+
+8
+00:00:14.410 --> 00:00:17.400 align:middle line:90%
+your parallel streams programs.
+
+9
+00:00:17.400 --> 00:00:20.490 align:middle line:84%
+A Java parallel stream
+implements a variant
+
+10
+00:00:20.490 --> 00:00:25.020 align:middle line:84%
+of the famous MapReduce
+model, which is optimized
+
+11
+00:00:25.020 --> 00:00:27.390 align:middle line:90%
+for multicore processors.
+
+12
+00:00:27.390 --> 00:00:29.950 align:middle line:84%
+If you're familiar with
+MapReduce from other contexts,
+
+13
+00:00:29.950 --> 00:00:33.600 align:middle line:84%
+you probably know it's use
+for things like cluster-based
+
+14
+00:00:33.600 --> 00:00:38.130 align:middle line:84%
+computing, where you end up
+being able to map your tasks--
+
+15
+00:00:38.130 --> 00:00:41.413 align:middle line:84%
+your jobs-- to multiple
+computers in a cluster,
+
+16
+00:00:41.413 --> 00:00:43.080 align:middle line:84%
+and then be able to
+get the results back
+
+17
+00:00:43.080 --> 00:00:44.817 align:middle line:84%
+and reduce them
+to a final result.
+
+18
+00:00:44.817 --> 00:00:47.400 align:middle line:84%
+A good example of this would be
+something like Google's search
+
+19
+00:00:47.400 --> 00:00:49.770 align:middle line:84%
+engine, which uses
+many computers to do
+
+20
+00:00:49.770 --> 00:00:52.500 align:middle line:84%
+the searching efficiently
+and in parallel.
+
+21
+00:00:52.500 --> 00:00:54.302 align:middle line:84%
+It turns out that
+Java parallel streams
+
+22
+00:00:54.302 --> 00:00:56.760 align:middle line:84%
+works a little differently,
+although the basic concepts are
+
+23
+00:00:56.760 --> 00:00:57.900 align:middle line:90%
+very similar.
+
+24
+00:00:57.900 --> 00:01:00.870 align:middle line:84%
+In particular, the MapReduce
+model for Java parallel
+
+25
+00:01:00.870 --> 00:01:05.310 align:middle line:84%
+streams works on a
+multicore processor
+
+26
+00:01:05.310 --> 00:01:06.705 align:middle line:90%
+rather than a cluster.
+
+27
+00:01:06.705 --> 00:01:08.580 align:middle line:84%
+If you want to use
+cluster-style programming,
+
+28
+00:01:08.580 --> 00:01:11.280 align:middle line:84%
+you'd have to work with a
+different type of programming
+
+29
+00:01:11.280 --> 00:01:16.020 align:middle line:84%
+middleware, things like
+perhaps Hadoop or Sparks.
+
+30
+00:01:16.020 --> 00:01:18.510 align:middle line:84%
+Naturally, the topics we'll
+cover here for parallel streams
+
+31
+00:01:18.510 --> 00:01:21.210 align:middle line:84%
+could also work in
+that context as well.
+
+32
+00:01:21.210 --> 00:01:25.620 align:middle line:84%
+This diagram gives a somewhat
+whimsical, but fairly realistic
+
+33
+00:01:25.620 --> 00:01:29.430 align:middle line:84%
+rendition of the
+MapReduce process.
+
+34
+00:01:29.430 --> 00:01:31.880 align:middle line:84%
+So imagine we want
+to make a sandwich
+
+35
+00:01:31.880 --> 00:01:36.300 align:middle line:84%
+and we've got a bunch of various
+components in our refrigerator.
+
+36
+00:01:36.300 --> 00:01:40.950 align:middle line:84%
+We have bread, and lettuce, and
+meat, and cheese, and tomatoes.
+
+37
+00:01:40.950 --> 00:01:43.170 align:middle line:84%
+So the first phase
+of this is basically
+
+38
+00:01:43.170 --> 00:01:45.930 align:middle line:84%
+to partition the
+elements in our fridge
+
+39
+00:01:45.930 --> 00:01:48.450 align:middle line:84%
+and perhaps put them
+out on the table.
+
+40
+00:01:48.450 --> 00:01:50.970 align:middle line:84%
+And then what we're going
+to do is do the map phase,
+
+41
+00:01:50.970 --> 00:01:54.360 align:middle line:84%
+where, perhaps in parallel,
+different people could slice up
+
+42
+00:01:54.360 --> 00:01:56.310 align:middle line:84%
+the bread, shred
+the lettuce, slice
+
+43
+00:01:56.310 --> 00:01:59.280 align:middle line:84%
+the meat, slice the cheese,
+slice the tomatoes, and so on.
+
+44
+00:01:59.280 --> 00:02:00.780 align:middle line:84%
+And then a different
+group of people
+
+45
+00:02:00.780 --> 00:02:05.700 align:middle line:84%
+could take those various
+slices and shredded lettuce,
+
+46
+00:02:05.700 --> 00:02:08.134 align:middle line:84%
+and then reduce them by
+putting together sandwiches.
+
+47
+00:02:08.134 --> 00:02:09.509 align:middle line:84%
+And if you play
+your cards right,
+
+48
+00:02:09.509 --> 00:02:11.730 align:middle line:84%
+you could end up having
+a nice little pipeline
+
+49
+00:02:11.730 --> 00:02:13.650 align:middle line:84%
+of parallel processing
+in order to be
+
+50
+00:02:13.650 --> 00:02:15.733 align:middle line:84%
+able to make your sandwiches
+more quickly and more
+
+51
+00:02:15.733 --> 00:02:17.280 align:middle line:90%
+effectively.
+
+52
+00:02:17.280 --> 00:02:18.710 align:middle line:84%
+Now, obviously,
+we're not dealing
+
+53
+00:02:18.710 --> 00:02:19.877 align:middle line:90%
+with making sandwiches here.
+
+54
+00:02:19.877 --> 00:02:22.130 align:middle line:84%
+We're dealing with writing
+computer programs that
+
+55
+00:02:22.130 --> 00:02:25.730 align:middle line:84%
+want to take good advantage
+of multicore processors.
+
+56
+00:02:25.730 --> 00:02:28.970 align:middle line:84%
+So what actually happens, of
+course, in a parallel stream is
+
+57
+00:02:28.970 --> 00:02:33.200 align:middle line:84%
+this split, apply, and combine
+data processing strategy
+
+58
+00:02:33.200 --> 00:02:35.890 align:middle line:84%
+that we've talked about
+multiple times earlier.
+
+59
+00:02:35.890 --> 00:02:37.640 align:middle line:84%
+And now we're really
+going to get a chance
+
+60
+00:02:37.640 --> 00:02:41.110 align:middle line:84%
+to talk about the
+parallel aspects of that.
+
+61
+00:02:41.110 --> 00:02:42.900 align:middle line:84%
+So if you recall,
+the three phases
+
+62
+00:02:42.900 --> 00:02:45.510 align:middle line:84%
+in the split-apply-combine
+paradigm
+
+63
+00:02:45.510 --> 00:02:50.190 align:middle line:84%
+are, first, split, which will
+end up recursively partitioning
+
+64
+00:02:50.190 --> 00:02:52.580 align:middle line:90%
+a data source up into chunks.
+
+65
+00:02:52.580 --> 00:02:55.230 align:middle line:84%
+And you can think of this
+kind of like slicing up
+
+66
+00:02:55.230 --> 00:02:58.550 align:middle line:84%
+pieces of pizza, as we
+show here in the picture.
+
+67
+00:02:58.550 --> 00:03:01.850 align:middle line:84%
+We'll be talking about this
+in more detail in an upcoming
+
+68
+00:03:01.850 --> 00:03:02.880 align:middle line:90%
+lesson.
+
+69
+00:03:02.880 --> 00:03:04.963 align:middle line:84%
+But for right now, as
+part of the overview,
+
+70
+00:03:04.963 --> 00:03:06.380 align:middle line:84%
+basically, you end
+up with a bunch
+
+71
+00:03:06.380 --> 00:03:09.290 align:middle line:84%
+of chunks that is
+independent and essentially
+
+72
+00:03:09.290 --> 00:03:14.750 align:middle line:84%
+an atomic subset of a portion or
+partition of the original data
+
+73
+00:03:14.750 --> 00:03:15.560 align:middle line:90%
+source.
+
+74
+00:03:15.560 --> 00:03:18.620 align:middle line:84%
+And this partitioning may
+take place recursively
+
+75
+00:03:18.620 --> 00:03:22.400 align:middle line:84%
+in multiple steps in order to
+be able to get the original data
+
+76
+00:03:22.400 --> 00:03:25.130 align:middle line:84%
+into small enough pieces
+to be processed effectively
+
+77
+00:03:25.130 --> 00:03:27.060 align:middle line:90%
+in parallel.
+
+78
+00:03:27.060 --> 00:03:31.080 align:middle line:84%
+The way this is done, of
+course, in Java and Java Streams
+
+79
+00:03:31.080 --> 00:03:32.950 align:middle line:90%
+is through spliterators.
+
+80
+00:03:32.950 --> 00:03:35.910 align:middle line:84%
+So spliterators are used
+to partition data sources--
+
+81
+00:03:35.910 --> 00:03:39.980 align:middle line:84%
+in particular,
+collections-- in Java.
+
+82
+00:03:39.980 --> 00:03:41.710 align:middle line:84%
+The tryAdvance
+method, which we've
+
+83
+00:03:41.710 --> 00:03:45.130 align:middle line:84%
+talked about in previous weeks,
+is used for both sequential
+
+84
+00:03:45.130 --> 00:03:47.110 align:middle line:90%
+and parallel streams.
+
+85
+00:03:47.110 --> 00:03:48.980 align:middle line:84%
+And of course, the
+other important method,
+
+86
+00:03:48.980 --> 00:03:53.140 align:middle line:84%
+which is called trySplit, is
+only used for parallel streams.
+
+87
+00:03:53.140 --> 00:03:55.600 align:middle line:84%
+And we'll talk a lot about
+that as we go further
+
+88
+00:03:55.600 --> 00:04:00.080 align:middle line:84%
+in these lessons, and in this
+week, and in subsequent weeks.
+
+89
+00:04:00.080 --> 00:04:03.800 align:middle line:84%
+Each Java collection comes
+with a predefined spliterator.
+
+90
+00:04:03.800 --> 00:04:07.220 align:middle line:84%
+As I've mentioned before, this
+spliterator implementation
+
+91
+00:04:07.220 --> 00:04:10.880 align:middle line:84%
+is provided as a default
+method in the Java collection
+
+92
+00:04:10.880 --> 00:04:12.150 align:middle line:90%
+interface.
+
+93
+00:04:12.150 --> 00:04:15.320 align:middle line:84%
+And you can see how spliterator
+has a default implementation
+
+94
+00:04:15.320 --> 00:04:18.079 align:middle line:84%
+there, which, of course,
+can be overridden
+
+95
+00:04:18.079 --> 00:04:21.680 align:middle line:84%
+by various containers
+and collections that
+
+96
+00:04:21.680 --> 00:04:24.800 align:middle line:84%
+will implement Collection
+either directly or indirectly.
+
+97
+00:04:24.800 --> 00:04:27.560 align:middle line:84%
+And you can also see
+how the parallelStream
+
+98
+00:04:27.560 --> 00:04:30.390 align:middle line:90%
+method uses spliterator.
+
+99
+00:04:30.390 --> 00:04:30.890 align:middle line:90%
+so.
+
+100
+00:04:30.890 --> 00:04:33.348 align:middle line:84%
+If you take a look here, you
+can see how the parallelStream
+
+101
+00:04:33.348 --> 00:04:36.950 align:middle line:84%
+method uses a spliterator along
+with the StreamSupport.stream
+
+102
+00:04:36.950 --> 00:04:40.010 align:middle line:84%
+method to create
+a parallel stream.
+
+103
+00:04:40.010 --> 00:04:41.810 align:middle line:84%
+And you can see it's
+a parallel stream
+
+104
+00:04:41.810 --> 00:04:44.480 align:middle line:84%
+because the true
+parameter is passed
+
+105
+00:04:44.480 --> 00:04:47.740 align:middle line:90%
+into StreamSupport.stream.
+
+106
+00:04:47.740 --> 00:04:51.840 align:middle line:84%
+It's also possible to define
+your own custom spliterators.
+
+107
+00:04:51.840 --> 00:04:55.050 align:middle line:84%
+We've shown some examples of
+this before in the context
+
+108
+00:04:55.050 --> 00:04:58.770 align:middle line:84%
+of our phrase match spliterator
+from the sequential search
+
+109
+00:04:58.770 --> 00:05:01.920 align:middle line:84%
+stream [INAUDIBLE] application
+and also with the spliterator
+
+110
+00:05:01.920 --> 00:05:06.690 align:middle line:84%
+that we used earlier for the
+simple search stream example.
+
+111
+00:05:06.690 --> 00:05:09.120 align:middle line:84%
+We're going to be looking
+at other aspects of custom
+
+112
+00:05:09.120 --> 00:05:13.410 align:middle line:84%
+spliterator here in the
+parallel stream section as well.
+
+113
+00:05:13.410 --> 00:05:15.390 align:middle line:84%
+Not surprisingly,
+parallel streams
+
+114
+00:05:15.390 --> 00:05:18.870 align:middle line:84%
+will perform best
+if your data sources
+
+115
+00:05:18.870 --> 00:05:22.710 align:middle line:84%
+can be split efficiently
+and can be split evenly.
+
+116
+00:05:22.710 --> 00:05:24.690 align:middle line:84%
+And I'll have a whole
+discussion of that later,
+
+117
+00:05:24.690 --> 00:05:28.200 align:middle line:84%
+and I'll show you some results
+from performance analysis
+
+118
+00:05:28.200 --> 00:05:31.950 align:middle line:84%
+that quantifies the differences
+between different Java
+
+119
+00:05:31.950 --> 00:05:34.800 align:middle line:84%
+collections in
+terms of how evenly
+
+120
+00:05:34.800 --> 00:05:38.400 align:middle line:84%
+and how efficiently they
+split up their data.
+
+121
+00:05:38.400 --> 00:05:42.330 align:middle line:84%
+The second phase in this
+process is the apply phase.
+
+122
+00:05:42.330 --> 00:05:44.118 align:middle line:84%
+And unlike the
+earlier discussions
+
+123
+00:05:44.118 --> 00:05:46.410 align:middle line:84%
+we had for sequential streams,
+where there was only one
+
+124
+00:05:46.410 --> 00:05:49.740 align:middle line:84%
+thread, things got a lot more
+interesting when we start
+
+125
+00:05:49.740 --> 00:05:51.660 align:middle line:90%
+dealing with parallel streams.
+
+126
+00:05:51.660 --> 00:05:55.410 align:middle line:84%
+In this context,
+the process chunks--
+
+127
+00:05:55.410 --> 00:05:57.900 align:middle line:84%
+the chunks that are created
+by the spliterator--
+
+128
+00:05:57.900 --> 00:06:04.178 align:middle line:84%
+are processed in parallel in the
+common fork-join thread pool.
+
+129
+00:06:04.178 --> 00:06:05.970 align:middle line:84%
+And it has to be the
+common fork-join pool.
+
+130
+00:06:05.970 --> 00:06:09.370 align:middle line:84%
+That's the way the streams
+are designed to work.
+
+131
+00:06:09.370 --> 00:06:12.910 align:middle line:84%
+It turns out that the splitting
+and applying phases actually
+
+132
+00:06:12.910 --> 00:06:16.150 align:middle line:84%
+run simultaneously after
+certain limits are met,
+
+133
+00:06:16.150 --> 00:06:18.610 align:middle line:84%
+after you've created
+enough chunks.
+
+134
+00:06:18.610 --> 00:06:21.250 align:middle line:84%
+As part of splitting, those get
+fed into the fork joint pool,
+
+135
+00:06:21.250 --> 00:06:24.760 align:middle line:84%
+and then they start
+to run in parallel.
+
+136
+00:06:24.760 --> 00:06:26.660 align:middle line:84%
+This is not a purely
+sequential thing.
+
+137
+00:06:26.660 --> 00:06:28.742 align:middle line:84%
+The splitting doesn't
+take place first,
+
+138
+00:06:28.742 --> 00:06:29.950 align:middle line:90%
+followed by all the applying.
+
+139
+00:06:29.950 --> 00:06:33.280 align:middle line:84%
+Instead, they're interleaved,
+thereby allowing the program
+
+140
+00:06:33.280 --> 00:06:37.530 align:middle line:84%
+to start running more quickly
+and get results more quickly.
+
+141
+00:06:37.530 --> 00:06:39.210 align:middle line:84%
+The way that this
+works under the hood,
+
+142
+00:06:39.210 --> 00:06:42.090 align:middle line:84%
+as we'll talk about in
+much more detail later,
+
+143
+00:06:42.090 --> 00:06:45.330 align:middle line:84%
+is by using something
+called work stealing.
+
+144
+00:06:45.330 --> 00:06:47.160 align:middle line:84%
+And this is designed
+intentionally
+
+145
+00:06:47.160 --> 00:06:51.570 align:middle line:84%
+to maximize CPU processor
+core utilization.
+
+146
+00:06:51.570 --> 00:06:54.360 align:middle line:84%
+The goal is to keep things
+as busy as possible.
+
+147
+00:06:54.360 --> 00:06:57.300 align:middle line:84%
+And never let the threads
+of the processor cores block
+
+148
+00:06:57.300 --> 00:06:59.460 align:middle line:84%
+or sleep for any length
+of time because that
+
+149
+00:06:59.460 --> 00:07:03.000 align:middle line:84%
+tends to degrade performance
+quite a bit on modern multicore
+
+150
+00:07:03.000 --> 00:07:05.020 align:middle line:90%
+processors.
+
+151
+00:07:05.020 --> 00:07:07.060 align:middle line:84%
+Programmers get some
+degree of control
+
+152
+00:07:07.060 --> 00:07:10.510 align:middle line:84%
+of the number of threads in
+the common fork-join pool.
+
+153
+00:07:10.510 --> 00:07:13.210 align:middle line:84%
+We'll talk extensively about
+how to do this both here
+
+154
+00:07:13.210 --> 00:07:15.010 align:middle line:84%
+and the parallel
+streams discussion,
+
+155
+00:07:15.010 --> 00:07:19.630 align:middle line:84%
+as well also later when we
+cover the Java fork-join pool
+
+156
+00:07:19.630 --> 00:07:20.750 align:middle line:90%
+framework itself.
+
+157
+00:07:20.750 --> 00:07:22.750 align:middle line:84%
+So you'll get a number
+of different perspectives
+
+158
+00:07:22.750 --> 00:07:27.110 align:middle line:84%
+on how to control the number
+of threads in the pool.
+
+159
+00:07:27.110 --> 00:07:30.620 align:middle line:84%
+And the third and final
+phase is the combine phase,
+
+160
+00:07:30.620 --> 00:07:33.710 align:middle line:84%
+which works by joining
+a partial result--
+
+161
+00:07:33.710 --> 00:07:35.990 align:middle line:84%
+which are created in
+the different threads
+
+162
+00:07:35.990 --> 00:07:38.900 align:middle line:84%
+running in the pool, as
+part of the apply phase--
+
+163
+00:07:38.900 --> 00:07:42.320 align:middle line:84%
+into a single so-called
+reduced result.
+
+164
+00:07:42.320 --> 00:07:45.860 align:middle line:84%
+And we'll spend a lot of time
+talking about this as well.
+
+165
+00:07:45.860 --> 00:07:48.620 align:middle line:84%
+This is typically done
+by terminal operations
+
+166
+00:07:48.620 --> 00:07:51.730 align:middle line:90%
+like collect and reduce.
+
+167
+00:07:51.730 --> 00:07:56.710 align:middle line:84%
+And as we'll see, the collectors
+that are used by collect can be
+
+168
+00:07:56.710 --> 00:07:59.350 align:middle line:84%
+either concurrent, which
+means that they have to be
+
+169
+00:07:59.350 --> 00:08:03.070 align:middle line:84%
+synchronized-- they have to use
+accumulators that synchronize
+
+170
+00:08:03.070 --> 00:08:07.810 align:middle line:84%
+access to a single, shared,
+mutable result container--
+
+171
+00:08:07.810 --> 00:08:09.850 align:middle line:90%
+or they can be non concurrent.
+
+172
+00:08:09.850 --> 00:08:14.215 align:middle line:84%
+In which case, the collectors
+don't have to be synchronized.
+
+173
+00:08:14.215 --> 00:08:17.970 align:middle line:84%
+And of course, we'll also talk
+extensively about that as well.

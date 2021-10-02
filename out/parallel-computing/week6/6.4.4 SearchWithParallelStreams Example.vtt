@@ -1,404 +1,740 @@
-00:00.200 --> 00:04.500
-So now you've had a chance to look at the parallel stream implementation
-
-00:04.500 --> 00:08.300
-evaluate the pros and cons of this approach
-
-00:09.600 --> 00:10.000
-And
-
-00:10.000 --> 00:10.100
-of course
-
-00:10.100 --> 00:12.500
-we're going to evaluate it in a couple ways when evaluated
-
-00:12.500 --> 00:16.000
-in terms of comparing it to search for sequential streams
-
-00:16.000 --> 00:17.300
-version in the law
-
-00:17.300 --> 00:18.200
-Also evaluated
-
-00:18.200 --> 00:20.800
-in terms of other approaches that may be even more scalable
-
-00:21.900 --> 00:23.300
-Let's take a look at the pros
-
-00:23.300 --> 00:23.800
-first
-
-00:23.800 --> 00:24.800
-I think
-
-00:24.800 --> 00:32.700
-clearly this example demonstrates the minuscule differences between sequential and parallel streams
-
-00:34.000 --> 00:39.300
-Here's what it looked like with the surface sequential stream implementation
-
-00:39.300 --> 00:39.900
-We saw earlier
-
-00:41.000 --> 00:45.000
-And here's what it looks like with search with parallel streams
-
-00:45.000 --> 00:46.200
-And as you can see
-
-00:46.200 --> 00:51.300
-there's just one tiny minuscule difference and that's often the way things are so cool
-
-00:51.300 --> 01:00.600
-You really have to step back and tip your hat and admire the genius of the people who came up with this framework because it's so powerful
-
-01:00.600 --> 01:01.800
-So
-
-01:01.800 --> 01:03.500
-convenient and scale
-
-01:03.500 --> 01:04.100
-so nicely with
-
-01:04.100 --> 01:07.600
-so little work on the part of a programmer
-
-01:07.600 --> 01:14.700
-So I really am endlessly impressed with how clever the designers of java streams were to come up with this model
-
-01:14.700 --> 01:17.600
-That was so easy to optimize and that's really the heart
-
-01:17.600 --> 01:23.700
-Of course of parallel functional programming being able to keep a functional programming veneer of
-
-01:23.700 --> 01:28.100
-of design and implementation and then magically paralyzed stuff
-
-01:28.100 --> 01:29.400
-With very little work on your part
-
-01:29.400 --> 01:32.500
-All the details are pushed into the infrastructure
-
-01:32.500 --> 01:36.100
-which is the whole point of declarative programming in the first place
-
-01:37.900 --> 01:40.200
-Even though we made very simple changes
-
-01:40.200 --> 01:43.800
-We ended up with substantial speedups on the multi-core processor
-
-01:43.800 --> 01:45.600
-If you take a close
-
-01:45.600 --> 01:48.400
-look at this little screen and I show here
-
-01:48.400 --> 01:53.500
-you can see that the best performance of the sequential streams model was roughly
-
-01:53.500 --> 01:58.000
-I think about two thousand milliseconds on my quad core laptop
-
-01:58.000 --> 02:04.200
-with lots of memory and the performance of The Parallel streams version with that little minuscule
-
-02:04.200 --> 02:07.400
-change was about five times faster
-
-02:07.400 --> 02:08.400
-four to five times faster
-
-02:08.400 --> 02:13.200
-So is quite a big speed up and this is with a 2.7 gigahertz quad-core
-
-02:14.700 --> 02:16.200
-Do a machine running Windows
-
-02:16.200 --> 02:18.700
-I also have a MacBook Pro
-
-02:18.700 --> 02:23.000
-which is a 2.9 gigahertz quad-core machine
-
-02:23.000 --> 02:24.400
-which doesn't have as much memory
-
-02:24.400 --> 02:25.700
-but the processes are faster
-
-02:25.700 --> 02:27.700
-And if you look at the performance results
-
-02:27.700 --> 02:30.600
-you'll see a similar Trend in terms of speed up
-
-02:30.600 --> 02:35.300
-but you'll see that the performance is actually higher because it's a faster processor
-
-02:35.300 --> 02:37.500
-So the key Point here is just
-
-02:37.500 --> 02:37.800
-you know
-
-02:37.800 --> 02:43.900
-your mileage may vary as a don't be surprised if that you run this on your machine and you get slightly different results
-
-02:43.900 --> 02:46.100
-but I would expect if you've got multiple cores
-
-02:46.100 --> 02:49.100
-that the parallel version will run considerably faster
-
-02:49.100 --> 03:02.300
-And because it's inherently and embarrassingly parallel program searching for these different strains in in the works of Shakespeare searching for the phrases of the works of Shakespeare is embarrassing parallel
-
-03:02.300 --> 03:05.600
-You would expect to see this type of Skillet
-
-03:05.600 --> 03:09.500
-I should also point out to the searching for strings in the work of Shakespeare
-
-03:10.800 --> 03:17.000
-Is a compute bound processes to compute Brown problem
-
-03:17.000 --> 03:19.600
-And so there's really no Ayo happening here
-
-03:19.600 --> 03:23.700
-We're just searching in memory to look for those those phrases of strength
-
-03:25.100 --> 03:27.700
-The reason why we get there kind of super linear speed up
-
-03:27.700 --> 03:32.600
-arises from the use of hyper threading in modern
-
-03:32.600 --> 03:33.600
-multi-core processors
-
-03:33.600 --> 03:36.000
-So these are what are also from school virtual cores
-
-03:36.000 --> 03:45.100
-And the basic idea is that the piper threaded model increases the number of independent instructions that can run in parallel
-
-03:45.100 --> 03:48.700
-by using what's known as a super Skinner architecture
-
-03:48.700 --> 03:57.600
-And what does basically does is it allows more than one instruction to execute per clock cycle by simultaneously dispatching
-
-03:57.600 --> 03:59.800
-multiple instructions to different execution units
-
-03:59.800 --> 04:00.400
-So
-
-04:00.400 --> 04:02.300
-if you take a look at that picture that's here
-
-04:02.300 --> 04:07.000
-which you can read about at the Wikipedia link at the bottom of the slide
-
-04:07.000 --> 04:12.200
-It's basically able to run the various operations in pipelines
-
-04:12.200 --> 04:13.500
-where they end up running in parallel
-
-04:13.500 --> 04:14.000
-Now
-
-04:14.000 --> 04:19.000
-you don't typically get as much of a parallel boost as you do by having a physical core
-
-04:19.000 --> 04:21.800
-but in the right circumstances things to do
-
-04:21.800 --> 04:22.000
-in fact
-
-04:22.000 --> 04:23.800
-run faster as we can see here
-
-04:24.900 --> 04:26.300
-Well
-
-04:26.300 --> 04:26.500
-as always
-
-04:26.500 --> 04:30.100
-things are never entirely unicorns and rainbows as I like to say
-
-04:30.100 --> 04:33.900
-so just because two miniscule
-
-04:33.900 --> 04:38.200
-changes were needed to go from sequential street names to Carol Streams
-
-04:38.200 --> 04:40.300
-doesn't mean it's the best way to go
-
-04:40.300 --> 04:44.600
-So it turns out that there's other job of Frameworks
-
-04:44.600 --> 04:45.400
-other concurrency
-
-04:45.400 --> 04:51.700
-and parallelism Frameworks and strategies that are even more efficient than those simple changes
-
-04:51.700 --> 04:54.600
-We made with a parallel streams of limitation
-
-04:54.600 --> 04:55.500
-Now
-
-04:55.500 --> 04:58.000
-before I bash the parallel streams version too much
-
-04:58.000 --> 04:59.700
-Let's just know the couple things
-
-04:59.700 --> 05:00.600
-First live performance
-
-05:00.600 --> 05:03.900
-radically better with these other approaches if they're better
-
-05:03.900 --> 05:05.000
-but they're not radically better
-
-05:05.600 --> 05:14.900
-The other approaches took more work to implement and being able to get basically at Super linear speed up might be sufficient to meet your requirements
-
-05:14.900 --> 05:22.200
-So it's not always necessary to rain in every last nanosecond of performance out of your software
-
-05:22.200 --> 05:27.000
-You may just need to get it to the point where it meets the requirements of the customer of the user's
-
-05:27.000 --> 05:32.800
-So this discussion really is not to throw shade on Parallel streams
-
-05:32.800 --> 05:36.900
-It's to say that there's more advanced ways which we will cover
-
-05:36.900 --> 05:38.300
-of course of making things
-
-05:38.300 --> 05:38.600
-right
-
-05:38.600 --> 05:40.900
-Even faster if you're willing to put a bit more work into it
-
-05:42.000 --> 05:42.400
-Now
-
-05:42.400 --> 05:43.100
-naturally
-
-05:43.100 --> 05:47.400
-your mileage may vary and different factors like the amount of memory that you've got
-
-05:47.400 --> 05:48.900
-and the version of the
-
-05:48.900 --> 05:50.100
-the Java
-
-05:50.100 --> 05:54.000
-Jdk you have will make a difference job
-
-05:54.000 --> 05:58.200
-You were job aversions almost invariably add performance enhancements
-
-05:58.200 --> 05:59.200
-They fix bugs
-
-05:59.200 --> 06:00.400
-They optimize things
-
-06:00.400 --> 06:02.600
-they make things run in parallel better
-
-06:02.600 --> 06:05.000
-They removed internal locks and so on and so forth
-
-06:05.000 --> 06:07.700
-So there's no substitute for systematic
-
-06:07.700 --> 06:09.200
-benchmarking and experimentation
-
-06:09.200 --> 06:14.500
-So just be aware of the fact that that's always important when you when you write parallel code
-
-06:16.300 --> 06:19.900
-We will see in an upcoming lesson in the upcoming week
-
-06:19.900 --> 06:21.200
-There is yet another
-
-06:21.200 --> 06:23.100
-even more efficient way of doing this
-
-06:23.100 --> 06:25.400
-which we have named search with parallel
-
-06:25.400 --> 06:26.200
-split a writer
-
-06:26.200 --> 06:28.400
-And as a name implies
-
-06:28.400 --> 06:29.500
-This uses
-
-06:29.500 --> 06:31.300
-the Perils of the techniques
-
-06:31.300 --> 06:36.200
-We talked about so far plus adding the concept of parallel splitter Riders
-
-06:36.200 --> 06:37.500
-And so
-
-06:37.500 --> 06:38.600
-this turns out to be the
-
-06:38.600 --> 06:39.800
-most aggressive pros
-
-06:39.800 --> 06:41.900
-and strategy that we Implement
-
-06:41.900 --> 06:43.800
-And as a consequence
-
-06:43.800 --> 06:45.400
-it ends up being much finer-grained
-
-06:45.400 --> 06:48.800
-And able to take you to more advantage of multiple course
-
-06:48.800 --> 06:50.000
-And as you might expect
-
-06:50.000 --> 06:51.200
-the more cores
-
-06:51.200 --> 06:55.000
-you have the bigger when you will get from using even more perilous
-
-06:55.000 --> 06:58.800
-That's another kind of tip to kind of keep in the back of your mind
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.500 align:middle line:90%
+
+
+2
+00:00:00.500 --> 00:00:03.660 align:middle line:84%
+So now that you've had a chance
+to look at the parallel stream
+
+3
+00:00:03.660 --> 00:00:07.410 align:middle line:84%
+implementation, let's go
+ahead and evaluate the pros
+
+4
+00:00:07.410 --> 00:00:09.312 align:middle line:90%
+and cons of this approach.
+
+5
+00:00:09.312 --> 00:00:11.770 align:middle line:84%
+And of course, we're going to
+evaluate it in a couple ways.
+
+6
+00:00:11.770 --> 00:00:14.290 align:middle line:84%
+We're going to evaluate it
+in terms of comparing it
+
+7
+00:00:14.290 --> 00:00:16.180 align:middle line:84%
+to the
+SearchWithSequentialStreams
+
+8
+00:00:16.180 --> 00:00:18.130 align:middle line:84%
+version, and then
+we'll also evaluate it
+
+9
+00:00:18.130 --> 00:00:22.180 align:middle line:84%
+in terms of other approaches
+that may be even more scalable.
+
+10
+00:00:22.180 --> 00:00:24.430 align:middle line:84%
+Let's take a look
+at the pros first.
+
+11
+00:00:24.430 --> 00:00:28.480 align:middle line:84%
+I think, clearly, this
+example demonstrates
+
+12
+00:00:28.480 --> 00:00:31.750 align:middle line:84%
+the minuscule differences
+between sequential
+
+13
+00:00:31.750 --> 00:00:34.240 align:middle line:90%
+and parallel streams.
+
+14
+00:00:34.240 --> 00:00:38.650 align:middle line:84%
+Here's what it looked like with
+the SearchWithSequentialStreams
+
+15
+00:00:38.650 --> 00:00:41.890 align:middle line:84%
+implementation we saw
+earlier and here's
+
+16
+00:00:41.890 --> 00:00:45.658 align:middle line:84%
+what it looks like with
+SearchWithParallelStreams.
+
+17
+00:00:45.658 --> 00:00:47.200 align:middle line:84%
+And as you can see,
+there's just one,
+
+18
+00:00:47.200 --> 00:00:48.490 align:middle line:90%
+tiny, minuscule difference.
+
+19
+00:00:48.490 --> 00:00:50.510 align:middle line:84%
+And that's often
+the way things are.
+
+20
+00:00:50.510 --> 00:00:52.030 align:middle line:90%
+It's so cool.
+
+21
+00:00:52.030 --> 00:00:55.930 align:middle line:84%
+You really have to step
+back, and tip your hat,
+
+22
+00:00:55.930 --> 00:00:59.020 align:middle line:84%
+and admire the genius of
+the people who came up
+
+23
+00:00:59.020 --> 00:01:01.840 align:middle line:84%
+with this framework because
+it's so powerful, so
+
+24
+00:01:01.840 --> 00:01:05.650 align:middle line:84%
+convenient, and scales so
+nicely with so little work
+
+25
+00:01:05.650 --> 00:01:07.870 align:middle line:90%
+on the part of a programmer.
+
+26
+00:01:07.870 --> 00:01:10.030 align:middle line:84%
+So I really am
+endlessly impressed
+
+27
+00:01:10.030 --> 00:01:13.150 align:middle line:84%
+with how clever the
+designers of Java streams
+
+28
+00:01:13.150 --> 00:01:16.380 align:middle line:84%
+were to come up with this model
+that was so easy to optimize.
+
+29
+00:01:16.380 --> 00:01:18.130 align:middle line:84%
+And that's really at
+the heart, of course,
+
+30
+00:01:18.130 --> 00:01:20.320 align:middle line:84%
+of parallel functional
+programming,
+
+31
+00:01:20.320 --> 00:01:24.940 align:middle line:84%
+being able to keep a functional
+programming veneer of design
+
+32
+00:01:24.940 --> 00:01:27.220 align:middle line:84%
+and implementation,
+and then magically
+
+33
+00:01:27.220 --> 00:01:29.800 align:middle line:84%
+parallelize stuff with very
+little work on your part.
+
+34
+00:01:29.800 --> 00:01:33.070 align:middle line:84%
+All the details are pushed
+into the infrastructure, which
+
+35
+00:01:33.070 --> 00:01:35.530 align:middle line:84%
+is the whole point of
+declarative programming
+
+36
+00:01:35.530 --> 00:01:38.260 align:middle line:90%
+in the first place.
+
+37
+00:01:38.260 --> 00:01:40.320 align:middle line:84%
+Even though we made
+very simple changes,
+
+38
+00:01:40.320 --> 00:01:42.660 align:middle line:84%
+we ended up with
+substantial speed-ups
+
+39
+00:01:42.660 --> 00:01:44.280 align:middle line:90%
+on the multicore processor.
+
+40
+00:01:44.280 --> 00:01:48.450 align:middle line:84%
+If you take a close look at this
+little screen that I show here,
+
+41
+00:01:48.450 --> 00:01:52.830 align:middle line:84%
+you can see that the performance
+of the sequential streams model
+
+42
+00:01:52.830 --> 00:01:56.100 align:middle line:84%
+was roughly, I think,
+about 2,000 milliseconds
+
+43
+00:01:56.100 --> 00:02:00.090 align:middle line:84%
+on my quad-core laptop
+with lots of memory.
+
+44
+00:02:00.090 --> 00:02:02.820 align:middle line:84%
+And the performance of the
+parallel streams version
+
+45
+00:02:02.820 --> 00:02:05.070 align:middle line:84%
+with that little
+minuscule change
+
+46
+00:02:05.070 --> 00:02:07.350 align:middle line:90%
+was about five times faster--
+
+47
+00:02:07.350 --> 00:02:08.560 align:middle line:90%
+4 to 5 times faster.
+
+48
+00:02:08.560 --> 00:02:10.350 align:middle line:90%
+So it was quite a big speed-up.
+
+49
+00:02:10.350 --> 00:02:13.020 align:middle line:84%
+And this was with
+a 2.7 gigahertz
+
+50
+00:02:13.020 --> 00:02:16.880 align:middle line:84%
+quad-core machine
+running Windows.
+
+51
+00:02:16.880 --> 00:02:21.350 align:middle line:84%
+I also have a MacBook Pro,
+which is a 2.9 gigahertz
+
+52
+00:02:21.350 --> 00:02:24.350 align:middle line:84%
+quad-core machine, which
+doesn't have as much memory,
+
+53
+00:02:24.350 --> 00:02:25.918 align:middle line:90%
+but the processors are faster.
+
+54
+00:02:25.918 --> 00:02:27.710 align:middle line:84%
+And if you look at the
+performance results,
+
+55
+00:02:27.710 --> 00:02:30.860 align:middle line:84%
+you'll see a similar trend
+in terms of speed-up,
+
+56
+00:02:30.860 --> 00:02:33.110 align:middle line:84%
+but you'll see that the
+performance is actually higher
+
+57
+00:02:33.110 --> 00:02:36.260 align:middle line:90%
+because it's a faster processor.
+
+58
+00:02:36.260 --> 00:02:39.500 align:middle line:84%
+So the key point here is
+just your mileage may vary.
+
+59
+00:02:39.500 --> 00:02:42.255 align:middle line:84%
+And so don't be surprised if
+you run this on your machine
+
+60
+00:02:42.255 --> 00:02:43.880 align:middle line:84%
+and you get slightly
+different results.
+
+61
+00:02:43.880 --> 00:02:46.550 align:middle line:84%
+But I would expect, if
+you've got multiple cores,
+
+62
+00:02:46.550 --> 00:02:50.000 align:middle line:84%
+that the parallel version
+will run considerably faster.
+
+63
+00:02:50.000 --> 00:02:52.880 align:middle line:84%
+And because it's inherently
+an embarrassingly parallel
+
+64
+00:02:52.880 --> 00:02:54.110 align:middle line:90%
+program.
+
+65
+00:02:54.110 --> 00:02:57.200 align:middle line:84%
+Searching for these
+different strings
+
+66
+00:02:57.200 --> 00:02:59.270 align:middle line:84%
+in the works of
+Shakespeare-- searching
+
+67
+00:02:59.270 --> 00:03:01.310 align:middle line:84%
+for the phrases in the
+works of Shakespeare
+
+68
+00:03:01.310 --> 00:03:02.780 align:middle line:90%
+is embarrassingly parallel.
+
+69
+00:03:02.780 --> 00:03:06.080 align:middle line:84%
+You would expect to see
+this type of scale-up.
+
+70
+00:03:06.080 --> 00:03:08.210 align:middle line:84%
+I should also point
+out, too, that searching
+
+71
+00:03:08.210 --> 00:03:11.060 align:middle line:84%
+for strings in the
+work of Shakespeare
+
+72
+00:03:11.060 --> 00:03:15.440 align:middle line:90%
+is a compute-bound process.
+
+73
+00:03:15.440 --> 00:03:17.430 align:middle line:90%
+It's the compute-bound problem.
+
+74
+00:03:17.430 --> 00:03:19.610 align:middle line:84%
+And so there's really
+no I/O happening here.
+
+75
+00:03:19.610 --> 00:03:21.620 align:middle line:84%
+We're just searching
+in memory to look
+
+76
+00:03:21.620 --> 00:03:25.270 align:middle line:90%
+for those phrases as strings.
+
+77
+00:03:25.270 --> 00:03:27.760 align:middle line:84%
+The reason why we get that
+kind of super linear speedup
+
+78
+00:03:27.760 --> 00:03:31.690 align:middle line:84%
+arises from the use
+of hyperthreading
+
+79
+00:03:31.690 --> 00:03:33.820 align:middle line:90%
+in modern multicore processors.
+
+80
+00:03:33.820 --> 00:03:36.700 align:middle line:84%
+So these are what are
+sometimes called virtual cores.
+
+81
+00:03:36.700 --> 00:03:41.410 align:middle line:84%
+And the basic idea is that the
+hyperthreaded model increases
+
+82
+00:03:41.410 --> 00:03:44.260 align:middle line:84%
+the number of
+independent instructions
+
+83
+00:03:44.260 --> 00:03:46.600 align:middle line:84%
+that can run in parallel
+by using what's known
+
+84
+00:03:46.600 --> 00:03:49.390 align:middle line:90%
+as a superscalar architecture.
+
+85
+00:03:49.390 --> 00:03:50.950 align:middle line:84%
+And what this
+basically does is it
+
+86
+00:03:50.950 --> 00:03:56.050 align:middle line:84%
+allows more than one instruction
+to execute per clock cycle
+
+87
+00:03:56.050 --> 00:03:58.530 align:middle line:84%
+by simultaneously dispatching
+multiple instructions
+
+88
+00:03:58.530 --> 00:04:00.177 align:middle line:90%
+to different execution units.
+
+89
+00:04:00.177 --> 00:04:02.260 align:middle line:84%
+So if you take a look at
+the picture that's here--
+
+90
+00:04:02.260 --> 00:04:06.520 align:middle line:84%
+which you can read about at the
+Wikipedia link at the bottom
+
+91
+00:04:06.520 --> 00:04:07.600 align:middle line:90%
+of the slide--
+
+92
+00:04:07.600 --> 00:04:11.260 align:middle line:84%
+it's basically able to
+run the various operations
+
+93
+00:04:11.260 --> 00:04:13.970 align:middle line:84%
+in pipelines, where they
+end up running in parallel.
+
+94
+00:04:13.970 --> 00:04:17.050 align:middle line:84%
+Now, you don't typically get
+as much of a parallel boost
+
+95
+00:04:17.050 --> 00:04:19.510 align:middle line:84%
+as you do by having
+a physical core.
+
+96
+00:04:19.510 --> 00:04:22.460 align:middle line:84%
+But in the right circumstances,
+things do, in fact,
+
+97
+00:04:22.460 --> 00:04:25.970 align:middle line:90%
+run faster as we can see here.
+
+98
+00:04:25.970 --> 00:04:27.920 align:middle line:84%
+Well, as always,
+things are never
+
+99
+00:04:27.920 --> 00:04:31.050 align:middle line:84%
+entirely unicorns and
+rainbows, as I like to say.
+
+100
+00:04:31.050 --> 00:04:35.060 align:middle line:84%
+So just because two
+minuscule changes
+
+101
+00:04:35.060 --> 00:04:36.530 align:middle line:84%
+were needed to go
+from sequential
+
+102
+00:04:36.530 --> 00:04:39.020 align:middle line:84%
+streams to parallel
+streams doesn't
+
+103
+00:04:39.020 --> 00:04:41.330 align:middle line:90%
+mean it's the best way to go.
+
+104
+00:04:41.330 --> 00:04:44.570 align:middle line:84%
+So it turns out that there's
+other Java frameworks--
+
+105
+00:04:44.570 --> 00:04:46.730 align:middle line:84%
+other concurrency and
+parallelism frameworks
+
+106
+00:04:46.730 --> 00:04:48.980 align:middle line:84%
+and strategies--
+that are even more
+
+107
+00:04:48.980 --> 00:04:51.830 align:middle line:84%
+efficient than those
+simple changes we
+
+108
+00:04:51.830 --> 00:04:55.280 align:middle line:84%
+made with the parallel
+streams implementation.
+
+109
+00:04:55.280 --> 00:04:58.582 align:middle line:84%
+Now, before I bash the parallel
+streams version too much, let's
+
+110
+00:04:58.582 --> 00:04:59.790 align:middle line:90%
+just note a couple of things.
+
+111
+00:04:59.790 --> 00:05:02.363 align:middle line:84%
+First, the performance
+isn't radically better
+
+112
+00:05:02.363 --> 00:05:03.530 align:middle line:90%
+with these other approaches.
+
+113
+00:05:03.530 --> 00:05:05.900 align:middle line:84%
+They're better, but they're
+not radically better.
+
+114
+00:05:05.900 --> 00:05:09.410 align:middle line:84%
+The other approaches took
+more work to implement,
+
+115
+00:05:09.410 --> 00:05:13.370 align:middle line:84%
+and being able to get basically
+a super linear speed-up
+
+116
+00:05:13.370 --> 00:05:15.650 align:middle line:84%
+might be sufficient to
+meet your requirements.
+
+117
+00:05:15.650 --> 00:05:17.780 align:middle line:84%
+So it's not always
+necessary to wring
+
+118
+00:05:17.780 --> 00:05:20.690 align:middle line:84%
+every last nanosecond
+of performance
+
+119
+00:05:20.690 --> 00:05:22.203 align:middle line:90%
+out of your software.
+
+120
+00:05:22.203 --> 00:05:23.870 align:middle line:84%
+You may just need to
+get it to the point
+
+121
+00:05:23.870 --> 00:05:27.900 align:middle line:84%
+where it meets the requirements
+of the customer or the users.
+
+122
+00:05:27.900 --> 00:05:31.490 align:middle line:84%
+So this discussion really
+is not to throw shade
+
+123
+00:05:31.490 --> 00:05:33.380 align:middle line:90%
+on parallel streams.
+
+124
+00:05:33.380 --> 00:05:36.260 align:middle line:84%
+It's to say that there's
+more advanced ways--
+
+125
+00:05:36.260 --> 00:05:37.760 align:middle line:90%
+which we will cover, of course--
+
+126
+00:05:37.760 --> 00:05:39.560 align:middle line:84%
+of making things run
+even faster if you're
+
+127
+00:05:39.560 --> 00:05:42.230 align:middle line:84%
+willing to put a bit
+more work into it.
+
+128
+00:05:42.230 --> 00:05:45.860 align:middle line:84%
+Now, naturally, your mileage
+may vary, and different factors,
+
+129
+00:05:45.860 --> 00:05:47.600 align:middle line:84%
+like the amount of
+memory that you've got
+
+130
+00:05:47.600 --> 00:05:51.890 align:middle line:84%
+and the version of
+the Java JDK you
+
+131
+00:05:51.890 --> 00:05:54.350 align:middle line:90%
+have will make a difference.
+
+132
+00:05:54.350 --> 00:05:56.990 align:middle line:84%
+Newer Java versions
+almost invariably add
+
+133
+00:05:56.990 --> 00:06:00.410 align:middle line:84%
+performance enhancements, they
+fix bugs, they optimize things,
+
+134
+00:06:00.410 --> 00:06:02.600 align:middle line:84%
+they make things run
+in parallel better,
+
+135
+00:06:02.600 --> 00:06:05.330 align:middle line:84%
+they remove internal locks,
+and so on and so forth.
+
+136
+00:06:05.330 --> 00:06:08.450 align:middle line:84%
+So there's no substitute
+for systematic benchmarking
+
+137
+00:06:08.450 --> 00:06:09.855 align:middle line:90%
+and experimentation.
+
+138
+00:06:09.855 --> 00:06:12.230 align:middle line:84%
+So just be aware of the fact
+that that's always important
+
+139
+00:06:12.230 --> 00:06:16.520 align:middle line:90%
+when you write parallel code.
+
+140
+00:06:16.520 --> 00:06:20.590 align:middle line:84%
+We will see in an upcoming
+lesson in an upcoming week
+
+141
+00:06:20.590 --> 00:06:22.640 align:middle line:84%
+there is yet another
+even more efficient way
+
+142
+00:06:22.640 --> 00:06:24.470 align:middle line:84%
+of doing this,
+which we have name
+
+143
+00:06:24.470 --> 00:06:26.900 align:middle line:90%
+SearchWithParallelSpliterator.
+
+144
+00:06:26.900 --> 00:06:31.220 align:middle line:84%
+And as the name implies, this
+uses the parallelism techniques
+
+145
+00:06:31.220 --> 00:06:34.580 align:middle line:84%
+we've talked about
+so far plus adding
+
+146
+00:06:34.580 --> 00:06:37.040 align:middle line:84%
+the concept of
+parallel spliterators.
+
+147
+00:06:37.040 --> 00:06:39.920 align:middle line:84%
+And so this turns out to be
+the most aggressive parallelism
+
+148
+00:06:39.920 --> 00:06:42.230 align:middle line:90%
+strategy that we implement.
+
+149
+00:06:42.230 --> 00:06:44.510 align:middle line:84%
+And as a consequence,
+it ends up being
+
+150
+00:06:44.510 --> 00:06:47.630 align:middle line:84%
+much finer-grained and
+able to take even more
+
+151
+00:06:47.630 --> 00:06:49.400 align:middle line:90%
+advantage of multiple cores.
+
+152
+00:06:49.400 --> 00:06:52.340 align:middle line:84%
+And as you might expect,
+the more corners you have,
+
+153
+00:06:52.340 --> 00:06:55.400 align:middle line:84%
+the bigger win you will get from
+using even more parallelism.
+
+154
+00:06:55.400 --> 00:06:58.040 align:middle line:84%
+So that's another kind
+of tip to kind of keep
+
+155
+00:06:58.040 --> 00:07:00.190 align:middle line:90%
+in the back of your mind.

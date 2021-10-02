@@ -1,164 +1,347 @@
-00:00.700 --> 00:05.600
-So continuing on with our discussion of the order of processing
+WEBVTT
 
-00:05.600 --> 00:10.200
-I mentioned earlier that you have no control or little control over the order of processing
+1
+00:00:00.000 --> 00:00:00.910 align:middle line:90%
 
-00:10.200 --> 00:12.300
-but not trying to talk about the control
 
-00:12.300 --> 00:14.000
-You have over the order of results
+2
+00:00:00.910 --> 00:00:03.310 align:middle line:84%
+So continuing on
+with our discussion
 
-00:14.000 --> 00:16.300
-That turns out that as we'll see
+3
+00:00:03.310 --> 00:00:06.850 align:middle line:84%
+of the order of processing,
+I mentioned earlier
 
-00:16.300 --> 00:20.200
-you actually do have some control over the order of the results
+4
+00:00:06.850 --> 00:00:08.710 align:middle line:84%
+that you have no control
+or little control
 
-00:20.200 --> 00:23.500
-Start by giving an overview of
+5
+00:00:08.710 --> 00:00:10.268 align:middle line:90%
+over the order of processing.
 
-00:23.500 --> 00:26.700
-what does it mean to have results ordering in the first place
+6
+00:00:10.268 --> 00:00:12.310 align:middle line:84%
+But now we're going to
+talk about the control you
 
-00:28.200 --> 00:29.300
-So first and foremost
+7
+00:00:12.310 --> 00:00:14.860 align:middle line:90%
+have over the order of results.
 
-00:29.300 --> 00:38.700
-the processing results of the parallel stream can be controlled More deterministic Lie than the ordering of the processing
+8
+00:00:14.860 --> 00:00:16.390 align:middle line:84%
+And it turns out
+that, as we'll see,
 
-00:39.900 --> 00:42.600
-So this is very important thing to keep in mind
+9
+00:00:16.390 --> 00:00:18.640 align:middle line:84%
+you actually do
+have some control
 
-00:42.600 --> 00:48.800
-programmers can control if the results will be presented in
+10
+00:00:18.640 --> 00:00:21.170 align:middle line:90%
+over the order of the results.
 
-00:48.800 --> 00:50.600
-what's known as encounter order
+11
+00:00:21.170 --> 00:00:23.620 align:middle line:84%
+So first we'll start by
+giving an overview of,
 
-00:50.600 --> 00:53.200
-And encounter order is
+12
+00:00:23.620 --> 00:00:25.210 align:middle line:84%
+what does it mean
+to have results
 
-00:53.200 --> 00:58.400
-simply the order in which the streams Source native elements available
+13
+00:00:25.210 --> 00:00:28.550 align:middle line:90%
+ordering in the first place?
 
-00:58.400 --> 01:00.700
-So using our example
+14
+00:00:28.550 --> 00:00:31.180 align:middle line:84%
+So first and foremost,
+the processing results
 
-01:00.700 --> 01:04.400
-from the search stream gang history
+15
+00:00:31.180 --> 00:00:34.450 align:middle line:84%
+in a parallel stream
+can be controlled
 
-01:04.400 --> 01:11.300
-Remember we had the situation is where we had the works of Shakespeare coming in in a list of strengths
+16
+00:00:34.450 --> 00:00:40.260 align:middle line:84%
+more deterministically than
+the ordering of the processing.
 
-01:11.300 --> 01:12.100
-So
+17
+00:00:40.260 --> 00:00:43.730 align:middle line:84%
+So this is very important
+thing to keep in mind.
 
-01:12.100 --> 01:18.000
-encounter order would be the order in which each work of Shakespeare occurred in that original list
+18
+00:00:43.730 --> 00:00:46.250 align:middle line:84%
+Programmers can
+control if the results
 
-01:18.000 --> 01:22.000
-So if Julius Caesar came first followed by Hamlet
+19
+00:00:46.250 --> 00:00:51.630 align:middle line:84%
+will be presented in what's
+known as encounter order.
 
-01:22.000 --> 01:22.700
-followed by Macbeth
+20
+00:00:51.630 --> 00:00:53.940 align:middle line:84%
+And encounter order
+is simply the order
 
-01:22.700 --> 01:24.800
-followed by Henry
+21
+00:00:53.940 --> 00:00:58.530 align:middle line:84%
+in which the stream's source
+made its elements available.
 
-01:24.800 --> 01:25.800
-the 5th or whatnot
+22
+00:00:58.530 --> 00:01:04.730 align:middle line:84%
+So using our example from the
+SearchStreamGang case study,
 
-01:25.800 --> 01:37.100
-then that would be the encounter order and you can dictate whether encounter order should be preserved or not when the results come back from the terminal operation
+23
+00:01:04.730 --> 00:01:06.150 align:middle line:84%
+remember, we had
+situations where
 
-01:37.100 --> 01:37.400
-say
+24
+00:01:06.150 --> 00:01:11.790 align:middle line:84%
+we had the works of Shakespeare
+coming in in a list of strings.
 
-01:37.400 --> 01:37.900
-collect
+25
+00:01:11.790 --> 00:01:14.250 align:middle line:84%
+So encounter order
+would be the order
 
-01:38.600 --> 01:39.100
-No
+26
+00:01:14.250 --> 00:01:16.320 align:middle line:84%
+in which each work
+of Shakespeare
 
-01:39.100 --> 01:40.300
-encounter order
+27
+00:01:16.320 --> 00:01:17.970 align:middle line:90%
+occurred in that original list.
 
-01:40.300 --> 01:43.500
-Oreo will be maintained under certain circumstances
+28
+00:01:17.970 --> 00:01:21.930 align:middle line:84%
+So if Julius Caesar came
+first, followed by Hamlet
 
-01:43.500 --> 01:47.600
-And those circumstances are the original Source
+29
+00:01:21.930 --> 00:01:26.250 align:middle line:84%
+followed by Macbeth followed
+by Henry V or whatnot,
 
-01:47.600 --> 01:53.000
-Has ordered properties ordered characteristic is set builder
+30
+00:01:26.250 --> 00:01:28.530 align:middle line:84%
+then that would be
+the encounter order.
 
-01:53.000 --> 02:05.500
-Flag is set and at the aggregate operations that are used as part of the stream pipeline are obliged to maintain order and think just kind of think back to our earlier discussions
+31
+00:01:28.530 --> 00:01:31.470 align:middle line:84%
+And you can dictate whether
+encounter order should
 
-02:05.500 --> 02:16.800
-about how the streams framework internals process a stream where you end up with these flags that set properties at each of the stages in the pipeline
+32
+00:01:31.470 --> 00:01:34.950 align:middle line:84%
+be preserved or not when
+the results come back
 
-02:16.800 --> 02:18.100
-That's kind of what we're talking about here
+33
+00:01:34.950 --> 00:01:38.900 align:middle line:84%
+from the terminal
+operation, say, collect.
 
-02:19.500 --> 02:26.400
-It turns out that the semantics in terms of whether you get the same results will be identical
+34
+00:01:38.900 --> 00:01:42.800 align:middle line:84%
+Now, encounter order, or
+EO, will be maintained
 
-02:26.400 --> 02:31.300
-irrespective of whether the stream runs in parallel or other ones sequentially
+35
+00:01:42.800 --> 00:01:44.510 align:middle line:90%
+under certain circumstances.
 
-02:31.300 --> 02:32.800
-but it's kind of like
+36
+00:01:44.510 --> 00:01:49.790 align:middle line:84%
+And those circumstances are
+the original source has ordered
 
-02:32.800 --> 02:37.100
-know if you have miles per hour in kilometers per hour
+37
+00:01:49.790 --> 00:01:52.820 align:middle line:84%
+properties-- the ordered
+characteristic is set,
 
-02:37.100 --> 02:44.300
-If you can have a car going the same speed but one will be read in miles per hour when we were in kilometers per hour
+38
+00:01:52.820 --> 00:01:54.920 align:middle line:90%
+the order flag is set--
 
-02:44.300 --> 02:46.300
-but it's the same speed of the result is the same
+39
+00:01:54.920 --> 00:01:56.870 align:middle line:84%
+and if the aggregate
+operations that
 
-02:46.300 --> 02:53.800
-So similar Concepts hear the semantics of the same irrespective of whether the stream is power or sequential
+40
+00:01:56.870 --> 00:01:59.930 align:middle line:84%
+are used as part of
+the stream pipeline
 
-02:53.800 --> 02:56.600
-If doctor order must be preserved
+41
+00:01:59.930 --> 00:02:02.420 align:middle line:90%
+are obliged to maintain order.
 
-02:56.600 --> 02:59.100
-If encounter order does not need to be reserved
+42
+00:02:02.420 --> 00:02:05.450 align:middle line:84%
+And think-- just think back
+to our earlier discussions
 
-02:59.100 --> 03:00.500
-then you make it different result
+43
+00:02:05.450 --> 00:02:09.740 align:middle line:84%
+about how the stream's
+framework internals process
 
-03:00.500 --> 03:01.100
-But again
+44
+00:02:09.740 --> 00:02:13.880 align:middle line:84%
+a stream where you end up with
+these flags that set properties
 
-03:01.100 --> 03:02.000
-that's that's by Design
+45
+00:02:13.880 --> 00:02:16.880 align:middle line:84%
+at each of the stages
+in the pipeline.
 
-03:03.500 --> 03:06.800
-The main reason for keeping track of whether you want
+46
+00:02:16.880 --> 00:02:19.740 align:middle line:84%
+That's what we're
+talking about here.
 
-03:06.800 --> 03:08.300
-encounter order to be preserved
+47
+00:02:19.740 --> 00:02:22.320 align:middle line:84%
+It turns out that the
+semantics in terms
 
-03:08.300 --> 03:11.000
-However really comes down to Performance
+48
+00:02:22.320 --> 00:02:24.510 align:middle line:84%
+of whether you get
+the same results
 
-03:11.000 --> 03:14.700
-So the more you need encounter order to be preserved
+49
+00:02:24.510 --> 00:02:28.650 align:middle line:84%
+will be identical irrespective
+of whether the stream runs
 
-03:14.700 --> 03:16.600
-the bigger the performance hit
+50
+00:02:28.650 --> 00:02:31.920 align:middle line:84%
+in parallel or whether
+it runs sequentially.
 
-03:16.600 --> 03:19.100
-the less you care about encounter order
+51
+00:02:31.920 --> 00:02:36.810 align:middle line:84%
+So it's kind of like if you have
+miles per hour and kilometers
 
-03:20.000 --> 03:23.200
-Lower the performance hit things will actually run a lot faster
+52
+00:02:36.810 --> 00:02:40.950 align:middle line:84%
+per hour, you can have a
+car going the same speed.
 
-03:23.200 --> 03:25.600
-If you don't care about the order in which the results show up
+53
+00:02:40.950 --> 00:02:42.775 align:middle line:84%
+But one will be read
+in miles per hour.
+
+54
+00:02:42.775 --> 00:02:44.400 align:middle line:84%
+One can be read in
+kilometers per hour.
+
+55
+00:02:44.400 --> 00:02:45.450 align:middle line:90%
+But it's the same speed.
+
+56
+00:02:45.450 --> 00:02:48.600 align:middle line:84%
+The result is the same,
+so similar concept here.
+
+57
+00:02:48.600 --> 00:02:51.720 align:middle line:84%
+The semantics are
+the same irrespective
+
+58
+00:02:51.720 --> 00:02:54.360 align:middle line:84%
+of whether the stream is
+parallel or sequential
+
+59
+00:02:54.360 --> 00:02:57.180 align:middle line:84%
+if encounter order
+must be preserved.
+
+60
+00:02:57.180 --> 00:02:59.190 align:middle line:84%
+If encounter order does
+not need to be reserved,
+
+61
+00:02:59.190 --> 00:03:00.850 align:middle line:84%
+then you may get
+different results.
+
+62
+00:03:00.850 --> 00:03:03.740 align:middle line:90%
+But again, that's by design.
+
+63
+00:03:03.740 --> 00:03:05.962 align:middle line:84%
+The main reason
+for keeping track
+
+64
+00:03:05.962 --> 00:03:08.420 align:middle line:84%
+of whether you want encounter
+order to be preserved or not,
+
+65
+00:03:08.420 --> 00:03:11.640 align:middle line:84%
+however, really comes
+down to performance.
+
+66
+00:03:11.640 --> 00:03:15.350 align:middle line:84%
+So the more you need encounter
+order to be preserved,
+
+67
+00:03:15.350 --> 00:03:16.970 align:middle line:90%
+the bigger the performance hit.
+
+68
+00:03:16.970 --> 00:03:20.200 align:middle line:84%
+The less you care
+about encounter order,
+
+69
+00:03:20.200 --> 00:03:21.820 align:middle line:90%
+the lower the performance hit.
+
+70
+00:03:21.820 --> 00:03:23.380 align:middle line:84%
+Things will actually
+run a lot faster
+
+71
+00:03:23.380 --> 00:03:25.838 align:middle line:84%
+if you don't care about the
+order in which the results show
+
+72
+00:03:25.838 --> 00:03:27.060 align:middle line:90%
+up.

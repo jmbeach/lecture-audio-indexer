@@ -1,170 +1,348 @@
-00:00.400 --> 00:03.900
-We're now ready to begin the transition to parallelism
+WEBVTT
 
-00:05.400 --> 00:06.400
-In this part of the lesson
+1
+00:00:00.000 --> 00:00:00.630 align:middle line:90%
 
-00:06.400 --> 00:09.900
-I'll explain how I do get operations from java
 
-00:09.900 --> 00:16.500
-Sequential streams that we've covered in previous weeks are applied in the context of the job of parallel streams framework
+2
+00:00:00.630 --> 00:00:05.580 align:middle line:84%
+We're now ready to begin the
+transition to parallelism.
 
-00:18.000 --> 00:19.900
-Just a quick recap from earlier
+3
+00:00:05.580 --> 00:00:07.740 align:middle line:84%
+In this part of the
+lesson, I'll explain
 
-00:19.900 --> 00:20.900
-recalled
+4
+00:00:07.740 --> 00:00:10.410 align:middle line:84%
+how aggregate operations
+from Java's sequential
 
-00:20.900 --> 00:24.300
-that a Java stream is a pipeline of aggregate operations
+5
+00:00:10.410 --> 00:00:13.800 align:middle line:84%
+streams that we've covered
+in previous weeks are applied
 
-00:24.300 --> 00:25.300
-That process
+6
+00:00:13.800 --> 00:00:18.280 align:middle line:84%
+in the context of the Java
+parallel streams framework.
 
-00:25.300 --> 00:28.500
-A sequence of elements also known as values or data
+7
+00:00:18.280 --> 00:00:20.500 align:middle line:90%
+Just a quick recap from earlier.
 
-00:30.000 --> 00:34.400
-Is a career in operations use internal iteration and behaviors
+8
+00:00:20.500 --> 00:00:23.050 align:middle line:84%
+Recall that a Java
+stream is a pipeline
 
-00:34.400 --> 00:37.700
-The process elements that flow through a stream
+9
+00:00:23.050 --> 00:00:26.770 align:middle line:84%
+of aggregate operations that
+process a sequence of elements,
 
-00:38.900 --> 00:40.900
-But Depot stream
+10
+00:00:26.770 --> 00:00:30.200 align:middle line:90%
+also known as values or data.
 
-00:40.900 --> 00:42.000
-execute sequentially
+11
+00:00:30.200 --> 00:00:33.580 align:middle line:84%
+These aggregate operations
+use internal iteration
 
-00:42.000 --> 00:47.400
-So all of it aggregate operations run their behaviors in one thread of control
+12
+00:00:33.580 --> 00:00:36.440 align:middle line:84%
+and behaviors to
+process elements
 
-00:49.300 --> 00:50.400
-In contrast
+13
+00:00:36.440 --> 00:00:39.120 align:middle line:90%
+that flow through a stream.
 
-00:50.400 --> 00:57.900
-when a stream executes in parallel is partitioned into multiple substream chunks that run in the common Fork
+14
+00:00:39.120 --> 00:00:42.660 align:middle line:84%
+By default, a stream
+execute sequentially.
 
-00:57.900 --> 00:58.500
-join pool
+15
+00:00:42.660 --> 00:00:44.820 align:middle line:84%
+So all of its
+aggregate operations
 
-01:00.400 --> 01:02.300
-The present is worth joining pool
+16
+00:00:44.820 --> 00:00:49.580 align:middle line:84%
+run their behaviors in
+one thread of control.
 
-01:02.300 --> 01:04.800
-9 to terminus tikli process
+17
+00:00:49.580 --> 00:00:52.750 align:middle line:84%
+In contrast, when a stream
+executes in parallel,
 
-01:04.800 --> 01:06.900
-These different chunks in parallel
+18
+00:00:52.750 --> 00:00:57.050 align:middle line:84%
+it is partitioned into multiple
+substream chunks that run
 
-01:08.500 --> 01:13.700
-The intermediate operations iterate over and process the papers on these chunks in parallel as well
+19
+00:00:57.050 --> 00:01:00.640 align:middle line:90%
+in the common fork-join pool.
 
-01:14.800 --> 01:15.600
-And finally
+20
+00:01:00.640 --> 00:01:04.090 align:middle line:84%
+The threads in this fork-join
+pool non-deterministically
 
-01:15.600 --> 01:21.400
-the strange terminal operation is used to combine the chunks into a single reduce result
+21
+00:01:04.090 --> 00:01:08.680 align:middle line:84%
+process these different
+chunks in parallel.
 
-01:23.400 --> 01:24.500
-Stateless Java
+22
+00:01:08.680 --> 00:01:10.840 align:middle line:84%
+The intermediate
+operations iterate over
 
-01:24.500 --> 01:25.900
-8 Lambda expressions
+23
+00:01:10.840 --> 00:01:13.330 align:middle line:84%
+and process the behaviors
+on these chunks in parallel
 
-01:25.900 --> 01:31.300
-and Method references are used to pass behaviors into the aggregate operations
+24
+00:01:13.330 --> 00:01:15.160 align:middle line:90%
+as well.
 
-01:33.100 --> 01:36.000
-Ideally only minuscule changes are needed
+25
+00:01:15.160 --> 00:01:17.730 align:middle line:84%
+And finally, the streams
+terminal operation
 
-01:36.000 --> 01:40.200
-Trying to transition from a sequential to a parallel stream
+26
+00:01:17.730 --> 00:01:23.680 align:middle line:84%
+is used to combine the chunks
+into a single reduced result.
 
-01:40.200 --> 01:48.300
-Although we'll see later that you can do more Advanced Techniques in order to ring even further parallelism out of your Solutions
+27
+00:01:23.680 --> 00:01:26.280 align:middle line:84%
+The stateless Java 8 lambda
+expressions and method
 
-01:48.300 --> 01:51.500
-which will ideally help improve performance even further
+28
+00:01:26.280 --> 00:01:29.850 align:middle line:84%
+references are used
+to pass behaviors
 
-01:52.800 --> 01:55.400
+29
+00:01:29.850 --> 00:01:33.340 align:middle line:90%
+into the aggregate operations.
+
+30
+00:01:33.340 --> 00:01:37.960 align:middle line:84%
+Ideally, only minuscule changes
+are needed to transition
+
+31
+00:01:37.960 --> 00:01:40.575 align:middle line:84%
+from a sequential to
+a parallel stream.
+
+32
+00:01:40.575 --> 00:01:41.950 align:middle line:84%
+Although we'll
+see later that you
+
+33
+00:01:41.950 --> 00:01:44.620 align:middle line:84%
+can do more advanced
+techniques in order
+
+34
+00:01:44.620 --> 00:01:47.590 align:middle line:84%
+to ring even further
+parallelism out
+
+35
+00:01:47.590 --> 00:01:49.810 align:middle line:84%
+of your solutions,
+which will ideally help
+
+36
+00:01:49.810 --> 00:01:51.610 align:middle line:84%
+improve performance
+even further.
+
+37
+00:01:51.610 --> 00:01:54.120 align:middle line:90%
+
+
+38
+00:01:54.120 --> 00:01:57.020 align:middle line:84%
 The same aggregate operations
+that we've talked about earlier
 
-01:55.400 --> 02:05.400
-we've talked about earlier to be used for both sequential and parallel streams and that's reassuring because it means all the things we've covered in the previous week's don't have to be relearn from scratch
+39
+00:01:57.020 --> 00:02:00.020 align:middle line:84%
+can be used for both sequential
+and parallel streams.
 
-02:07.000 --> 02:09.100
-In particular the search screen
+40
+00:02:00.020 --> 00:02:01.670 align:middle line:84%
+And that's reassuring
+because it means
 
-02:09.100 --> 02:10.800
-gang example
+41
+00:02:01.670 --> 00:02:03.860 align:middle line:84%
+all the things we've covered
+in the previous weeks
 
-02:10.800 --> 02:11.300
-case study
+42
+00:02:03.860 --> 00:02:07.230 align:middle line:84%
+don't have to be
+relearned from scratch.
 
-02:11.300 --> 02:16.100
-we've been focusing on uses the same aggregate operations for both
+43
+00:02:07.230 --> 00:02:10.910 align:middle line:84%
+In particular, the
+SearchStreamGang example case
 
-02:16.100 --> 02:22.700
-The search was sequential streams class and the search with Carol Streams class that will be looking at shortly
+44
+00:02:10.910 --> 00:02:11.410 align:middle line:90%
+study.
 
-02:24.800 --> 02:25.400
-Therefore
+45
+00:02:11.410 --> 00:02:15.600 align:middle line:84%
+We've been focusing on uses
+the same aggregate operations
 
-02:25.400 --> 02:31.100
-you can treat parallelism as an optimization in Java streams and use it to leverage
+46
+00:02:15.600 --> 00:02:18.150 align:middle line:84%
+for both the
+SearchWithSequentialStreams
 
-02:31.100 --> 02:36.500
-All of the available Kors at your disposal to talk later about how you can limit the number
+47
+00:02:18.150 --> 00:02:21.660 align:middle line:84%
+class and the
+SearchWithParallelStreams class
 
-02:36.500 --> 02:36.900
-of course
+48
+00:02:21.660 --> 00:02:25.020 align:middle line:84%
+that we'll be
+looking at shortly.
 
-02:36.900 --> 02:38.200
-that are used as well
+49
+00:02:25.020 --> 00:02:27.330 align:middle line:84%
+Therefore, you can
+treat parallelism
 
-02:38.200 --> 02:38.500
-Although
+50
+00:02:27.330 --> 00:02:29.760 align:middle line:84%
+as an optimization
+in Java streams
 
-02:38.500 --> 02:40.700
-typically you try to use as many cars as possible
+51
+00:02:29.760 --> 00:02:32.730 align:middle line:84%
+and use it to leverage
+all of the available cores
 
-02:40.700 --> 02:42.500
-If your goal is to get maximum
+52
+00:02:32.730 --> 00:02:34.122 align:middle line:90%
+at your disposal.
 
-02:42.500 --> 02:46.200
-throughput scalability and latency out of your Solutions
+53
+00:02:34.122 --> 00:02:35.580 align:middle line:84%
+We'll also talk
+later about how you
 
-02:47.700 --> 02:48.400
-Naturally
+54
+00:02:35.580 --> 00:02:38.162 align:middle line:84%
+can limit the number of
+cores that are used as well.
 
-02:48.400 --> 02:50.000
-the behaviors that you passed
+55
+00:02:38.162 --> 00:02:39.870 align:middle line:84%
+Although typically
+you try to use as many
 
-02:50.000 --> 02:55.300
-the aggregate operations have to be very carefully designed to avoid accessing any
+56
+00:02:39.870 --> 00:02:41.310 align:middle line:84%
+cause as possible
+if your goal is
 
-02:55.300 --> 02:58.200
-Unsynchronized shared mutable state
+57
+00:02:41.310 --> 00:02:45.480 align:middle line:84%
+to get maximum throughput,
+scalability, and latency out
 
-02:58.200 --> 02:59.100
-which of course
+58
+00:02:45.480 --> 00:02:47.780 align:middle line:90%
+of your solutions.
 
-02:59.100 --> 03:02.700
-is the root of all evil in parallel and concurrent programs
+59
+00:02:47.780 --> 00:02:49.590 align:middle line:84%
+Naturally, the
+behaviors that you
 
-03:02.700 --> 03:04.500
-As we talked about many talents
+60
+00:02:49.590 --> 00:02:51.990 align:middle line:84%
+pass to the aggregate
+operations have
 
-03:04.500 --> 03:05.300
-In fact
+61
+00:02:51.990 --> 00:02:54.600 align:middle line:84%
+to be very carefully
+designed to avoid
 
-03:05.300 --> 03:09.500
-will also see if we go through these slides in this lesson and other lessons
+62
+00:02:54.600 --> 00:02:58.680 align:middle line:84%
+accessing any unsynchronized
+shared mutable state--
 
-03:09.500 --> 03:20.000
-that is very important to understand how to avoid various spellings of Hazzard by programming properly to make sure you share as little beautiful state as possible
+63
+00:02:58.680 --> 00:03:00.840 align:middle line:84%
+which, of course, is
+the root of all evil
 
-03:20.000 --> 03:21.200
-Ideally none
+64
+00:03:00.840 --> 00:03:02.670 align:middle line:84%
+in parallel and
+concurrent programs,
+
+65
+00:03:02.670 --> 00:03:04.895 align:middle line:84%
+as we've talked
+about many times.
+
+66
+00:03:04.895 --> 00:03:06.270 align:middle line:84%
+In fact, we'll
+also see, as we go
+
+67
+00:03:06.270 --> 00:03:09.990 align:middle line:84%
+through these slides in this
+lesson and other lessons,
+
+68
+00:03:09.990 --> 00:03:11.820 align:middle line:84%
+that it's very
+important to understand
+
+69
+00:03:11.820 --> 00:03:15.780 align:middle line:84%
+how to avoid various parallelism
+hazards by programming
+
+70
+00:03:15.780 --> 00:03:19.560 align:middle line:84%
+properly to make sure you share
+as little mutable state as
+
+71
+00:03:19.560 --> 00:03:20.530 align:middle line:90%
+possible.
+
+72
+00:03:20.530 --> 00:03:22.080 align:middle line:90%
+Ideally, none.

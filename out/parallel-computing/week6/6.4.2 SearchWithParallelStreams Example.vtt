@@ -1,401 +1,732 @@
-00:00.400 --> 00:00.800
-Now
-
-00:00.800 --> 00:04.400
-that I've given you a high-level view of the search with parallel streams
-
-00:04.400 --> 00:07.400
-class methods process stream and processing
-
-00:07.400 --> 00:07.600
-Put
-
-00:07.600 --> 00:12.300
-let's step in and visualize them a little bit more definitively
-
-00:15.600 --> 00:18.300
-So we'll start by visualizing process stream
-
-00:18.300 --> 00:20.300
-This of course searches
-
-00:20.300 --> 00:21.400
-a list of input strings
-
-00:21.400 --> 00:26.000
-What we get is input is in is a list of inputs trains that contain the works of Shakespeare
-
-00:27.500 --> 00:37.000
-And then we convert that list of inputs trains into a parallel stream by calling the parallel stream Factor method and we'll end up of course
-
-00:37.000 --> 00:41.400
-with sub streams with chunks of inputs trains in
-
-00:41.400 --> 00:41.800
-In fact
-
-00:41.800 --> 00:42.100
-each
-
-00:42.100 --> 00:48.900
-Something has one input strand that gets processed because that's the way the splitter ater for arraylist works
-
-00:50.400 --> 01:00.000
-What we have is the stream of input strings which will be processed in parallel and parallel on separate threads and cores as part of the fork
-
-01:00.000 --> 01:00.700
-joint
-
-01:03.100 --> 01:12.000
-The next thing that happens is will have those streams of strings processed by the map aggregate operation
-
-01:12.000 --> 01:13.900
-And this of course
-
-01:13.900 --> 01:18.600
-will call the process input method which will look at it in more detail on the 2nd
-
-01:18.600 --> 01:28.400
-which is passed in is a method reference Behavior to the map in immediate operation and that will go off in search for phrases in each input string will look at that shortly
-
-01:28.400 --> 01:29.500
-So
-
-01:29.500 --> 01:30.100
-keep in mind
-
-01:30.100 --> 01:32.000
-we will have parallelism going on in two Dimensions
-
-01:32.000 --> 01:32.500
-Your powers
-
-01:32.500 --> 01:34.800
-I'm at the level of each input string
-
-01:34.800 --> 01:35.600
-each work of Shakespeare
-
-01:35.600 --> 01:39.600
-and then parallelism at the level of each phrase that we're searching for
-
-01:41.000 --> 01:41.700
-Now
-
-01:41.700 --> 01:53.200
-what you get back from this map call will be a stream of lists of search results because that's what process input returns a list of search results
-
-01:53.200 --> 02:00.500
-So have a stream of search results coming back and keep in mind that some of these lists of search results may be empty
-
-02:00.500 --> 02:03.500
-If there weren't any phrases that matched
-
-02:03.500 --> 02:05.500
-a given input during a given work or Shakespeare
-
-02:05.500 --> 02:08.100
-Will talk more about how that gets dealt with later
-
-02:09.300 --> 02:15.200
-That stream of list of search results gets then fed into the collect terminal operation
-
-02:15.200 --> 02:25.200
-which of course triggers all the intermediate operation processing setting on the wheels in motion and that will actually run everything on the workers Fred's in the fork
-
-02:25.200 --> 02:27.700
-join pool and that will
-
-02:27.700 --> 02:27.900
-of course
-
-02:27.900 --> 02:29.800
-be map to the underlined processor course
-
-02:29.800 --> 02:31.500
-I want lots of parallelism cracking away
-
-02:32.700 --> 02:39.700
-And what gets returned here will be a list of list of search results based on encounter order
-
-02:39.700 --> 02:40.300
-So again
-
-02:40.300 --> 02:43.100
-whatever the order that the works of Shakespeare were examined
-
-02:43.100 --> 02:46.400
-that'll be the order in which the collected list of search results
-
-02:46.400 --> 02:47.000
-Come back
-
-02:47.000 --> 02:49.600
-some empty some perhaps not empty
-
-02:50.700 --> 02:51.500
-This is
-
-02:51.500 --> 02:51.700
-Of course
-
-02:51.700 --> 02:55.500
-by the to list facts about that on the collectors utility class
-
-02:55.500 --> 02:59.700
-which is you recall returns a collector or non concurrent collector
-
-02:59.700 --> 03:04.600
-which works in a parallel stream as we'll see later and it's non concurrent collector
-
-03:04.600 --> 03:11.800
-Will use an arraylist to accumulate the elements into the final beautiful result can container
-
-03:11.800 --> 03:13.300
-which is the result from collect
-
-03:14.300 --> 03:19.000
-Let's not talk about how to visualize the process input method
-
-03:19.000 --> 03:19.700
-So this of course
-
-03:19.700 --> 03:23.500
-is the method it's called is a kind of subroutine by process stream
-
-03:23.500 --> 03:24.800
-Process
-
-03:24.800 --> 03:28.200
-Input finds phrase is an input strain in parallel
-
-03:28.200 --> 03:30.000
-It takes his input
-
-03:30.000 --> 03:36.600
-The list of phrases to find and uses the Perla stream Factor method
-
-03:36.600 --> 03:41.900
-to convert the list of strings into a stream of strings
-
-03:41.900 --> 03:42.300
-So
-
-03:42.300 --> 03:43.500
-we have a stream of strings
-
-03:43.500 --> 03:44.700
-and all of these dreams
-
-03:44.700 --> 03:49.100
-strings will then be processed in parallel in the comic book joint
-
-03:49.100 --> 03:51.700
-Multiple threats in the mapping to the multiple course
-
-03:51.700 --> 03:53.200
-just like process string
-
-03:53.200 --> 03:56.000
-So get lots of parallelism going on in this example
-
-03:56.900 --> 03:57.900
-In this particular case
-
-03:57.900 --> 04:01.600
-the stream of phrases to find gets fed into the map
-
-04:01.600 --> 04:03.000
-intermediate operation
-
-04:03.000 --> 04:06.500
-which ends up using the search for phrase method
-
-04:06.500 --> 04:14.300
-which we talked about before the search for phrases in a given input strength and that will output a stream of search results
-
-04:14.300 --> 04:16.700
-And this time
-
-04:16.700 --> 04:21.500
-we're going to go ahead and filter the streams search results to get rid of anything that happens to be empty
-
-04:21.500 --> 04:23.600
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.660 align:middle line:90%
+
+
+2
+00:00:00.660 --> 00:00:03.510 align:middle line:84%
+Now that I've given you a
+high level view of the search
+
+3
+00:00:03.510 --> 00:00:06.120 align:middle line:84%
+with parallel
+streams class methods
+
+4
+00:00:06.120 --> 00:00:09.240 align:middle line:84%
+process stream and process
+input, let's step in
+
+5
+00:00:09.240 --> 00:00:12.914 align:middle line:84%
+and visualize them a little
+bit more definitively.
+
+6
+00:00:12.914 --> 00:00:15.880 align:middle line:90%
+
+
+7
+00:00:15.880 --> 00:00:19.260 align:middle line:84%
+So we'll start by
+visualizing process stream.
+
+8
+00:00:19.260 --> 00:00:22.020 align:middle line:84%
+This, of course, searches
+a list of input strings.
+
+9
+00:00:22.020 --> 00:00:23.460 align:middle line:90%
+What we get is input--
+
+10
+00:00:23.460 --> 00:00:25.320 align:middle line:84%
+is a list of input
+strings that contain
+
+11
+00:00:25.320 --> 00:00:27.800 align:middle line:90%
+the works of Shakespeare.
+
+12
+00:00:27.800 --> 00:00:30.830 align:middle line:84%
+And then we convert that
+list of input strings
+
+13
+00:00:30.830 --> 00:00:34.070 align:middle line:84%
+into a parallel stream by
+calling the parallel stream
+
+14
+00:00:34.070 --> 00:00:35.690 align:middle line:90%
+factor method.
+
+15
+00:00:35.690 --> 00:00:38.810 align:middle line:84%
+And we'll end up, of
+course, with substreams
+
+16
+00:00:38.810 --> 00:00:41.220 align:middle line:90%
+with chunks of input strings.
+
+17
+00:00:41.220 --> 00:00:43.783 align:middle line:84%
+In fact, each substream
+has one input string
+
+18
+00:00:43.783 --> 00:00:45.200 align:middle line:84%
+that gets processed
+because that's
+
+19
+00:00:45.200 --> 00:00:50.680 align:middle line:84%
+the way the spliterator
+for array list works.
+
+20
+00:00:50.680 --> 00:00:54.040 align:middle line:84%
+What we then have is this
+stream of input strings,
+
+21
+00:00:54.040 --> 00:00:58.330 align:middle line:84%
+which will be processed in
+parallel on separate threads
+
+22
+00:00:58.330 --> 00:01:01.240 align:middle line:84%
+and cores as part of
+the fork-join pool--
+
+23
+00:01:01.240 --> 00:01:03.320 align:middle line:90%
+the common fork-join pool.
+
+24
+00:01:03.320 --> 00:01:05.450 align:middle line:84%
+The next thing that
+happens is we'll
+
+25
+00:01:05.450 --> 00:01:11.360 align:middle line:84%
+have those streams of strings
+processed by the map aggregate
+
+26
+00:01:11.360 --> 00:01:12.680 align:middle line:90%
+operation.
+
+27
+00:01:12.680 --> 00:01:16.920 align:middle line:84%
+And this, of course, will call
+the process input method--
+
+28
+00:01:16.920 --> 00:01:18.920 align:middle line:84%
+which we'll look at in
+more detail in a second--
+
+29
+00:01:18.920 --> 00:01:21.830 align:middle line:84%
+which is passed in as a
+method reference behavior
+
+30
+00:01:21.830 --> 00:01:24.290 align:middle line:84%
+to the map
+intermediate operation.
+
+31
+00:01:24.290 --> 00:01:26.708 align:middle line:84%
+And that will go off in search
+for phrases in each input
+
+32
+00:01:26.708 --> 00:01:27.500 align:middle line:90%
+string in parallel.
+
+33
+00:01:27.500 --> 00:01:29.268 align:middle line:90%
+We'll look at that shortly.
+
+34
+00:01:29.268 --> 00:01:31.310 align:middle line:84%
+So keep in mind we will
+have parallelism going on
+
+35
+00:01:31.310 --> 00:01:32.768 align:middle line:84%
+in two dimensions
+here, parallelism
+
+36
+00:01:32.768 --> 00:01:35.360 align:middle line:84%
+at the level of each
+input string, each work
+
+37
+00:01:35.360 --> 00:01:37.220 align:middle line:84%
+of Shakespeare, and
+then parallelism
+
+38
+00:01:37.220 --> 00:01:41.480 align:middle line:84%
+at the level of each phrase
+that we're searching for.
+
+39
+00:01:41.480 --> 00:01:45.260 align:middle line:84%
+Now what you get back
+from this map call
+
+40
+00:01:45.260 --> 00:01:49.190 align:middle line:84%
+will be a stream of
+lists of search results
+
+41
+00:01:49.190 --> 00:01:51.950 align:middle line:84%
+because that's what
+process input returns,
+
+42
+00:01:51.950 --> 00:01:54.030 align:middle line:90%
+a list of search results.
+
+43
+00:01:54.030 --> 00:01:56.480 align:middle line:84%
+So we'll have a stream of
+search results coming back.
+
+44
+00:01:56.480 --> 00:01:59.690 align:middle line:84%
+And keep in mind that some of
+these lists of search results
+
+45
+00:01:59.690 --> 00:02:02.960 align:middle line:84%
+may be empty if there
+weren't any phrases that
+
+46
+00:02:02.960 --> 00:02:06.350 align:middle line:84%
+matched a given input string,
+a given work of Shakespeare.
+
+47
+00:02:06.350 --> 00:02:09.570 align:middle line:84%
+We'll talk more about how
+that gets dealt with later.
+
+48
+00:02:09.570 --> 00:02:11.910 align:middle line:84%
+That stream of lists
+of search results
+
+49
+00:02:11.910 --> 00:02:16.067 align:middle line:84%
+gets then fed into the collect
+terminal operation, which,
+
+50
+00:02:16.067 --> 00:02:18.150 align:middle line:84%
+of course, triggers all
+the intermediate operation
+
+51
+00:02:18.150 --> 00:02:20.910 align:middle line:84%
+processing, setting all
+the wheels in motion,
+
+52
+00:02:20.910 --> 00:02:22.950 align:middle line:84%
+and that will naturally
+run everything
+
+53
+00:02:22.950 --> 00:02:26.760 align:middle line:84%
+on the worker threads
+in the fork-join pool.
+
+54
+00:02:26.760 --> 00:02:29.010 align:middle line:84%
+And that will, of course,
+be mapped to the underlying
+
+55
+00:02:29.010 --> 00:02:29.670 align:middle line:90%
+processor core.
+
+56
+00:02:29.670 --> 00:02:32.960 align:middle line:84%
+So it'll have lots of
+parallelism cranking away.
+
+57
+00:02:32.960 --> 00:02:35.570 align:middle line:84%
+And what gets
+returned here will be
+
+58
+00:02:35.570 --> 00:02:38.780 align:middle line:84%
+a list of-- lists of
+search results based
+
+59
+00:02:38.780 --> 00:02:39.810 align:middle line:90%
+on encounter order.
+
+60
+00:02:39.810 --> 00:02:42.377 align:middle line:84%
+So again whatever the order
+that the works of Shakespeare
+
+61
+00:02:42.377 --> 00:02:44.210 align:middle line:84%
+were examined, that'll
+be the order in which
+
+62
+00:02:44.210 --> 00:02:48.350 align:middle line:84%
+the collected list of search
+results come back, some empty,
+
+63
+00:02:48.350 --> 00:02:50.910 align:middle line:90%
+some perhaps not empty.
+
+64
+00:02:50.910 --> 00:02:53.520 align:middle line:84%
+This is done, of course, by
+the to list factoring method
+
+65
+00:02:53.520 --> 00:02:56.910 align:middle line:84%
+on the collector's utility
+class which, as you recall,
+
+66
+00:02:56.910 --> 00:03:00.540 align:middle line:84%
+returns a collector, a
+non-concurrent collector, which
+
+67
+00:03:00.540 --> 00:03:03.090 align:middle line:84%
+works in a parallel
+stream as we'll see later.
+
+68
+00:03:03.090 --> 00:03:04.650 align:middle line:84%
+And this non-concurrent
+collector
+
+69
+00:03:04.650 --> 00:03:08.970 align:middle line:84%
+will use an array list to
+accumulate the elements
+
+70
+00:03:08.970 --> 00:03:12.150 align:middle line:84%
+into the final mutable
+result container, which
+
+71
+00:03:12.150 --> 00:03:15.470 align:middle line:90%
+is the result from collect.
+
+72
+00:03:15.470 --> 00:03:18.600 align:middle line:84%
+Let's now talk about how to
+visualize the process input
+
+73
+00:03:18.600 --> 00:03:19.100 align:middle line:90%
+method.
+
+74
+00:03:19.100 --> 00:03:21.100 align:middle line:84%
+So this, of course, is
+the method that's called.
+
+75
+00:03:21.100 --> 00:03:24.400 align:middle line:84%
+It's a kind of a subroutine
+by process stream.
+
+76
+00:03:24.400 --> 00:03:29.080 align:middle line:84%
+Process input finds phrases in
+an input string in parallel.
+
+77
+00:03:29.080 --> 00:03:33.940 align:middle line:84%
+It takes as input the
+list of phrases to find
+
+78
+00:03:33.940 --> 00:03:36.340 align:middle line:84%
+and uses the parallel
+stream factoring
+
+79
+00:03:36.340 --> 00:03:40.390 align:middle line:84%
+method to convert
+the list of strings
+
+80
+00:03:40.390 --> 00:03:42.190 align:middle line:90%
+into a stream of strings.
+
+81
+00:03:42.190 --> 00:03:44.020 align:middle line:84%
+So we have a stream
+of strings, and all
+
+82
+00:03:44.020 --> 00:03:45.520 align:middle line:84%
+of these stream of
+strings will then
+
+83
+00:03:45.520 --> 00:03:49.392 align:middle line:84%
+be processed in parallel in
+the common fork-join pool using
+
+84
+00:03:49.392 --> 00:03:51.850 align:middle line:84%
+its multiple threads and the
+mapping to the multiple cores,
+
+85
+00:03:51.850 --> 00:03:53.830 align:middle line:90%
+just like process stream.
+
+86
+00:03:53.830 --> 00:03:57.280 align:middle line:84%
+So, again, lots of parallelism
+going on in this example.
+
+87
+00:03:57.280 --> 00:04:00.300 align:middle line:84%
+In this particular case, the
+stream of phrases defined
+
+88
+00:04:00.300 --> 00:04:03.810 align:middle line:84%
+gets fed into the map
+intermediate operation, which
+
+89
+00:04:03.810 --> 00:04:06.720 align:middle line:84%
+ends up using the search for
+phrase method, which we've
+
+90
+00:04:06.720 --> 00:04:09.990 align:middle line:84%
+talked about before, to search
+for phrases in a given input
+
+91
+00:04:09.990 --> 00:04:11.570 align:middle line:90%
+string.
+
+92
+00:04:11.570 --> 00:04:15.410 align:middle line:84%
+And that will output a
+stream of search results.
+
+93
+00:04:15.410 --> 00:04:18.253 align:middle line:84%
+And this time we're going
+to go ahead and filter
+
+94
+00:04:18.253 --> 00:04:20.420 align:middle line:84%
+this stream of search results
+to get rid of anything
+
+95
+00:04:20.420 --> 00:04:22.170 align:middle line:90%
+that happens to be empty.
+
+96
+00:04:22.170 --> 00:04:24.710 align:middle line:84%
 So if we end up with nothing
+but empty search results,
 
-04:23.600 --> 04:24.100
-but empty
+97
+00:04:24.710 --> 00:04:27.440 align:middle line:84%
+we'll end up with a list
+of empty search results.
 
-04:24.100 --> 04:27.000
-search results will end up with a list of empty search results
+98
+00:04:27.440 --> 00:04:31.010 align:middle line:84%
+If we have essentially
+any results at all,
 
-04:27.000 --> 04:28.500
-If we have
+99
+00:04:31.010 --> 00:04:36.260 align:middle line:84%
+we'll end up basically letting
+that pass through the filter.
 
-04:28.500 --> 04:32.500
-essentially any results at all will end up basically
+100
+00:04:36.260 --> 00:04:38.750 align:middle line:84%
+And then everything
+will be output
 
-04:32.500 --> 04:35.200
-let him pass through the filter
+101
+00:04:38.750 --> 00:04:42.370 align:middle line:84%
+as a stream of non-empty
+search results, some of which
 
-04:36.000 --> 04:39.700
-And then everything will be output as a stream of non
+102
+00:04:42.370 --> 00:04:44.440 align:middle line:84%
+may be empty if
+there's no matches.
 
-04:39.700 --> 04:40.700
-if you search results
+103
+00:04:44.440 --> 00:04:47.350 align:middle line:84%
+And we'll then go ahead and
+collect everything together,
 
-04:41.800 --> 04:42.200
-Some
+104
+00:04:47.350 --> 00:04:51.310 align:middle line:84%
+which as usual triggers
+intermediate operations
 
-04:42.200 --> 04:42.900
-which may be empty
+105
+00:04:51.310 --> 00:04:57.730 align:middle line:84%
+and then collects the stream
+of search results into a list--
 
-04:42.900 --> 04:45.100
-If there's no matches and will
+106
+00:04:57.730 --> 00:05:01.620 align:middle line:84%
+sorry, into a-- it takes
+the stream of results,
 
-04:45.100 --> 04:49.100
-then go ahead and collect everything together which as usual triggers
+107
+00:05:01.620 --> 00:05:04.270 align:middle line:84%
+collects it into a list, which
+is, of course, an array list
 
-04:49.100 --> 04:50.000
-energy operations
+108
+00:05:04.270 --> 00:05:06.070 align:middle line:84%
+because we use the
+two-list factoring
 
-04:50.000 --> 04:57.100
-and then collects the stream of search results into a list
+109
+00:05:06.070 --> 00:05:09.370 align:middle line:84%
+method on the collector's
+utility class.
 
-04:57.100 --> 05:02.900
-So I can into a stream of result collected into a list
+110
+00:05:09.370 --> 00:05:13.990 align:middle line:84%
+And then we end up returning
+a list of search results,
 
-05:02.900 --> 05:03.200
-which is
+111
+00:05:13.990 --> 00:05:16.870 align:middle line:84%
+and this goes back to the
+thread that called this.
 
-05:03.200 --> 05:03.400
-of course
+112
+00:05:16.870 --> 00:05:18.730 align:middle line:84%
+And, of course,
+this list will be
 
-05:03.400 --> 05:04.000
-an arraylist
+113
+00:05:18.730 --> 00:05:21.760 align:middle line:84%
+ordered in encounter order,
+where encounter order here
 
-05:04.000 --> 05:08.700
-because we use the to list Factor method on the collectors utility class
+114
+00:05:21.760 --> 00:05:25.810 align:middle line:84%
+means the ordering in which the
+phrases occurred in the input
 
-05:08.700 --> 05:13.500
-And then we end up returning a list of search results
+115
+00:05:25.810 --> 00:05:27.490 align:middle line:90%
+to process--
 
-05:13.500 --> 05:19.100
-and it goes back to the thread that called this and it for a list of the ordered
+116
+00:05:27.490 --> 00:05:30.600 align:middle line:90%
+the input to parallel string.
 
-05:19.100 --> 05:21.000
-an encounter order encounter order
+117
+00:05:30.600 --> 00:05:32.490 align:middle line:84%
+As I mentioned before,
+if none of the phrases
 
-05:21.000 --> 05:22.400
-Here means the order
+118
+00:05:32.490 --> 00:05:36.360 align:middle line:84%
+match the input string, we'll
+simply have an empty list.
 
-05:22.400 --> 05:28.500
-in which the phrase has occurred in the input to process the input to Carol Stream
+119
+00:05:36.360 --> 00:05:40.110 align:middle line:84%
+And that will be dealt
+with later by the flat map
 
-05:30.300 --> 05:31.200
-Animation before
+120
+00:05:40.110 --> 00:05:43.050 align:middle line:90%
+operation in print phases--
 
-05:31.200 --> 05:32.800
-if none of the phrases match
+121
+00:05:43.050 --> 00:05:46.050 align:middle line:90%
+print phrases.
 
-05:32.800 --> 05:35.300
-the input string will simply have an empty list
+122
+00:05:46.050 --> 00:05:49.710 align:middle line:84%
+So once again just to
+recap very important point
 
-05:36.100 --> 05:41.900
-And that will be dealt with later by the flat map operation in Prince phases
+123
+00:05:49.710 --> 00:05:52.470 align:middle line:84%
+to recognize with
+parallel streams,
 
-05:42.900 --> 05:44.600
-Print phrases
+124
+00:05:52.470 --> 00:05:55.140 align:middle line:84%
+the actual processing
+of a parallel stream
 
-05:45.900 --> 05:47.000
-So once again
+125
+00:05:55.140 --> 00:05:58.590 align:middle line:84%
+differs a little bit from the
+visualization I've been giving.
 
-05:47.000 --> 05:54.600
-just to recap varies important to recognize with parallel streams processing of a parallel stream
+126
+00:05:58.590 --> 00:06:00.660 align:middle line:84%
+I've been giving a
+visualization that perhaps
 
-05:54.600 --> 05:57.300
-differs a little bit from the the visualization
+127
+00:06:00.660 --> 00:06:02.160 align:middle line:84%
+gives the impression
+that things are
 
-05:57.300 --> 05:58.400
-I've been getting updates
+128
+00:06:02.160 --> 00:06:04.150 align:middle line:90%
+processed a layer at a time.
 
-05:58.400 --> 06:03.200
-I've been getting a visualization and props gives the impression that things are processed through the layer at a time
+129
+00:06:04.150 --> 00:06:06.090 align:middle line:84%
+And while it's sort of
+like that logically,
 
-06:03.200 --> 06:05.500
-And while it's sort of like that
+130
+00:06:06.090 --> 00:06:08.910 align:middle line:84%
+that's not in fact how
+the implementation works.
 
-06:05.500 --> 06:06.000
-logically
+131
+00:06:08.910 --> 00:06:12.090 align:middle line:84%
+Instead, what happens is when
+the terminal operation is
 
-06:06.000 --> 06:08.100
-that's not in fact how the application works
+132
+00:06:12.090 --> 00:06:17.070 align:middle line:84%
+reached, the stream will start
+pulling data from the source,
 
-06:08.100 --> 06:10.400
-Instead what happens is
+133
+00:06:17.070 --> 00:06:19.770 align:middle line:84%
+and it traverses through all
+of the intermediate operations
 
-06:10.400 --> 06:11.700
-when the terminal operation is
+134
+00:06:19.770 --> 00:06:22.400 align:middle line:84%
+in the stream,
+working on that data.
 
-06:11.700 --> 06:20.400
-reached the stream will start pulling data from the source and it true versus through all of the intermediate operations in the Stream
+135
+00:06:22.400 --> 00:06:26.940 align:middle line:84%
+And that, of course, will rerun
+within the common fork-join
 
-06:20.400 --> 06:22.600
-Working on that date a lot
+136
+00:06:26.940 --> 00:06:30.120 align:middle line:84%
+pool-- within a worker thread
+in the common fork-join pool.
 
-06:22.600 --> 06:23.000
-Of course
+137
+00:06:30.120 --> 00:06:33.450 align:middle line:84%
+So everything gets done using
+what's called integrated layer
 
-06:23.000 --> 06:29.700
-we will be run within the common for joint pool within a joint
+138
+00:06:33.450 --> 00:06:36.000 align:middle line:84%
+processing to pull
+the data through all
 
-06:29.700 --> 06:32.200
-Using
+139
+00:06:36.000 --> 00:06:38.370 align:middle line:84%
+the various
+intermediate operations.
 
-06:32.200 --> 06:38.200
-What's a integrated laser processing to pull the data through all the various intermediate operations
+140
+00:06:38.370 --> 00:06:40.920 align:middle line:84%
+And then, of course, ultimately
+the terminal operation
 
-06:38.200 --> 06:38.700
-And then of course
+141
+00:06:40.920 --> 00:06:46.560 align:middle line:84%
+will end up plopping the result
+into the appropriate collector,
 
-06:38.700 --> 06:45.800
-ultimately return of operation will end up popping the result into the appropriate collect
+142
+00:06:46.560 --> 00:06:47.430 align:middle line:90%
+and--
 
-06:45.800 --> 06:50.200
-And Dad's freezing collect and it'll go ahead and collect the results
+143
+00:06:47.430 --> 00:06:48.710 align:middle line:90%
+since we're using collect--
 
-06:50.200 --> 06:51.300
-Using the accumulator
+144
+00:06:48.710 --> 00:06:50.460 align:middle line:84%
+and it'll go ahead and
+collect the results
 
-06:51.300 --> 06:52.900
-The reason again
+145
+00:06:50.460 --> 00:06:51.758 align:middle line:90%
+using the accumulator.
 
-06:52.900 --> 06:53.400
-Why it's done
+146
+00:06:51.758 --> 00:06:54.300 align:middle line:84%
+The reason again why it's done
+this way, there's two reasons.
 
-06:53.400 --> 06:53.600
-This way
+147
+00:06:54.300 --> 00:06:58.010 align:middle line:84%
+Number one, it supports short
+circuit operations, and number
 
-06:53.600 --> 06:54.200
-There's two reasons
+148
+00:06:58.010 --> 00:07:00.410 align:middle line:84%
+two, it's much,
+much more efficient
 
-06:54.200 --> 06:54.300
-Everyone
+149
+00:07:00.410 --> 00:07:03.680 align:middle line:84%
+because we don't have to
+incur unnecessary context
 
-06:54.300 --> 06:57.000
-It supports short-circuit operations
+150
+00:07:03.680 --> 00:07:08.510 align:middle line:84%
+switching, synchronization,
+memory management, and cash
 
-06:57.000 --> 06:58.300
-and number two
+151
+00:07:08.510 --> 00:07:09.440 align:middle line:90%
+management overhead.
 
-06:58.300 --> 07:00.400
-It's much much more efficient
-
-07:00.400 --> 07:08.900
-Because we don't have to incur unnecessary contact switching synchronization memory management and cash management
-
-07:08.900 --> 07:10.700
-Overhead works very smoothly
-
-07:10.700 --> 07:11.500
-very cleanly
+152
+00:07:09.440 --> 00:07:12.520 align:middle line:84%
+It works very
+smoothly very cleanly.

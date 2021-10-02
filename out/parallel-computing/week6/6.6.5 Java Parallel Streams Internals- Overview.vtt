@@ -1,218 +1,425 @@
-00:00.600 --> 00:01.000
-So
-
-00:01.000 --> 00:04.500
-let's start by talking about the order of results for collections
-
-00:04.500 --> 00:10.200
-and we'll see that there's certain Collections and their properties that affect the results order
-
-00:11.100 --> 00:15.000
-And I'll show you a bunch of examples are these examples all appear in
-
-00:15.000 --> 00:19.800
-my ex21 folder in my GitHub repository
-
-00:19.800 --> 00:23.100
-So I strongly recommend that you take a look at this coat
-
-00:23.100 --> 00:27.700
-It is very destructive and there's lots of comments and you can run it and see what the results are ensign
-
-00:29.000 --> 00:34.100
-So it turns out that certain types of Collections and certain properties collections
-
-00:34.100 --> 00:38.700
-maintain encounter order in particular ordered splitter
-
-00:38.700 --> 00:43.900
-Raiders ordered collection and certain static stream Factory methods
-
-00:43.900 --> 00:46.900
-those things maintain encounter order
-
-00:46.900 --> 00:54.500
-So let's take a look at an example examples throughout this lesson to the encounter order
-
-00:54.500 --> 00:56.600
-Here is shown by this array
-
-00:56.600 --> 00:59.500
-there were creating and then converting into a list
-
-00:59.500 --> 01:03.100
-And the encounter order here is 23142
-
-01:03.100 --> 01:05.500
-So in this particular case
-
-01:05.500 --> 01:08.700
-the list is ordered
-
-01:08.700 --> 01:10.600
-even though it doesn't have to be unique
-
-01:10.600 --> 01:12.000
-we can have duplicates
-
-01:12.000 --> 01:13.600
-We can have two appearing twice
-
-01:13.600 --> 01:14.100
-For example
-
-01:14.900 --> 01:15.400
-So
-
-01:15.400 --> 01:16.500
-when we say list
-
-01:16.500 --> 01:19.100
-Parallel stream because it's a list
-
-01:19.100 --> 01:22.400
-we know it's going to have the order
-
-01:24.000 --> 01:24.700
-Encoded
-
-01:24.700 --> 01:25.400
-or enforce
-
-01:25.400 --> 01:27.900
-the encounter order will be must be enforced for that
-
-01:27.900 --> 01:28.900
-Recall
-
-01:28.900 --> 01:29.400
-By the way
-
-01:29.400 --> 01:31.600
-that ordered is not the same thing as sort it
-
-01:31.600 --> 01:37.900
-So you can see that this list is ordered to 3142, but that list is not sorted
-
-01:37.900 --> 01:39.900
-It's just order a little bit confusing
-
-01:39.900 --> 01:42.500
-but don't don't confuse or conflate those two terms
-
-01:43.600 --> 01:48.400
-The next thing that happens is that we're going to filter out values
-
-01:48.400 --> 01:51.400
-We only allow even numbers to progressed to the string
-
-01:51.400 --> 01:56.400
-And if you recall back to our discussion of the filter in operation
-
-01:56.400 --> 01:58.900
-we talked about cyclical stream internals
-
-01:58.900 --> 02:00.800
-which don't change here
-
-02:00.800 --> 02:06.400
-We talked about the fact that filter doesn't change the ordering property
-
-02:06.400 --> 02:09.300
-If may change the size property cuz there may be fewer things
-
-02:09.300 --> 02:09.900
-in this case
-
-02:09.900 --> 02:13.400
-We drop out all the odd numbers but ordering is preserved
-
-02:14.400 --> 02:18.600
-Next thing we do is we take each number and we multiply it by 2
-
-02:19.600 --> 02:20.300
-Once again
-
-02:20.300 --> 02:23.000
-map will preserve ordering
-
-02:23.000 --> 02:26.200
-It may not can be distinct
-
-02:26.200 --> 02:27.200
-It may not be sorted
-
-02:27.200 --> 02:28.900
-but it will be ordered
-
-02:28.900 --> 02:30.000
-And then
-
-02:30.000 --> 02:37.600
-the last thing we do is we use the to array terminal operation to convert the stream of even numbers
-
-02:37.600 --> 02:42.700
-* 2 into an array of integers
-
-02:44.500 --> 02:58.200
-And the results here must be ordered must show up as 484 cuz we got rid of the odd numbers and we had to preserve the encounter order and that's because our list is an ordered collection
-
-02:58.200 --> 02:59.400
-Okay
-
-02:59.400 --> 03:00.300
-Hopefully that's pretty clear
-
-03:00.300 --> 03:01.300
-I think it's pretty straightforward
-
-03:03.000 --> 03:06.900
-Unordered collections don't need respect encounter order
-
-03:06.900 --> 03:09.800
-So let's take a look at an example that will demonstrate this
-
-03:09.800 --> 03:11.300
-In this example
-
-03:11.300 --> 03:16.200
-We take in a re convert it into a list Natok
-
-03:16.200 --> 03:30.500
-It's the same way as before and then turn that into a hash set and a half set is unordered and unique so we know right away that they'll only be one to hear instead of tutus because hash that is going to be unique
-
-03:30.500 --> 03:32.200
-What I have said is also an order
-
-03:32.200 --> 03:37.000
-There's no ordering maintain a task that just whatever the half is happened to Hash to
-
-03:38.100 --> 03:40.200
-So when we run this program
-
-03:40.200 --> 03:41.800
-couple things will happen
-
-03:41.800 --> 03:49.700
-The code could actually execute faster and that's because we don't need to maintain encounter order when we're done
-
-03:49.700 --> 03:51.300
-And so is a result
-
-03:51.300 --> 04:03.700
-we might come back with the order being being eight 4 or for 8, cuz it's only be one for not to because of that is got unique values
-
-04:03.700 --> 04:06.800
-but we don't have to maintain a bit red that we
-
-04:06.800 --> 04:07.500
-that the streams
-
-04:07.500 --> 04:11.000
-Parallel streams invitation does not have to maintain that encounter order
-
-04:11.000 --> 04:11.900
-So as a result
-
-04:11.900 --> 04:13.800
-it is likely to run faster
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.820 align:middle line:90%
+
+
+2
+00:00:00.820 --> 00:00:03.400 align:middle line:84%
+So let's start by talking
+about the order of results
+
+3
+00:00:03.400 --> 00:00:04.960 align:middle line:90%
+for collections.
+
+4
+00:00:04.960 --> 00:00:07.690 align:middle line:84%
+And we'll see that there's
+certain collections
+
+5
+00:00:07.690 --> 00:00:11.370 align:middle line:84%
+and their properties that
+affect the results order.
+
+6
+00:00:11.370 --> 00:00:13.440 align:middle line:84%
+And I'll show you a
+bunch of examples here.
+
+7
+00:00:13.440 --> 00:00:18.210 align:middle line:84%
+These examples all
+appear in my ex21 folder
+
+8
+00:00:18.210 --> 00:00:20.280 align:middle line:90%
+in my GitHub repository.
+
+9
+00:00:20.280 --> 00:00:23.010 align:middle line:84%
+So I strongly recommend that
+you take a look at this code
+
+10
+00:00:23.010 --> 00:00:24.310 align:middle line:90%
+because it's very instructive.
+
+11
+00:00:24.310 --> 00:00:25.518 align:middle line:90%
+And there's lots of comments.
+
+12
+00:00:25.518 --> 00:00:29.220 align:middle line:84%
+And you can run it and see what
+the results are are and so on.
+
+13
+00:00:29.220 --> 00:00:33.000 align:middle line:84%
+So it turns out that
+certain types of collections
+
+14
+00:00:33.000 --> 00:00:34.740 align:middle line:84%
+and certain properties
+of collections
+
+15
+00:00:34.740 --> 00:00:36.900 align:middle line:90%
+maintain encounter order.
+
+16
+00:00:36.900 --> 00:00:39.660 align:middle line:84%
+In particular,
+ordered spliterators,
+
+17
+00:00:39.660 --> 00:00:44.190 align:middle line:84%
+ordered collections, and certain
+static stream factory methods.
+
+18
+00:00:44.190 --> 00:00:47.770 align:middle line:84%
+Those things maintain
+encounter order.
+
+19
+00:00:47.770 --> 00:00:49.480 align:middle line:84%
+So let's take a
+look at an example.
+
+20
+00:00:49.480 --> 00:00:53.460 align:middle line:84%
+We will see variance of this
+example throughout this lesson.
+
+21
+00:00:53.460 --> 00:00:57.270 align:middle line:84%
+So the encounter order
+here is shown by this array
+
+22
+00:00:57.270 --> 00:00:59.970 align:middle line:84%
+that we're creating and
+then converting into a list.
+
+23
+00:00:59.970 --> 00:01:04.090 align:middle line:84%
+And the encounter order
+here is 2, 3, 1, 4, 2.
+
+24
+00:01:04.090 --> 00:01:07.860 align:middle line:84%
+So in this particular
+case, the list
+
+25
+00:01:07.860 --> 00:01:10.620 align:middle line:84%
+is ordered even though it
+doesn't have to be unique.
+
+26
+00:01:10.620 --> 00:01:11.970 align:middle line:90%
+We can have duplicates.
+
+27
+00:01:11.970 --> 00:01:15.250 align:middle line:84%
+We can have two appearing
+twice, for example.
+
+28
+00:01:15.250 --> 00:01:17.610 align:middle line:84%
+So when we say
+list.parallelStream,
+
+29
+00:01:17.610 --> 00:01:20.100 align:middle line:84%
+because it's a
+list, we know it's
+
+30
+00:01:20.100 --> 00:01:25.430 align:middle line:84%
+going to have the order
+encoded or enforced.
+
+31
+00:01:25.430 --> 00:01:28.670 align:middle line:84%
+The encounter order must
+be enforced for that.
+
+32
+00:01:28.670 --> 00:01:30.470 align:middle line:84%
+Recall, by the way,
+that ordered is not
+
+33
+00:01:30.470 --> 00:01:31.640 align:middle line:90%
+the same thing as sorted.
+
+34
+00:01:31.640 --> 00:01:34.040 align:middle line:84%
+So you can see that
+this list is ordered--
+
+35
+00:01:34.040 --> 00:01:36.290 align:middle line:90%
+2, 3, 1, 4, 2.
+
+36
+00:01:36.290 --> 00:01:37.970 align:middle line:90%
+But that list is not sorted.
+
+37
+00:01:37.970 --> 00:01:38.843 align:middle line:90%
+It's just ordered.
+
+38
+00:01:38.843 --> 00:01:40.010 align:middle line:90%
+It's a little bit confusing.
+
+39
+00:01:40.010 --> 00:01:43.820 align:middle line:84%
+But don't confuse or
+conflate those two terms.
+
+40
+00:01:43.820 --> 00:01:45.710 align:middle line:84%
+The next thing that
+happens is that we're
+
+41
+00:01:45.710 --> 00:01:48.600 align:middle line:90%
+going to filter out odd values.
+
+42
+00:01:48.600 --> 00:01:52.083 align:middle line:84%
+We only allow even numbers to
+progress through the stream.
+
+43
+00:01:52.083 --> 00:01:53.750 align:middle line:84%
+And if you recall
+back to our discussion
+
+44
+00:01:53.750 --> 00:01:56.470 align:middle line:84%
+of the filter
+intermediate operation,
+
+45
+00:01:56.470 --> 00:01:59.750 align:middle line:84%
+we talked about sequential
+stream internals,
+
+46
+00:01:59.750 --> 00:02:01.790 align:middle line:90%
+which don't change here.
+
+47
+00:02:01.790 --> 00:02:04.880 align:middle line:84%
+We talked about the
+fact that filter doesn't
+
+48
+00:02:04.880 --> 00:02:06.695 align:middle line:90%
+change the ordering property.
+
+49
+00:02:06.695 --> 00:02:08.570 align:middle line:84%
+It may change the size
+property because there
+
+50
+00:02:08.570 --> 00:02:09.479 align:middle line:90%
+may be fewer things.
+
+51
+00:02:09.479 --> 00:02:11.730 align:middle line:84%
+In this case, we drop
+out all the odd numbers.
+
+52
+00:02:11.730 --> 00:02:14.620 align:middle line:90%
+But ordering is preserved.
+
+53
+00:02:14.620 --> 00:02:16.900 align:middle line:84%
+The next thing we do
+is we take each number
+
+54
+00:02:16.900 --> 00:02:19.820 align:middle line:90%
+and we multiply it by two.
+
+55
+00:02:19.820 --> 00:02:23.240 align:middle line:84%
+Once again, map will
+preserve ordering.
+
+56
+00:02:23.240 --> 00:02:26.180 align:middle line:90%
+It may not be distinct.
+
+57
+00:02:26.180 --> 00:02:27.680 align:middle line:90%
+It may not be sorted.
+
+58
+00:02:27.680 --> 00:02:29.750 align:middle line:90%
+But it will be ordered.
+
+59
+00:02:29.750 --> 00:02:33.200 align:middle line:84%
+And then the last thing we do
+is we use the toArray terminal
+
+60
+00:02:33.200 --> 00:02:38.240 align:middle line:84%
+operation to convert the stream
+of even numbers multiplied
+
+61
+00:02:38.240 --> 00:02:44.740 align:middle line:84%
+by two into an
+array of integers.
+
+62
+00:02:44.740 --> 00:02:50.510 align:middle line:84%
+And the results here must be
+ordered, must show up as 4,
+
+63
+00:02:50.510 --> 00:02:53.840 align:middle line:84%
+8, 4 because we got
+rid of the odd numbers
+
+64
+00:02:53.840 --> 00:02:55.820 align:middle line:84%
+and we had to preserve
+the encounter order.
+
+65
+00:02:55.820 --> 00:02:59.118 align:middle line:84%
+And that's because a list
+is an ordered collection.
+
+66
+00:02:59.118 --> 00:03:00.410 align:middle line:90%
+Hopefully, that's pretty clear.
+
+67
+00:03:00.410 --> 00:03:03.270 align:middle line:84%
+I think it's pretty
+straightforward.
+
+68
+00:03:03.270 --> 00:03:07.090 align:middle line:84%
+Unordered collections don't
+need to respect encounter order.
+
+69
+00:03:07.090 --> 00:03:09.060 align:middle line:84%
+So let's take a look
+at an example that
+
+70
+00:03:09.060 --> 00:03:10.650 align:middle line:90%
+will demonstrate this.
+
+71
+00:03:10.650 --> 00:03:15.777 align:middle line:84%
+In this example, we take an
+array, convert it into a list--
+
+72
+00:03:15.777 --> 00:03:17.610 align:middle line:84%
+and in fact, it's the
+same array as before--
+
+73
+00:03:17.610 --> 00:03:19.910 align:middle line:84%
+and then turn that
+into a HashSet.
+
+74
+00:03:19.910 --> 00:03:23.350 align:middle line:84%
+And a HashSet is
+unordered and unique.
+
+75
+00:03:23.350 --> 00:03:26.250 align:middle line:84%
+So we know right away that
+there will only be one 2
+
+76
+00:03:26.250 --> 00:03:30.780 align:middle line:84%
+here instead of two 2s because
+a HashSet is going to be unique.
+
+77
+00:03:30.780 --> 00:03:32.160 align:middle line:90%
+But a HashSet is also unordered.
+
+78
+00:03:32.160 --> 00:03:34.860 align:middle line:84%
+There's no ordering
+maintained in a HashSet.
+
+79
+00:03:34.860 --> 00:03:38.360 align:middle line:84%
+It's just whatever the
+hashes happen to hash to.
+
+80
+00:03:38.360 --> 00:03:42.230 align:middle line:84%
+So when we run this program, a
+couple of things will happen.
+
+81
+00:03:42.230 --> 00:03:44.930 align:middle line:84%
+The code can actually
+execute faster.
+
+82
+00:03:44.930 --> 00:03:48.680 align:middle line:84%
+And that's because we don't
+need to maintain encounter
+
+83
+00:03:48.680 --> 00:03:50.540 align:middle line:90%
+order when we're done.
+
+84
+00:03:50.540 --> 00:03:55.520 align:middle line:84%
+And so as a result, we might
+come back with the order being
+
+85
+00:03:55.520 --> 00:04:01.850 align:middle line:84%
+8, 4 or 4, 8 verses only being
+[? 1, ?] [? 4.2. ?] Because
+
+86
+00:04:01.850 --> 00:04:04.640 align:middle line:90%
+a HashSet has got unique values.
+
+87
+00:04:04.640 --> 00:04:06.920 align:middle line:84%
+But we don't have to
+maintain in [INAUDIBLE] we.
+
+88
+00:04:06.920 --> 00:04:08.690 align:middle line:84%
+They have the streams,
+parallel streams.
+
+89
+00:04:08.690 --> 00:04:11.390 align:middle line:84%
+Implementation does not have to
+maintain that encounter order.
+
+90
+00:04:11.390 --> 00:04:14.830 align:middle line:84%
+So as a result, it's
+likely to run faster.

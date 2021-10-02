@@ -1,329 +1,657 @@
-00:00.500 --> 00:01.300
-We're going to do now
+WEBVTT
 
-00:01.300 --> 00:04.600
-We're going to talk about the order of results for operations
+1
+00:00:00.000 --> 00:00:00.182 align:middle line:90%
 
-00:05.700 --> 00:06.200
-So
 
-00:06.200 --> 00:09.600
-before we talked about the order results for collections
+2
+00:00:00.182 --> 00:00:01.640 align:middle line:84%
+What we're going
+to do now is we're
 
-00:09.600 --> 00:10.300
-now
+3
+00:00:01.640 --> 00:00:05.940 align:middle line:84%
+going to talk about the order
+of results for operations.
 
-00:10.300 --> 00:16.600
-we're going to talk about the order of results that are affected by the operations that you may happen to choose
+4
+00:00:05.940 --> 00:00:08.660 align:middle line:84%
+So before, we talked
+about the order of results
 
-00:17.600 --> 00:18.400
-And again
+5
+00:00:08.660 --> 00:00:10.010 align:middle line:90%
+for collections.
 
-00:18.400 --> 00:20.200
-we're going to look it up a bunch of examples
+6
+00:00:10.010 --> 00:00:13.190 align:middle line:84%
+Now we're going to talk
+about the order of results
 
-00:20.200 --> 00:22.800
-This is actually kind of fun is lots of interesting things here
+7
+00:00:13.190 --> 00:00:15.410 align:middle line:84%
+that are affected
+by the operations
 
-00:23.900 --> 00:25.600
-As was the case earlier
+8
+00:00:15.410 --> 00:00:17.940 align:middle line:90%
+that you may happen to choose.
 
-00:25.600 --> 00:30.000
-if you take a look at the ex21 folder in my GitHub repository
+9
+00:00:17.940 --> 00:00:20.210 align:middle line:84%
+And again, we're going to
+look at a bunch of examples.
 
-00:30.000 --> 00:32.900
-you'll find all the examples there
+10
+00:00:20.210 --> 00:00:21.650 align:middle line:90%
+This is actually kind of fun.
 
-00:34.900 --> 00:35.400
-So
+11
+00:00:21.650 --> 00:00:24.140 align:middle line:84%
+There's lots of
+interesting things here.
 
-00:35.400 --> 00:37.100
-certain intermediate operations
+12
+00:00:24.140 --> 00:00:26.750 align:middle line:84%
+As was the case earlier,
+if you take a look
 
-00:37.100 --> 00:43.200
-affect ordering behavior and we'll take a look and see what they are
+13
+00:00:26.750 --> 00:00:30.830 align:middle line:84%
+at the ex21 folder in
+my GitHub repository,
 
-00:43.200 --> 00:46.800
-We'll start by looking at sorehead
+14
+00:00:30.830 --> 00:00:35.100 align:middle line:84%
+you'll find all
+the examples there.
 
-00:46.800 --> 00:48.000
-unordered
+15
+00:00:35.100 --> 00:00:37.410 align:middle line:84%
+So certain
+intermediate operations
 
-00:48.000 --> 00:56.900
-Skip and limit and I'll demonstrate some of these things in the context of several examples that kind of difference of each other
+16
+00:00:37.410 --> 00:00:39.540 align:middle line:90%
+affect ordering behavior.
 
-00:58.000 --> 00:59.000
-So once again
+17
+00:00:39.540 --> 00:00:44.490 align:middle line:84%
+And we'll take a look
+and see what they are.
 
-00:59.000 --> 01:03.300
-we'll start by looking at some input
+18
+00:00:44.490 --> 00:00:47.430 align:middle line:84%
+We'll start by
+looking at sorted,
 
-01:03.300 --> 01:04.100
-In this case
+19
+00:00:47.430 --> 00:00:51.210 align:middle line:90%
+unordered, skip, and limit.
 
-01:04.100 --> 01:04.900
-We're going to have
+20
+00:00:51.210 --> 00:00:52.980 align:middle line:84%
+And I'll demonstrate
+some of these things
 
-01:06.000 --> 01:09.400
-A list created that has the values
+21
+00:00:52.980 --> 00:00:55.500 align:middle line:84%
+in the context of
+several examples
 
-01:09.400 --> 01:11.900
-23142 in that order
+22
+00:00:55.500 --> 00:00:58.300 align:middle line:90%
+that are variants of each other.
 
-01:13.400 --> 01:20.400
-And that will be the encounter order and that's because a list is both ordered and non-unique
+23
+00:00:58.300 --> 00:01:03.640 align:middle line:84%
+So once again, we'll start
+by looking at some input.
 
-01:20.400 --> 01:22.300
-So we have to worry about having duplicates
+24
+00:01:03.640 --> 00:01:08.360 align:middle line:84%
+In this case, we're going
+to have a list created
 
-01:23.900 --> 01:27.000
-The next thing we do is we call distinct
+25
+00:01:08.360 --> 00:01:13.620 align:middle line:84%
+that has the values 2,
+3, 1, 4, 2 in that order.
 
-01:27.000 --> 01:35.000
-So we create a parallel stream from that original list and then we called distinct and distinct is a stateful
+26
+00:01:13.620 --> 00:01:16.680 align:middle line:84%
+And that will be
+the encounter order.
 
-01:35.000 --> 01:37.500
-intermediate operation
+27
+00:01:16.680 --> 00:01:20.490 align:middle line:84%
+And that's because a list is
+both ordered and non-unique.
 
-01:37.500 --> 01:38.800
-and that will
+28
+00:01:20.490 --> 00:01:24.100 align:middle line:84%
+So we don't have to worry
+about having duplicates.
 
-01:38.800 --> 01:39.000
-of course
+29
+00:01:24.100 --> 00:01:28.040 align:middle line:84%
+The next thing we do
+is we call distinct.
 
-01:39.000 --> 01:42.500
-go ahead and remove duplicate elements
+30
+00:01:28.040 --> 00:01:31.807 align:middle line:84%
+So we create a parallel stream
+from that original list.
 
-01:42.500 --> 01:47.000
-So now will end up with the stream that will be busy p2314
+31
+00:01:31.807 --> 00:01:32.890 align:middle line:90%
+And then we call distinct.
 
-01:48.800 --> 01:54.100
-And then we're also going to go ahead and limit the amount of processing
+32
+00:01:32.890 --> 00:01:38.103 align:middle line:84%
+And distinct is a stateful
+intermediate operation.
 
-01:54.100 --> 02:00.300
-It takes place here to some parameter passed into the limit intermediate operation
+33
+00:01:38.103 --> 00:01:39.520 align:middle line:84%
+And that will, of
+course, go ahead
 
-02:00.300 --> 02:05.700
-So let's assume s output limit had the value of two or something like that
+34
+00:01:39.520 --> 00:01:43.160 align:middle line:90%
+and remove duplicate elements.
 
-02:05.700 --> 02:09.100
-That would then also be a stateful
+35
+00:01:43.160 --> 00:01:44.830 align:middle line:84%
+So now we'll end up
+with a stream that
 
-02:09.100 --> 02:10.400
-intermediate operation
+36
+00:01:44.830 --> 00:01:49.160 align:middle line:90%
+will be basically 2, 3, 1, 4.
 
-02:10.400 --> 02:14.100
-And that means we're only going to process that many elements in the Stream
+37
+00:01:49.160 --> 00:01:53.150 align:middle line:84%
+And then we're also going
+to go ahead and limit
 
-02:14.100 --> 02:17.400
-So it's what color short-circuiting stateful
+38
+00:01:53.150 --> 00:01:54.980 align:middle line:84%
+the amount of processing
+that takes place
 
-02:17.400 --> 02:18.900
-intermediate operation
+39
+00:01:54.980 --> 00:01:59.332 align:middle line:84%
+here to some parameter
+passed in to the limit
 
-02:20.300 --> 02:20.700
-Now
+40
+00:01:59.332 --> 00:02:00.290 align:middle line:90%
+intermediate operation.
 
-02:20.700 --> 02:35.500
-after all of this stuff will end up with a result that will be eight followed by 4, and that's because we're going to end up with with the duplicates are removed
+41
+00:02:00.290 --> 00:02:05.120 align:middle line:84%
+So let's assume sOutputLimit
+had the value of 2,
 
-02:35.500 --> 02:36.600
-And
+42
+00:02:05.120 --> 00:02:06.770 align:middle line:90%
+or something like that.
 
-02:37.800 --> 02:43.200
-This will be the encounter order because everything we saw along the way preserved
+43
+00:02:06.770 --> 00:02:09.740 align:middle line:84%
+That would then also be
+a stateful intermediate
 
-02:43.200 --> 02:45.000
-the ordering property
+44
+00:02:09.740 --> 00:02:10.919 align:middle line:90%
+operation.
 
-02:45.000 --> 02:46.500
-However
+45
+00:02:10.919 --> 00:02:13.490 align:middle line:84%
+And that means we're only going
+to process that many elements
 
-02:46.500 --> 03:00.500
-the performance of this code will be rather slow because limit and distinct have so-called stateful semantics which require additional processing in parallel streams
+46
+00:02:13.490 --> 00:02:14.760 align:middle line:90%
+in the stream.
 
-03:00.500 --> 03:03.700
-So be aware that the choice of the interview
+47
+00:02:14.760 --> 00:02:17.900 align:middle line:84%
+So it's what's called a
+short-circuiting stateful
 
-03:03.700 --> 03:09.900
-Operation can affect the behavior as well as also affect the performance as well
+48
+00:02:17.900 --> 00:02:20.530 align:middle line:90%
+intermediate operation.
 
-03:10.900 --> 03:11.300
-Now
+49
+00:02:20.530 --> 00:02:22.990 align:middle line:84%
+Now, after all of
+this stuff, we'll
 
-03:11.300 --> 03:18.200
-if we go ahead and insert the unordered call after we make a parallel stream
+50
+00:02:22.990 --> 00:02:28.240 align:middle line:84%
+end up with a result that
+will be 8 followed by 4.
 
-03:18.200 --> 03:26.300
-this will end up allowing the code to run more efficiently because there's no need to preserve the encounter order
+51
+00:02:28.240 --> 00:02:31.690 align:middle line:84%
+And that's because
+we're going to end up
 
-03:26.300 --> 03:27.000
-So
+52
+00:02:31.690 --> 00:02:36.130 align:middle line:90%
+with the duplicates removed.
 
-03:27.000 --> 03:27.300
-therefore
+53
+00:02:36.130 --> 00:02:40.780 align:middle line:84%
+And this will be
+the encounter order,
 
-03:27.300 --> 03:32.600
-these animated operations like limit and distinct can incur less overhead
+54
+00:02:40.780 --> 00:02:42.520 align:middle line:84%
+because everything
+we saw along the way
 
-03:32.600 --> 03:40.300
-And that's not a good thing at the wind because we made things faster by not caring about the order in which things occur
+55
+00:02:42.520 --> 00:02:46.250 align:middle line:90%
+preserved the ordering property.
 
-03:42.000 --> 03:44.700
-Since the encounter order doesn't have to be maintained
+56
+00:02:46.250 --> 00:02:48.490 align:middle line:84%
+However, the
+performance of this code
 
-03:44.700 --> 03:48.600
-the result could be eight followed by 4 or 4 elevate
+57
+00:02:48.490 --> 00:02:54.850 align:middle line:84%
+will be rather slow, because
+limit and distinct have
 
-03:48.600 --> 03:49.700
-It doesn't really matter
+58
+00:02:54.850 --> 00:02:57.130 align:middle line:84%
+so-called stateful
+semantics, which
 
-03:52.200 --> 03:53.500
+59
+00:02:57.130 --> 00:03:01.270 align:middle line:84%
+require additional processing
+in parallel streams.
+
+60
+00:03:01.270 --> 00:03:04.810 align:middle line:84%
+So be aware that the choice
+of the intermediate operation
+
+61
+00:03:04.810 --> 00:03:08.470 align:middle line:84%
+can affect the behavior
+as well as also affect
+
+62
+00:03:08.470 --> 00:03:11.210 align:middle line:90%
+the performance as well.
+
+63
+00:03:11.210 --> 00:03:16.540 align:middle line:84%
+Now, if we go ahead and
+insert the unordered call
+
+64
+00:03:16.540 --> 00:03:19.480 align:middle line:84%
+after we make a
+parallel stream, this
+
+65
+00:03:19.480 --> 00:03:21.760 align:middle line:84%
+will end up allowing
+the code to run
+
+66
+00:03:21.760 --> 00:03:25.330 align:middle line:84%
+more efficiently, because
+there's no need to preserve
+
+67
+00:03:25.330 --> 00:03:26.890 align:middle line:90%
+the encounter order.
+
+68
+00:03:26.890 --> 00:03:29.200 align:middle line:84%
+So therefore, these
+intermediate operations,
+
+69
+00:03:29.200 --> 00:03:33.670 align:middle line:84%
+like limit and distinct,
+can incur less overhead.
+
+70
+00:03:33.670 --> 00:03:35.360 align:middle line:90%
+And that's a good thing.
+
+71
+00:03:35.360 --> 00:03:37.840 align:middle line:84%
+It's a win, because
+we've made things faster
+
+72
+00:03:37.840 --> 00:03:42.210 align:middle line:84%
+by not caring about the
+order in which things occur.
+
+73
+00:03:42.210 --> 00:03:45.060 align:middle line:84%
+Since the encounter order
+doesn't have to be maintained,
+
+74
+00:03:45.060 --> 00:03:48.788 align:middle line:84%
+the result could be 8 followed
+by 4, or 4 followed by 8.
+
+75
+00:03:48.788 --> 00:03:49.830 align:middle line:90%
+It doesn't really matter.
+
+76
+00:03:49.830 --> 00:03:52.410 align:middle line:90%
+
+
+77
+00:03:52.410 --> 00:03:56.650 align:middle line:84%
 Certain terminal operations
+also affect ordering behavior.
 
-03:53.500 --> 03:54.400
-also
+78
+00:03:56.650 --> 00:03:59.250 align:middle line:84%
+So we already saw how
+intermediate operations
 
-03:54.400 --> 03:56.500
-affect ordering Behavior
+79
+00:03:59.250 --> 00:04:00.600 align:middle line:90%
+affected the behavior.
 
-03:56.500 --> 03:58.700
-So we already saw how intermediate
+80
+00:04:00.600 --> 00:04:03.420 align:middle line:84%
+Now we're going to take a look
+and see how terminal operations
 
-03:58.700 --> 03:59.300
-operations
+81
+00:04:03.420 --> 00:04:06.370 align:middle line:90%
+affect the ordering behavior.
 
-03:59.300 --> 04:00.200
-affected the Behavior
+82
+00:04:06.370 --> 00:04:07.960 align:middle line:84%
+The most obvious
+terminal operation
 
-04:00.200 --> 04:00.800
-Now
+83
+00:04:07.960 --> 00:04:09.790 align:middle line:84%
+that will affect
+ordering behavior
 
-04:00.800 --> 04:04.800
-we're going to take a look and see how criminal operations affect the ordering Behavior
+84
+00:04:09.790 --> 00:04:12.040 align:middle line:90%
+is the forEachOrdered method.
 
-04:06.100 --> 04:08.000
-The most obvious Journal operation
+85
+00:04:12.040 --> 00:04:14.470 align:middle line:84%
+And the whole purpose
+of forEachOrdered
 
-04:08.000 --> 04:11.500
-that will affect ordering behavior is the for each ordered method
+86
+00:04:14.470 --> 00:04:19.899 align:middle line:84%
+is to ensure that we end
+up with ordering preserved.
 
-04:11.500 --> 04:13.200
-And the whole purpose of
+87
+00:04:19.899 --> 00:04:23.120 align:middle line:84%
+We want to preserve
+the encounter order.
 
-04:13.200 --> 04:19.800
-for each ordered is to ensure that we end up with ordering preserve
+88
+00:04:23.120 --> 00:04:28.760 align:middle line:84%
+So you can take a look here and
+see that if we write this code
 
-04:19.800 --> 04:22.100
-We want to preserve the encounter order
+89
+00:04:28.760 --> 00:04:32.390 align:middle line:84%
+and we use the
+array list to be 2,
 
-04:22.900 --> 04:26.800
-So you can take a look here and see that if we
+90
+00:04:32.390 --> 00:04:35.450 align:middle line:84%
+3, 1, 4, 2, run this
+thing in parallel,
 
-04:26.800 --> 04:35.400
-if we write this code and we use the arraylist to be 2314 to run this thing and parallel
+91
+00:04:35.450 --> 00:04:37.790 align:middle line:84%
+we use forEachOrdered,
+then we'll
 
-04:35.400 --> 04:39.900
-We use for each ordered then we'll be able to have the results
+92
+00:04:37.790 --> 00:04:42.180 align:middle line:84%
+be able to have the
+results be ordered.
 
-04:39.900 --> 04:40.300
-The order
+93
+00:04:42.180 --> 00:04:44.960 align:middle line:84%
+However, we have to
+be very careful here,
 
-04:40.300 --> 04:42.500
-However
+94
+00:04:44.960 --> 00:04:48.050 align:middle line:84%
+because this list is
+only going to support
 
-04:42.500 --> 04:52.500
-we have to be very careful here because this list is only going to support unsynchronized insertion and removal of elements because it's just a plain old Ray list
+95
+00:04:48.050 --> 00:04:50.690 align:middle line:84%
+unsynchronized insertion
+and removal of elements,
 
-04:53.900 --> 04:54.400
-Now
+96
+00:04:50.690 --> 00:04:54.170 align:middle line:84%
+because it's just a
+plain old array list.
 
-04:54.400 --> 04:56.300
-the thing is so wacky here
+97
+00:04:54.170 --> 00:04:56.930 align:middle line:84%
+Now, the thing
+that's so wacky here
 
-04:56.300 --> 05:01.000
-Is that even though we're using a parallel stream here
+98
+00:04:56.930 --> 00:05:02.170 align:middle line:84%
+is that even though we're
+using a parallel stream here,
 
-05:01.000 --> 05:07.100
-We will still end up getting results that don't have race conditions
+99
+00:05:02.170 --> 00:05:05.440 align:middle line:84%
+we will still end up
+getting results that
 
-05:07.100 --> 05:10.800
-and that's because the results must appear in encounter order
+100
+00:05:05.440 --> 00:05:07.630 align:middle line:90%
+don't have race conditions.
 
-05:11.600 --> 05:13.100
-Now this is really strange
+101
+00:05:07.630 --> 00:05:11.880 align:middle line:84%
+And that's because the results
+must appear in encounter order.
 
-05:13.100 --> 05:16.700
-This will work properly using for each ordered
+102
+00:05:11.880 --> 00:05:13.470 align:middle line:90%
+Now, this is really strange.
 
-05:16.700 --> 05:18.400
-but it will be slow
+103
+00:05:13.470 --> 00:05:17.370 align:middle line:84%
+This will work properly
+using forEachOrdered.
 
-05:18.400 --> 05:21.000
-and that's because there's implicit synchronization
+104
+00:05:17.370 --> 00:05:18.810 align:middle line:90%
+But it will be slow.
 
-05:21.000 --> 05:24.800
-It's performed in the for each ordered method
+105
+00:05:18.810 --> 00:05:21.510 align:middle line:84%
+And that's because there's
+implicit synchronization that's
 
-05:24.800 --> 05:27.700
-Were you to use the for each method here
+106
+00:05:21.510 --> 00:05:25.890 align:middle line:84%
+performed in the
+forEachOrdered method.
 
-05:27.700 --> 05:33.900
-then chaos and Insanity with him soon because we would be simultaneously accessing and unsynchronized
+107
+00:05:25.890 --> 00:05:28.200 align:middle line:84%
+Were you to use the
+forEach method here,
 
-05:33.900 --> 05:35.100
-arraylist
+108
+00:05:28.200 --> 00:05:30.240 align:middle line:84%
+then chaos and
+insanity would ensue,
 
-05:37.100 --> 05:44.900
-Let's go take a look at how you could use for each properly that member for each does not attempt to preserve encounter order
+109
+00:05:30.240 --> 00:05:33.330 align:middle line:84%
+because we would be
+simultaneously accessing
 
-05:45.900 --> 05:56.100
-And instead what we do here as we create the results variable to be a concurrent linked to rather than an arraylist
+110
+00:05:33.330 --> 00:05:37.350 align:middle line:90%
+an unsynchronized array list.
 
-05:56.100 --> 06:05.700
-If you showed here and this code will work properly because results will be properly synchronized but the order doesn't have to be preserved
+111
+00:05:37.350 --> 00:05:40.930 align:middle line:84%
+Let's go take a look at how
+you could use forEach properly.
 
-06:05.700 --> 06:10.400
-So it might be faster than for each ordered
+112
+00:05:40.930 --> 00:05:43.050 align:middle line:84%
+Now remember, forEach
+does not attempt
 
-06:10.400 --> 06:14.800
-It might be about the same because we're still using synchronized data structure
+113
+00:05:43.050 --> 00:05:46.210 align:middle line:90%
+to preserve encounter order.
 
-06:14.800 --> 06:25.500
-Is it just kind of depends on whether concurrently accuse synchronizers any faster than for each ordered linked for each ordered synchronizer
+114
+00:05:46.210 --> 00:05:50.910 align:middle line:84%
+And instead, what we do here
+is we create the results
 
-06:25.500 --> 06:27.700
-So you can have to pick your poison there
+115
+00:05:50.910 --> 00:05:54.750 align:middle line:84%
+variable to be a concurrent
+linked queue rather
 
-06:27.700 --> 06:35.300
-I would probably not recommend writing any of this code with a for each Loop and a results
+116
+00:05:54.750 --> 00:05:57.780 align:middle line:84%
+than an array list,
+as we showed here.
 
-06:35.900 --> 06:37.800
-Do our results list
+117
+00:05:57.780 --> 00:06:00.990 align:middle line:84%
+And this code will
+work properly,
 
-06:37.800 --> 06:40.300
-It's just there better ways to do it using collect
+118
+00:06:00.990 --> 00:06:03.930 align:middle line:84%
+because results will be
+properly synchronized.
 
-06:40.300 --> 06:43.600
-So I'm just kind of showing you that the ordering of for each
+119
+00:06:03.930 --> 00:06:06.270 align:middle line:84%
+But the order doesn't
+have to be preserved.
 
-06:43.600 --> 06:45.700
-And for each all difference
+120
+00:06:06.270 --> 00:06:10.360 align:middle line:84%
+So it might be faster
+than forEachOrdered.
 
-06:48.100 --> 06:48.600
-Okay
+121
+00:06:10.360 --> 00:06:12.660 align:middle line:84%
+It might be about the same,
+because we're still using
 
-06:50.200 --> 06:54.600
-So that basically wraps up our discussion about ordering results for operations
+122
+00:06:12.660 --> 00:06:14.880 align:middle line:90%
+synchronized data structures.
 
-06:54.600 --> 06:56.400
-which is one of the things that you can
+123
+00:06:14.880 --> 00:06:18.510 align:middle line:84%
+It just depends on whether
+concurrent linked queues
 
-06:56.400 --> 06:56.700
-in fact
+124
+00:06:18.510 --> 00:06:23.160 align:middle line:84%
+synchronizers any faster than
+forEachOrdered's linked--
 
-06:56.700 --> 06:59.600
-control in Java Carol Streams
+125
+00:06:23.160 --> 00:06:25.890 align:middle line:90%
+forEachOrdered synchronizer.
 
-06:59.600 --> 07:04.600
-even though ordering a processing is not really something that you can control
+126
+00:06:25.890 --> 00:06:28.140 align:middle line:84%
+So you have to pick
+your poison there.
+
+127
+00:06:28.140 --> 00:06:30.690 align:middle line:84%
+I would probably not
+recommend writing
+
+128
+00:06:30.690 --> 00:06:33.690 align:middle line:84%
+any of this code
+with a forEach loop
+
+129
+00:06:33.690 --> 00:06:37.890 align:middle line:84%
+and a results queue
+or a results list.
+
+130
+00:06:37.890 --> 00:06:40.440 align:middle line:84%
+It's just there are better
+ways to do it using collect.
+
+131
+00:06:40.440 --> 00:06:43.800 align:middle line:84%
+So I'm just showing you
+that the ordering of forEach
+
+132
+00:06:43.800 --> 00:06:44.800 align:middle line:90%
+and forEachAll differs.
+
+133
+00:06:44.800 --> 00:06:48.075 align:middle line:90%
+
+
+134
+00:06:48.075 --> 00:06:52.020 align:middle line:84%
+OK, so that basically
+wraps up our discussion
+
+135
+00:06:52.020 --> 00:06:55.200 align:middle line:84%
+about ordering results
+for operations, which
+
+136
+00:06:55.200 --> 00:06:57.720 align:middle line:84%
+is one of the things that
+you can, in fact, control
+
+137
+00:06:57.720 --> 00:07:02.640 align:middle line:84%
+in Java parallel streams, even
+though ordering of processing
+
+138
+00:07:02.640 --> 00:07:05.810 align:middle line:84%
+is not really something
+that you can control.
