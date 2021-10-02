@@ -1,0 +1,288 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.940 align:middle line:90%
+
+
+2
+00:00:00.940 --> 00:00:02.890 align:middle line:84%
+Welcome to the next
+week of our course
+
+3
+00:00:02.890 --> 00:00:05.580 align:middle line:84%
+on parallel functional
+programming with Java.
+
+4
+00:00:05.580 --> 00:00:09.090 align:middle line:84%
+The lessons this week pick up
+where we left off last week
+
+5
+00:00:09.090 --> 00:00:11.910 align:middle line:84%
+and continue exploring key
+features of the Java Streams
+
+6
+00:00:11.910 --> 00:00:13.300 align:middle line:90%
+framework.
+
+7
+00:00:13.300 --> 00:00:16.030 align:middle line:84%
+Our initial focus centers
+on terminal operations
+
+8
+00:00:16.030 --> 00:00:18.400 align:middle line:84%
+supported by Java
+Streams, which differ
+
+9
+00:00:18.400 --> 00:00:21.820 align:middle line:84%
+from intermediate
+operations in several ways.
+
+10
+00:00:21.820 --> 00:00:25.020 align:middle line:84%
+First, each stream
+must have one and only
+
+11
+00:00:25.020 --> 00:00:27.360 align:middle line:84%
+one terminal
+operation, although it
+
+12
+00:00:27.360 --> 00:00:30.450 align:middle line:84%
+can have zero or more
+intermediate operations.
+
+13
+00:00:30.450 --> 00:00:32.820 align:middle line:84%
+Second, a terminal
+operation always
+
+14
+00:00:32.820 --> 00:00:35.340 align:middle line:84%
+yields a non-stream
+result. Whereas
+
+15
+00:00:35.340 --> 00:00:40.410 align:middle line:84%
+an intermediate operation always
+yields a stream result. Third,
+
+16
+00:00:40.410 --> 00:00:43.700 align:middle line:84%
+intermediate operations are
+lazy since their behaviors don't
+
+17
+00:00:43.700 --> 00:00:46.670 align:middle line:84%
+actually run until the terminal
+operation in the stream
+
+18
+00:00:46.670 --> 00:00:48.480 align:middle line:90%
+is reached.
+
+19
+00:00:48.480 --> 00:00:50.220 align:middle line:84%
+One terminal operation
+we cover this week
+
+20
+00:00:50.220 --> 00:00:53.010 align:middle line:84%
+is collect, which
+uses a collector
+
+21
+00:00:53.010 --> 00:00:56.820 align:middle line:84%
+to perform a reduction on the
+elements in its input stream,
+
+22
+00:00:56.820 --> 00:00:59.880 align:middle line:84%
+and it returns the result of the
+reduction, which is typically
+
+23
+00:00:59.880 --> 00:01:02.610 align:middle line:90%
+stored into a Java collection.
+
+24
+00:01:02.610 --> 00:01:04.410 align:middle line:84%
+Another terminal
+operation we cover
+
+25
+00:01:04.410 --> 00:01:08.190 align:middle line:84%
+is reduce, which performs
+a reduction on the stream
+
+26
+00:01:08.190 --> 00:01:12.440 align:middle line:84%
+and returns a primitive value,
+such as a long or integer.
+
+27
+00:01:12.440 --> 00:01:15.780 align:middle line:84%
+The collect and reduce methods
+have important differences.
+
+28
+00:01:15.780 --> 00:01:18.900 align:middle line:84%
+In particular, collect updates
+immutable result container
+
+29
+00:01:18.900 --> 00:01:20.910 align:middle line:84%
+during its reduction,
+whereas reduce
+
+30
+00:01:20.910 --> 00:01:23.190 align:middle line:84%
+creates immutable values
+that should not be
+
+31
+00:01:23.190 --> 00:01:26.120 align:middle line:90%
+modified after they're created.
+
+32
+00:01:26.120 --> 00:01:28.000 align:middle line:84%
+We next present
+the visualization
+
+33
+00:01:28.000 --> 00:01:31.000 align:middle line:84%
+and implementation of several
+simple search stream program
+
+34
+00:01:31.000 --> 00:01:34.030 align:middle line:84%
+methods that print the locations
+of all words identified
+
+35
+00:01:34.030 --> 00:01:37.082 align:middle line:84%
+in a string initialized
+from a file.
+
+36
+00:01:37.082 --> 00:01:39.290 align:middle line:84%
+These methods apply various
+intermediate and terminal
+
+37
+00:01:39.290 --> 00:01:42.710 align:middle line:84%
+operations, such as dropWhile,
+[? mapped ?] [? int, ?]
+
+38
+00:01:42.710 --> 00:01:45.205 align:middle line:90%
+collect, and max.
+
+39
+00:01:45.205 --> 00:01:47.330 align:middle line:84%
+The final lessons this week
+explore key differences
+
+40
+00:01:47.330 --> 00:01:50.870 align:middle line:84%
+between external iteration
+and internal iteration,
+
+41
+00:01:50.870 --> 00:01:54.450 align:middle line:84%
+which are two iteration
+styles supported by Java.
+
+42
+00:01:54.450 --> 00:01:56.280 align:middle line:84%
+External iteration
+is used by Java's
+
+43
+00:01:56.280 --> 00:01:59.640 align:middle line:84%
+object-oriented iteration
+mechanisms, such as for-loops,
+
+44
+00:01:59.640 --> 00:02:02.070 align:middle line:84%
+forEach loops, and
+implementations of the iterator
+
+45
+00:02:02.070 --> 00:02:04.410 align:middle line:84%
+interface, which are
+often used to iterate
+
+46
+00:02:04.410 --> 00:02:06.270 align:middle line:90%
+through Java collections.
+
+47
+00:02:06.270 --> 00:02:09.720 align:middle line:84%
+In contrast, aggregate
+operations in a Java Stream
+
+48
+00:02:09.720 --> 00:02:12.480 align:middle line:90%
+pipeline iterate internally.
+
+49
+00:02:12.480 --> 00:02:14.610 align:middle line:84%
+Internal iterators
+have several advantages
+
+50
+00:02:14.610 --> 00:02:16.530 align:middle line:84%
+over external iterators
+because they're
+
+51
+00:02:16.530 --> 00:02:19.060 align:middle line:84%
+declarative rather
+than imperative,
+
+52
+00:02:19.060 --> 00:02:21.660 align:middle line:84%
+which enables programmers to
+focus on what operations are
+
+53
+00:02:21.660 --> 00:02:24.150 align:middle line:84%
+being performed
+during the iteration,
+
+54
+00:02:24.150 --> 00:02:28.540 align:middle line:84%
+rather than on how each
+iteration step is performed.
+
+55
+00:02:28.540 --> 00:02:32.050 align:middle line:84%
+This focus on what versus how
+also enables the Java Streams
+
+56
+00:02:32.050 --> 00:02:35.270 align:middle line:84%
+framework to optimize
+the processing pipeline.
+
+57
+00:02:35.270 --> 00:02:37.550 align:middle line:84%
+For example,
+aggregate operations
+
+58
+00:02:37.550 --> 00:02:39.740 align:middle line:84%
+can run transparently
+in parallel
+
+59
+00:02:39.740 --> 00:02:41.990 align:middle line:84%
+on the available
+processor cores.

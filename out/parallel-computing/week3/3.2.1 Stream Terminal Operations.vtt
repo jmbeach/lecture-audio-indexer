@@ -1,0 +1,238 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.640 align:middle line:90%
+
+
+2
+00:00:00.640 --> 00:00:02.350 align:middle line:84%
+Now that we've
+discussed the splitting
+
+3
+00:00:02.350 --> 00:00:05.710 align:middle line:84%
+phase and the various factory
+methods that are used there,
+
+4
+00:00:05.710 --> 00:00:08.420 align:middle line:84%
+and we've also discussed
+the applying phase
+
+5
+00:00:08.420 --> 00:00:11.200 align:middle line:84%
+and the various intermediate
+operations that are used there,
+
+6
+00:00:11.200 --> 00:00:14.080 align:middle line:84%
+it's time to turn our attention
+to the combining phase
+
+7
+00:00:14.080 --> 00:00:16.780 align:middle line:84%
+and the terminal operations
+that are used there
+
+8
+00:00:16.780 --> 00:00:19.655 align:middle line:90%
+in the Java Streams framework.
+
+9
+00:00:19.655 --> 00:00:21.030 align:middle line:84%
+In this part of
+the lesson, we'll
+
+10
+00:00:21.030 --> 00:00:23.110 align:middle line:84%
+discuss the structure
+and functionality
+
+11
+00:00:23.110 --> 00:00:26.780 align:middle line:90%
+of stream terminal operations.
+
+12
+00:00:26.780 --> 00:00:28.930 align:middle line:84%
+These operations apply
+to both sequential
+
+13
+00:00:28.930 --> 00:00:29.913 align:middle line:90%
+and parallel streams.
+
+14
+00:00:29.913 --> 00:00:31.330 align:middle line:84%
+So for now, we're
+just going to be
+
+15
+00:00:31.330 --> 00:00:33.790 align:middle line:90%
+focusing on sequential streams.
+
+16
+00:00:33.790 --> 00:00:37.030 align:middle line:84%
+We'll also continue to
+showcase a simple search stream
+
+17
+00:00:37.030 --> 00:00:42.900 align:middle line:84%
+program, using it as our
+running application example.
+
+18
+00:00:42.900 --> 00:00:46.590 align:middle line:84%
+Every stream finishes with one
+and only one terminal operation
+
+19
+00:00:46.590 --> 00:00:50.550 align:middle line:84%
+that yields a non-stream
+result. Looking, for example,
+
+20
+00:00:50.550 --> 00:00:53.490 align:middle line:84%
+back at our Hamlet
+program from before,
+
+21
+00:00:53.490 --> 00:00:56.220 align:middle line:84%
+you can see that it ended up
+with the forEach() terminal
+
+22
+00:00:56.220 --> 00:00:58.980 align:middle line:84%
+operation, that was used to
+print out all the matching
+
+23
+00:00:58.980 --> 00:01:01.950 align:middle line:84%
+characters that had been
+properly sorted and uppercased
+
+24
+00:01:01.950 --> 00:01:03.958 align:middle line:90%
+and filtered.
+
+25
+00:01:03.958 --> 00:01:05.750 align:middle line:84%
+The key thing to remember
+is there can only
+
+26
+00:01:05.750 --> 00:01:08.600 align:middle line:84%
+be one of these terminal
+operations in a given stream,
+
+27
+00:01:08.600 --> 00:01:09.740 align:middle line:90%
+and you have to provide it.
+
+28
+00:01:09.740 --> 00:01:12.983 align:middle line:84%
+Otherwise, nothing
+will ever happen.
+
+29
+00:01:12.983 --> 00:01:14.400 align:middle line:84%
+There are two
+different categories
+
+30
+00:01:14.400 --> 00:01:15.840 align:middle line:90%
+of stream operations.
+
+31
+00:01:15.840 --> 00:01:18.360 align:middle line:84%
+Some upstream
+terminal operations
+
+32
+00:01:18.360 --> 00:01:20.670 align:middle line:90%
+have no values at all.
+
+33
+00:01:20.670 --> 00:01:24.840 align:middle line:84%
+forEach() and forEachOrdered()
+have that property.
+
+34
+00:01:24.840 --> 00:01:27.330 align:middle line:84%
+These methods only
+have side effects.
+
+35
+00:01:27.330 --> 00:01:30.330 align:middle line:90%
+They don't return any value.
+
+36
+00:01:30.330 --> 00:01:33.060 align:middle line:84%
+Here's the example once
+again, just for consistency,
+
+37
+00:01:33.060 --> 00:01:35.700 align:middle line:84%
+showing how to use forEach()
+to print out the results
+
+38
+00:01:35.700 --> 00:01:38.210 align:middle line:90%
+of our Hamlet program.
+
+39
+00:01:38.210 --> 00:01:40.800 align:middle line:84%
+Then there's also a
+pair of operations
+
+40
+00:01:40.800 --> 00:01:43.830 align:middle line:84%
+that return the result of
+something known as a reduction.
+
+41
+00:01:43.830 --> 00:01:46.920 align:middle line:84%
+And these, of course, include
+the collect() and reduce()
+
+42
+00:01:46.920 --> 00:01:49.132 align:middle line:90%
+terminal operations.
+
+43
+00:01:49.132 --> 00:01:51.340 align:middle line:84%
+These collect() and reduce()
+terminal operations work
+
+44
+00:01:51.340 --> 00:01:55.420 align:middle line:84%
+seamlessly with both sequential
+and parallel streams.
+
+45
+00:01:55.420 --> 00:01:59.140 align:middle line:84%
+We'll see the parallel
+streams version a bit later.
+
+46
+00:01:59.140 --> 00:02:01.520 align:middle line:84%
+One of the other things a
+terminal operation does,
+
+47
+00:02:01.520 --> 00:02:04.930 align:middle line:84%
+whether it be forEach(),
+forEachOrdered(), reduce(),
+
+48
+00:02:04.930 --> 00:02:08.979 align:middle line:84%
+or collect(), is it triggers all
+of the intermediate operation
+
+49
+00:02:08.979 --> 00:02:11.770 align:middle line:84%
+processing, basically
+setting the wheels in motion,
+
+50
+00:02:11.770 --> 00:02:13.180 align:middle line:90%
+as it were.

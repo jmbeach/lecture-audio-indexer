@@ -1,0 +1,1117 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.730 align:middle line:90%
+
+
+2
+00:00:00.730 --> 00:00:03.190 align:middle line:84%
+Now that we've covered the
+forEach terminal operation,
+
+3
+00:00:03.190 --> 00:00:05.770 align:middle line:84%
+which is pretty simple
+and somewhat limited
+
+4
+00:00:05.770 --> 00:00:08.740 align:middle line:84%
+to simple print statements
+as we've been showing,
+
+5
+00:00:08.740 --> 00:00:11.710 align:middle line:84%
+let's turn our attention to a
+much more interesting terminal
+
+6
+00:00:11.710 --> 00:00:15.170 align:middle line:84%
+operation, which is the
+collect terminal operation.
+
+7
+00:00:15.170 --> 00:00:18.160 align:middle line:84%
+And we'll see that collect
+has got a lot more features.
+
+8
+00:00:18.160 --> 00:00:22.180 align:middle line:84%
+And it also not surprisingly is
+also more complicated to learn
+
+9
+00:00:22.180 --> 00:00:23.950 align:middle line:90%
+and to program than forEach.
+
+10
+00:00:23.950 --> 00:00:28.540 align:middle line:84%
+But the nice part is it does
+a lot more useful things.
+
+11
+00:00:28.540 --> 00:00:30.490 align:middle line:84%
+As before, we're going
+to use the Hamlet
+
+12
+00:00:30.490 --> 00:00:34.600 align:middle line:84%
+program to showcase many
+of the elements of collect.
+
+13
+00:00:34.600 --> 00:00:38.020 align:middle line:84%
+So collect is an example of
+a stream terminal operation
+
+14
+00:00:38.020 --> 00:00:40.030 align:middle line:90%
+that returns collections.
+
+15
+00:00:40.030 --> 00:00:42.730 align:middle line:84%
+No surprise there with
+a name like collect.
+
+16
+00:00:42.730 --> 00:00:45.730 align:middle line:84%
+And we'll see that there's many
+different kinds of collections
+
+17
+00:00:45.730 --> 00:00:47.940 align:middle line:90%
+that can be returned.
+
+18
+00:00:47.940 --> 00:00:53.070 align:middle line:84%
+This particular example is shown
+in the ex12 folder in my GitHub
+
+19
+00:00:53.070 --> 00:00:54.240 align:middle line:90%
+repository.
+
+20
+00:00:54.240 --> 00:00:56.220 align:middle line:84%
+And there's a bunch
+of different methods
+
+21
+00:00:56.220 --> 00:00:57.660 align:middle line:84%
+that are used to
+demonstrate this.
+
+22
+00:00:57.660 --> 00:01:02.310 align:middle line:84%
+They all have the
+prefix runCollectTo.
+
+23
+00:01:02.310 --> 00:01:06.300 align:middle line:84%
+And it'll be runCollectTo
+list, runCollectTo set,
+
+24
+00:01:06.300 --> 00:01:07.630 align:middle line:90%
+and so on and so forth.
+
+25
+00:01:07.630 --> 00:01:09.255 align:middle line:84%
+So if you take a look
+at those methods,
+
+26
+00:01:09.255 --> 00:01:13.150 align:middle line:84%
+you can follow along with the
+examples that I'm showing here.
+
+27
+00:01:13.150 --> 00:01:15.090 align:middle line:84%
+So as before, what
+we're going to do
+
+28
+00:01:15.090 --> 00:01:20.250 align:middle line:84%
+is start by creating a list
+of characters of Hamlet.
+
+29
+00:01:20.250 --> 00:01:22.290 align:middle line:84%
+Then we turn that list
+of characters of Hamlet
+
+30
+00:01:22.290 --> 00:01:25.530 align:middle line:84%
+into a stream, do all the
+filtering, and mapping,
+
+31
+00:01:25.530 --> 00:01:26.930 align:middle line:90%
+and sorting and so on.
+
+32
+00:01:26.930 --> 00:01:30.330 align:middle line:84%
+And then we're going to collect
+the results into different data
+
+33
+00:01:30.330 --> 00:01:32.640 align:middle line:84%
+structures, different
+collections.
+
+34
+00:01:32.640 --> 00:01:36.240 align:middle line:84%
+And the purpose of
+collect in a nutshell
+
+35
+00:01:36.240 --> 00:01:39.870 align:middle line:84%
+is to perform what's known
+as a mutable reduction
+
+36
+00:01:39.870 --> 00:01:45.390 align:middle line:84%
+on all elements of a stream
+using some type of collector
+
+37
+00:01:45.390 --> 00:01:49.650 align:middle line:84%
+in order to return a
+single reduced result.
+
+38
+00:01:49.650 --> 00:01:51.420 align:middle line:84%
+You can do various
+things with collectors.
+
+39
+00:01:51.420 --> 00:01:55.020 align:middle line:84%
+Collectors will be able
+to, say, summarize elements
+
+40
+00:01:55.020 --> 00:01:56.910 align:middle line:84%
+according to various
+criteria, doing things
+
+41
+00:01:56.910 --> 00:01:59.490 align:middle line:84%
+like finding min
+or max or whatnot.
+
+42
+00:01:59.490 --> 00:02:02.190 align:middle line:84%
+You can also use them more
+commonly to accumulate elements
+
+43
+00:02:02.190 --> 00:02:04.630 align:middle line:84%
+into various types
+of collections,
+
+44
+00:02:04.630 --> 00:02:09.660 align:middle line:84%
+which is what our focus will
+be in this part of the lesson.
+
+45
+00:02:09.660 --> 00:02:13.740 align:middle line:84%
+So let's first take a look
+at collecting into a list.
+
+46
+00:02:13.740 --> 00:02:17.390 align:middle line:84%
+So if you use the ToList
+factory method, which
+
+47
+00:02:17.390 --> 00:02:21.140 align:middle line:84%
+is defined on the
+collectors utility class
+
+48
+00:02:21.140 --> 00:02:24.050 align:middle line:84%
+in the Java streams
+package, what that does
+
+49
+00:02:24.050 --> 00:02:27.110 align:middle line:84%
+is that returns a
+collector that is
+
+50
+00:02:27.110 --> 00:02:29.280 align:middle line:90%
+implemented using an ArrayList.
+
+51
+00:02:29.280 --> 00:02:31.910 align:middle line:84%
+And as you undoubtedly
+recall, an ArrayList
+
+52
+00:02:31.910 --> 00:02:35.780 align:middle line:84%
+can be used in a way that
+contains duplicates just
+
+53
+00:02:35.780 --> 00:02:36.865 align:middle line:90%
+like a LinkedList.
+
+54
+00:02:36.865 --> 00:02:38.990 align:middle line:84%
+All you know is that you've
+got a bunch of elements
+
+55
+00:02:38.990 --> 00:02:40.630 align:middle line:90%
+in some order--
+
+56
+00:02:40.630 --> 00:02:44.030 align:middle line:84%
+0, 1, 2, 3, et
+cetera in the list.
+
+57
+00:02:44.030 --> 00:02:46.105 align:middle line:90%
+And they could be duplicates.
+
+58
+00:02:46.105 --> 00:02:47.480 align:middle line:84%
+They don't have
+to be duplicates,
+
+59
+00:02:47.480 --> 00:02:49.870 align:middle line:90%
+but duplicates are possible.
+
+60
+00:02:49.870 --> 00:02:53.460 align:middle line:84%
+So that's what collect
+with ToList does.
+
+61
+00:02:53.460 --> 00:02:57.780 align:middle line:84%
+It collects into a list
+that may have duplicates.
+
+62
+00:02:57.780 --> 00:02:59.700 align:middle line:84%
+One of the things to
+note here if you go back
+
+63
+00:02:59.700 --> 00:03:01.440 align:middle line:84%
+and compare this with
+the forEach example
+
+64
+00:03:01.440 --> 00:03:03.660 align:middle line:84%
+that we saw before
+is this approach
+
+65
+00:03:03.660 --> 00:03:07.080 align:middle line:84%
+is much less
+error-prone than forEach
+
+66
+00:03:07.080 --> 00:03:09.550 align:middle line:84%
+because the initialization
+is implicit.
+
+67
+00:03:09.550 --> 00:03:11.250 align:middle line:84%
+It's actually handled
+by the collector,
+
+68
+00:03:11.250 --> 00:03:13.320 align:middle line:90%
+the list collector we see here.
+
+69
+00:03:13.320 --> 00:03:16.210 align:middle line:84%
+And this code is also
+inherently thread-safe.
+
+70
+00:03:16.210 --> 00:03:20.040 align:middle line:84%
+So if we were to try to move
+this from a sequential stream
+
+71
+00:03:20.040 --> 00:03:22.530 align:middle line:84%
+as we have now to
+a parallel stream
+
+72
+00:03:22.530 --> 00:03:25.620 align:middle line:84%
+by making that one
+miniscule change of stream
+
+73
+00:03:25.620 --> 00:03:28.290 align:middle line:84%
+to parallel stream, you
+would see that the result
+
+74
+00:03:28.290 --> 00:03:30.240 align:middle line:90%
+would work just the same.
+
+75
+00:03:30.240 --> 00:03:33.270 align:middle line:84%
+And it would be
+properly initialized.
+
+76
+00:03:33.270 --> 00:03:35.880 align:middle line:84%
+You wouldn't have to sit
+there and go back and change
+
+77
+00:03:35.880 --> 00:03:38.830 align:middle line:84%
+the types of the
+variables that are passed
+
+78
+00:03:38.830 --> 00:03:41.110 align:middle line:84%
+to have side effects to
+forEach, et cetera, et cetera,
+
+79
+00:03:41.110 --> 00:03:41.610 align:middle line:90%
+et cetera.
+
+80
+00:03:41.610 --> 00:03:45.680 align:middle line:90%
+Much, much cleaner way to go.
+
+81
+00:03:45.680 --> 00:03:50.300 align:middle line:84%
+Let's now turn our attention
+to a different predefined
+
+82
+00:03:50.300 --> 00:03:51.110 align:middle line:90%
+collector.
+
+83
+00:03:51.110 --> 00:03:52.640 align:middle line:84%
+I guess I should
+have pointed out
+
+84
+00:03:52.640 --> 00:03:56.450 align:middle line:84%
+before that ToList is a
+predefined collector that's
+
+85
+00:03:56.450 --> 00:03:59.608 align:middle line:84%
+part of the collectors
+utility class.
+
+86
+00:03:59.608 --> 00:04:01.400 align:middle line:84%
+Let's now take a look
+at another collector.
+
+87
+00:04:01.400 --> 00:04:04.550 align:middle line:90%
+This is the ToSet collector.
+
+88
+00:04:04.550 --> 00:04:09.300 align:middle line:84%
+This is the one that is
+implemented using a HashSet.
+
+89
+00:04:09.300 --> 00:04:12.030 align:middle line:84%
+If you call the ToSet factor
+method on the collectors
+
+90
+00:04:12.030 --> 00:04:14.490 align:middle line:84%
+utility class, you'll
+end up getting back
+
+91
+00:04:14.490 --> 00:04:17.339 align:middle line:84%
+a HashSet that can be accessed,
+of course, as a set, which
+
+92
+00:04:17.339 --> 00:04:19.600 align:middle line:84%
+is what we're showing
+in this example.
+
+93
+00:04:19.600 --> 00:04:25.560 align:middle line:84%
+And this is the runCollectToSet
+method in the test program
+
+94
+00:04:25.560 --> 00:04:27.740 align:middle line:90%
+we were looking at before.
+
+95
+00:04:27.740 --> 00:04:31.520 align:middle line:84%
+What this does is it returns
+the results in a HashSet.
+
+96
+00:04:31.520 --> 00:04:35.390 align:middle line:84%
+And if you may recall your
+Java Collections background,
+
+97
+00:04:35.390 --> 00:04:38.212 align:middle line:84%
+a half set can
+contain no duplicates.
+
+98
+00:04:38.212 --> 00:04:39.920 align:middle line:84%
+So there can be no
+duplicate copies here.
+
+99
+00:04:39.920 --> 00:04:44.080 align:middle line:84%
+Every value has to
+be a unique value.
+
+100
+00:04:44.080 --> 00:04:46.420 align:middle line:84%
+There is yet another
+type of collection
+
+101
+00:04:46.420 --> 00:04:49.540 align:middle line:84%
+we can create using
+a factor method which
+
+102
+00:04:49.540 --> 00:04:53.770 align:middle line:84%
+is defined in the
+collectors utility class.
+
+103
+00:04:53.770 --> 00:04:57.490 align:middle line:84%
+This is the ToMap
+factory method.
+
+104
+00:04:57.490 --> 00:05:01.630 align:middle line:84%
+And this creates
+a collector that
+
+105
+00:05:01.630 --> 00:05:04.780 align:middle line:84%
+can be used to merge
+the stream or collect
+
+106
+00:05:04.780 --> 00:05:07.660 align:middle line:90%
+the stream into a HashMap.
+
+107
+00:05:07.660 --> 00:05:11.500 align:middle line:84%
+And what happens here as we show
+here, the map we're defining
+
+108
+00:05:11.500 --> 00:05:17.380 align:middle line:84%
+will have a string as the key
+and an integer as the value.
+
+109
+00:05:17.380 --> 00:05:21.010 align:middle line:84%
+And under the hood,
+HashMap is implemented
+
+110
+00:05:21.010 --> 00:05:24.010 align:middle line:84%
+in later versions of Java
+as either a HashTable
+
+111
+00:05:24.010 --> 00:05:26.140 align:middle line:84%
+with a LinkedList
+coming off whenever
+
+112
+00:05:26.140 --> 00:05:28.150 align:middle line:90%
+you hash to the same location.
+
+113
+00:05:28.150 --> 00:05:30.640 align:middle line:84%
+Or again, in later
+versions of Java,
+
+114
+00:05:30.640 --> 00:05:32.830 align:middle line:84%
+they actually organized
+things if you have
+
+115
+00:05:32.830 --> 00:05:35.050 align:middle line:90%
+lots of elements in a certain--
+
+116
+00:05:35.050 --> 00:05:37.150 align:middle line:84%
+that all hash to the
+same certain location,
+
+117
+00:05:37.150 --> 00:05:41.110 align:middle line:84%
+then the HashMap actually
+uses a balanced binary tree
+
+118
+00:05:41.110 --> 00:05:44.200 align:middle line:84%
+at that point in order to reduce
+the amount of time required
+
+119
+00:05:44.200 --> 00:05:48.250 align:middle line:84%
+to determine whether an
+element is present or not
+
+120
+00:05:48.250 --> 00:05:50.120 align:middle line:90%
+and update its value.
+
+121
+00:05:50.120 --> 00:05:51.640 align:middle line:84%
+So when we call
+the ToMap method,
+
+122
+00:05:51.640 --> 00:05:53.770 align:middle line:84%
+we get back a
+collector that will
+
+123
+00:05:53.770 --> 00:05:55.750 align:middle line:84%
+create a key with
+whatever we give
+
+124
+00:05:55.750 --> 00:05:57.790 align:middle line:84%
+as the value as
+the first parameter
+
+125
+00:05:57.790 --> 00:06:01.180 align:middle line:84%
+to ToMap collector, which
+in this particular case
+
+126
+00:06:01.180 --> 00:06:05.980 align:middle line:84%
+is going to be the identity
+function, which will simply
+
+127
+00:06:05.980 --> 00:06:08.680 align:middle line:84%
+make the stream element
+the key in the map.
+
+128
+00:06:08.680 --> 00:06:11.910 align:middle line:84%
+And then we make that
+value in this map
+
+129
+00:06:11.910 --> 00:06:15.393 align:middle line:90%
+be the length of a given string.
+
+130
+00:06:15.393 --> 00:06:16.810 align:middle line:84%
+And if, for some
+reason, we end up
+
+131
+00:06:16.810 --> 00:06:20.320 align:middle line:84%
+with duplicate merged
+entries, then we're
+
+132
+00:06:20.320 --> 00:06:22.240 align:middle line:84%
+simply going to go
+ahead and add together
+
+133
+00:06:22.240 --> 00:06:26.110 align:middle line:84%
+the length of the merged
+entry to the existing entry.
+
+134
+00:06:26.110 --> 00:06:28.390 align:middle line:84%
+And that'll simply
+sum up and give you
+
+135
+00:06:28.390 --> 00:06:32.770 align:middle line:90%
+a new value for the map.
+
+136
+00:06:32.770 --> 00:06:35.920 align:middle line:84%
+So it'll end up being
+a map of string names
+
+137
+00:06:35.920 --> 00:06:38.445 align:middle line:84%
+and then the lengths
+of each of the names.
+
+138
+00:06:38.445 --> 00:06:39.820 align:middle line:84%
+And if you have
+duplicates, it'll
+
+139
+00:06:39.820 --> 00:06:45.550 align:middle line:84%
+be adding that to a running sum
+as being the value in the map.
+
+140
+00:06:45.550 --> 00:06:47.620 align:middle line:84%
+Not necessarily all
+that useful in this case
+
+141
+00:06:47.620 --> 00:06:49.420 align:middle line:84%
+to have to deal with
+duplicate entries,
+
+142
+00:06:49.420 --> 00:06:53.120 align:middle line:84%
+but this is an interesting
+example of using a map.
+
+143
+00:06:53.120 --> 00:06:55.130 align:middle line:84%
+There are even
+more powerful ways
+
+144
+00:06:55.130 --> 00:06:57.410 align:middle line:90%
+of being able to create maps.
+
+145
+00:06:57.410 --> 00:07:02.310 align:middle line:84%
+And one of those ways is by
+using a groupingBy collector.
+
+146
+00:07:02.310 --> 00:07:05.480 align:middle line:84%
+GroupingBy is a very
+interesting factoring method
+
+147
+00:07:05.480 --> 00:07:07.760 align:middle line:84%
+that creates a
+collector that has
+
+148
+00:07:07.760 --> 00:07:13.230 align:middle line:84%
+more options than the
+simple ToMap factor method.
+
+149
+00:07:13.230 --> 00:07:15.110 align:middle line:84%
+So what we're
+going to do here is
+
+150
+00:07:15.110 --> 00:07:18.560 align:middle line:84%
+we're going to create a
+TreeMap that will group
+
+151
+00:07:18.560 --> 00:07:21.470 align:middle line:84%
+the elements according
+to the name, which
+
+152
+00:07:21.470 --> 00:07:23.940 align:middle line:84%
+is the key in the map, and
+the name length, the value.
+
+153
+00:07:23.940 --> 00:07:27.260 align:middle line:84%
+So using the name and the
+length as the key and value
+
+154
+00:07:27.260 --> 00:07:30.260 align:middle line:84%
+is actually very similar
+to what we do with ToMap.
+
+155
+00:07:30.260 --> 00:07:32.250 align:middle line:84%
+But unlike the
+ToMap factor method,
+
+156
+00:07:32.250 --> 00:07:37.040 align:middle line:84%
+which only works for
+HashMaps, for groupingBy,
+
+157
+00:07:37.040 --> 00:07:40.615 align:middle line:84%
+we can actually indicate what
+kind of map we want to use.
+
+158
+00:07:40.615 --> 00:07:41.990 align:middle line:84%
+So in this particular
+case, we're
+
+159
+00:07:41.990 --> 00:07:46.190 align:middle line:84%
+going to use, once again,
+the identity function, which
+
+160
+00:07:46.190 --> 00:07:49.325 align:middle line:84%
+is often called the
+classifier function.
+
+161
+00:07:49.325 --> 00:07:51.200 align:middle line:84%
+And what this will do
+in this particular case
+
+162
+00:07:51.200 --> 00:07:54.080 align:middle line:84%
+is it simply uses
+the Hamlet character
+
+163
+00:07:54.080 --> 00:07:58.190 align:middle line:84%
+name starting with H, of course,
+as an index into the map.
+
+164
+00:07:58.190 --> 00:08:00.770 align:middle line:90%
+And that'll become the string.
+
+165
+00:08:00.770 --> 00:08:03.260 align:middle line:84%
+I kind of think of
+the groupingBy method
+
+166
+00:08:03.260 --> 00:08:05.570 align:middle line:84%
+in the classifier function
+as being a little bit
+
+167
+00:08:05.570 --> 00:08:11.510 align:middle line:84%
+like the drawer organizer you
+put in silverware drawers,
+
+168
+00:08:11.510 --> 00:08:13.910 align:middle line:84%
+where you put forks
+in one drawer.
+
+169
+00:08:13.910 --> 00:08:17.330 align:middle line:84%
+And you put small forks in
+another part of the drawer.
+
+170
+00:08:17.330 --> 00:08:20.600 align:middle line:84%
+You put knives in yet
+another part of the drawer.
+
+171
+00:08:20.600 --> 00:08:23.420 align:middle line:84%
+You put spoons in another
+part of the drawer.
+
+172
+00:08:23.420 --> 00:08:26.360 align:middle line:84%
+So you have this organizer that
+kind of classifies the utensils
+
+173
+00:08:26.360 --> 00:08:27.700 align:middle line:90%
+and puts them in the right bin.
+
+174
+00:08:27.700 --> 00:08:30.200 align:middle line:84%
+That's kind of the metaphor to
+have in the back of your mind
+
+175
+00:08:30.200 --> 00:08:32.929 align:middle line:84%
+when you're thinking
+about groupingBy.
+
+176
+00:08:32.929 --> 00:08:35.600 align:middle line:84%
+As you can see here,
+the particular type
+
+177
+00:08:35.600 --> 00:08:39.169 align:middle line:84%
+of map we're going to use
+is called a TreeMap, which
+
+178
+00:08:39.169 --> 00:08:40.938 align:middle line:90%
+is a balanced binary tree.
+
+179
+00:08:40.938 --> 00:08:42.980 align:middle line:84%
+I believe it uses something
+like a red-black tree
+
+180
+00:08:42.980 --> 00:08:47.570 align:middle line:84%
+or whatever as its balancing
+algorithm data structure.
+
+181
+00:08:47.570 --> 00:08:49.860 align:middle line:84%
+And so by passing in a
+constructor reference,
+
+182
+00:08:49.860 --> 00:08:53.540 align:middle line:84%
+we can instruct the
+GroupingBy collector to make
+
+183
+00:08:53.540 --> 00:08:55.700 align:middle line:90%
+a TreeMap instead of a HashMap.
+
+184
+00:08:55.700 --> 00:08:57.290 align:middle line:84%
+So that could be
+useful if there's
+
+185
+00:08:57.290 --> 00:08:59.960 align:middle line:84%
+some reason you want
+to avoid the worst case
+
+186
+00:08:59.960 --> 00:09:02.300 align:middle line:90%
+performance of HashMap.
+
+187
+00:09:02.300 --> 00:09:04.800 align:middle line:84%
+Although as I mentioned,
+HashMaps are now much smarter
+
+188
+00:09:04.800 --> 00:09:05.300 align:middle line:90%
+in Java.
+
+189
+00:09:05.300 --> 00:09:06.800 align:middle line:84%
+And they adaptively
+make themselves
+
+190
+00:09:06.800 --> 00:09:11.120 align:middle line:84%
+into balance trees probably
+using a TreeMap-like structure
+
+191
+00:09:11.120 --> 00:09:15.980 align:middle line:84%
+if too many items hash to the
+same location in the HashTable.
+
+192
+00:09:15.980 --> 00:09:17.650 align:middle line:84%
+And then the last
+piece of the puzzle
+
+193
+00:09:17.650 --> 00:09:21.160 align:middle line:84%
+here is something that's
+called a downstream collector.
+
+194
+00:09:21.160 --> 00:09:24.160 align:middle line:84%
+And this is a collector
+that's applied
+
+195
+00:09:24.160 --> 00:09:26.560 align:middle line:84%
+to the results of the
+classifier function.
+
+196
+00:09:26.560 --> 00:09:28.540 align:middle line:84%
+So after we've
+classified something,
+
+197
+00:09:28.540 --> 00:09:30.683 align:middle line:84%
+then we go ahead and call
+the downstream collector.
+
+198
+00:09:30.683 --> 00:09:32.350 align:middle line:84%
+And what that's going
+to do in this case
+
+199
+00:09:32.350 --> 00:09:35.140 align:middle line:84%
+is that's going to
+keep a running sum
+
+200
+00:09:35.140 --> 00:09:36.830 align:middle line:90%
+of the length of the string.
+
+201
+00:09:36.830 --> 00:09:39.250 align:middle line:84%
+So summingLong, as
+we'll see, is basically
+
+202
+00:09:39.250 --> 00:09:42.090 align:middle line:90%
+a way to sum things up.
+
+203
+00:09:42.090 --> 00:09:46.130 align:middle line:84%
+So this is a pretty cool
+example of using GroupingBy.
+
+204
+00:09:46.130 --> 00:09:49.910 align:middle line:84%
+We'll see GroupingBy used in
+many of our later examples
+
+205
+00:09:49.910 --> 00:09:53.150 align:middle line:84%
+because it's a very useful
+collector that gives you
+
+206
+00:09:53.150 --> 00:09:55.910 align:middle line:84%
+lots of powerful features,
+especially the ability
+
+207
+00:09:55.910 --> 00:10:00.680 align:middle line:84%
+to define the type of the map
+and the downstream collector.
+
+208
+00:10:00.680 --> 00:10:06.730 align:middle line:84%
+So keep an eye out for that
+in the not too distant future
+
+209
+00:10:06.730 --> 00:10:09.010 align:middle line:84%
+Let's now take a look
+at yet another way
+
+210
+00:10:09.010 --> 00:10:14.070 align:middle line:90%
+to be able to create a stream.
+
+211
+00:10:14.070 --> 00:10:19.400 align:middle line:84%
+And this is one that uses the
+splitAsStream method, which
+
+212
+00:10:19.400 --> 00:10:22.250 align:middle line:84%
+is defined as part of the Java
+regular expression pattern
+
+213
+00:10:22.250 --> 00:10:24.073 align:middle line:90%
+matching package.
+
+214
+00:10:24.073 --> 00:10:25.490 align:middle line:84%
+And what we're
+going to do here is
+
+215
+00:10:25.490 --> 00:10:30.770 align:middle line:84%
+we're going to give a string
+to the splitAsStream method.
+
+216
+00:10:30.770 --> 00:10:32.900 align:middle line:84%
+And you can see that
+that string is just
+
+217
+00:10:32.900 --> 00:10:37.040 align:middle line:84%
+all the names of the characters
+in Hamlet separated by commas--
+
+218
+00:10:37.040 --> 00:10:38.657 align:middle line:90%
+just one string.
+
+219
+00:10:38.657 --> 00:10:40.490 align:middle line:84%
+And then we're going
+to go ahead and compile
+
+220
+00:10:40.490 --> 00:10:43.430 align:middle line:84%
+a regular expression
+that uses the comma
+
+221
+00:10:43.430 --> 00:10:47.120 align:middle line:90%
+as the splitter for the string.
+
+222
+00:10:47.120 --> 00:10:49.040 align:middle line:84%
+And so what it does,
+what splitAsStream does,
+
+223
+00:10:49.040 --> 00:10:51.470 align:middle line:84%
+is it takes the compiled
+regular expression.
+
+224
+00:10:51.470 --> 00:10:53.360 align:middle line:84%
+And it goes ahead and
+reads in the string.
+
+225
+00:10:53.360 --> 00:10:57.780 align:middle line:84%
+And it splits up that string
+using comma as the splitter.
+
+226
+00:10:57.780 --> 00:11:02.000 align:middle line:84%
+So of course, we're going to
+end up with a stream of strings
+
+227
+00:11:02.000 --> 00:11:04.540 align:middle line:84%
+corresponding to
+the names in Hamlet.
+
+228
+00:11:04.540 --> 00:11:08.660 align:middle line:84%
+That just kind of illustrating
+the use of splitAsStream
+
+229
+00:11:08.660 --> 00:11:11.300 align:middle line:90%
+with a regular expression.
+
+230
+00:11:11.300 --> 00:11:14.480 align:middle line:84%
+And as before, we can use
+our GroupingBy approach
+
+231
+00:11:14.480 --> 00:11:18.220 align:middle line:84%
+to map things just
+like we talked about.

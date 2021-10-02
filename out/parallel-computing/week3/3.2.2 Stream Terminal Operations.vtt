@@ -1,0 +1,383 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.580 align:middle line:90%
+
+
+2
+00:00:00.580 --> 00:00:03.520 align:middle line:84%
+We'll continue exploring
+terminal operations in the Java
+
+3
+00:00:03.520 --> 00:00:07.300 align:middle line:84%
+Streams framework by focusing
+now on the forEach terminal
+
+4
+00:00:07.300 --> 00:00:10.205 align:middle line:90%
+operation.
+
+5
+00:00:10.205 --> 00:00:11.580 align:middle line:84%
+This operation
+will once again be
+
+6
+00:00:11.580 --> 00:00:15.640 align:middle line:84%
+showcased in the context
+of our Hamlet program.
+
+7
+00:00:15.640 --> 00:00:17.770 align:middle line:84%
+ForEach is an example
+of a terminal operation
+
+8
+00:00:17.770 --> 00:00:21.470 align:middle line:90%
+that returns no value.
+
+9
+00:00:21.470 --> 00:00:24.440 align:middle line:84%
+You'll see that if you take
+a look at the ex12 folder
+
+10
+00:00:24.440 --> 00:00:27.800 align:middle line:84%
+in my GitHub account, there's
+several variants of forEach
+
+11
+00:00:27.800 --> 00:00:30.090 align:middle line:84%
+that are showcased
+in this example.
+
+12
+00:00:30.090 --> 00:00:32.479 align:middle line:84%
+And this is the
+runForEach method
+
+13
+00:00:32.479 --> 00:00:35.780 align:middle line:84%
+that illustrates how the
+forEach method works.
+
+14
+00:00:35.780 --> 00:00:37.712 align:middle line:84%
+As you can see here,
+we create and process
+
+15
+00:00:37.712 --> 00:00:39.920 align:middle line:84%
+the stream that contains
+the characters from the play
+
+16
+00:00:39.920 --> 00:00:41.630 align:middle line:90%
+Hamlet.
+
+17
+00:00:41.630 --> 00:00:43.640 align:middle line:84%
+And then we perform
+the designated action
+
+18
+00:00:43.640 --> 00:00:47.510 align:middle line:84%
+on each element of the
+stream using forEach.
+
+19
+00:00:47.510 --> 00:00:50.150 align:middle line:84%
+Now, what I've shown here
+is using forEach along
+
+20
+00:00:50.150 --> 00:00:51.670 align:middle line:84%
+with the println
+method reference,
+
+21
+00:00:51.670 --> 00:00:55.710 align:middle line:84%
+but you can also use forEach
+for other operations as well.
+
+22
+00:00:55.710 --> 00:00:59.450 align:middle line:84%
+For example, here we can
+create ourselves a new list
+
+23
+00:00:59.450 --> 00:01:01.730 align:middle line:90%
+variable called results.
+
+24
+00:01:01.730 --> 00:01:05.690 align:middle line:84%
+And we can actually pass results
+colon colon add as a method
+
+25
+00:01:05.690 --> 00:01:08.000 align:middle line:90%
+reference to the forEach method.
+
+26
+00:01:08.000 --> 00:01:09.860 align:middle line:84%
+And that will have
+the side effect
+
+27
+00:01:09.860 --> 00:01:16.590 align:middle line:84%
+of adding each of the elements
+into the results list.
+
+28
+00:01:16.590 --> 00:01:19.200 align:middle line:84%
+You have to be careful
+how you use this however.
+
+29
+00:01:19.200 --> 00:01:21.270 align:middle line:84%
+In particular, you
+have to make sure
+
+30
+00:01:21.270 --> 00:01:24.540 align:middle line:84%
+that you remember to
+initialize the results object.
+
+31
+00:01:24.540 --> 00:01:27.660 align:middle line:84%
+If you forget to do this, then
+of course, chaos and insanity
+
+32
+00:01:27.660 --> 00:01:30.990 align:middle line:84%
+will ensue because the
+forEach method will
+
+33
+00:01:30.990 --> 00:01:34.103 align:middle line:84%
+try to add something
+to a null pointer
+
+34
+00:01:34.103 --> 00:01:35.520 align:middle line:84%
+or an uninitialized
+pointer, which
+
+35
+00:01:35.520 --> 00:01:37.950 align:middle line:84%
+will cause uninitialized
+reference, which will cause
+
+36
+00:01:37.950 --> 00:01:40.380 align:middle line:90%
+all kinds of problems.
+
+37
+00:01:40.380 --> 00:01:44.340 align:middle line:84%
+Likewise, using forEach
+with side effects
+
+38
+00:01:44.340 --> 00:01:48.740 align:middle line:84%
+in a parallel stream will also
+incur all kinds of problems.
+
+39
+00:01:48.740 --> 00:01:51.240 align:middle line:84%
+In particular, if you were to
+try to write this program here
+
+40
+00:01:51.240 --> 00:01:55.080 align:middle line:84%
+where we're going to call the
+results colon colon add method
+
+41
+00:01:55.080 --> 00:01:58.767 align:middle line:84%
+in the forEach terminal
+operation in a parallel stream,
+
+42
+00:01:58.767 --> 00:02:00.600 align:middle line:84%
+we'll end up with some
+nasty race conditions
+
+43
+00:02:00.600 --> 00:02:03.830 align:middle line:84%
+because different threads
+in the ForkJoinPool
+
+44
+00:02:03.830 --> 00:02:06.960 align:middle line:84%
+will be calling the
+add method on results,
+
+45
+00:02:06.960 --> 00:02:10.020 align:middle line:84%
+which is not intended to be
+used in a thread-safe way.
+
+46
+00:02:10.020 --> 00:02:12.900 align:middle line:84%
+It's not synchronized in
+any way, shape, or form.
+
+47
+00:02:12.900 --> 00:02:15.720 align:middle line:84%
+Of course, you could
+work around this
+
+48
+00:02:15.720 --> 00:02:19.890 align:middle line:84%
+by creating a results object
+that was synchronized.
+
+49
+00:02:19.890 --> 00:02:22.080 align:middle line:84%
+For example, you could
+create the results
+
+50
+00:02:22.080 --> 00:02:26.550 align:middle line:84%
+to be a concurrent linked queue
+whose add method is properly
+
+51
+00:02:26.550 --> 00:02:27.540 align:middle line:90%
+synchronized.
+
+52
+00:02:27.540 --> 00:02:29.610 align:middle line:84%
+But this approach
+is very error-prone.
+
+53
+00:02:29.610 --> 00:02:30.730 align:middle line:90%
+And it's inefficient.
+
+54
+00:02:30.730 --> 00:02:31.630 align:middle line:90%
+And it's confusing.
+
+55
+00:02:31.630 --> 00:02:34.830 align:middle line:84%
+It's using side effects where
+there are quite frankly much
+
+56
+00:02:34.830 --> 00:02:37.170 align:middle line:90%
+better terminal operations.
+
+57
+00:02:37.170 --> 00:02:40.230 align:middle line:84%
+In particular, using terminal
+operations like collect
+
+58
+00:02:40.230 --> 00:02:42.870 align:middle line:90%
+is a much better way to go here.
+
+59
+00:02:42.870 --> 00:02:45.490 align:middle line:84%
+There is an alternative
+way of doing forEach,
+
+60
+00:02:45.490 --> 00:02:47.560 align:middle line:90%
+which is called forEachOrdered.
+
+61
+00:02:47.560 --> 00:02:51.430 align:middle line:84%
+And forEachOrdered
+is useful if it's
+
+62
+00:02:51.430 --> 00:02:54.948 align:middle line:84%
+important to present the results
+in so-called encounter order.
+
+63
+00:02:54.948 --> 00:02:56.740 align:middle line:84%
+That's the order that
+they were encountered
+
+64
+00:02:56.740 --> 00:02:58.340 align:middle line:90%
+in the original input.
+
+65
+00:02:58.340 --> 00:03:00.095 align:middle line:90%
+And sometimes this matters.
+
+66
+00:03:00.095 --> 00:03:00.970 align:middle line:90%
+Sometimes it doesn't.
+
+67
+00:03:00.970 --> 00:03:05.440 align:middle line:84%
+But the key thing to note is
+that with forEach, there's
+
+68
+00:03:05.440 --> 00:03:08.770 align:middle line:84%
+no attempt to try to
+preserve the encounter order.
+
+69
+00:03:08.770 --> 00:03:10.570 align:middle line:84%
+Whereas with
+forEachOrdered, there
+
+70
+00:03:10.570 --> 00:03:14.380 align:middle line:84%
+is going to be a
+preservation of the encounter
+
+71
+00:03:14.380 --> 00:03:15.502 align:middle line:90%
+order in the output.
+
+72
+00:03:15.502 --> 00:03:16.960 align:middle line:84%
+Now, not surprisingly,
+that's going
+
+73
+00:03:16.960 --> 00:03:19.418 align:middle line:84%
+to take more overhead in order
+to order things in that way.
+
+74
+00:03:19.418 --> 00:03:22.250 align:middle line:90%
+But it's possible to do so.
+
+75
+00:03:22.250 --> 00:03:24.860 align:middle line:84%
+It's only really relevant
+to discuss the difference
+
+76
+00:03:24.860 --> 00:03:27.710 align:middle line:84%
+in semantics between
+forEach and forEachOrdered
+
+77
+00:03:27.710 --> 00:03:29.690 align:middle line:84%
+in the context of
+parallel streams.
+
+78
+00:03:29.690 --> 00:03:32.180 align:middle line:84%
+If it's a sequential stream,
+there's only one thread.
+
+79
+00:03:32.180 --> 00:03:35.060 align:middle line:84%
+And so ordering is going
+to be a moot point.
+
+80
+00:03:35.060 --> 00:03:38.200 align:middle line:84%
+But for parallel streams,
+it does actually matter.
