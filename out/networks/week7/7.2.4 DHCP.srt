@@ -1,0 +1,482 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:00.930 align:middle line:90%
+
+
+00:00:00.930 --> 00:00:04.200 align:middle line:84%
+So next, we'll discuss a
+little bit of the detail
+
+00:00:04.200 --> 00:00:07.800 align:middle line:84%
+and how the DHCP protocol
+works to dynamically assign
+
+00:00:07.800 --> 00:00:10.340 align:middle line:90%
+IP addresses.
+
+00:00:10.340 --> 00:00:13.250 align:middle line:84%
+So the problem we're solving
+is how do we get an IP address
+
+00:00:13.250 --> 00:00:14.660 align:middle line:90%
+when we don't have one.
+
+00:00:14.660 --> 00:00:16.940 align:middle line:90%
+So how would a host get one?
+
+00:00:16.940 --> 00:00:21.050 align:middle line:84%
+So it could be hard-coded
+by a system administrator.
+
+00:00:21.050 --> 00:00:22.160 align:middle line:90%
+There are ways to do this.
+
+00:00:22.160 --> 00:00:24.950 align:middle line:84%
+You can manually set
+the IP of your computer
+
+00:00:24.950 --> 00:00:28.160 align:middle line:84%
+in windows Unix and
+other operating systems.
+
+00:00:28.160 --> 00:00:32.720 align:middle line:84%
+However, that's pretty brittle
+if you put in the wrong value,
+
+00:00:32.720 --> 00:00:34.070 align:middle line:90%
+if things change.
+
+00:00:34.070 --> 00:00:35.660 align:middle line:84%
+So what's commonly
+used is called
+
+00:00:35.660 --> 00:00:38.540 align:middle line:84%
+DHCP which would
+dynamically find an IP
+
+00:00:38.540 --> 00:00:41.330 align:middle line:90%
+address from a server.
+
+00:00:41.330 --> 00:00:44.180 align:middle line:84%
+So the goal of the
+DHCP protocol is
+
+00:00:44.180 --> 00:00:47.360 align:middle line:84%
+to allow the hosts
+to dynamically
+
+00:00:47.360 --> 00:00:50.210 align:middle line:84%
+find an IP address
+from the network server
+
+00:00:50.210 --> 00:00:51.890 align:middle line:90%
+when it joins the network.
+
+00:00:51.890 --> 00:00:56.310 align:middle line:84%
+So it could renew this
+when a lease expires.
+
+00:00:56.310 --> 00:00:58.850 align:middle line:84%
+So essentially a time to live
+off how long that address
+
+00:00:58.850 --> 00:00:59.630 align:middle line:90%
+is valid.
+
+00:00:59.630 --> 00:01:02.240 align:middle line:84%
+You could then reuse
+addresses, support
+
+00:01:02.240 --> 00:01:05.209 align:middle line:84%
+for mobile users who
+want to join the network
+
+00:01:05.209 --> 00:01:08.450 align:middle line:90%
+and then leave perhaps.
+
+00:01:08.450 --> 00:01:12.740 align:middle line:84%
+So basically, we're going to
+walk through how DHCP works.
+
+00:01:12.740 --> 00:01:14.930 align:middle line:84%
+This is just a brief
+overview of it.
+
+00:01:14.930 --> 00:01:19.520 align:middle line:84%
+The host could broadcast
+DHCP discover message.
+
+00:01:19.520 --> 00:01:23.600 align:middle line:84%
+The DHCP server would respond
+with an offer message.
+
+00:01:23.600 --> 00:01:26.060 align:middle line:84%
+The host would
+request an IP address.
+
+00:01:26.060 --> 00:01:31.190 align:middle line:84%
+And the DHCP server would
+respond with an acknowledgment.
+
+00:01:31.190 --> 00:01:33.890 align:middle line:84%
+So let's look at this
+kind of scenario.
+
+00:01:33.890 --> 00:01:37.730 align:middle line:84%
+Let's suppose we have a
+network setup in this way.
+
+00:01:37.730 --> 00:01:40.760 align:middle line:90%
+We have a few subnet setup.
+
+00:01:40.760 --> 00:01:44.150 align:middle line:84%
+There's a DHCP server connected
+on one of the subnets.
+
+00:01:44.150 --> 00:01:46.130 align:middle line:84%
+And we have a laptop
+joining the network,
+
+00:01:46.130 --> 00:01:50.060 align:middle line:84%
+and now it needs an IP address
+so that it can communicate
+
+00:01:50.060 --> 00:01:52.280 align:middle line:84%
+with the local network
+as well as beyond, say,
+
+00:01:52.280 --> 00:01:54.680 align:middle line:90%
+on the internet.
+
+00:01:54.680 --> 00:01:59.090 align:middle line:84%
+So the DHCP server, as the
+arriving client gets connected,
+
+00:01:59.090 --> 00:02:02.150 align:middle line:84%
+it realizes it doesn't
+have an IP address,
+
+00:02:02.150 --> 00:02:03.980 align:middle line:90%
+so it sends out a broadcast.
+
+00:02:03.980 --> 00:02:09.169 align:middle line:84%
+Is there a DHCP
+server available?
+
+00:02:09.169 --> 00:02:14.420 align:middle line:84%
+It would have included
+some information
+
+00:02:14.420 --> 00:02:22.130 align:middle line:84%
+within that discovery about what
+it may think some of the source
+
+00:02:22.130 --> 00:02:22.880 align:middle line:90%
+address should be.
+
+00:02:22.880 --> 00:02:25.700 align:middle line:84%
+So the source address
+of 0.0.0.0, this
+
+00:02:25.700 --> 00:02:28.550 align:middle line:84%
+would effectively be a
+broadcast type of address,
+
+00:02:28.550 --> 00:02:33.290 align:middle line:84%
+likewise that destination
+address of 255 repeated
+
+00:02:33.290 --> 00:02:36.170 align:middle line:90%
+is indicating a broadcast.
+
+00:02:36.170 --> 00:02:39.020 align:middle line:84%
+So the DHCP server
+would receive that.
+
+00:02:39.020 --> 00:02:40.520 align:middle line:84%
+It would interpret
+it and say, OK.
+
+00:02:40.520 --> 00:02:42.440 align:middle line:90%
+I'm a DHCP server.
+
+00:02:42.440 --> 00:02:46.400 align:middle line:84%
+And it would send a message
+back encoded with its IP back
+
+00:02:46.400 --> 00:02:47.203 align:middle line:90%
+to everyone.
+
+00:02:47.203 --> 00:02:48.620 align:middle line:84%
+So again, it
+broadcasts because it
+
+00:02:48.620 --> 00:02:52.340 align:middle line:84%
+doesn't know how to address
+that client because that client
+
+00:02:52.340 --> 00:02:54.290 align:middle line:90%
+doesn't have an IP address.
+
+00:02:54.290 --> 00:02:56.930 align:middle line:84%
+So then the arriving
+client would say, OK.
+
+00:02:56.930 --> 00:02:59.510 align:middle line:90%
+I'll take an IP address.
+
+00:02:59.510 --> 00:03:01.310 align:middle line:84%
+It again does this
+through a broadcast,
+
+00:03:01.310 --> 00:03:04.580 align:middle line:84%
+because it still doesn't have
+an IP address assigned yet.
+
+00:03:04.580 --> 00:03:06.770 align:middle line:84%
+Then the DHCP server
+would respond back
+
+00:03:06.770 --> 00:03:08.510 align:middle line:84%
+with an acknowledgment
+and say, OK.
+
+00:03:08.510 --> 00:03:10.910 align:middle line:84%
+You've got that
+particular IP address.
+
+00:03:10.910 --> 00:03:14.450 align:middle line:84%
+And now it would have
+assigned an IP address,
+
+00:03:14.450 --> 00:03:18.560 align:middle line:84%
+but this would have come through
+this broadcast from the DHCP
+
+00:03:18.560 --> 00:03:20.930 align:middle line:84%
+server because the
+arriving client, up
+
+00:03:20.930 --> 00:03:23.250 align:middle line:84%
+until this particular
+point in this time flow,
+
+00:03:23.250 --> 00:03:27.350 align:middle line:84%
+it didn't have an
+IP address assigned.
+
+00:03:27.350 --> 00:03:31.730 align:middle line:84%
+So DHCP can do a bit more than
+just assigning IP addresses.
+
+00:03:31.730 --> 00:03:34.490 align:middle line:84%
+It can return more than
+just that allocated
+
+00:03:34.490 --> 00:03:36.470 align:middle line:90%
+address on the subnet.
+
+00:03:36.470 --> 00:03:38.900 align:middle line:84%
+It typically would
+provide a gateway, names,
+
+00:03:38.900 --> 00:03:41.780 align:middle line:84%
+and addresses of a
+DNS server as well
+
+00:03:41.780 --> 00:03:43.400 align:middle line:84%
+as what the network
+mask would be.
+
+00:03:43.400 --> 00:03:47.775 align:middle line:84%
+So indicating the network versus
+the host portions of the IP
+
+00:03:47.775 --> 00:03:48.275 align:middle line:90%
+address.
+
+00:03:48.275 --> 00:03:52.370 align:middle line:90%
+
+
+00:03:52.370 --> 00:03:55.850 align:middle line:84%
+So let's look at
+another DHCP example.
+
+00:03:55.850 --> 00:03:57.740 align:middle line:84%
+So let's suppose we
+connect this laptop.
+
+00:03:57.740 --> 00:04:02.480 align:middle line:84%
+It needs an IP address
+of the first-hop router.
+
+00:04:02.480 --> 00:04:05.450 align:middle line:84%
+And oftentimes, that first-hop
+router in your home network
+
+00:04:05.450 --> 00:04:07.760 align:middle line:84%
+would have a DHCP
+server built in.
+
+00:04:07.760 --> 00:04:11.010 align:middle line:84%
+So it would build
+up this request.
+
+00:04:11.010 --> 00:04:16.279 align:middle line:84%
+It would encapsulate this, say
+starting at DHCP relies on UDP.
+
+00:04:16.279 --> 00:04:18.320 align:middle line:84%
+So it would be that
+transport layer message
+
+00:04:18.320 --> 00:04:21.320 align:middle line:84%
+then an encapsulated
+into an IP message
+
+00:04:21.320 --> 00:04:25.060 align:middle line:84%
+using the broadcast address
+then sent down on the link layer
+
+00:04:25.060 --> 00:04:28.070 align:middle line:84%
+saying ethernet if it's
+physically plugged in.
+
+00:04:28.070 --> 00:04:32.600 align:middle line:84%
+That ethernet frame would
+get broadcasted to everyone
+
+00:04:32.600 --> 00:04:35.750 align:middle line:84%
+on the LAN, sort of like how
+in [INAUDIBLE] protocol worked.
+
+00:04:35.750 --> 00:04:40.040 align:middle line:84%
+This would get received by this
+router running the DHCP server.
+
+00:04:40.040 --> 00:04:44.060 align:middle line:84%
+It would then get decoded,
+see its DHCP information
+
+00:04:44.060 --> 00:04:48.230 align:middle line:84%
+so that demuxing process would
+strip off all that header
+
+00:04:48.230 --> 00:04:52.130 align:middle line:84%
+information until it gets
+down to the relevant DHCP
+
+00:04:52.130 --> 00:04:55.100 align:middle line:90%
+information.
+
+00:04:55.100 --> 00:04:59.120 align:middle line:84%
+The DHCP server would then
+formulate an acknowledgment
+
+00:04:59.120 --> 00:05:02.090 align:middle line:84%
+containing the client's
+IP address, the IP
+
+00:05:02.090 --> 00:05:06.830 align:middle line:84%
+address of the first-hop router,
+this node itself, the name
+
+00:05:06.830 --> 00:05:10.130 align:middle line:90%
+and IP address of a DNS server.
+
+00:05:10.130 --> 00:05:12.830 align:middle line:84%
+So then encapsulate
+that back down
+
+00:05:12.830 --> 00:05:18.530 align:middle line:84%
+to the link layer of course and
+send it over to the Mac address
+
+00:05:18.530 --> 00:05:20.990 align:middle line:84%
+corresponding to
+that particular node.
+
+00:05:20.990 --> 00:05:24.980 align:middle line:84%
+So their client would now know
+its IP address and the name
+
+00:05:24.980 --> 00:05:29.030 align:middle line:84%
+and address of the DNS server
+as well as the first-hop gateway
+
+00:05:29.030 --> 00:05:31.585 align:middle line:90%
+or router IP address.
+
+00:05:31.585 --> 00:05:32.960 align:middle line:84%
+So it's just look
+at a little bit
+
+00:05:32.960 --> 00:05:38.360 align:middle line:84%
+of a log recorded from Wireshark
+on a home LAN for this process.
+
+00:05:38.360 --> 00:05:40.610 align:middle line:84%
+So this would be the
+request from the client
+
+00:05:40.610 --> 00:05:43.530 align:middle line:84%
+and this would be the
+reply from the DNS server
+
+00:05:43.530 --> 00:05:45.560 align:middle line:90%
+or from the DHCP server.
+
+00:05:45.560 --> 00:05:48.800 align:middle line:84%
+So initially, the
+request, as we can see--
+
+00:05:48.800 --> 00:05:51.070 align:middle line:84%
+maybe a little bit small--
+but the client IP address
+
+00:05:51.070 --> 00:05:56.480 align:middle line:84%
+is just assigned as all zeros,
+but we do see the Mac address
+
+00:05:56.480 --> 00:06:00.210 align:middle line:90%
+encoded for the client there.
+
+00:06:00.210 --> 00:06:04.400 align:middle line:84%
+Right so then the reply
+from the DHCP server
+
+00:06:04.400 --> 00:06:07.370 align:middle line:84%
+would have the IP
+address encoded in it.
+
+00:06:07.370 --> 00:06:07.870 align:middle line:90%
+All right.
+
+00:06:07.870 --> 00:06:09.980 align:middle line:90%
+So the IP that's been assigned.
+
+00:06:09.980 --> 00:06:13.580 align:middle line:84%
+The gateway address and some of
+these other components like DNS
+
+00:06:13.580 --> 00:06:16.810 align:middle line:84%
+servers That we've
+also discussed.
+
+00:06:16.810 --> 00:06:19.220 align:middle line:84%
+By sending out this
+broadcast information,
+
+00:06:19.220 --> 00:06:22.220 align:middle line:84%
+getting this reply from a
+DHCP server on the network,
+
+00:06:22.220 --> 00:06:24.950 align:middle line:84%
+this is how this new
+node joining the network
+
+00:06:24.950 --> 00:06:28.690 align:middle line:84%
+would have been
+assigned its IP address.
+
+00:06:28.690 --> 00:06:29.888 align:middle line:90%

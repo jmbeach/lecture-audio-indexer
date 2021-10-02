@@ -1,0 +1,573 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:00.630 align:middle line:90%
+
+
+00:00:00.630 --> 00:00:02.760 align:middle line:84%
+So we'll continue
+discussing DNS,
+
+00:00:02.760 --> 00:00:06.480 align:middle line:84%
+and next we'll discuss
+some of the DNS protocol
+
+00:00:06.480 --> 00:00:09.270 align:middle line:84%
+and what some of the
+data and commands,
+
+00:00:09.270 --> 00:00:12.060 align:middle line:84%
+the sends and receives,
+requests/replies
+
+00:00:12.060 --> 00:00:16.300 align:middle line:84%
+in the DNS protocol, what
+those are going to look like.
+
+00:00:16.300 --> 00:00:20.370 align:middle line:84%
+So what the information
+in DNS is typically called
+
+00:00:20.370 --> 00:00:22.390 align:middle line:90%
+are called resource records.
+
+00:00:22.390 --> 00:00:25.590 align:middle line:84%
+And remember, as
+we've introduced DNS,
+
+00:00:25.590 --> 00:00:28.350 align:middle line:84%
+we've described it as being
+a distributed database that
+
+00:00:28.350 --> 00:00:30.420 align:middle line:90%
+stores information.
+
+00:00:30.420 --> 00:00:33.120 align:middle line:84%
+In this case, it's storing
+these resource records.
+
+00:00:33.120 --> 00:00:35.580 align:middle line:84%
+So there's a format
+of these consisting
+
+00:00:35.580 --> 00:00:41.170 align:middle line:84%
+of a name, a value, a type,
+and a time to live, if any.
+
+00:00:41.170 --> 00:00:44.520 align:middle line:84%
+So there are several
+types of DNS records.
+
+00:00:44.520 --> 00:00:47.040 align:middle line:84%
+Type A is kind of
+the simplest type,
+
+00:00:47.040 --> 00:00:50.370 align:middle line:84%
+and that would
+consist of a name that
+
+00:00:50.370 --> 00:00:55.960 align:middle line:84%
+is the hostname and a value
+that's the IP address.
+
+00:00:55.960 --> 00:00:58.770 align:middle line:84%
+So this is the direct mapping
+from a hostname into an IP
+
+00:00:58.770 --> 00:01:00.480 align:middle line:90%
+address.
+
+00:01:00.480 --> 00:01:06.120 align:middle line:84%
+Another type in these record
+resource formats is a type NS.
+
+00:01:06.120 --> 00:01:10.500 align:middle line:84%
+Here the name is a
+domain, so say foo.com,
+
+00:01:10.500 --> 00:01:14.820 align:middle line:84%
+and the value is a hostname
+of an authoritative name
+
+00:01:14.820 --> 00:01:18.540 align:middle line:90%
+server for that domain.
+
+00:01:18.540 --> 00:01:21.870 align:middle line:84%
+For the reverse
+lookups, the type PTR
+
+00:01:21.870 --> 00:01:26.250 align:middle line:84%
+would be the name represented
+in that reverse quad notation
+
+00:01:26.250 --> 00:01:28.410 align:middle line:84%
+for doing reverse lookups,
+and then the value
+
+00:01:28.410 --> 00:01:30.780 align:middle line:84%
+would be the
+corresponding hostname
+
+00:01:30.780 --> 00:01:34.560 align:middle line:84%
+so that we could go from IP
+address into that hostname.
+
+00:01:34.560 --> 00:01:37.560 align:middle line:84%
+Another type is
+called a CNAME, which
+
+00:01:37.560 --> 00:01:40.000 align:middle line:90%
+stands for canonical name.
+
+00:01:40.000 --> 00:01:44.100 align:middle line:84%
+And what this corresponds
+to is name mapping
+
+00:01:44.100 --> 00:01:46.230 align:middle line:90%
+to a canonical value.
+
+00:01:46.230 --> 00:01:52.560 align:middle line:84%
+So for example, the
+address www.cs.mit.edu
+
+00:01:52.560 --> 00:02:00.240 align:middle line:84%
+really could correspond to the
+canonical name eecsweb.mit.edu.
+
+00:02:00.240 --> 00:02:03.938 align:middle line:84%
+So this would let you give
+some aliases essentially.
+
+00:02:03.938 --> 00:02:05.980 align:middle line:84%
+A final type, which we
+won't talk too much about,
+
+00:02:05.980 --> 00:02:07.740 align:middle line:90%
+but is an MX type.
+
+00:02:07.740 --> 00:02:10.530 align:middle line:84%
+And the value for
+this would be the name
+
+00:02:10.530 --> 00:02:14.945 align:middle line:84%
+of a mail server associated
+with a particular domain name.
+
+00:02:14.945 --> 00:02:19.150 align:middle line:84%
+It could include some other
+optional information as well.
+
+00:02:19.150 --> 00:02:21.570 align:middle line:84%
+So within the DNS
+protocol, there
+
+00:02:21.570 --> 00:02:24.462 align:middle line:84%
+are two types of messages,
+queries and replies,
+
+00:02:24.462 --> 00:02:25.920 align:middle line:84%
+and they both have
+the same message
+
+00:02:25.920 --> 00:02:29.200 align:middle line:90%
+format which looks like this.
+
+00:02:29.200 --> 00:02:32.520 align:middle line:84%
+So the message header
+consists of a variety
+
+00:02:32.520 --> 00:02:35.290 align:middle line:90%
+of pieces of information.
+
+00:02:35.290 --> 00:02:38.580 align:middle line:84%
+These are broken
+into 16-bit portions.
+
+00:02:38.580 --> 00:02:41.610 align:middle line:84%
+The message header includes
+a 16-bit number corresponding
+
+00:02:41.610 --> 00:02:42.900 align:middle line:90%
+to the query.
+
+00:02:42.900 --> 00:02:45.820 align:middle line:84%
+The reply to this query would
+then use that same number
+
+00:02:45.820 --> 00:02:48.450 align:middle line:84%
+so you know you're
+getting a response back,
+
+00:02:48.450 --> 00:02:52.200 align:middle line:84%
+basically just labeling or
+identifying the query number,
+
+00:02:52.200 --> 00:02:53.850 align:middle line:90%
+if you will.
+
+00:02:53.850 --> 00:02:56.040 align:middle line:84%
+Flags that could
+be set are options
+
+00:02:56.040 --> 00:03:01.590 align:middle line:84%
+like whether the type of
+message is a query or a reply,
+
+00:03:01.590 --> 00:03:05.940 align:middle line:84%
+whether recursion is
+desired or allowed,
+
+00:03:05.940 --> 00:03:10.440 align:middle line:84%
+or whether a reply is from an
+authoritative source or not.
+
+00:03:10.440 --> 00:03:12.990 align:middle line:84%
+There would be other
+fields including
+
+00:03:12.990 --> 00:03:15.720 align:middle line:84%
+the size of optional
+header elements
+
+00:03:15.720 --> 00:03:17.855 align:middle line:84%
+that we won't talk
+about in depth.
+
+00:03:17.855 --> 00:03:19.980 align:middle line:84%
+So what we're going to do
+next to try to understand
+
+00:03:19.980 --> 00:03:21.900 align:middle line:84%
+a little bit more
+about how DNS works is
+
+00:03:21.900 --> 00:03:25.710 align:middle line:84%
+we'll go through an interactive
+lookup using the Unix program
+
+00:03:25.710 --> 00:03:26.930 align:middle line:90%
+called Dig.
+
+00:03:26.930 --> 00:03:30.150 align:middle line:84%
+What this lets you do is it
+lets you query the DNS system,
+
+00:03:30.150 --> 00:03:34.480 align:middle line:84%
+and then it will dump the
+field from the DNS responses,
+
+00:03:34.480 --> 00:03:38.350 align:middle line:84%
+so basically looking at
+these DNS protocol messages.
+
+00:03:38.350 --> 00:03:40.920 align:middle line:84%
+So by default, it would
+execute recursive queries
+
+00:03:40.920 --> 00:03:44.040 align:middle line:84%
+which you can disable
+via this option just
+
+00:03:44.040 --> 00:03:46.860 align:middle line:84%
+to set that it's not
+recursive so it's just going
+
+00:03:46.860 --> 00:03:48.790 align:middle line:90%
+to operate one step at a time.
+
+00:03:48.790 --> 00:03:52.320 align:middle line:84%
+So that's what we're going
+to do through this quick
+
+00:03:52.320 --> 00:03:53.980 align:middle line:90%
+demonstration of this.
+
+00:03:53.980 --> 00:03:58.890 align:middle line:84%
+So let's suppose we want to look
+up the IP address for cnn.com,
+
+00:03:58.890 --> 00:04:02.300 align:middle line:90%
+specifically, www.cnn.com.
+
+00:04:02.300 --> 00:04:05.010 align:middle line:84%
+And we're going to query
+one of the root servers.
+
+00:04:05.010 --> 00:04:07.800 align:middle line:84%
+The root servers, again,
+they're labeled A through M,
+
+00:04:07.800 --> 00:04:13.260 align:middle line:84%
+and you can access them through
+this root-servers.net domain
+
+00:04:13.260 --> 00:04:14.950 align:middle line:90%
+name.
+
+00:04:14.950 --> 00:04:18.510 align:middle line:84%
+So if you run this
+command, you'd
+
+00:04:18.510 --> 00:04:23.310 align:middle line:84%
+get back some responses, some
+header information, of course.
+
+00:04:23.310 --> 00:04:26.850 align:middle line:84%
+In this case, you're
+sending a query out.
+
+00:04:26.850 --> 00:04:30.810 align:middle line:84%
+The question that you're looking
+for is, what is the A name?
+
+00:04:30.810 --> 00:04:34.410 align:middle line:84%
+Basically, what's the IP address
+corresponding to cnn.com?
+
+00:04:34.410 --> 00:04:36.780 align:middle line:90%
+There's no answer section yet.
+
+00:04:36.780 --> 00:04:40.980 align:middle line:84%
+Then there's some
+authoritative information
+
+00:04:40.980 --> 00:04:45.920 align:middle line:84%
+which is just
+representing the various,
+
+00:04:45.920 --> 00:04:48.330 align:middle line:84%
+for this top-level domain,
+com where you could look up
+
+00:04:48.330 --> 00:04:50.470 align:middle line:90%
+to figure out that answer.
+
+00:04:50.470 --> 00:04:53.340 align:middle line:84%
+So just going on
+within the same query,
+
+00:04:53.340 --> 00:04:56.190 align:middle line:84%
+there would be additional
+information corresponding
+
+00:04:56.190 --> 00:05:04.410 align:middle line:84%
+to what these top-level
+domain name server names would
+
+00:05:04.410 --> 00:05:06.750 align:middle line:90%
+correspond to in IP addresses.
+
+00:05:06.750 --> 00:05:10.010 align:middle line:90%
+So we can see that, say--
+
+00:05:10.010 --> 00:05:14.340 align:middle line:84%
+let's look at the G one,
+the G.GTLD-SERVERS.NET.
+
+00:05:14.340 --> 00:05:17.670 align:middle line:84%
+The A name record for that would
+correspond to this IP address,
+
+00:05:17.670 --> 00:05:20.985 align:middle line:90%
+this 192.42.93.30.
+
+00:05:20.985 --> 00:05:23.490 align:middle line:84%
+There'd be some timing
+information for this
+
+00:05:23.490 --> 00:05:26.280 align:middle line:90%
+and which server had replied.
+
+00:05:26.280 --> 00:05:29.400 align:middle line:84%
+If we go back and look,
+we asked the root server
+
+00:05:29.400 --> 00:05:32.640 align:middle line:84%
+labeled A. That's the
+server that had replied.
+
+00:05:32.640 --> 00:05:35.190 align:middle line:90%
+
+
+00:05:35.190 --> 00:05:39.360 align:middle line:84%
+So after we figured out,
+OK, I can go look up at A--
+
+00:05:39.360 --> 00:05:41.460 align:middle line:84%
+what this response
+means is that I
+
+00:05:41.460 --> 00:05:46.080 align:middle line:84%
+can go ask now this root
+server with the subdomain A
+
+00:05:46.080 --> 00:05:47.760 align:middle line:90%
+how to get to cnn.com.
+
+00:05:47.760 --> 00:05:51.610 align:middle line:84%
+Again, we didn't run this
+in the recursive mode.
+
+00:05:51.610 --> 00:05:55.470 align:middle line:84%
+So now, if I ask one of the
+top-level domain servers how
+
+00:05:55.470 --> 00:05:56.580 align:middle line:90%
+to get to cnn.com--
+
+00:05:56.580 --> 00:05:58.455 align:middle line:84%
+I'll just pick one of
+them that had replied--
+
+00:05:58.455 --> 00:06:02.160 align:middle line:90%
+
+
+00:06:02.160 --> 00:06:05.700 align:middle line:84%
+what we'll see now in some
+of the responses for cnn.com,
+
+00:06:05.700 --> 00:06:11.220 align:middle line:84%
+we could access that with
+this other domain name,
+
+00:06:11.220 --> 00:06:15.495 align:middle line:90%
+so this twdns-01.ns.aol.com.
+
+00:06:15.495 --> 00:06:22.800 align:middle line:84%
+So that'd be the domain
+name server for cnn.com.
+
+00:06:22.800 --> 00:06:26.070 align:middle line:84%
+Then there'd be some additional
+information encoding,
+
+00:06:26.070 --> 00:06:29.400 align:middle line:84%
+what are the actual IP
+addresses corresponding
+
+00:06:29.400 --> 00:06:33.660 align:middle line:84%
+to those hostnames for
+those domain name servers?
+
+00:06:33.660 --> 00:06:38.790 align:middle line:84%
+So moving along then, so
+we'll do one more query.
+
+00:06:38.790 --> 00:06:42.270 align:middle line:84%
+If we now go query one of those
+particular domain name servers,
+
+00:06:42.270 --> 00:06:45.150 align:middle line:84%
+we just picked one of them
+arbitrarily out of the four
+
+00:06:45.150 --> 00:06:47.850 align:middle line:84%
+that came back with a
+response and we ask it
+
+00:06:47.850 --> 00:06:50.700 align:middle line:84%
+what the IP address
+for www.cnn.com
+
+00:06:50.700 --> 00:06:56.110 align:middle line:84%
+is, that was the question
+that we asked that DNS server.
+
+00:06:56.110 --> 00:06:59.550 align:middle line:84%
+And we're asking it, what is
+the IP address corresponding
+
+00:06:59.550 --> 00:07:01.410 align:middle line:90%
+to that domain name?
+
+00:07:01.410 --> 00:07:05.490 align:middle line:84%
+The response back that
+we get and the answer
+
+00:07:05.490 --> 00:07:09.240 align:middle line:84%
+from the DNS system
+is that www.cnn.com
+
+00:07:09.240 --> 00:07:12.420 align:middle line:84%
+is a CNAME or an
+alias for cnn.com.
+
+00:07:12.420 --> 00:07:15.660 align:middle line:84%
+And then any of
+these IP addresses
+
+00:07:15.660 --> 00:07:19.140 align:middle line:84%
+should work if you want
+to access www.cnn.com.
+
+00:07:19.140 --> 00:07:23.610 align:middle line:84%
+So if you typed in your web
+browser any of these addresses,
+
+00:07:23.610 --> 00:07:26.550 align:middle line:84%
+they should all
+take you to cnn.com.
+
+00:07:26.550 --> 00:07:29.840 align:middle line:84%
+So there could be more
+than one, as you can see.
+
+00:07:29.840 --> 00:07:32.400 align:middle line:84%
+And this could be for various
+load balancing reasons
+
+00:07:32.400 --> 00:07:34.740 align:middle line:84%
+that we've mentioned
+a little bit earlier,
+
+00:07:34.740 --> 00:07:38.420 align:middle line:84%
+having these geographically
+distributed so that perhaps
+
+00:07:38.420 --> 00:07:42.270 align:middle line:84%
+a lookup or accessing that
+website would be faster
+
+00:07:42.270 --> 00:07:44.460 align:middle line:84%
+in a certain region
+of the world,
+
+00:07:44.460 --> 00:07:48.150 align:middle line:84%
+and you might be directed
+to use a particular one
+
+00:07:48.150 --> 00:07:51.510 align:middle line:84%
+of those servers based
+on that kind of criteria.
+
+00:07:51.510 --> 00:07:54.540 align:middle line:84%
+But this is how we would
+have sort of manually
+
+00:07:54.540 --> 00:07:56.460 align:middle line:84%
+gone through that
+process of getting
+
+00:07:56.460 --> 00:08:01.326 align:middle line:84%
+what IP address
+corresponded to www.cnn.com.
+
+00:08:01.326 --> 00:08:04.860 align:middle line:84%
+So that's a little bit of an
+overview of the DNS protocol,
+
+00:08:04.860 --> 00:08:09.030 align:middle line:84%
+the different types of resource
+records like A name, CNAMEs,
+
+00:08:09.030 --> 00:08:10.680 align:middle line:84%
+and what some of the
+information would
+
+00:08:10.680 --> 00:08:14.820 align:middle line:84%
+look like when the
+queries and the DNS system
+
+00:08:14.820 --> 00:08:17.180 align:middle line:90%
+are actually occurring.
+
+00:08:17.180 --> 00:08:18.454 align:middle line:90%

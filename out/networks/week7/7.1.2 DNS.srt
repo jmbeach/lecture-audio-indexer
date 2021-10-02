@@ -1,0 +1,704 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:00.600 align:middle line:90%
+
+
+00:00:00.600 --> 00:00:05.130 align:middle line:84%
+So now that we've introduced the
+reason for why we have the DNS
+
+00:00:05.130 --> 00:00:07.860 align:middle line:84%
+system, let's talk a little
+bit about how it works
+
+00:00:07.860 --> 00:00:11.340 align:middle line:84%
+and how we can work through
+this mechanism of mapping
+
+00:00:11.340 --> 00:00:14.640 align:middle line:90%
+mnemonic names to IP addresses.
+
+00:00:14.640 --> 00:00:17.880 align:middle line:84%
+So just a few properties
+of DNS to start
+
+00:00:17.880 --> 00:00:22.150 align:middle line:84%
+with-- so it is a hierarchical
+namespace divided into zones,
+
+00:00:22.150 --> 00:00:24.420 align:middle line:84%
+then these zones are
+distributed over a collection
+
+00:00:24.420 --> 00:00:25.497 align:middle line:90%
+of DNS servers.
+
+00:00:25.497 --> 00:00:27.330 align:middle line:84%
+And we'll show some
+examples of this shortly
+
+00:00:27.330 --> 00:00:30.460 align:middle line:84%
+to clarify what those
+zones would mean.
+
+00:00:30.460 --> 00:00:33.390 align:middle line:84%
+There's, then, a
+hierarchy of DNS servers.
+
+00:00:33.390 --> 00:00:35.970 align:middle line:84%
+There are some root
+DNS servers that
+
+00:00:35.970 --> 00:00:39.500 align:middle line:84%
+are hard wired so that other
+servers can connect to them.
+
+00:00:39.500 --> 00:00:42.870 align:middle line:84%
+They're also top-level
+domain, or TLD servers.
+
+00:00:42.870 --> 00:00:47.500 align:middle line:84%
+And then, finally, they're
+also authoritative DNS servers.
+
+00:00:47.500 --> 00:00:50.550 align:middle line:84%
+So where does the
+translation get performed?
+
+00:00:50.550 --> 00:00:53.610 align:middle line:84%
+So there can also
+be local DNS servers
+
+00:00:53.610 --> 00:00:56.580 align:middle line:84%
+and, with resolver software
+that would perform that,
+
+00:00:56.580 --> 00:01:00.970 align:middle line:84%
+look up to map a name
+into an IP address.
+
+00:01:00.970 --> 00:01:04.170 align:middle line:84%
+So let's look a little bit
+of how DNS would be organized
+
+00:01:04.170 --> 00:01:06.090 align:middle line:90%
+and what it would look like.
+
+00:01:06.090 --> 00:01:09.405 align:middle line:84%
+Roughly it would look like
+this for some example domains.
+
+00:01:09.405 --> 00:01:12.100 align:middle line:90%
+
+
+00:01:12.100 --> 00:01:14.700 align:middle line:84%
+So we would have a
+root server, then
+
+00:01:14.700 --> 00:01:17.590 align:middle line:84%
+we would have top-level
+domain servers.
+
+00:01:17.590 --> 00:01:22.000 align:middle line:84%
+The inside correspond
+to like com, edu, .org.
+
+00:01:22.000 --> 00:01:24.420 align:middle line:84%
+There could be-- those
+are generic domains.
+
+00:01:24.420 --> 00:01:27.390 align:middle line:84%
+There are many other domains,
+such as country domains.
+
+00:01:27.390 --> 00:01:31.740 align:middle line:84%
+There may be other special
+purpose domains, like arpa.
+
+00:01:31.740 --> 00:01:35.490 align:middle line:84%
+So then within these,
+if we wanted to refer
+
+00:01:35.490 --> 00:01:36.990 align:middle line:90%
+to a particular website--
+
+00:01:36.990 --> 00:01:42.930 align:middle line:84%
+let's say, bar.edu-- it would
+then be organized below this.
+
+00:01:42.930 --> 00:01:46.710 align:middle line:84%
+Then if we had further
+subdomains or further prefixes
+
+00:01:46.710 --> 00:01:50.130 align:middle line:84%
+in front of that, maybe we have
+one of these servers located
+
+00:01:50.130 --> 00:01:52.830 align:middle line:84%
+on the West Coast,
+another on the East Coast,
+
+00:01:52.830 --> 00:01:56.160 align:middle line:84%
+and then within these we
+could have some further break
+
+00:01:56.160 --> 00:01:57.610 align:middle line:90%
+down into this hierarchy.
+
+00:01:57.610 --> 00:02:04.780 align:middle line:84%
+So for example, to figure out
+this name, the my.east.bar.edu,
+
+00:02:04.780 --> 00:02:08.130 align:middle line:84%
+so we would read
+this from bottom
+
+00:02:08.130 --> 00:02:12.510 align:middle line:84%
+to top following this
+street and similarly
+
+00:02:12.510 --> 00:02:13.960 align:middle line:90%
+for the other example.
+
+00:02:13.960 --> 00:02:18.870 align:middle line:84%
+So terminology wise, the com,
+edu, org, et cetera servers,
+
+00:02:18.870 --> 00:02:24.690 align:middle line:84%
+these are called the top-level
+domain servers, or TLDs.
+
+00:02:24.690 --> 00:02:26.520 align:middle line:84%
+And those domain
+names, when they
+
+00:02:26.520 --> 00:02:29.910 align:middle line:84%
+are designated as
+that top-level entry,
+
+00:02:29.910 --> 00:02:32.850 align:middle line:84%
+it would be the
+top-level domain name.
+
+00:02:32.850 --> 00:02:36.000 align:middle line:90%
+So where is the DNS root server?
+
+00:02:36.000 --> 00:02:38.820 align:middle line:90%
+So one is located in Virginia.
+
+00:02:38.820 --> 00:02:41.730 align:middle line:90%
+But how do we make it scale?
+
+00:02:41.730 --> 00:02:43.960 align:middle line:90%
+So there really is not just one.
+
+00:02:43.960 --> 00:02:46.200 align:middle line:90%
+There are 13, roughly.
+
+00:02:46.200 --> 00:02:48.060 align:middle line:84%
+The number of these
+can vary slightly,
+
+00:02:48.060 --> 00:02:53.900 align:middle line:84%
+but you can refer to the root
+server .org website to see
+
+00:02:53.900 --> 00:02:55.410 align:middle line:90%
+where they're all located.
+
+00:02:55.410 --> 00:02:58.290 align:middle line:84%
+They're typically
+labeled A through M.
+
+00:02:58.290 --> 00:03:00.690 align:middle line:84%
+And this will help scale
+better if we geographically
+
+00:03:00.690 --> 00:03:02.650 align:middle line:90%
+distribute all these servers.
+
+00:03:02.650 --> 00:03:05.430 align:middle line:84%
+So for example,
+on the East Coast,
+
+00:03:05.430 --> 00:03:09.990 align:middle line:84%
+there would be several from
+organizations like Verisign.
+
+00:03:09.990 --> 00:03:11.640 align:middle line:90%
+One is run by NASA.
+
+00:03:11.640 --> 00:03:15.840 align:middle line:84%
+Then in other countries,
+there would be other DNS root
+
+00:03:15.840 --> 00:03:17.080 align:middle line:90%
+servers.
+
+00:03:17.080 --> 00:03:19.780 align:middle line:84%
+So this would help us
+scale a bit better.
+
+00:03:19.780 --> 00:03:23.190 align:middle line:84%
+However, now we need to
+perform replication so
+
+00:03:23.190 --> 00:03:26.590 align:middle line:84%
+that all of these servers will
+contain the same information,
+
+00:03:26.590 --> 00:03:28.830 align:middle line:84%
+so that if we look
+up an IP address,
+
+00:03:28.830 --> 00:03:31.470 align:middle line:84%
+or rather we look up a domain
+name to figure out what the IP
+
+00:03:31.470 --> 00:03:34.482 align:middle line:84%
+address is, no matter which
+one of these root servers
+
+00:03:34.482 --> 00:03:35.940 align:middle line:84%
+we would query, we
+need to get back
+
+00:03:35.940 --> 00:03:43.620 align:middle line:84%
+the same IP address that would
+correspond to that domain name.
+
+00:03:43.620 --> 00:03:46.390 align:middle line:84%
+So the TLD, or top-level
+domain servers,
+
+00:03:46.390 --> 00:03:48.570 align:middle line:84%
+again, these would host
+the generic domains,
+
+00:03:48.570 --> 00:03:51.980 align:middle line:84%
+country-specific domains, other
+special domains, like ARA.
+
+00:03:51.980 --> 00:03:55.470 align:middle line:84%
+These would typically be managed
+professionally by companies.
+
+00:03:55.470 --> 00:03:59.790 align:middle line:84%
+For example, network solutions
+maintain servers for com.
+
+00:03:59.790 --> 00:04:03.870 align:middle line:84%
+Educause maintain
+servers for edu.
+
+00:04:03.870 --> 00:04:06.510 align:middle line:84%
+The last type of DNS server
+that we haven't discussed yet
+
+00:04:06.510 --> 00:04:08.280 align:middle line:90%
+are authoritative DNS servers.
+
+00:04:08.280 --> 00:04:10.470 align:middle line:84%
+These would provide
+public records
+
+00:04:10.470 --> 00:04:12.930 align:middle line:84%
+for hosts at a
+particular organization.
+
+00:04:12.930 --> 00:04:16.029 align:middle line:84%
+These typically could
+be private records.
+
+00:04:16.029 --> 00:04:17.700 align:middle line:84%
+So if you want to
+refer to a printer
+
+00:04:17.700 --> 00:04:22.440 align:middle line:84%
+by a name and not part of sort
+of the original designer's
+
+00:04:22.440 --> 00:04:25.290 align:middle line:84%
+intent-- so we may not
+publish all of these around.
+
+00:04:25.290 --> 00:04:28.170 align:middle line:84%
+So this would be things
+for organization servers
+
+00:04:28.170 --> 00:04:29.410 align:middle line:90%
+or other local things.
+
+00:04:29.410 --> 00:04:32.070 align:middle line:84%
+So these could be
+maintained locally
+
+00:04:32.070 --> 00:04:35.250 align:middle line:90%
+or by a service provider.
+
+00:04:35.250 --> 00:04:37.240 align:middle line:90%
+So how does DNS work?
+
+00:04:37.240 --> 00:04:40.940 align:middle line:84%
+So you typically have
+a local DNS server
+
+00:04:40.940 --> 00:04:43.980 align:middle line:84%
+located near end host so
+that it would connect to it.
+
+00:04:43.980 --> 00:04:46.100 align:middle line:84%
+Then the local host
+would be configured
+
+00:04:46.100 --> 00:04:49.700 align:middle line:84%
+with that local server
+or would learn the server
+
+00:04:49.700 --> 00:04:51.860 align:middle line:84%
+through a mechanism
+like DHCP, which we're
+
+00:04:51.860 --> 00:04:53.580 align:middle line:90%
+going to talk about later.
+
+00:04:53.580 --> 00:04:56.150 align:middle line:84%
+So we'd know where
+the server is located
+
+00:04:56.150 --> 00:05:00.040 align:middle line:84%
+and what its IP address
+is so we could talk to it.
+
+00:05:00.040 --> 00:05:04.010 align:middle line:84%
+The client application, then,
+would extract the server name
+
+00:05:04.010 --> 00:05:07.010 align:middle line:84%
+from a URL and do
+a get host named
+
+00:05:07.010 --> 00:05:11.900 align:middle line:84%
+to trigger the resolution
+of a domain name.
+
+00:05:11.900 --> 00:05:16.430 align:middle line:84%
+Then a server application would
+pull out the client IP address
+
+00:05:16.430 --> 00:05:18.530 align:middle line:84%
+from a socket or
+from packets that
+
+00:05:18.530 --> 00:05:22.040 align:middle line:84%
+are incoming and could
+translate that back into a name
+
+00:05:22.040 --> 00:05:23.220 align:middle line:90%
+if necessary.
+
+00:05:23.220 --> 00:05:25.170 align:middle line:84%
+So let's just see
+a little example.
+
+00:05:25.170 --> 00:05:29.810 align:middle line:84%
+So let's suppose a
+host cis.poly.edu wants
+
+00:05:29.810 --> 00:05:33.800 align:middle line:84%
+to get the IP address
+for gaia.cs.umass.edu.
+
+00:05:33.800 --> 00:05:37.790 align:middle line:84%
+So this is the
+requesting one, and this
+
+00:05:37.790 --> 00:05:42.330 align:middle line:84%
+is the host we want to figure
+out the IP address for.
+
+00:05:42.330 --> 00:05:45.980 align:middle line:84%
+So the requesting host would
+query the local DNS server--
+
+00:05:45.980 --> 00:05:48.980 align:middle line:90%
+so, say, at dns.poly.edu.
+
+00:05:48.980 --> 00:05:51.320 align:middle line:84%
+That could query
+the root DNS server
+
+00:05:51.320 --> 00:05:55.130 align:middle line:90%
+to say, where is this located?
+
+00:05:55.130 --> 00:06:01.510 align:middle line:84%
+After responding back with what
+top-level domain name server
+
+00:06:01.510 --> 00:06:05.390 align:middle line:84%
+to look the edu
+information up at,
+
+00:06:05.390 --> 00:06:09.650 align:middle line:84%
+we could get a response
+back from that.
+
+00:06:09.650 --> 00:06:16.190 align:middle line:84%
+Then after we figured out what
+the authoritative DNS server is
+
+00:06:16.190 --> 00:06:19.790 align:middle line:84%
+for this particular host that
+we're trying to figure out
+
+00:06:19.790 --> 00:06:24.800 align:middle line:84%
+the IP address of, we would
+query this authoritative DNS
+
+00:06:24.800 --> 00:06:27.090 align:middle line:90%
+server at that organization.
+
+00:06:27.090 --> 00:06:30.480 align:middle line:84%
+It would then respond back
+to the local DNS server
+
+00:06:30.480 --> 00:06:32.390 align:middle line:84%
+and then, finally,
+send the information
+
+00:06:32.390 --> 00:06:35.760 align:middle line:90%
+to the original requesting host.
+
+00:06:35.760 --> 00:06:37.260 align:middle line:84%
+So that's roughly
+how it would work.
+
+00:06:37.260 --> 00:06:40.620 align:middle line:84%
+So how did we know the
+root server IP address?
+
+00:06:40.620 --> 00:06:43.040 align:middle line:84%
+Well, that's
+hardcoded, essentially.
+
+00:06:43.040 --> 00:06:45.500 align:middle line:84%
+So there can be some
+issues with that.
+
+00:06:45.500 --> 00:06:49.490 align:middle line:84%
+If it does change, if the IP
+addresses of the root servers
+
+00:06:49.490 --> 00:06:53.340 align:middle line:84%
+change, there will typically
+be some major announcements
+
+00:06:53.340 --> 00:06:53.840 align:middle line:90%
+like that.
+
+00:06:53.840 --> 00:06:56.330 align:middle line:84%
+So remember, they're
+labeled A through M.
+
+00:06:56.330 --> 00:06:59.030 align:middle line:84%
+So if the D-root
+changed its IP address,
+
+00:06:59.030 --> 00:07:01.550 align:middle line:84%
+there'd be
+announcements about this
+
+00:07:01.550 --> 00:07:03.260 align:middle line:84%
+so that the correct
+information could
+
+00:07:03.260 --> 00:07:06.980 align:middle line:84%
+get hard coded appropriately
+so that these lookups would
+
+00:07:06.980 --> 00:07:08.375 align:middle line:90%
+proceed and work properly.
+
+00:07:08.375 --> 00:07:11.140 align:middle line:90%
+
+
+00:07:11.140 --> 00:07:13.350 align:middle line:84%
+There are a couple
+different kinds of queries.
+
+00:07:13.350 --> 00:07:15.420 align:middle line:84%
+What we saw an example
+of, essentially,
+
+00:07:15.420 --> 00:07:17.490 align:middle line:90%
+was sort of a recursive query.
+
+00:07:17.490 --> 00:07:20.890 align:middle line:84%
+So we'd ask the server to
+figure out the answer for it.
+
+00:07:20.890 --> 00:07:24.480 align:middle line:84%
+So this would look like that
+request one and response eight.
+
+00:07:24.480 --> 00:07:28.560 align:middle line:84%
+So I'd say, the host would
+say to its local DNS server,
+
+00:07:28.560 --> 00:07:31.800 align:middle line:84%
+find me this IP
+address for this host.
+
+00:07:31.800 --> 00:07:33.960 align:middle line:84%
+An alternative mechanism
+for how that could work
+
+00:07:33.960 --> 00:07:37.440 align:middle line:84%
+is through an
+iterative query where
+
+00:07:37.440 --> 00:07:42.150 align:middle line:84%
+you could ask the local DNS
+server who the next server is
+
+00:07:42.150 --> 00:07:49.620 align:middle line:84%
+to ask so that all of these
+other requests response pairs
+
+00:07:49.620 --> 00:07:51.460 align:middle line:90%
+essentially would be iterative.
+
+00:07:51.460 --> 00:07:54.480 align:middle line:84%
+So this local DNS server
+had asked the root DNS
+
+00:07:54.480 --> 00:07:56.160 align:middle line:90%
+server, who do I ask?
+
+00:07:56.160 --> 00:07:59.220 align:middle line:84%
+And then the TLD
+servers would ask next,
+
+00:07:59.220 --> 00:08:01.290 align:middle line:84%
+and then it asks the
+authoritative DNS server,
+
+00:08:01.290 --> 00:08:04.960 align:middle line:84%
+and then got back
+with this response.
+
+00:08:04.960 --> 00:08:08.250 align:middle line:84%
+So sometimes we also need to go
+the other direction from an IP
+
+00:08:08.250 --> 00:08:11.010 align:middle line:84%
+address to a
+corresponding hostname.
+
+00:08:11.010 --> 00:08:13.650 align:middle line:84%
+So the addresses already
+have a natural hierarchy
+
+00:08:13.650 --> 00:08:15.300 align:middle line:84%
+that's a little
+bit similar looking
+
+00:08:15.300 --> 00:08:19.500 align:middle line:84%
+to the dots between
+domain name portions.
+
+00:08:19.500 --> 00:08:23.130 align:middle line:84%
+But this quad notation has
+the most significant hierarchy
+
+00:08:23.130 --> 00:08:25.110 align:middle line:90%
+element on the left, i.e.
+
+00:08:25.110 --> 00:08:29.070 align:middle line:84%
+the 12 appearing here, while
+cnn.com has it on the right,
+
+00:08:29.070 --> 00:08:31.980 align:middle line:84%
+and that would be the
+com top-level domain.
+
+00:08:31.980 --> 00:08:34.860 align:middle line:84%
+So an idea would be
+to reverse the quads
+
+00:08:34.860 --> 00:08:37.440 align:middle line:84%
+and then start to
+look up in DNS.
+
+00:08:37.440 --> 00:08:39.850 align:middle line:84%
+So we'll go over a little
+bit of how that would work.
+
+00:08:39.850 --> 00:08:42.990 align:middle line:84%
+But basically the way this
+would work under a particular
+
+00:08:42.990 --> 00:08:47.040 align:middle line:84%
+top-level domain, it would look
+something like this where you
+
+00:08:47.040 --> 00:08:49.350 align:middle line:90%
+can see we've flipped--
+
+00:08:49.350 --> 00:08:53.640 align:middle line:84%
+we've just reversed this string
+corresponding to the IP address
+
+00:08:53.640 --> 00:08:59.760 align:middle line:84%
+and then prefixed it
+on this convention,
+
+00:08:59.760 --> 00:09:04.110 align:middle line:84%
+say, for something that's inside
+of the arpa top-level domain.
+
+00:09:04.110 --> 00:09:06.990 align:middle line:90%
+
+
+00:09:06.990 --> 00:09:09.630 align:middle line:84%
+And pictorially, that
+reverse type of lookup
+
+00:09:09.630 --> 00:09:16.200 align:middle line:84%
+would be something
+like this where,
+
+00:09:16.200 --> 00:09:18.720 align:middle line:84%
+if we were to read
+now from the bottom,
+
+00:09:18.720 --> 00:09:21.540 align:middle line:84%
+we would see that encoding of
+the zero is not shown here,
+
+00:09:21.540 --> 00:09:24.580 align:middle line:84%
+but the 56, then
+the 34, then the 12,
+
+00:09:24.580 --> 00:09:28.590 align:middle line:84%
+then the in-address, then
+arpa at the top-level domain.
+
+00:09:28.590 --> 00:09:32.670 align:middle line:84%
+So that will summarize a bit
+about the high-level overview
+
+00:09:32.670 --> 00:09:35.550 align:middle line:84%
+of how DNS works, and then next
+we're going to talk about a few
+
+00:09:35.550 --> 00:09:41.310 align:middle line:84%
+more details in terms of how
+the DNS system overall operates
+
+00:09:41.310 --> 00:09:45.180 align:middle line:84%
+and some performance mechanisms
+as well as some challenges that
+
+00:09:45.180 --> 00:09:46.730 align:middle line:90%
+arise.

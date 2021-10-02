@@ -1,0 +1,815 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:00.500 align:middle line:90%
+
+
+00:00:00.500 --> 00:00:02.130 align:middle line:84%
+So in our discussion
+of DNS, we're
+
+00:00:02.130 --> 00:00:05.280 align:middle line:84%
+next going to cover some of
+the challenges and issues that
+
+00:00:05.280 --> 00:00:10.140 align:middle line:84%
+can arise in making the
+Domain Name System work.
+
+00:00:10.140 --> 00:00:13.620 align:middle line:84%
+The first challenge
+is just reliability.
+
+00:00:13.620 --> 00:00:17.070 align:middle line:84%
+We've mentioned that the
+DNS servers are replicated.
+
+00:00:17.070 --> 00:00:22.590 align:middle line:84%
+And the reason for this is
+that if we query one of these,
+
+00:00:22.590 --> 00:00:25.020 align:middle line:84%
+the name service should be
+available if at least one
+
+00:00:25.020 --> 00:00:27.030 align:middle line:90%
+of the replicas is up.
+
+00:00:27.030 --> 00:00:30.480 align:middle line:84%
+The other reason for this
+would be for performance
+
+00:00:30.480 --> 00:00:32.250 align:middle line:84%
+so that queries could
+get load balance
+
+00:00:32.250 --> 00:00:35.490 align:middle line:90%
+between different replicas.
+
+00:00:35.490 --> 00:00:38.790 align:middle line:84%
+So frequently, UDP is used
+for performing these queries.
+
+00:00:38.790 --> 00:00:42.010 align:middle line:90%
+
+
+00:00:42.010 --> 00:00:45.630 align:middle line:84%
+However, we'll get into
+how UDP works in more
+
+00:00:45.630 --> 00:00:47.290 align:middle line:90%
+depth in some future lectures.
+
+00:00:47.290 --> 00:00:51.010 align:middle line:90%
+But UDP is not reliable.
+
+00:00:51.010 --> 00:00:53.910 align:middle line:84%
+So we would need to provide
+some reliability mechanisms
+
+00:00:53.910 --> 00:00:57.470 align:middle line:84%
+on top of UDP if we're
+going to use that.
+
+00:00:57.470 --> 00:01:01.530 align:middle line:84%
+The DNS specification
+could support TCP, as well,
+
+00:01:01.530 --> 00:01:05.550 align:middle line:90%
+but it's not always implemented.
+
+00:01:05.550 --> 00:01:07.830 align:middle line:84%
+Other reliability
+concerns would be
+
+00:01:07.830 --> 00:01:11.310 align:middle line:84%
+to try alternate servers
+if there's a timeout.
+
+00:01:11.310 --> 00:01:13.000 align:middle line:84%
+So a common mechanism
+to do that is
+
+00:01:13.000 --> 00:01:15.630 align:middle line:84%
+what's called exponential
+backoff if you're
+
+00:01:15.630 --> 00:01:17.200 align:middle line:90%
+retrying the same server.
+
+00:01:17.200 --> 00:01:19.290 align:middle line:84%
+So you'd basically wait
+exponentially increasing
+
+00:01:19.290 --> 00:01:23.010 align:middle line:84%
+amounts of time to try to
+retry the same server and maybe
+
+00:01:23.010 --> 00:01:25.770 align:middle line:84%
+query alternatives if
+a timeout's occurred.
+
+00:01:25.770 --> 00:01:29.290 align:middle line:90%
+
+
+00:01:29.290 --> 00:01:31.680 align:middle line:84%
+The other issue
+that could arise is
+
+00:01:31.680 --> 00:01:34.110 align:middle line:84%
+if we have the same identifier
+for all the queries.
+
+00:01:34.110 --> 00:01:36.255 align:middle line:84%
+We don't really care which
+server would respond.
+
+00:01:36.255 --> 00:01:39.350 align:middle line:90%
+
+
+00:01:39.350 --> 00:01:42.940 align:middle line:84%
+So how can we insert
+resource records into DNS?
+
+00:01:42.940 --> 00:01:44.300 align:middle line:90%
+How do we add things?
+
+00:01:44.300 --> 00:01:47.753 align:middle line:84%
+So let's say we created
+a startup called FooBar--
+
+00:01:47.753 --> 00:01:50.170 align:middle line:84%
+just called FooBar, and we
+want to register a domain name,
+
+00:01:50.170 --> 00:01:52.690 align:middle line:90%
+like foobar.com or something.
+
+00:01:52.690 --> 00:01:55.930 align:middle line:84%
+We'd get a block of
+address space from an ISP.
+
+00:01:55.930 --> 00:01:59.560 align:middle line:84%
+So we'd be able to set
+up, say, a web server.
+
+00:01:59.560 --> 00:02:03.400 align:middle line:84%
+Then we'd need to register that
+domain name with a domain name
+
+00:02:03.400 --> 00:02:04.180 align:middle line:90%
+registrar.
+
+00:02:04.180 --> 00:02:07.000 align:middle line:84%
+So Network Solutions
+is one example.
+
+00:02:07.000 --> 00:02:11.560 align:middle line:84%
+We'd provide the registrar
+with the names and IP
+
+00:02:11.560 --> 00:02:14.830 align:middle line:84%
+addresses of the
+authoritative name
+
+00:02:14.830 --> 00:02:18.550 align:middle line:84%
+server within the
+organization, then
+
+00:02:18.550 --> 00:02:22.030 align:middle line:84%
+the registrar would insert
+these resource record pairs
+
+00:02:22.030 --> 00:02:26.170 align:middle line:84%
+into the com top-level
+domain name server.
+
+00:02:26.170 --> 00:02:28.570 align:middle line:84%
+So this is why the process
+of registering a domain name
+
+00:02:28.570 --> 00:02:30.190 align:middle line:90%
+takes a little bit of time.
+
+00:02:30.190 --> 00:02:32.540 align:middle line:90%
+These updates need to occur.
+
+00:02:32.540 --> 00:02:35.230 align:middle line:84%
+So for example, though,
+what this would look like--
+
+00:02:35.230 --> 00:02:41.491 align:middle line:84%
+say, foobar.com would be an
+alias for dns1.foobar.com,
+
+00:02:41.491 --> 00:02:44.380 align:middle line:84%
+and then the
+dns1.foobar.com would
+
+00:02:44.380 --> 00:02:49.120 align:middle line:84%
+correspond to a particular A
+name record or this IP address.
+
+00:02:49.120 --> 00:02:51.460 align:middle line:84%
+OK, so that's what
+we get inserted in
+
+00:02:51.460 --> 00:02:53.950 align:middle line:84%
+so that now when the com
+top-level domain name
+
+00:02:53.950 --> 00:02:56.965 align:middle line:84%
+server gets a query
+for foobar.com,
+
+00:02:56.965 --> 00:02:58.820 align:middle line:90%
+it knows how to respond to it.
+
+00:02:58.820 --> 00:03:01.030 align:middle line:90%
+So give it back that IP address.
+
+00:03:01.030 --> 00:03:03.040 align:middle line:84%
+Then in your
+authoritative server,
+
+00:03:03.040 --> 00:03:11.050 align:middle line:84%
+you'd put in a couple records
+for where the web server would
+
+00:03:11.050 --> 00:03:13.300 align:middle line:84%
+be, maybe a mail record
+for what the mail
+
+00:03:13.300 --> 00:03:15.880 align:middle line:84%
+server is if you're going to
+support mail on your own domain
+
+00:03:15.880 --> 00:03:16.900 align:middle line:90%
+name.
+
+00:03:16.900 --> 00:03:20.350 align:middle line:84%
+So this would go
+into that host file
+
+00:03:20.350 --> 00:03:22.450 align:middle line:90%
+on your authoritative server--
+
+00:03:22.450 --> 00:03:27.280 align:middle line:84%
+so in this foobar.com
+DNS1 server.
+
+00:03:27.280 --> 00:03:29.680 align:middle line:84%
+So there are a couple more
+pieces to actually get
+
+00:03:29.680 --> 00:03:31.750 align:middle line:90%
+that set up to occur.
+
+00:03:31.750 --> 00:03:34.510 align:middle line:84%
+You'd need to provide the
+reverse pointer bindings so
+
+00:03:34.510 --> 00:03:39.460 align:middle line:84%
+that we could map from the
+IP address to the domain name
+
+00:03:39.460 --> 00:03:41.630 align:middle line:90%
+to go the opposite direction.
+
+00:03:41.630 --> 00:03:46.600 align:middle line:84%
+So then normally we'd do
+that reversing process.
+
+00:03:46.600 --> 00:03:49.480 align:middle line:84%
+So a problem in
+doing this is you
+
+00:03:49.480 --> 00:03:54.940 align:middle line:84%
+don't run that
+domain name server.
+
+00:03:54.940 --> 00:03:59.170 align:middle line:84%
+So this just have to do with
+you using a different block.
+
+00:03:59.170 --> 00:04:02.740 align:middle line:84%
+So in practice how that's
+done for the reverse
+
+00:04:02.740 --> 00:04:06.970 align:middle line:84%
+lookups is the ISP
+would run this for you.
+
+00:04:06.970 --> 00:04:10.090 align:middle line:84%
+But it's now more of a headache
+to keep this information up
+
+00:04:10.090 --> 00:04:12.880 align:middle line:84%
+to date, and this is why the
+reverse lookups don't always
+
+00:04:12.880 --> 00:04:15.320 align:middle line:90%
+work properly.
+
+00:04:15.320 --> 00:04:19.490 align:middle line:84%
+So some other challenge that
+would arise are just security.
+
+00:04:19.490 --> 00:04:23.560 align:middle line:84%
+So what security issues could
+come up in domain names?
+
+00:04:23.560 --> 00:04:26.810 align:middle line:84%
+Well, we have a lot of
+degrees of freedom here.
+
+00:04:26.810 --> 00:04:29.900 align:middle line:84%
+So let's go through a
+couple of possible examples.
+
+00:04:29.900 --> 00:04:33.730 align:middle line:84%
+So one initial
+problem is as you're
+
+00:04:33.730 --> 00:04:36.550 align:middle line:84%
+sitting, say, in Starbucks
+and browsing the web,
+
+00:04:36.550 --> 00:04:39.820 align:middle line:84%
+how does your laptop
+find google.com?
+
+00:04:39.820 --> 00:04:43.030 align:middle line:84%
+Well, it's going to ask
+the local domain name
+
+00:04:43.030 --> 00:04:48.490 align:middle line:84%
+server that would be
+assigned probably with DHCP.
+
+00:04:48.490 --> 00:04:51.520 align:middle line:84%
+But that server is going to
+be run by Starbucks, probably
+
+00:04:51.520 --> 00:04:53.740 align:middle line:84%
+a contractor in
+reality, and they could
+
+00:04:53.740 --> 00:04:55.430 align:middle line:90%
+return anything they want.
+
+00:04:55.430 --> 00:04:59.620 align:middle line:84%
+So this is a wide opening for
+a man-in-the-middle attack that
+
+00:04:59.620 --> 00:05:04.588 align:middle line:84%
+would forward your query
+to Google, get the reply,
+
+00:05:04.588 --> 00:05:06.880 align:middle line:84%
+but then they could change
+anything they want in either
+
+00:05:06.880 --> 00:05:07.760 align:middle line:90%
+direction.
+
+00:05:07.760 --> 00:05:11.500 align:middle line:84%
+So if it wasn't google.com
+and it was your bank instead,
+
+00:05:11.500 --> 00:05:13.790 align:middle line:90%
+this could be a big problem.
+
+00:05:13.790 --> 00:05:16.540 align:middle line:84%
+So how do you know you're going
+to get the correct data when
+
+00:05:16.540 --> 00:05:18.700 align:middle line:90%
+you do one of these queries?
+
+00:05:18.700 --> 00:05:20.620 align:middle line:90%
+You can't really.
+
+00:05:20.620 --> 00:05:23.290 align:middle line:84%
+If you're using HTTPS,
+that would help,
+
+00:05:23.290 --> 00:05:28.360 align:middle line:84%
+but the contractor or whoever is
+running that local domain name
+
+00:05:28.360 --> 00:05:31.910 align:middle line:84%
+server could still lie and
+send you somewhere else.
+
+00:05:31.910 --> 00:05:36.010 align:middle line:84%
+But there are some security
+extensions, this DNSSEC
+
+00:05:36.010 --> 00:05:39.040 align:middle line:84%
+protocol, that hopefully
+would fix some of this.
+
+00:05:39.040 --> 00:05:44.310 align:middle line:84%
+But this still isn't
+completely widely deployed.
+
+00:05:44.310 --> 00:05:45.910 align:middle line:84%
+A similar type of
+security problem
+
+00:05:45.910 --> 00:05:47.770 align:middle line:90%
+is called cache poisoning.
+
+00:05:47.770 --> 00:05:50.800 align:middle line:84%
+Within this, if
+there's a bad guy that
+
+00:05:50.800 --> 00:05:54.580 align:middle line:84%
+controls a name server for,
+say, foobar.com, if you receive
+
+00:05:54.580 --> 00:05:58.260 align:middle line:84%
+a request to resolve
+www.foobar.com,
+
+00:05:58.260 --> 00:06:02.320 align:middle line:84%
+you could reply back with
+some additional information
+
+00:06:02.320 --> 00:06:05.320 align:middle line:84%
+and lie to the user
+and instead direct
+
+00:06:05.320 --> 00:06:10.930 align:middle line:84%
+anything that's intended
+for google.com to, say,
+
+00:06:10.930 --> 00:06:13.810 align:middle line:84%
+a particular server
+that they control.
+
+00:06:13.810 --> 00:06:15.770 align:middle line:90%
+So one of the issues here--
+
+00:06:15.770 --> 00:06:19.390 align:middle line:84%
+so this would be that computer
+run by the bad guy and not
+
+00:06:19.390 --> 00:06:23.080 align:middle line:90%
+the actual google.com server.
+
+00:06:23.080 --> 00:06:24.760 align:middle line:84%
+An issue that can
+arise with this
+
+00:06:24.760 --> 00:06:27.130 align:middle line:84%
+and why this can be
+difficult to detect
+
+00:06:27.130 --> 00:06:29.170 align:middle line:84%
+is that the evidence
+of this attack
+
+00:06:29.170 --> 00:06:32.740 align:middle line:84%
+can disappear very quickly
+based on that time-to-live field
+
+00:06:32.740 --> 00:06:35.150 align:middle line:84%
+length-- so say a
+few seconds later.
+
+00:06:35.150 --> 00:06:37.630 align:middle line:84%
+So again, if it's
+banking information,
+
+00:06:37.630 --> 00:06:39.350 align:middle line:84%
+let's say-- again,
+not google.com,
+
+00:06:39.350 --> 00:06:43.440 align:middle line:84%
+but your bank-- you could
+route someone's traffic
+
+00:06:43.440 --> 00:06:48.190 align:middle line:84%
+intended for their bank to
+a server that they control.
+
+00:06:48.190 --> 00:06:51.660 align:middle line:84%
+So how would you get them to
+look up a particular website
+
+00:06:51.660 --> 00:06:52.870 align:middle line:90%
+in the first place?
+
+00:06:52.870 --> 00:06:55.520 align:middle line:84%
+So any domain name
+server could do that.
+
+00:06:55.520 --> 00:06:58.590 align:middle line:84%
+Any of them could lie
+with those sections,
+
+00:06:58.590 --> 00:07:01.740 align:middle line:84%
+with the sort of faked
+records to send traffic
+
+00:07:01.740 --> 00:07:04.742 align:middle line:90%
+to unintended destinations.
+
+00:07:04.742 --> 00:07:06.450 align:middle line:84%
+Well, there are some
+things you could do.
+
+00:07:06.450 --> 00:07:10.560 align:middle line:84%
+You could send requests
+to their mail server.
+
+00:07:10.560 --> 00:07:13.440 align:middle line:84%
+Then their mail server
+would look up this address.
+
+00:07:13.440 --> 00:07:15.760 align:middle line:84%
+So that's one way you could
+trick their name server
+
+00:07:15.760 --> 00:07:20.460 align:middle line:84%
+into requesting this invalid
+domain name lookup that
+
+00:07:20.460 --> 00:07:23.010 align:middle line:90%
+would then poison the cache.
+
+00:07:23.010 --> 00:07:26.100 align:middle line:84%
+You could send them an
+email with a link in there
+
+00:07:26.100 --> 00:07:27.330 align:middle line:90%
+to a particular URL.
+
+00:07:27.330 --> 00:07:29.760 align:middle line:84%
+If they clicked on it,
+now you could have perhaps
+
+00:07:29.760 --> 00:07:31.110 align:middle line:90%
+poisoned the cache as well.
+
+00:07:31.110 --> 00:07:34.170 align:middle line:90%
+
+
+00:07:34.170 --> 00:07:37.890 align:middle line:84%
+With a single
+compromised name server,
+
+00:07:37.890 --> 00:07:40.200 align:middle line:84%
+we could also lie
+about pointer records,
+
+00:07:40.200 --> 00:07:42.850 align:middle line:90%
+these reverse mappings--
+
+00:07:42.850 --> 00:07:47.070 align:middle line:84%
+so if we are in control
+of managing these.
+
+00:07:47.070 --> 00:07:50.130 align:middle line:84%
+And you'll occasionally see
+this happen where there's
+
+00:07:50.130 --> 00:07:54.030 align:middle line:84%
+a widespread DNS cache
+poisoning attack,
+
+00:07:54.030 --> 00:07:55.830 align:middle line:84%
+and all the traffic
+intended for something
+
+00:07:55.830 --> 00:07:57.370 align:middle line:90%
+gets routed somewhere else.
+
+00:07:57.370 --> 00:08:01.770 align:middle line:84%
+It's not too common, but
+it does happen on occasion.
+
+00:08:01.770 --> 00:08:05.160 align:middle line:84%
+So let's look a little bit
+more at cache poisoning.
+
+00:08:05.160 --> 00:08:07.320 align:middle line:84%
+So suppose the bad
+guy's at Starbucks
+
+00:08:07.320 --> 00:08:11.160 align:middle line:84%
+and they can sniff for maybe
+guess the identification
+
+00:08:11.160 --> 00:08:14.340 align:middle line:84%
+field of the local server
+used in its next request.
+
+00:08:14.340 --> 00:08:17.340 align:middle line:84%
+Remember, the ID
+field within DNS
+
+00:08:17.340 --> 00:08:20.700 align:middle line:84%
+corresponded to what
+request and reply are
+
+00:08:20.700 --> 00:08:22.870 align:middle line:90%
+going to be linked together.
+
+00:08:22.870 --> 00:08:25.680 align:middle line:84%
+So if they ask the local
+server for a recursive lookup
+
+00:08:25.680 --> 00:08:28.800 align:middle line:84%
+of google.com, they
+could then locally
+
+00:08:28.800 --> 00:08:33.059 align:middle line:84%
+spoof the subsequent reply
+from the correct domain name
+
+00:08:33.059 --> 00:08:37.830 align:middle line:84%
+server using that ID field if
+they can figure out what it is.
+
+00:08:37.830 --> 00:08:40.860 align:middle line:84%
+Then, if the bogus reply
+gets there sooner--
+
+00:08:40.860 --> 00:08:44.310 align:middle line:84%
+and it probably would because
+it's on the local network--
+
+00:08:44.310 --> 00:08:47.490 align:middle line:84%
+the local server would
+cache the bogus reply.
+
+00:08:47.490 --> 00:08:50.220 align:middle line:84%
+So now every future
+Starbucks customer
+
+00:08:50.220 --> 00:08:53.430 align:middle line:84%
+would be served that
+bogus answer out
+
+00:08:53.430 --> 00:08:55.440 align:middle line:90%
+of the local server's cache.
+
+00:08:55.440 --> 00:08:57.900 align:middle line:84%
+And if you did this, probably
+you'd put in a large time
+
+00:08:57.900 --> 00:09:01.660 align:middle line:84%
+to live so that it would cause
+this effect for a long time.
+
+00:09:01.660 --> 00:09:05.560 align:middle line:84%
+So whenever anybody browsed
+to a particular website--
+
+00:09:05.560 --> 00:09:08.340 align:middle line:84%
+say, google.com-- instead
+of it really going there,
+
+00:09:08.340 --> 00:09:11.640 align:middle line:84%
+it would be routed to some
+server that's controlled
+
+00:09:11.640 --> 00:09:14.950 align:middle line:90%
+by that person, for example.
+
+00:09:14.950 --> 00:09:17.910 align:middle line:84%
+So let's just summarize what
+we've seen about DNS now.
+
+00:09:17.910 --> 00:09:21.150 align:middle line:84%
+We talked about some of
+the challenges just now.
+
+00:09:21.150 --> 00:09:23.640 align:middle line:84%
+But what is DNS,
+just to remind you?
+
+00:09:23.640 --> 00:09:26.550 align:middle line:84%
+It's a distributed and
+hierarchical database
+
+00:09:26.550 --> 00:09:29.430 align:middle line:84%
+that needs to get replicated
+all over the world.
+
+00:09:29.430 --> 00:09:33.150 align:middle line:84%
+Indirection lets us use
+these human-readable names
+
+00:09:33.150 --> 00:09:35.910 align:middle line:84%
+and also gives us the ability
+to change the underlying IP
+
+00:09:35.910 --> 00:09:37.240 align:middle line:90%
+addresses.
+
+00:09:37.240 --> 00:09:39.810 align:middle line:84%
+It uses caching to
+improve performance,
+
+00:09:39.810 --> 00:09:43.500 align:middle line:84%
+although that can lead
+to some security issues.
+
+00:09:43.500 --> 00:09:45.990 align:middle line:84%
+And then we saw a little bit
+of how the DNS protocol would
+
+00:09:45.990 --> 00:09:49.500 align:middle line:90%
+work using the dig utility.
+
+00:09:49.500 --> 00:09:52.380 align:middle line:84%
+The security issues that we've
+discussed, like cache poisoning
+
+00:09:52.380 --> 00:09:54.900 align:middle line:84%
+and whatnot, arise
+due to not having
+
+00:09:54.900 --> 00:09:56.305 align:middle line:90%
+any form of authentication.
+
+00:09:56.305 --> 00:09:57.930 align:middle line:84%
+So we don't know if
+the reply is coming
+
+00:09:57.930 --> 00:10:00.240 align:middle line:84%
+from the correct or
+a legitimate source.
+
+00:10:00.240 --> 00:10:03.120 align:middle line:84%
+We don't know if the
+truth is being told.
+
+00:10:03.120 --> 00:10:07.680 align:middle line:84%
+There could be malicious
+information inserted.
+
+00:10:07.680 --> 00:10:10.890 align:middle line:84%
+There could be bystanders
+that spoof information
+
+00:10:10.890 --> 00:10:15.610 align:middle line:84%
+if they pick up what the
+DNS message identifiers are.
+
+00:10:15.610 --> 00:10:18.030 align:middle line:84%
+And then playing with
+the various caching
+
+00:10:18.030 --> 00:10:20.640 align:middle line:84%
+time-to-live lifetimes
+adds power to these attacks
+
+00:10:20.640 --> 00:10:22.350 align:middle line:84%
+to either make them
+go on for a long time
+
+00:10:22.350 --> 00:10:24.030 align:middle line:84%
+or to make them
+disappear quickly so you
+
+00:10:24.030 --> 00:10:27.400 align:middle line:90%
+don't know that they occurred.
+
+00:10:27.400 --> 00:10:30.300 align:middle line:84%
+So that pretty much
+summarizes how the domain name
+
+00:10:30.300 --> 00:10:31.230 align:middle line:90%
+system works.
+
+00:10:31.230 --> 00:10:33.150 align:middle line:84%
+And again, the key
+reason we have this
+
+00:10:33.150 --> 00:10:36.900 align:middle line:84%
+is so that we don't have
+to remember IP addresses,
+
+00:10:36.900 --> 00:10:41.490 align:middle line:84%
+and instead we can use
+mnemonic, human-readable names,
+
+00:10:41.490 --> 00:10:44.670 align:middle line:84%
+like google.com
+or vanderbilt.edu,
+
+00:10:44.670 --> 00:10:48.000 align:middle line:84%
+instead of having to
+remember a long number
+
+00:10:48.000 --> 00:10:52.260 align:middle line:84%
+corresponding to those
+organizations' computer systems
+
+00:10:52.260 --> 00:10:54.860 align:middle line:84%
+that we're trying
+to interact with.

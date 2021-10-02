@@ -1,0 +1,358 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:00.570 align:middle line:90%
+
+
+00:00:00.570 --> 00:00:02.490 align:middle line:84%
+So the next topic
+we'll discuss will
+
+00:00:02.490 --> 00:00:06.690 align:middle line:84%
+be how to assign easier
+to remember names
+
+00:00:06.690 --> 00:00:10.530 align:middle line:84%
+so that we do not have to
+remember IP addresses when we
+
+00:00:10.530 --> 00:00:14.640 align:middle line:84%
+want to talk to a particular
+host or node on a network
+
+00:00:14.640 --> 00:00:18.940 align:middle line:84%
+or on the internet
+in particular.
+
+00:00:18.940 --> 00:00:22.920 align:middle line:84%
+So the principle system
+that enables us to do this
+
+00:00:22.920 --> 00:00:26.010 align:middle line:84%
+is called DNS, or the
+Domain Name System.
+
+00:00:26.010 --> 00:00:28.440 align:middle line:84%
+What it allows us to
+do is work with names
+
+00:00:28.440 --> 00:00:31.980 align:middle line:84%
+in place of the
+numerical IP addresses
+
+00:00:31.980 --> 00:00:35.700 align:middle line:84%
+that the actual underlying
+protocols, like the IP
+
+00:00:35.700 --> 00:00:38.100 align:middle line:90%
+protocol, depend upon.
+
+00:00:38.100 --> 00:00:40.760 align:middle line:84%
+It's also set up in
+a hierarchical way
+
+00:00:40.760 --> 00:00:43.890 align:middle line:84%
+for scalability and a
+variety of other reasons
+
+00:00:43.890 --> 00:00:49.530 align:middle line:84%
+so that we can reasonably
+refer to these names and then
+
+00:00:49.530 --> 00:00:53.950 align:middle line:84%
+also what addresses and servers
+would be corresponding to them.
+
+00:00:53.950 --> 00:00:58.140 align:middle line:84%
+It also incorporates caching
+so that we have mappings
+
+00:00:58.140 --> 00:01:03.770 align:middle line:84%
+from names to or
+from IP addresses.
+
+00:01:03.770 --> 00:01:06.690 align:middle line:84%
+And then we'll talk about some
+of the inner workings of DNS
+
+00:01:06.690 --> 00:01:10.600 align:middle line:84%
+as well, such as DNS
+resolvers and servers,
+
+00:01:10.600 --> 00:01:14.130 align:middle line:84%
+how queries in DNS and
+the DNS protocol work.
+
+00:01:14.130 --> 00:01:17.670 align:middle line:84%
+There are iterative
+and recursive versions.
+
+00:01:17.670 --> 00:01:20.040 align:middle line:84%
+We'll talk about
+how caching works
+
+00:01:20.040 --> 00:01:22.350 align:middle line:90%
+and when timeouts would occur.
+
+00:01:22.350 --> 00:01:25.680 align:middle line:84%
+We'll talk a little bit about
+how to do reverse lookups,
+
+00:01:25.680 --> 00:01:28.260 align:middle line:84%
+and we'll show
+some demonstration
+
+00:01:28.260 --> 00:01:30.900 align:middle line:84%
+of using the dig
+utility, which is
+
+00:01:30.900 --> 00:01:35.310 align:middle line:84%
+a Unix-based tool for querying
+information within DNS.
+
+00:01:35.310 --> 00:01:39.330 align:middle line:84%
+So let's just quickly compare
+host names versus IP addresses.
+
+00:01:39.330 --> 00:01:41.760 align:middle line:84%
+So host names will
+be a mnemonic name
+
+00:01:41.760 --> 00:01:45.060 align:middle line:84%
+that we appreciate as humans,
+whereas, as we've already
+
+00:01:45.060 --> 00:01:47.280 align:middle line:84%
+discussed IP
+addresses at length,
+
+00:01:47.280 --> 00:01:53.090 align:middle line:84%
+those are numerical addresses
+that are necessary for routers.
+
+00:01:53.090 --> 00:01:55.560 align:middle line:84%
+Hosts names will, of
+course, be variable length
+
+00:01:55.560 --> 00:01:59.430 align:middle line:84%
+and will now use the full
+alphabet of characters,
+
+00:01:59.430 --> 00:02:01.770 align:middle line:84%
+whereas IP addresses
+were fixed length
+
+00:02:01.770 --> 00:02:07.650 align:middle line:84%
+and always corresponded under
+the hood to some binary number.
+
+00:02:07.650 --> 00:02:09.419 align:middle line:84%
+The host names are
+going to provide
+
+00:02:09.419 --> 00:02:13.170 align:middle line:84%
+little, if any, information
+about a location,
+
+00:02:13.170 --> 00:02:17.790 align:middle line:84%
+whereas IP addresses were
+defined in a hierarchical way,
+
+00:02:17.790 --> 00:02:20.190 align:middle line:84%
+and they were related
+to the host location
+
+00:02:20.190 --> 00:02:23.340 align:middle line:84%
+so that we could perform
+that routing process
+
+00:02:23.340 --> 00:02:25.990 align:middle line:84%
+to get information
+where it needs to go.
+
+00:02:25.990 --> 00:02:27.930 align:middle line:84%
+So just some
+examples, of course--
+
+00:02:27.930 --> 00:02:32.280 align:middle line:84%
+some hosts names,
+like www.cnn.com.
+
+00:02:32.280 --> 00:02:37.590 align:middle line:84%
+Bbc.co.uk would provide a
+little location information.
+
+00:02:37.590 --> 00:02:39.570 align:middle line:84%
+And these, of course,
+are easier to remember
+
+00:02:39.570 --> 00:02:46.870 align:middle line:84%
+than the numerical quantities
+in the IP addresses below.
+
+00:02:46.870 --> 00:02:49.980 align:middle line:84%
+So how do we separate the
+naming from the addressing?
+
+00:02:49.980 --> 00:02:50.920 align:middle line:90%
+And why do we do this?
+
+00:02:50.920 --> 00:02:53.940 align:middle line:84%
+Well, of course, names
+are easier to remember.
+
+00:02:53.940 --> 00:02:56.970 align:middle line:84%
+The other reason is that
+underneath the addresses
+
+00:02:56.970 --> 00:02:58.110 align:middle line:90%
+could change.
+
+00:02:58.110 --> 00:03:03.090 align:middle line:84%
+Perhaps we change
+the server that's
+
+00:03:03.090 --> 00:03:06.780 align:middle line:84%
+hosting the website
+cnn.com or perhaps we
+
+00:03:06.780 --> 00:03:08.760 align:middle line:90%
+change a service provider.
+
+00:03:08.760 --> 00:03:10.470 align:middle line:84%
+The other thing is a
+name could actually
+
+00:03:10.470 --> 00:03:12.390 align:middle line:90%
+map to multiple IP addresses.
+
+00:03:12.390 --> 00:03:16.590 align:middle line:84%
+Perhaps for load balancing
+or scalability reasons
+
+00:03:16.590 --> 00:03:19.470 align:middle line:84%
+we have multiple
+replicas of a website--
+
+00:03:19.470 --> 00:03:22.650 align:middle line:84%
+so handling load balancing,
+reducing latency,
+
+00:03:22.650 --> 00:03:27.562 align:middle line:84%
+if perhaps we put a
+server hosting cnn.com,
+
+00:03:27.562 --> 00:03:29.270 align:middle line:84%
+say, in different
+countries so that there
+
+00:03:29.270 --> 00:03:32.910 align:middle line:84%
+is always one close by
+to people likely to try
+
+00:03:32.910 --> 00:03:35.910 align:middle line:90%
+to access that server.
+
+00:03:35.910 --> 00:03:38.100 align:middle line:84%
+We could also do things
+like tailor the content
+
+00:03:38.100 --> 00:03:42.750 align:middle line:84%
+based on the requester's
+location or identity.
+
+00:03:42.750 --> 00:03:46.440 align:middle line:84%
+And we could have multiple
+names for the same address
+
+00:03:46.440 --> 00:03:48.960 align:middle line:84%
+within this so that
+we could have aliases.
+
+00:03:48.960 --> 00:03:51.235 align:middle line:84%
+And there may be good
+reasons to do that.
+
+00:03:51.235 --> 00:03:56.130 align:middle line:84%
+So "www," if that's prefixed
+in a domain name, typically
+
+00:03:56.130 --> 00:03:57.970 align:middle line:84%
+would correspond
+to a web server.
+
+00:03:57.970 --> 00:04:01.200 align:middle line:84%
+But if you just access cnn.com,
+that probably also works
+
+00:04:01.200 --> 00:04:07.140 align:middle line:84%
+and gets directed to the web
+server, whereas cnn.com might--
+
+00:04:07.140 --> 00:04:10.200 align:middle line:84%
+it doesn't have to direct
+to that web server.
+
+00:04:10.200 --> 00:04:14.064 align:middle line:90%
+
+
+00:04:14.064 --> 00:04:17.370 align:middle line:90%
+So how does this work roughly?
+
+00:04:17.370 --> 00:04:20.730 align:middle line:84%
+How does this mapping between
+names and addresses work?
+
+00:04:20.730 --> 00:04:24.720 align:middle line:84%
+So originally this was
+done in a per-host file
+
+00:04:24.720 --> 00:04:27.150 align:middle line:90%
+working with a flat namespace.
+
+00:04:27.150 --> 00:04:32.670 align:middle line:84%
+Typically under Unix,
+it'd be in /etc/hosts,
+
+00:04:32.670 --> 00:04:35.610 align:middle line:84%
+and then an organization, one
+of the first organizations
+
+00:04:35.610 --> 00:04:38.490 align:middle line:84%
+on the internet and the
+web, SRI in Menlo Park,
+
+00:04:38.490 --> 00:04:40.200 align:middle line:90%
+would keep a master copy.
+
+00:04:40.200 --> 00:04:42.990 align:middle line:84%
+So then others would need to
+download this file regularly.
+
+00:04:42.990 --> 00:04:45.300 align:middle line:90%
+But this isn't going to scale.
+
+00:04:45.300 --> 00:04:48.750 align:middle line:84%
+If there are a lot of lookups
+and if one organization was
+
+00:04:48.750 --> 00:04:54.270 align:middle line:84%
+keeping track of this, it
+could overload that server,
+
+00:04:54.270 --> 00:04:56.760 align:middle line:84%
+and it would lead to a
+single point of failure.
+
+00:04:56.760 --> 00:04:59.780 align:middle line:84%
+So this will motivate
+how DNS works
+
+00:04:59.780 --> 00:05:03.050 align:middle line:84%
+and why we need a distributed
+and hierarchical collection
+
+00:05:03.050 --> 00:05:07.270 align:middle line:84%
+of servers so that
+this would scale up.
+
+00:05:07.270 --> 00:05:08.267 align:middle line:90%

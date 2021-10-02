@@ -1,0 +1,298 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:01.260 align:middle line:90%
+
+
+00:00:01.260 --> 00:00:03.240 align:middle line:84%
+So next we'll
+discuss a mechanism
+
+00:00:03.240 --> 00:00:06.540 align:middle line:84%
+within DNS that helps
+it perform better
+
+00:00:06.540 --> 00:00:09.660 align:middle line:84%
+because, as we saw with our
+example of a lookup in the DNS
+
+00:00:09.660 --> 00:00:14.070 align:middle line:84%
+system to find the IP address
+corresponding to a hostname,
+
+00:00:14.070 --> 00:00:17.370 align:middle line:84%
+we saw that it requires
+quite a few queries.
+
+00:00:17.370 --> 00:00:19.920 align:middle line:84%
+So it'd be better if
+we could integrate
+
+00:00:19.920 --> 00:00:21.720 align:middle line:84%
+in some kind of a
+caching mechanism
+
+00:00:21.720 --> 00:00:25.140 align:middle line:90%
+to reduce all of those lookups.
+
+00:00:25.140 --> 00:00:26.950 align:middle line:90%
+So that's what DNS caching does.
+
+00:00:26.950 --> 00:00:30.240 align:middle line:84%
+And the reason, again, is that
+performing all those queries
+
+00:00:30.240 --> 00:00:32.520 align:middle line:90%
+can take time.
+
+00:00:32.520 --> 00:00:35.640 align:middle line:84%
+And all of this
+time is before any
+
+00:00:35.640 --> 00:00:37.860 align:middle line:84%
+of the actual communication
+we actually care about
+
+00:00:37.860 --> 00:00:38.860 align:middle line:90%
+takes place.
+
+00:00:38.860 --> 00:00:42.930 align:middle line:84%
+So for example, if
+it took one second
+
+00:00:42.930 --> 00:00:46.380 align:middle line:84%
+before a web page would
+start to load every time,
+
+00:00:46.380 --> 00:00:49.410 align:middle line:84%
+it'd probably be
+fairly annoying.
+
+00:00:49.410 --> 00:00:54.000 align:middle line:84%
+So if we do use caching, we can
+greatly reduce the overhead.
+
+00:00:54.000 --> 00:00:57.240 align:middle line:84%
+Part of the reason that we
+can take advantage of this
+
+00:00:57.240 --> 00:01:00.150 align:middle line:84%
+is that those top-level
+domain servers are very rarely
+
+00:01:00.150 --> 00:01:01.440 align:middle line:90%
+going to change.
+
+00:01:01.440 --> 00:01:05.670 align:middle line:84%
+So popular sites like CNN.com
+are going to be visited a lot,
+
+00:01:05.670 --> 00:01:09.300 align:middle line:84%
+so then the local DNS server
+can have that information cached
+
+00:01:09.300 --> 00:01:11.640 align:middle line:84%
+so it doesn't have to go
+through all of those queries
+
+00:01:11.640 --> 00:01:16.320 align:middle line:84%
+to figure out what the IP
+address is for CNN.com.
+
+00:01:16.320 --> 00:01:19.110 align:middle line:84%
+So roughly, how
+that caching process
+
+00:01:19.110 --> 00:01:22.230 align:middle line:84%
+would work in DNS is the
+DNS servers would cache
+
+00:01:22.230 --> 00:01:27.540 align:middle line:84%
+the responses to the queries
+so that, the next time a lookup
+
+00:01:27.540 --> 00:01:30.990 align:middle line:84%
+would occur, it doesn't have to
+go through that whole process
+
+00:01:30.990 --> 00:01:32.670 align:middle line:84%
+of sending and
+receiving messages
+
+00:01:32.670 --> 00:01:36.090 align:middle line:84%
+all the way up to the
+top-level domain name server
+
+00:01:36.090 --> 00:01:37.950 align:middle line:90%
+and the root DNS servers.
+
+00:01:37.950 --> 00:01:40.950 align:middle line:84%
+It would just know the answer
+of what the IP address is.
+
+00:01:40.950 --> 00:01:44.520 align:middle line:84%
+This response would
+also include a time
+
+00:01:44.520 --> 00:01:50.820 align:middle line:84%
+to live field so that we know
+how long before the DNS server
+
+00:01:50.820 --> 00:01:54.150 align:middle line:84%
+is forced to go look up
+that IP address again.
+
+00:01:54.150 --> 00:01:56.430 align:middle line:84%
+So after that time
+would expire, the server
+
+00:01:56.430 --> 00:02:00.390 align:middle line:90%
+would delete that cached entry.
+
+00:02:00.390 --> 00:02:04.020 align:middle line:84%
+So there's another
+concept in caching
+
+00:02:04.020 --> 00:02:08.250 align:middle line:84%
+that can also help improve
+performance and particularly
+
+00:02:08.250 --> 00:02:09.720 align:middle line:90%
+usability.
+
+00:02:09.720 --> 00:02:11.880 align:middle line:84%
+That's called negative
+caching, and this
+
+00:02:11.880 --> 00:02:14.680 align:middle line:84%
+would be remembering
+things that did not work.
+
+00:02:14.680 --> 00:02:17.280 align:middle line:84%
+So for example, if you
+accidentally misspell a domain
+
+00:02:17.280 --> 00:02:22.320 align:middle line:84%
+name-- like if you put two M's
+or mistype CNN and put three
+
+00:02:22.320 --> 00:02:22.820 align:middle line:90%
+N's--
+
+00:02:22.820 --> 00:02:25.430 align:middle line:90%
+
+
+00:02:25.430 --> 00:02:28.600 align:middle line:84%
+the only way that your
+computer figures out
+
+00:02:28.600 --> 00:02:32.060 align:middle line:84%
+or that the lookup figures out
+that these are probably not
+
+00:02:32.060 --> 00:02:37.400 align:middle line:84%
+valid domain names is by going
+through that whole DNS querying
+
+00:02:37.400 --> 00:02:38.450 align:middle line:90%
+process.
+
+00:02:38.450 --> 00:02:41.270 align:middle line:84%
+So you'd send all those
+messages to figure out, oh, this
+
+00:02:41.270 --> 00:02:43.580 align:middle line:90%
+wasn't a valid domain name.
+
+00:02:43.580 --> 00:02:45.080 align:middle line:84%
+And then you look
+at the domain name
+
+00:02:45.080 --> 00:02:46.480 align:middle line:90%
+and you see you mistyped it.
+
+00:02:46.480 --> 00:02:47.517 align:middle line:90%
+Right?
+
+00:02:47.517 --> 00:02:49.100 align:middle line:84%
+Of course, there
+could be other things
+
+00:02:49.100 --> 00:02:53.910 align:middle line:84%
+like someone expecting some
+misspellings of common names
+
+00:02:53.910 --> 00:02:55.880 align:middle line:84%
+has registered that
+domain that's actually
+
+00:02:55.880 --> 00:02:58.680 align:middle line:90%
+a spam site of some form.
+
+00:02:58.680 --> 00:03:00.560 align:middle line:84%
+So these things could
+take a long time
+
+00:03:00.560 --> 00:03:03.830 align:middle line:84%
+to fail the first time
+because all of those lookups
+
+00:03:03.830 --> 00:03:08.240 align:middle line:84%
+need to occur, and you need
+to get that response back
+
+00:03:08.240 --> 00:03:11.000 align:middle line:84%
+from an authoritative
+DNS server in the end
+
+00:03:11.000 --> 00:03:15.860 align:middle line:84%
+that there's no IP address
+corresponding to that name.
+
+00:03:15.860 --> 00:03:17.360 align:middle line:84%
+So it'd good to
+remember things that
+
+00:03:17.360 --> 00:03:20.510 align:middle line:84%
+don't work so that the
+failure would take less
+
+00:03:20.510 --> 00:03:23.600 align:middle line:84%
+time the next time and
+not all of those messages
+
+00:03:23.600 --> 00:03:26.060 align:middle line:84%
+would need to be sent to figure
+out that that server didn't
+
+00:03:26.060 --> 00:03:28.110 align:middle line:90%
+exist at all.
+
+00:03:28.110 --> 00:03:30.530 align:middle line:84%
+Unfortunately, this is
+an optional process,
+
+00:03:30.530 --> 00:03:33.170 align:middle line:84%
+and right now, it's really
+not widely-implemented.
+
+00:03:33.170 --> 00:03:34.850 align:middle line:84%
+But overall, this
+caching process,
+
+00:03:34.850 --> 00:03:37.580 align:middle line:84%
+we talked about, primarily,
+the positive caching process,
+
+00:03:37.580 --> 00:03:41.240 align:middle line:84%
+that we would save the IP
+addresses corresponding
+
+00:03:41.240 --> 00:03:43.760 align:middle line:84%
+to commonly looked
+up domain names so
+
+00:03:43.760 --> 00:03:47.560 align:middle line:84%
+that the next lookup isn't
+going to take nearly as long.
+
+00:03:47.560 --> 00:03:48.459 align:middle line:90%

@@ -1,0 +1,743 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:00.500 align:middle line:90%
+
+
+00:00:00.500 --> 00:00:04.600 align:middle line:84%
+The next topic we'll discuss
+is how we assign IP addresses.
+
+00:00:04.600 --> 00:00:06.720 align:middle line:84%
+So how do we first
+come up with an IP
+
+00:00:06.720 --> 00:00:10.090 align:middle line:84%
+address for a
+particular interface--
+
+00:00:10.090 --> 00:00:12.670 align:middle line:90%
+so for a particular computer.
+
+00:00:12.670 --> 00:00:15.090 align:middle line:84%
+So there are a few
+mechanisms for this.
+
+00:00:15.090 --> 00:00:17.580 align:middle line:84%
+Typically, it's done through
+a bootstrapping or startup
+
+00:00:17.580 --> 00:00:19.480 align:middle line:90%
+process.
+
+00:00:19.480 --> 00:00:21.180 align:middle line:90%
+There are two mechanisms We'll.
+
+00:00:21.180 --> 00:00:23.190 align:middle line:84%
+Discuss that
+accomplish this one is
+
+00:00:23.190 --> 00:00:27.060 align:middle line:84%
+called DHCP, which
+a node would use
+
+00:00:27.060 --> 00:00:30.630 align:middle line:84%
+to learn its own
+configuration parameters.
+
+00:00:30.630 --> 00:00:34.620 align:middle line:84%
+There is another
+process to learn
+
+00:00:34.620 --> 00:00:37.650 align:middle line:84%
+the link-layer addresses
+of other nodes, which
+
+00:00:37.650 --> 00:00:38.970 align:middle line:90%
+is done with ARP.
+
+00:00:38.970 --> 00:00:43.920 align:middle line:84%
+So I'll first talk
+primarily about DHCP.
+
+00:00:43.920 --> 00:00:46.200 align:middle line:84%
+So for example,
+what IP address--
+
+00:00:46.200 --> 00:00:49.650 align:middle line:84%
+if we've added a new host to
+a network, what IP address
+
+00:00:49.650 --> 00:00:51.000 align:middle line:90%
+should that host use?
+
+00:00:51.000 --> 00:00:53.410 align:middle line:90%
+What DNS server should it use?
+
+00:00:53.410 --> 00:00:56.040 align:middle line:84%
+How can it disambiguate
+which destinations
+
+00:00:56.040 --> 00:00:59.490 align:middle line:84%
+are local versus on
+some external network?
+
+00:00:59.490 --> 00:01:04.019 align:middle line:84%
+How could we address to those
+destinations if they are local?
+
+00:01:04.019 --> 00:01:07.620 align:middle line:84%
+And then how do we send packets
+out to a remote destination--
+
+00:01:07.620 --> 00:01:10.320 align:middle line:84%
+typically, through
+some gateway router.
+
+00:01:10.320 --> 00:01:13.320 align:middle line:84%
+So those are the problems
+we're going to try to address.
+
+00:01:13.320 --> 00:01:16.680 align:middle line:84%
+So we'd prefer not to just
+encode all of this information
+
+00:01:16.680 --> 00:01:17.490 align:middle line:90%
+manually.
+
+00:01:17.490 --> 00:01:20.610 align:middle line:84%
+That would be one solution,
+but it will be pretty brittle,
+
+00:01:20.610 --> 00:01:22.680 align:middle line:90%
+and it wouldn't scale well.
+
+00:01:22.680 --> 00:01:27.300 align:middle line:84%
+So DHCP stands for the Dynamic
+Host Configuration Protocol.
+
+00:01:27.300 --> 00:01:29.010 align:middle line:84%
+And with this,
+each end host would
+
+00:01:29.010 --> 00:01:30.720 align:middle line:90%
+learn how to send packets.
+
+00:01:30.720 --> 00:01:34.920 align:middle line:84%
+So basically it would learn
+IP addresses, DNS servers,
+
+00:01:34.920 --> 00:01:37.440 align:middle line:84%
+a gateway node to
+send information out
+
+00:01:37.440 --> 00:01:41.910 align:middle line:84%
+through to other networks
+and what addresses are local.
+
+00:01:41.910 --> 00:01:45.000 align:middle line:84%
+In the Address Resolution
+Protocol, or ARP,
+
+00:01:45.000 --> 00:01:48.060 align:middle line:90%
+this is for local destinations.
+
+00:01:48.060 --> 00:01:52.080 align:middle line:84%
+This would discover the
+mapping between IP addresses
+
+00:01:52.080 --> 00:01:55.370 align:middle line:84%
+that are used at the network
+layer and Mac addresses, which
+
+00:01:55.370 --> 00:01:56.860 align:middle line:90%
+are used at the link layer--
+
+00:01:56.860 --> 00:02:02.730 align:middle line:90%
+so the lower level addressing.
+
+00:02:02.730 --> 00:02:05.500 align:middle line:84%
+So for both protocols,
+there are a few key ideas.
+
+00:02:05.500 --> 00:02:06.970 align:middle line:90%
+The first is broadcasting.
+
+00:02:06.970 --> 00:02:10.169 align:middle line:84%
+So if you don't know something,
+shout to get the answer.
+
+00:02:10.169 --> 00:02:12.780 align:middle line:84%
+The broadcast query would
+be sent to all hosts
+
+00:02:12.780 --> 00:02:14.100 align:middle line:90%
+in the local area network--
+
+00:02:14.100 --> 00:02:16.800 align:middle line:84%
+so in the LAN that
+you're connected to.
+
+00:02:16.800 --> 00:02:19.770 align:middle line:84%
+And this is what you do if
+you don't know how to identify
+
+00:02:19.770 --> 00:02:22.680 align:middle line:90%
+the correct other host.
+
+00:02:22.680 --> 00:02:25.170 align:middle line:84%
+Caching will also be
+incorporated in these protocols
+
+00:02:25.170 --> 00:02:28.160 align:middle line:84%
+to remember past
+information for a while--
+
+00:02:28.160 --> 00:02:30.510 align:middle line:84%
+so store what you learned
+to reduce overhead
+
+00:02:30.510 --> 00:02:33.930 align:middle line:84%
+and having to send too many
+requests for information--
+
+00:02:33.930 --> 00:02:37.620 align:middle line:84%
+and also to store your
+own address and other host
+
+00:02:37.620 --> 00:02:40.000 align:middle line:90%
+addresses.
+
+00:02:40.000 --> 00:02:43.380 align:middle line:84%
+So this caching process is
+also a form of soft state.
+
+00:02:43.380 --> 00:02:45.790 align:middle line:84%
+So you'd eventually
+forget the past.
+
+00:02:45.790 --> 00:02:50.050 align:middle line:84%
+So you'd associate some time
+to live with that information
+
+00:02:50.050 --> 00:02:52.530 align:middle line:84%
+and then either refresh
+or discard information
+
+00:02:52.530 --> 00:02:53.860 align:middle line:90%
+if it times out.
+
+00:02:53.860 --> 00:02:57.030 align:middle line:84%
+And this is important
+for robustness in case
+
+00:02:57.030 --> 00:02:58.110 align:middle line:90%
+of unpredictable changes.
+
+00:02:58.110 --> 00:03:00.750 align:middle line:90%
+
+
+00:03:00.750 --> 00:03:03.340 align:middle line:84%
+So what's a Mac address
+versus an IP address?
+
+00:03:03.340 --> 00:03:05.250 align:middle line:84%
+So the Mac address
+is something that's
+
+00:03:05.250 --> 00:03:08.400 align:middle line:84%
+hard coded, whereas
+the IP address is
+
+00:03:08.400 --> 00:03:10.320 align:middle line:84%
+something that would be
+configured or learned
+
+00:03:10.320 --> 00:03:11.148 align:middle line:90%
+dynamically.
+
+00:03:11.148 --> 00:03:13.440 align:middle line:84%
+So you can sort of think of
+a Mac address like a Social
+
+00:03:13.440 --> 00:03:17.640 align:middle line:84%
+Security number and an IP
+address like a postal mailing
+
+00:03:17.640 --> 00:03:18.870 align:middle line:90%
+address number.
+
+00:03:18.870 --> 00:03:20.430 align:middle line:84%
+So even if you
+move, probably you
+
+00:03:20.430 --> 00:03:22.200 align:middle line:84%
+keep the same Social
+Security number.
+
+00:03:22.200 --> 00:03:25.980 align:middle line:84%
+But you might wind up
+with a new postal address.
+
+00:03:25.980 --> 00:03:29.130 align:middle line:84%
+Mac addresses are a flat
+namespace-- so 48 bits.
+
+00:03:29.130 --> 00:03:31.230 align:middle line:84%
+So they'll typically
+be written in hex
+
+00:03:31.230 --> 00:03:34.510 align:middle line:90%
+and look something like this.
+
+00:03:34.510 --> 00:03:37.290 align:middle line:84%
+They'd be portable, and
+they could stay the same
+
+00:03:37.290 --> 00:03:39.390 align:middle line:90%
+as the host would move around.
+
+00:03:39.390 --> 00:03:41.190 align:middle line:84%
+And this is what's
+used at the link layer
+
+00:03:41.190 --> 00:03:44.550 align:middle line:84%
+to get packets between
+interfaces on the network.
+
+00:03:44.550 --> 00:03:46.470 align:middle line:84%
+In contrast, as
+we've already seen,
+
+00:03:46.470 --> 00:03:50.950 align:middle line:84%
+IP addresses are a hierarchical
+namespace using 32 bits--
+
+00:03:50.950 --> 00:03:53.200 align:middle line:90%
+so in that dotted quad notation.
+
+00:03:53.200 --> 00:03:54.990 align:middle line:84%
+These wouldn't
+necessarily be portable.
+
+00:03:54.990 --> 00:03:57.720 align:middle line:84%
+It would depend on where
+the host is attached.
+
+00:03:57.720 --> 00:04:00.720 align:middle line:84%
+But this is what's used
+for doing the network
+
+00:04:00.720 --> 00:04:03.180 align:middle line:84%
+layer, the
+internel-level routing,
+
+00:04:03.180 --> 00:04:06.900 align:middle line:84%
+to figure out
+destination IP subnets.
+
+00:04:06.900 --> 00:04:09.600 align:middle line:90%
+
+
+00:04:09.600 --> 00:04:12.120 align:middle line:84%
+So the bootstrap
+problem is that when
+
+00:04:12.120 --> 00:04:14.760 align:middle line:84%
+a host gets connected to
+a network or turns on,
+
+00:04:14.760 --> 00:04:17.370 align:middle line:84%
+it doesn't have
+an IP address yet.
+
+00:04:17.370 --> 00:04:19.740 align:middle line:84%
+So it doesn't know
+what source address
+
+00:04:19.740 --> 00:04:24.420 align:middle line:84%
+to use to send information
+out using the IP protocol.
+
+00:04:24.420 --> 00:04:27.370 align:middle line:84%
+It also doesn't know who
+to ask for an IP address.
+
+00:04:27.370 --> 00:04:31.350 align:middle line:84%
+So what it will do at first
+to be able to figure out
+
+00:04:31.350 --> 00:04:33.630 align:middle line:84%
+what destination
+addresses would make sense
+
+00:04:33.630 --> 00:04:36.410 align:middle line:84%
+and what source address
+it's been assigned
+
+00:04:36.410 --> 00:04:39.570 align:middle line:84%
+is it would send out a
+broadcast to discover
+
+00:04:39.570 --> 00:04:40.920 align:middle line:90%
+a server that can help.
+
+00:04:40.920 --> 00:04:43.950 align:middle line:84%
+So it broadcasts out a
+server discovery message
+
+00:04:43.950 --> 00:04:45.710 align:middle line:90%
+to this special Mac address.
+
+00:04:45.710 --> 00:04:49.860 align:middle line:84%
+Then the server, or possibly
+servers, running, say, DHCP,
+
+00:04:49.860 --> 00:04:54.180 align:middle line:84%
+would respond back
+offering an address.
+
+00:04:54.180 --> 00:04:56.670 align:middle line:84%
+So the response
+from the DHCP server
+
+00:04:56.670 --> 00:04:58.140 align:middle line:90%
+would consist of an offer.
+
+00:04:58.140 --> 00:05:00.030 align:middle line:84%
+This would have
+configuration parameters,
+
+00:05:00.030 --> 00:05:04.110 align:middle line:84%
+like the proposed IP address,
+mask information, a gateway
+
+00:05:04.110 --> 00:05:07.720 align:middle line:84%
+router IP address, DNS
+server, IPs, et cetera.
+
+00:05:07.720 --> 00:05:09.370 align:middle line:84%
+It would also
+include a lease time,
+
+00:05:09.370 --> 00:05:12.120 align:middle line:84%
+which would be the duration
+for which that IP address would
+
+00:05:12.120 --> 00:05:13.770 align:middle line:90%
+remain valid.
+
+00:05:13.770 --> 00:05:15.630 align:middle line:90%
+Several servers could respond.
+
+00:05:15.630 --> 00:05:18.720 align:middle line:84%
+There might be multiple DHCP
+servers on the same broadcast
+
+00:05:18.720 --> 00:05:19.860 align:middle line:90%
+network.
+
+00:05:19.860 --> 00:05:21.813 align:middle line:90%
+They could each respond.
+
+00:05:21.813 --> 00:05:23.730 align:middle line:84%
+But you should probably
+just pick one of them.
+
+00:05:23.730 --> 00:05:26.560 align:middle line:84%
+Otherwise, your IP address
+wouldn't be unique.
+
+00:05:26.560 --> 00:05:31.050 align:middle line:84%
+The client would send a request
+echoing the parameters back
+
+00:05:31.050 --> 00:05:34.140 align:middle line:84%
+to accept an offer,
+and the DHCP server
+
+00:05:34.140 --> 00:05:36.390 align:middle line:84%
+would respond with
+an acknowledgment.
+
+00:05:36.390 --> 00:05:40.890 align:middle line:84%
+And the other DHCP servers,
+if there are multiple offers,
+
+00:05:40.890 --> 00:05:43.740 align:middle line:84%
+they would see that
+they weren't chosen.
+
+00:05:43.740 --> 00:05:45.960 align:middle line:84%
+So roughly, this is what
+a run of the protocol
+
+00:05:45.960 --> 00:05:47.480 align:middle line:90%
+would look like.
+
+00:05:47.480 --> 00:05:51.540 align:middle line:84%
+DHCP discover gets sent
+out through the broadcast
+
+00:05:51.540 --> 00:05:54.900 align:middle line:84%
+mechanism-- so to all
+computers or all things
+
+00:05:54.900 --> 00:05:56.340 align:middle line:90%
+attached to the network.
+
+00:05:56.340 --> 00:05:59.640 align:middle line:84%
+It would offer an IP address
+gateway information, et cetera,
+
+00:05:59.640 --> 00:06:01.830 align:middle line:90%
+to the client.
+
+00:06:01.830 --> 00:06:05.640 align:middle line:84%
+The client could broadcast
+back sending a request that,
+
+00:06:05.640 --> 00:06:08.460 align:middle line:84%
+OK, I'll take that, and
+then the DHCP server
+
+00:06:08.460 --> 00:06:11.790 align:middle line:90%
+would acknowledge back.
+
+00:06:11.790 --> 00:06:15.720 align:middle line:84%
+So why do we
+incorporate a lease time
+
+00:06:15.720 --> 00:06:19.290 align:middle line:84%
+so that information
+can be forgotten?
+
+00:06:19.290 --> 00:06:22.170 align:middle line:84%
+So the client could request
+release of the IP address
+
+00:06:22.170 --> 00:06:25.080 align:middle line:84%
+to get a new IP
+address or this could
+
+00:06:25.080 --> 00:06:28.180 align:middle line:90%
+occur if the client shuts down.
+
+00:06:28.180 --> 00:06:30.790 align:middle line:84%
+However, the client might
+not release the address.
+
+00:06:30.790 --> 00:06:33.220 align:middle line:90%
+So suppose the computer crashes.
+
+00:06:33.220 --> 00:06:36.690 align:middle line:84%
+If you don't release the
+address and have a timeout,
+
+00:06:36.690 --> 00:06:39.660 align:middle line:84%
+then that address would
+have been allocated forever,
+
+00:06:39.660 --> 00:06:41.770 align:middle line:84%
+and we want to
+avoid that scenario.
+
+00:06:41.770 --> 00:06:45.030 align:middle line:84%
+So there can be some performance
+trade-offs with these lease
+
+00:06:45.030 --> 00:06:45.530 align:middle line:90%
+times.
+
+00:06:45.530 --> 00:06:49.830 align:middle line:84%
+So if it's a short
+lease time, the address
+
+00:06:49.830 --> 00:06:51.760 align:middle line:84%
+that's been allocated
+would time out quickly.
+
+00:06:51.760 --> 00:06:54.450 align:middle line:84%
+But if it's long, you
+would avoid this overhead
+
+00:06:54.450 --> 00:06:55.630 align:middle line:90%
+of frequent renewals.
+
+00:06:55.630 --> 00:07:01.500 align:middle line:84%
+But it would
+increase, potentially,
+
+00:07:01.500 --> 00:07:05.800 align:middle line:84%
+the chance of running
+out of IP addresses.
+
+00:07:05.800 --> 00:07:09.090 align:middle line:84%
+So now the host has information,
+like, what the IP address is
+
+00:07:09.090 --> 00:07:12.090 align:middle line:84%
+that it's been assigned,
+what the network mask is-- so
+
+00:07:12.090 --> 00:07:14.880 align:middle line:84%
+what the subnet information
+is-- what a gateway is,
+
+00:07:14.880 --> 00:07:16.590 align:middle line:90%
+and what DNS servers are.
+
+00:07:16.590 --> 00:07:19.890 align:middle line:84%
+So now it could send out
+packets to other IP addresses.
+
+00:07:19.890 --> 00:07:25.600 align:middle line:84%
+But how can we use the local
+network to accomplish this?
+
+00:07:25.600 --> 00:07:28.050 align:middle line:84%
+So how would a node
+figure out if it's
+
+00:07:28.050 --> 00:07:30.520 align:middle line:84%
+sending something
+locally versus remotely?
+
+00:07:30.520 --> 00:07:32.730 align:middle line:90%
+So there's two cases for this.
+
+00:07:32.730 --> 00:07:34.740 align:middle line:84%
+If the destination's
+on the local network,
+
+00:07:34.740 --> 00:07:36.930 align:middle line:84%
+you can go ahead and
+address it directly.
+
+00:07:36.930 --> 00:07:38.940 align:middle line:84%
+If it's not, then you
+need to figure out
+
+00:07:38.940 --> 00:07:41.580 align:middle line:84%
+where to send it through, which
+typically would be the gateway
+
+00:07:41.580 --> 00:07:43.600 align:middle line:90%
+router.
+
+00:07:43.600 --> 00:07:46.110 align:middle line:84%
+So if it's on the
+local network, you
+
+00:07:46.110 --> 00:07:51.520 align:middle line:84%
+can determine that by comparing
+the mask that's been assigned.
+
+00:07:51.520 --> 00:07:54.930 align:middle line:84%
+So if you take the
+destination address
+
+00:07:54.930 --> 00:07:57.210 align:middle line:84%
+and conjunct it with
+the mask and then
+
+00:07:57.210 --> 00:08:02.860 align:middle line:84%
+if you get back the same value
+as when the hosts own addresses
+
+00:08:02.860 --> 00:08:04.810 align:middle line:90%
+mask, then you know it's local.
+
+00:08:04.810 --> 00:08:08.350 align:middle line:84%
+So for example, if this host
+wanted to send something
+
+00:08:08.350 --> 00:08:12.160 align:middle line:84%
+to this host and it
+took the mask of this,
+
+00:08:12.160 --> 00:08:15.340 align:middle line:84%
+it might get back
+something like 1.2.3,
+
+00:08:15.340 --> 00:08:18.010 align:middle line:84%
+and it would know that,
+OK, the dot seven is also
+
+00:08:18.010 --> 00:08:19.240 align:middle line:90%
+on the same local network.
+
+00:08:19.240 --> 00:08:22.030 align:middle line:90%
+
+
+00:08:22.030 --> 00:08:23.530 align:middle line:84%
+So if it's remote,
+though, we'd need
+
+00:08:23.530 --> 00:08:27.350 align:middle line:84%
+to look up the first hop
+on the local routing table.
+
+00:08:27.350 --> 00:08:31.100 align:middle line:84%
+So that would be whatever
+gateway had been assigned.
+
+00:08:31.100 --> 00:08:32.559 align:middle line:84%
+So then we would
+do the same thing
+
+00:08:32.559 --> 00:08:36.640 align:middle line:84%
+for the local case
+for this gateway
+
+00:08:36.640 --> 00:08:40.788 align:middle line:84%
+rather than the ultimate
+destination IP address.
+
+00:08:40.788 --> 00:08:42.580 align:middle line:84%
+For the local case,
+we'd need to figure out
+
+00:08:42.580 --> 00:08:44.895 align:middle line:90%
+the destination's Mac address.
+
+00:08:44.895 --> 00:08:46.270 align:middle line:84%
+And the reason
+that we would need
+
+00:08:46.270 --> 00:08:49.000 align:middle line:84%
+to do that is because
+sending packets
+
+00:08:49.000 --> 00:08:51.280 align:middle line:84%
+over a link, the network
+interface cards only
+
+00:08:51.280 --> 00:08:53.140 align:middle line:90%
+understand Mac addresses.
+
+00:08:53.140 --> 00:08:55.420 align:middle line:84%
+So that destination
+IP address needs
+
+00:08:55.420 --> 00:08:58.360 align:middle line:84%
+to get translated
+into a Mac address.
+
+00:08:58.360 --> 00:09:00.580 align:middle line:84%
+And what would occur
+is the IP packet
+
+00:09:00.580 --> 00:09:05.260 align:middle line:84%
+would get encapsulated
+inside of a link level frame.
+
+00:09:05.260 --> 00:09:08.350 align:middle line:84%
+So basically we would
+prefix in front of it
+
+00:09:08.350 --> 00:09:11.980 align:middle line:84%
+the link-level information, as
+we've seen some other earlier
+
+00:09:11.980 --> 00:09:14.160 align:middle line:90%
+examples of.
