@@ -1,0 +1,433 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.500 align:middle line:90%
+
+
+2
+00:00:00.500 --> 00:00:02.070 align:middle line:84%
+So to wrap up the
+discussion, we're
+
+3
+00:00:02.070 --> 00:00:03.810 align:middle line:84%
+going to go ahead
+and talk about how
+
+4
+00:00:03.810 --> 00:00:06.420 align:middle line:84%
+to avoid some common
+program mistakes that arise
+
+5
+00:00:06.420 --> 00:00:08.430 align:middle line:90%
+when you program with streams.
+
+6
+00:00:08.430 --> 00:00:11.943 align:middle line:84%
+And I'll focus primarily
+here on sequential streams.
+
+7
+00:00:11.943 --> 00:00:13.360 align:middle line:84%
+And if we talk
+about other things,
+
+8
+00:00:13.360 --> 00:00:16.530 align:middle line:84%
+I'll probably defer that till
+later, involving parallel
+
+9
+00:00:16.530 --> 00:00:17.370 align:middle line:90%
+streams.
+
+10
+00:00:17.370 --> 00:00:20.280 align:middle line:84%
+And in fact, the examples
+we're going to talk about here
+
+11
+00:00:20.280 --> 00:00:21.175 align:middle line:90%
+come from--
+
+12
+00:00:21.175 --> 00:00:23.550 align:middle line:84%
+some of the examples come from
+our search with sequential
+
+13
+00:00:23.550 --> 00:00:27.200 align:middle line:84%
+streams case study we
+were just looking at.
+
+14
+00:00:27.200 --> 00:00:29.560 align:middle line:84%
+So one of the common
+problems with streams
+
+15
+00:00:29.560 --> 00:00:32.800 align:middle line:84%
+is to forget to put
+the terminal operation
+
+16
+00:00:32.800 --> 00:00:34.570 align:middle line:90%
+at the end of the stream.
+
+17
+00:00:34.570 --> 00:00:38.320 align:middle line:84%
+And you can see, here's an
+example where we get our input,
+
+18
+00:00:38.320 --> 00:00:40.353 align:middle line:84%
+and then we go ahead
+and create a stream.
+
+19
+00:00:40.353 --> 00:00:41.770 align:middle line:84%
+And we think we're
+going to map it
+
+20
+00:00:41.770 --> 00:00:45.280 align:middle line:84%
+by calling the processInput
+method reference,
+
+21
+00:00:45.280 --> 00:00:47.500 align:middle line:84%
+and then we forget
+to call collect.
+
+22
+00:00:47.500 --> 00:00:48.730 align:middle line:90%
+And nothing happens.
+
+23
+00:00:48.730 --> 00:00:51.250 align:middle line:84%
+And this is an all too
+common beginner mistake.
+
+24
+00:00:51.250 --> 00:00:52.750 align:middle line:84%
+I've done it myself
+when I was first
+
+25
+00:00:52.750 --> 00:00:53.833 align:middle line:90%
+starting out with streams.
+
+26
+00:00:53.833 --> 00:00:58.170 align:middle line:84%
+So I am indeed the absent-minded
+professor in that case.
+
+27
+00:00:58.170 --> 00:00:59.870 align:middle line:84%
+Another mistake
+people sometimes make
+
+28
+00:00:59.870 --> 00:01:04.190 align:middle line:84%
+is trying to traverse a
+stream more than once.
+
+29
+00:01:04.190 --> 00:01:07.260 align:middle line:84%
+So you can only traverse
+a given stream one time.
+
+30
+00:01:07.260 --> 00:01:11.000 align:middle line:84%
+So here's an example where we
+go ahead and create ourselves
+
+31
+00:01:11.000 --> 00:01:14.510 align:middle line:84%
+a stream, and we call
+it s just to give it
+
+32
+00:01:14.510 --> 00:01:17.750 align:middle line:90%
+an intermediate variable value.
+
+33
+00:01:17.750 --> 00:01:22.180 align:middle line:84%
+And then we say s.forEach
+System.out::println.
+
+34
+00:01:22.180 --> 00:01:26.600 align:middle line:84%
+And we say s.forEach
+again, system.out::println.
+
+35
+00:01:26.600 --> 00:01:28.220 align:middle line:90%
+Duplicate calls are invalid.
+
+36
+00:01:28.220 --> 00:01:33.530 align:middle line:84%
+If you do this, you will get
+a Java lang illegal state
+
+37
+00:01:33.530 --> 00:01:37.540 align:middle line:84%
+exception, because you can't
+call a terminal operation
+
+38
+00:01:37.540 --> 00:01:40.340 align:middle line:90%
+from a stream more than once.
+
+39
+00:01:40.340 --> 00:01:42.740 align:middle line:84%
+If you want to traverse
+a stream again,
+
+40
+00:01:42.740 --> 00:01:45.830 align:middle line:84%
+then you have to get a new
+stream from the data source,
+
+41
+00:01:45.830 --> 00:01:47.160 align:middle line:90%
+or from some data source.
+
+42
+00:01:47.160 --> 00:01:50.410 align:middle line:90%
+So you can only do it one time.
+
+43
+00:01:50.410 --> 00:01:52.600 align:middle line:84%
+Another very important
+thing to remember
+
+44
+00:01:52.600 --> 00:01:56.860 align:middle line:84%
+is don't try to modify the
+backing collection of a stream
+
+45
+00:01:56.860 --> 00:01:59.387 align:middle line:90%
+while it's being traversed.
+
+46
+00:01:59.387 --> 00:02:01.720 align:middle line:84%
+So here's an example where
+we're going to make ourselves
+
+47
+00:02:01.720 --> 00:02:06.910 align:middle line:84%
+a list of 10 integers in
+the range from 0 to 9.
+
+48
+00:02:06.910 --> 00:02:09.759 align:middle line:84%
+So you can see we
+say IntStream.range 0
+
+49
+00:02:09.759 --> 00:02:12.460 align:middle line:84%
+through 10, which
+means 0 through 9
+
+50
+00:02:12.460 --> 00:02:14.100 align:middle line:90%
+because it's not inclusive.
+
+51
+00:02:14.100 --> 00:02:16.590 align:middle line:84%
+If you want inclusive,
+you'd say range closed.
+
+52
+00:02:16.590 --> 00:02:21.880 align:middle line:84%
+We box the primitive integers
+into integer reference objects.
+
+53
+00:02:21.880 --> 00:02:25.000 align:middle line:84%
+We collect those into a list,
+so we have a list of integers.
+
+54
+00:02:25.000 --> 00:02:28.690 align:middle line:84%
+And then we go ahead and
+make a stream of this thing
+
+55
+00:02:28.690 --> 00:02:29.920 align:middle line:90%
+and call the peek method.
+
+56
+00:02:29.920 --> 00:02:34.240 align:middle line:84%
+Peek is a method that's intended
+just to look at the values,
+
+57
+00:02:34.240 --> 00:02:38.650 align:middle line:84%
+maybe log them or print them,
+but not modify them in any way.
+
+58
+00:02:38.650 --> 00:02:40.150 align:middle line:84%
+Except what we're
+doing with peek is
+
+59
+00:02:40.150 --> 00:02:42.670 align:middle line:84%
+we're passing in the
+remove method reference
+
+60
+00:02:42.670 --> 00:02:45.160 align:middle line:84%
+from the list, which
+we'll go ahead and remove
+
+61
+00:02:45.160 --> 00:02:48.220 align:middle line:84%
+the item from the stream that
+we're trying to iterate over.
+
+62
+00:02:48.220 --> 00:02:50.740 align:middle line:84%
+And if a non-concurrent
+collection
+
+63
+00:02:50.740 --> 00:02:53.080 align:middle line:84%
+is modified while it's
+being operated on,
+
+64
+00:02:53.080 --> 00:02:54.970 align:middle line:84%
+the results will
+be incredibly bad.
+
+65
+00:02:54.970 --> 00:02:56.430 align:middle line:90%
+It'll be chaos and insanity.
+
+66
+00:02:56.430 --> 00:02:59.260 align:middle line:84%
+And it gets even crazier if
+you have a parallel stream.
+
+67
+00:02:59.260 --> 00:03:02.650 align:middle line:84%
+What will happen in this case
+is sort of undefined behavior,
+
+68
+00:03:02.650 --> 00:03:05.320 align:middle line:84%
+but if you run this
+example, as I do here,
+
+69
+00:03:05.320 --> 00:03:07.978 align:middle line:84%
+you'll see that you get
+some sensible results.
+
+70
+00:03:07.978 --> 00:03:09.520 align:middle line:84%
+So you get a bunch
+of nulls, and then
+
+71
+00:03:09.520 --> 00:03:12.910 align:middle line:84%
+you finally get an exception and
+the whole thing just blows up.
+
+72
+00:03:12.910 --> 00:03:15.640 align:middle line:84%
+So the long and short of it
+is do not try to do this.
+
+73
+00:03:15.640 --> 00:03:19.720 align:middle line:84%
+Do not end up modifying the
+backing collection of a stream
+
+74
+00:03:19.720 --> 00:03:23.630 align:middle line:84%
+while you're operating
+on the stream itself.
+
+75
+00:03:23.630 --> 00:03:27.440 align:middle line:84%
+Also, always keep in mind that
+a stream holds no non-transient
+
+76
+00:03:27.440 --> 00:03:30.950 align:middle line:84%
+storage, which means
+that if anything is--
+
+77
+00:03:30.950 --> 00:03:33.110 align:middle line:84%
+if your program that
+stream is running in
+
+78
+00:03:33.110 --> 00:03:37.812 align:middle line:84%
+was to crash or hang or
+whatnot, all the results
+
+79
+00:03:37.812 --> 00:03:40.020 align:middle line:84%
+that were in the stream--
+all the intermediate values
+
+80
+00:03:40.020 --> 00:03:42.250 align:middle line:90%
+and so on-- would be lost.
+
+81
+00:03:42.250 --> 00:03:44.920 align:middle line:84%
+If you don't like
+this, then you need
+
+82
+00:03:44.920 --> 00:03:50.080 align:middle line:84%
+to make sure you explicitly
+persist these values using
+
+83
+00:03:50.080 --> 00:03:54.010 align:middle line:84%
+some kind of database
+create, read, write,
+
+84
+00:03:54.010 --> 00:03:56.640 align:middle line:84%
+updater, or so-called
+CRUD operations.
+
+85
+00:03:56.640 --> 00:03:58.570 align:middle line:84%
+So you are responsible
+for doing that.
+
+86
+00:03:58.570 --> 00:04:00.040 align:middle line:84%
+Streams and the
+streams framework
+
+87
+00:04:00.040 --> 00:04:02.473 align:middle line:84%
+itself will not
+automatically persist
+
+88
+00:04:02.473 --> 00:04:03.640 align:middle line:90%
+the contents of the streams.
+
+89
+00:04:03.640 --> 00:04:06.370 align:middle line:84%
+They're really meant
+to be used in memory,
+
+90
+00:04:06.370 --> 00:04:10.890 align:middle line:84%
+and used one time per
+data source access.

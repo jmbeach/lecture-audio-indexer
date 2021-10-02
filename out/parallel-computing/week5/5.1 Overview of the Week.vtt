@@ -1,0 +1,251 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.600 align:middle line:90%
+
+
+2
+00:00:00.600 --> 00:00:02.430 align:middle line:84%
+Welcome to the next
+week of our course
+
+3
+00:00:02.430 --> 00:00:05.550 align:middle line:84%
+on [? Peril ?] Functional
+Programming with Java.
+
+4
+00:00:05.550 --> 00:00:08.580 align:middle line:84%
+Previous weeks have explored
+the structure and functionality
+
+5
+00:00:08.580 --> 00:00:11.370 align:middle line:84%
+of the Java Streams
+Framework, focusing
+
+6
+00:00:11.370 --> 00:00:14.730 align:middle line:84%
+on its predefined and
+user-defined capabilities
+
+7
+00:00:14.730 --> 00:00:17.970 align:middle line:84%
+for splitting a data source
+into streams of data elements,
+
+8
+00:00:17.970 --> 00:00:21.510 align:middle line:84%
+applying intermediate operations
+to process these elements,
+
+9
+00:00:21.510 --> 00:00:23.880 align:middle line:84%
+and combining the
+processed elements together
+
+10
+00:00:23.880 --> 00:00:27.140 align:middle line:90%
+into a final reduced result.
+
+11
+00:00:27.140 --> 00:00:30.410 align:middle line:84%
+This week, we turn our attention
+to the SearchStreamGang
+
+12
+00:00:30.410 --> 00:00:34.040 align:middle line:84%
+Program, which is enhancement
+of the Simple Search Stream
+
+13
+00:00:34.040 --> 00:00:37.550 align:middle line:84%
+Program covered in prior weeks
+to implement a powerful text
+
+14
+00:00:37.550 --> 00:00:41.330 align:middle line:84%
+search engine that uses regular
+expressions to find phrases
+
+15
+00:00:41.330 --> 00:00:45.690 align:middle line:84%
+efficiently in the complete
+works of William Shakespeare.
+
+16
+00:00:45.690 --> 00:00:48.390 align:middle line:84%
+It also defines a framework
+for conducting apples
+
+17
+00:00:48.390 --> 00:00:52.140 align:middle line:84%
+to apples comparisons of
+Java's parallelism frameworks,
+
+18
+00:00:52.140 --> 00:00:55.120 align:middle line:84%
+such as Parallel
+Streams, ForkJoinPool,
+
+19
+00:00:55.120 --> 00:00:57.510 align:middle line:90%
+and CompleteableFutures.
+
+20
+00:00:57.510 --> 00:01:00.410 align:middle line:84%
+We'll use the SearchStreamGang
+Program as a case study
+
+21
+00:01:00.410 --> 00:01:03.590 align:middle line:84%
+throughout this course to
+examine these Java parallelism
+
+22
+00:01:03.590 --> 00:01:06.950 align:middle line:84%
+frameworks, after first
+covering its sequential streams
+
+23
+00:01:06.950 --> 00:01:08.780 align:middle line:90%
+implementation.
+
+24
+00:01:08.780 --> 00:01:11.300 align:middle line:84%
+As you'll see later,
+only minuscule changes
+
+25
+00:01:11.300 --> 00:01:15.510 align:middle line:84%
+are needed to transition from
+sequential to parallel streams.
+
+26
+00:01:15.510 --> 00:01:17.910 align:middle line:84%
+We begin by showing how to
+implement SearchStreamGang
+
+27
+00:01:17.910 --> 00:01:21.240 align:middle line:84%
+functionality using conventional
+object-oriented Java
+
+28
+00:01:21.240 --> 00:01:23.970 align:middle line:84%
+features, such as
+control constructs,
+
+29
+00:01:23.970 --> 00:01:27.470 align:middle line:84%
+like [INAUDIBLE] loops and
+conditional statements.
+
+30
+00:01:27.470 --> 00:01:28.940 align:middle line:84%
+Although this
+initial solution will
+
+31
+00:01:28.940 --> 00:01:31.430 align:middle line:84%
+look familiar to
+object-oriented programmers,
+
+32
+00:01:31.430 --> 00:01:34.370 align:middle line:84%
+it has several limitations,
+including [? fragile ?]
+
+33
+00:01:34.370 --> 00:01:36.830 align:middle line:84%
+collection
+initialization behaviors
+
+34
+00:01:36.830 --> 00:01:39.530 align:middle line:90%
+and non-linear control flow.
+
+35
+00:01:39.530 --> 00:01:41.510 align:middle line:84%
+To address these
+limitations, we next
+
+36
+00:01:41.510 --> 00:01:45.140 align:middle line:84%
+visualize and analyze the
+design and implementation
+
+37
+00:01:45.140 --> 00:01:48.320 align:middle line:84%
+of the sequential streams
+variant of SearchStreamGang,
+
+38
+00:01:48.320 --> 00:01:51.380 align:middle line:84%
+which demonstrates a range of
+Java Streams features including
+
+39
+00:01:51.380 --> 00:01:54.890 align:middle line:84%
+map, flat map,
+filter, and collect
+
+40
+00:01:54.890 --> 00:01:58.520 align:middle line:84%
+aggregate operations, as well
+as user-defined spliterators
+
+41
+00:01:58.520 --> 00:02:02.260 align:middle line:84%
+and advanced collectors,
+such as grouping by.
+
+42
+00:02:02.260 --> 00:02:03.700 align:middle line:84%
+The last set of
+lessons this week
+
+43
+00:02:03.700 --> 00:02:07.180 align:middle line:84%
+evaluate the pros and cons of
+applying sequential streams
+
+44
+00:02:07.180 --> 00:02:10.070 align:middle line:84%
+to the SearchStreamGang
+case study.
+
+45
+00:02:10.070 --> 00:02:12.420 align:middle line:84%
+This evaluation not only
+summarizes the benefits
+
+46
+00:02:12.420 --> 00:02:15.510 align:middle line:84%
+of probing where the
+declarative streams paradigm,
+
+47
+00:02:15.510 --> 00:02:18.150 align:middle line:84%
+but it also motivates the
+need for Java parallel
+
+48
+00:02:18.150 --> 00:02:22.020 align:middle line:84%
+streams that we'll
+cover in upcoming weeks.
+
+49
+00:02:22.020 --> 00:02:24.680 align:middle line:84%
+Finally, we describe
+common mistakes programmers
+
+50
+00:02:24.680 --> 00:02:27.560 align:middle line:84%
+make when applying the
+Java Streams Framework
+
+51
+00:02:27.560 --> 00:02:31.660 align:middle line:84%
+and examine ways to avoid
+these traps and pitfalls.

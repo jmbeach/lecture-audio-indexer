@@ -1,0 +1,766 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.270 align:middle line:90%
+
+
+2
+00:00:00.270 --> 00:00:02.640 align:middle line:84%
+Now that we've talked about
+so many different aspects
+
+3
+00:00:02.640 --> 00:00:05.940 align:middle line:84%
+of streams, talked
+about splitting phase,
+
+4
+00:00:05.940 --> 00:00:08.370 align:middle line:84%
+the applying phase,
+the combining phase,
+
+5
+00:00:08.370 --> 00:00:10.050 align:middle line:84%
+internal/external
+iterators, and so on,
+
+6
+00:00:10.050 --> 00:00:13.170 align:middle line:84%
+and so forth, we're now going to
+go ahead and wrap everything up
+
+7
+00:00:13.170 --> 00:00:18.210 align:middle line:84%
+with a very large example
+called the Java sequential
+
+8
+00:00:18.210 --> 00:00:20.490 align:middle line:90%
+SearchStreamGang.
+
+9
+00:00:20.490 --> 00:00:22.920 align:middle line:84%
+And we'll start out by
+talking about the design
+
+10
+00:00:22.920 --> 00:00:23.680 align:middle line:90%
+of this program.
+
+11
+00:00:23.680 --> 00:00:25.500 align:middle line:84%
+This program is actually
+used throughout other parts
+
+12
+00:00:25.500 --> 00:00:26.650 align:middle line:90%
+of the course as well.
+
+13
+00:00:26.650 --> 00:00:28.590 align:middle line:84%
+So it's worthwhile
+taking a little time
+
+14
+00:00:28.590 --> 00:00:34.110 align:middle line:84%
+now to get to know what it
+does, and why it's cool.
+
+15
+00:00:34.110 --> 00:00:37.200 align:middle line:84%
+This example, as we will
+surely see, is, in many ways,
+
+16
+00:00:37.200 --> 00:00:40.920 align:middle line:84%
+a lot more interesting than the
+simple search stream program
+
+17
+00:00:40.920 --> 00:00:43.550 align:middle line:90%
+that we've looked at before.
+
+18
+00:00:43.550 --> 00:00:46.030 align:middle line:84%
+So the SearchStreamGang
+program is actually
+
+19
+00:00:46.030 --> 00:00:49.420 align:middle line:84%
+a revision of some earlier work
+I've done, which you can also
+
+20
+00:00:49.420 --> 00:00:51.460 align:middle line:84%
+get from my GitHub
+account, called
+
+21
+00:00:51.460 --> 00:00:54.610 align:middle line:90%
+the SearchTaskGang program.
+
+22
+00:00:54.610 --> 00:00:57.130 align:middle line:84%
+And what this
+SearchStreamGang program
+
+23
+00:00:57.130 --> 00:00:59.080 align:middle line:84%
+does that the earlier
+SearchTaskGame
+
+24
+00:00:59.080 --> 00:01:02.230 align:middle line:84%
+program didn't do is it
+uses functional programming
+
+25
+00:01:02.230 --> 00:01:03.940 align:middle line:90%
+and streams--
+
+26
+00:01:03.940 --> 00:01:05.530 align:middle line:84%
+and other stuff
+later, we'll see--
+
+27
+00:01:05.530 --> 00:01:07.240 align:middle line:84%
+instead of using
+more traditional
+
+28
+00:01:07.240 --> 00:01:09.490 align:middle line:90%
+object-oriented programming.
+
+29
+00:01:09.490 --> 00:01:12.450 align:middle line:84%
+The SearchTaskGang
+program is designed
+
+30
+00:01:12.450 --> 00:01:15.590 align:middle line:84%
+to showcase the Java executor
+framework, which we've
+
+31
+00:01:15.590 --> 00:01:18.450 align:middle line:84%
+covered in other
+courses, for tasks that
+
+32
+00:01:18.450 --> 00:01:20.230 align:middle line:90%
+are embarrassingly parallel.
+
+33
+00:01:20.230 --> 00:01:21.480 align:middle line:90%
+And as you may recover--
+
+34
+00:01:21.480 --> 00:01:25.350 align:middle line:84%
+as you may recall, the
+Java executor framework
+
+35
+00:01:25.350 --> 00:01:29.970 align:middle line:84%
+is based on interfaces like
+Executor, ExecutorService,
+
+36
+00:01:29.970 --> 00:01:32.910 align:middle line:84%
+ExecutorCompletionService,
+and various implementations
+
+37
+00:01:32.910 --> 00:01:37.155 align:middle line:84%
+of those interfaces, such
+as the ThreadPoolExecutor,
+
+38
+00:01:37.155 --> 00:01:39.780 align:middle line:84%
+and of course, the ForkJoinPool.
+which we will talk about later
+
+39
+00:01:39.780 --> 00:01:41.690 align:middle line:90%
+in this course.
+
+40
+00:01:41.690 --> 00:01:44.620 align:middle line:84%
+So this particular program,
+the SearchStreamGang program
+
+41
+00:01:44.620 --> 00:01:48.130 align:middle line:84%
+is very much more powerful than
+SimpleSearchStream in a variety
+
+42
+00:01:48.130 --> 00:01:50.120 align:middle line:90%
+of interesting ways.
+
+43
+00:01:50.120 --> 00:01:51.940 align:middle line:84%
+One of the ways in
+which it's more powerful
+
+44
+00:01:51.940 --> 00:01:55.870 align:middle line:84%
+is it uses regular
+expressions to find phrases
+
+45
+00:01:55.870 --> 00:01:58.510 align:middle line:84%
+in the works of
+William Shakespeare.
+
+46
+00:01:58.510 --> 00:02:01.120 align:middle line:84%
+So once again, we have
+our good friend, the Bard,
+
+47
+00:02:01.120 --> 00:02:03.710 align:middle line:84%
+who is providing
+us with the input.
+
+48
+00:02:03.710 --> 00:02:06.700 align:middle line:84%
+And you can actually go to
+this link at the MIT website
+
+49
+00:02:06.700 --> 00:02:08.577 align:middle line:84%
+and download all the
+works of Shakespeare.
+
+50
+00:02:08.577 --> 00:02:10.660 align:middle line:84%
+Or, you can just get my
+program, which includes it
+
+51
+00:02:10.660 --> 00:02:13.260 align:middle line:90%
+as one of the resources.
+
+52
+00:02:13.260 --> 00:02:15.450 align:middle line:84%
+What we do here is we
+can look for phrases.
+
+53
+00:02:15.450 --> 00:02:17.700 align:middle line:84%
+One of the things you
+discover with Shakespeare
+
+54
+00:02:17.700 --> 00:02:21.090 align:middle line:84%
+is lots of things that people
+say that sound like cliches
+
+55
+00:02:21.090 --> 00:02:25.050 align:middle line:84%
+today were actually created by
+Shakespeare many, many years
+
+56
+00:02:25.050 --> 00:02:27.062 align:middle line:84%
+ago-- hundreds of
+years ago, in fact.
+
+57
+00:02:27.062 --> 00:02:29.520 align:middle line:84%
+So let's say, that we had the
+complete works of Shakespeare
+
+58
+00:02:29.520 --> 00:02:32.790 align:middle line:84%
+and we wanted to find out
+where the phrase, "Brevity is
+
+59
+00:02:32.790 --> 00:02:34.800 align:middle line:90%
+the soul of wit," comes from.
+
+60
+00:02:34.800 --> 00:02:37.590 align:middle line:84%
+We could use this program to
+figure out where it occurred,
+
+61
+00:02:37.590 --> 00:02:41.580 align:middle line:84%
+what play and what line
+number, or what character
+
+62
+00:02:41.580 --> 00:02:43.810 align:middle line:90%
+index in the play it occurred.
+
+63
+00:02:43.810 --> 00:02:47.800 align:middle line:84%
+And as we'll see, a phrase can
+match anywhere within a line.
+
+64
+00:02:47.800 --> 00:02:50.490 align:middle line:84%
+And we can also-- because we're
+using regular expressions--
+
+65
+00:02:50.490 --> 00:02:55.480 align:middle line:84%
+we can also have phrases that
+split across multiple lines.
+
+66
+00:02:55.480 --> 00:02:59.190 align:middle line:84%
+So another classic phrase
+from Romeo and Juliet
+
+67
+00:02:59.190 --> 00:03:01.330 align:middle line:90%
+is, "What's in a name?
+
+68
+00:03:01.330 --> 00:03:03.570 align:middle line:84%
+That which we call a
+rose by any other name
+
+69
+00:03:03.570 --> 00:03:05.190 align:middle line:90%
+would smell as sweet."
+
+70
+00:03:05.190 --> 00:03:07.380 align:middle line:84%
+And that ends up
+matching multiple lines,
+
+71
+00:03:07.380 --> 00:03:09.390 align:middle line:84%
+and so we can actually
+use this program
+
+72
+00:03:09.390 --> 00:03:13.480 align:middle line:84%
+to do that too, because regular
+expressions are very powerful.
+
+73
+00:03:13.480 --> 00:03:15.840 align:middle line:84%
+The other cool thing that
+the SearchStreamGang program
+
+74
+00:03:15.840 --> 00:03:19.500 align:middle line:84%
+does that we didn't even
+attempt with the SearchTaskGang
+
+75
+00:03:19.500 --> 00:03:21.900 align:middle line:84%
+or the SimpleSearchStream
+program
+
+76
+00:03:21.900 --> 00:03:25.290 align:middle line:84%
+is it defines a
+framework for performing
+
+77
+00:03:25.290 --> 00:03:29.150 align:middle line:84%
+apples-to-apples comparisons
+between different parallelism
+
+78
+00:03:29.150 --> 00:03:30.930 align:middle line:90%
+strategies in Java.
+
+79
+00:03:30.930 --> 00:03:32.670 align:middle line:84%
+So we're going to
+use this to compare
+
+80
+00:03:32.670 --> 00:03:37.470 align:middle line:84%
+parallel streams, parallel
+spliterator, CompletableFuture,
+
+81
+00:03:37.470 --> 00:03:39.630 align:middle line:84%
+ForkJoinPool, all
+of those things
+
+82
+00:03:39.630 --> 00:03:42.340 align:middle line:84%
+are embodied in
+the implementation.
+
+83
+00:03:42.340 --> 00:03:43.770 align:middle line:84%
+Now we're going
+to focus primarily
+
+84
+00:03:43.770 --> 00:03:46.260 align:middle line:84%
+on sequential streams,
+parallel streams,
+
+85
+00:03:46.260 --> 00:03:48.570 align:middle line:84%
+and a parallel spliterator
+implementation.
+
+86
+00:03:48.570 --> 00:03:50.925 align:middle line:84%
+And we'll use other examples
+to talk about ForkJoinPool
+
+87
+00:03:50.925 --> 00:03:52.243 align:middle line:90%
+and CompletableFuture.
+
+88
+00:03:52.243 --> 00:03:53.910 align:middle line:84%
+But if you really
+want to see these kind
+
+89
+00:03:53.910 --> 00:03:56.400 align:middle line:84%
+of apples-to-apples
+comparisons, you
+
+90
+00:03:56.400 --> 00:03:58.300 align:middle line:84%
+can take a look at
+the source code.
+
+91
+00:03:58.300 --> 00:03:59.770 align:middle line:90%
+It's all there.
+
+92
+00:03:59.770 --> 00:04:01.410 align:middle line:84%
+The other thing
+that we do here is
+
+93
+00:04:01.410 --> 00:04:04.050 align:middle line:84%
+we can perform
+performance comparisons,
+
+94
+00:04:04.050 --> 00:04:05.940 align:middle line:84%
+see which of these
+different strategies
+
+95
+00:04:05.940 --> 00:04:10.620 align:middle line:84%
+work better on the same
+hardware platform, the same Java
+
+96
+00:04:10.620 --> 00:04:12.270 align:middle line:90%
+development environment.
+
+97
+00:04:12.270 --> 00:04:14.960 align:middle line:84%
+And as you'll see, as we
+go through this example
+
+98
+00:04:14.960 --> 00:04:16.800 align:middle line:84%
+and look at different
+variants of it
+
+99
+00:04:16.800 --> 00:04:19.470 align:middle line:84%
+throughout the next few
+weeks, the differences
+
+100
+00:04:19.470 --> 00:04:22.710 align:middle line:84%
+in performance by the different
+implementation strategies
+
+101
+00:04:22.710 --> 00:04:24.210 align:middle line:84%
+and different
+parallelism approaches
+
+102
+00:04:24.210 --> 00:04:26.040 align:middle line:90%
+is really quite informative.
+
+103
+00:04:26.040 --> 00:04:28.500 align:middle line:84%
+And you'll see, as
+usual, the more time you
+
+104
+00:04:28.500 --> 00:04:32.123 align:middle line:84%
+put into thinking about how to
+paralyze things effectively,
+
+105
+00:04:32.123 --> 00:04:33.540 align:middle line:84%
+typically, the
+better the speed up
+
+106
+00:04:33.540 --> 00:04:36.840 align:middle line:90%
+is that you'll get as a result.
+
+107
+00:04:36.840 --> 00:04:39.430 align:middle line:84%
+We're going to cover the
+parallel strategies later.
+
+108
+00:04:39.430 --> 00:04:42.110 align:middle line:84%
+But first, we're going to cover
+the sequential streams now,
+
+109
+00:04:42.110 --> 00:04:45.280 align:middle line:84%
+just so you have a
+baseline to compare with.
+
+110
+00:04:45.280 --> 00:04:47.770 align:middle line:84%
+One of the things you'll
+also see that's really cool
+
+111
+00:04:47.770 --> 00:04:50.920 align:middle line:84%
+is that we only need minuscule
+changes to transition
+
+112
+00:04:50.920 --> 00:04:53.350 align:middle line:84%
+from the sequential
+streams version we're
+
+113
+00:04:53.350 --> 00:04:57.250 align:middle line:84%
+going to look at now, to one of
+the parallel streams versions.
+
+114
+00:04:57.250 --> 00:04:59.920 align:middle line:84%
+We just basically change
+a couple methods and boom,
+
+115
+00:04:59.920 --> 00:05:00.710 align:middle line:90%
+away we go.
+
+116
+00:05:00.710 --> 00:05:05.620 align:middle line:84%
+So that's very, very cool, very,
+very effective and a good use
+
+117
+00:05:05.620 --> 00:05:07.635 align:middle line:90%
+of human productivity time.
+
+118
+00:05:07.635 --> 00:05:09.760 align:middle line:84%
+We're going to be able to
+be very productive to get
+
+119
+00:05:09.760 --> 00:05:12.990 align:middle line:90%
+a big speed up very quickly.
+
+120
+00:05:12.990 --> 00:05:16.170 align:middle line:84%
+So let's start by talking
+about the couple of methods
+
+121
+00:05:16.170 --> 00:05:19.780 align:middle line:84%
+where we're going to be applying
+streams in this program.
+
+122
+00:05:19.780 --> 00:05:24.420 align:middle line:84%
+So we're going to be applying
+a bunch of aggregate operations
+
+123
+00:05:24.420 --> 00:05:27.600 align:middle line:84%
+to the process stream and
+process input methods which
+
+124
+00:05:27.600 --> 00:05:31.680 align:middle line:84%
+are defined in a class called
+SearchWithSequentialStreams.
+
+125
+00:05:31.680 --> 00:05:35.100 align:middle line:84%
+And as the name implies,
+this is a sequential stream
+
+126
+00:05:35.100 --> 00:05:36.910 align:middle line:90%
+implementation.
+
+127
+00:05:36.910 --> 00:05:40.140 align:middle line:84%
+These are the methods we're
+going to be looking at.
+
+128
+00:05:40.140 --> 00:05:43.140 align:middle line:84%
+You can find the source
+code here on my website.
+
+129
+00:05:43.140 --> 00:05:45.940 align:middle line:84%
+And we're going to focus
+primarily on using map,
+
+130
+00:05:45.940 --> 00:05:46.920 align:middle line:90%
+filter, and collect.
+
+131
+00:05:46.920 --> 00:05:48.760 align:middle line:84%
+These are things
+you've seen before,
+
+132
+00:05:48.760 --> 00:05:50.610 align:middle line:84%
+and so mostly, what
+we're showing here
+
+133
+00:05:50.610 --> 00:05:52.890 align:middle line:84%
+is just how easy it is
+to do this, and also
+
+134
+00:05:52.890 --> 00:05:55.260 align:middle line:84%
+kind of illustrating
+how you can stack things
+
+135
+00:05:55.260 --> 00:05:57.870 align:middle line:84%
+together and interpose
+them and integrate them
+
+136
+00:05:57.870 --> 00:06:00.650 align:middle line:90%
+in various cool ways.
+
+137
+00:06:00.650 --> 00:06:03.710 align:middle line:84%
+The processStream method
+is kind of the main entry
+
+138
+00:06:03.710 --> 00:06:07.220 align:middle line:84%
+point into the
+SearchWithSequentialStreams
+
+139
+00:06:07.220 --> 00:06:08.300 align:middle line:90%
+class.
+
+140
+00:06:08.300 --> 00:06:11.960 align:middle line:84%
+And it uses a sequential stream
+to search a list of input
+
+141
+00:06:11.960 --> 00:06:14.120 align:middle line:90%
+strings in a single thread.
+
+142
+00:06:14.120 --> 00:06:16.250 align:middle line:84%
+And each of the
+input strings will
+
+143
+00:06:16.250 --> 00:06:18.720 align:middle line:90%
+contain a work of Shakespeare.
+
+144
+00:06:18.720 --> 00:06:21.560 align:middle line:84%
+So one string will have
+the text for Hamlet.
+
+145
+00:06:21.560 --> 00:06:23.810 align:middle line:84%
+One string will have
+the text for Macbeth.
+
+146
+00:06:23.810 --> 00:06:26.930 align:middle line:84%
+One string will have the
+text for Romeo and Juliet
+
+147
+00:06:26.930 --> 00:06:29.790 align:middle line:90%
+or Caesar or whatnot.
+
+148
+00:06:29.790 --> 00:06:35.110 align:middle line:84%
+And what we get, as a result of
+this particular processStream
+
+149
+00:06:35.110 --> 00:06:39.700 align:middle line:84%
+method, is a list of
+lists of search results.
+
+150
+00:06:39.700 --> 00:06:42.363 align:middle line:84%
+And I'll talk later
+about why we do this.
+
+151
+00:06:42.363 --> 00:06:43.780 align:middle line:84%
+There's also another
+method, which
+
+152
+00:06:43.780 --> 00:06:45.910 align:middle line:84%
+is actually called
+by processStream
+
+153
+00:06:45.910 --> 00:06:47.690 align:middle line:90%
+called processInput.
+
+154
+00:06:47.690 --> 00:06:49.840 align:middle line:84%
+And this method uses
+a sequential stream
+
+155
+00:06:49.840 --> 00:06:54.460 align:middle line:84%
+to search a given input
+string, like Hamlet or Macbeth,
+
+156
+00:06:54.460 --> 00:06:58.492 align:middle line:84%
+to locate all the occurrences
+of phrases in one thread.
+
+157
+00:06:58.492 --> 00:06:59.950 align:middle line:84%
+And of course, it's
+the same thread
+
+158
+00:06:59.950 --> 00:07:01.950 align:middle line:84%
+that processStream is
+using, because we're using
+
+159
+00:07:01.950 --> 00:07:04.060 align:middle line:90%
+a single-threaded solution.
+
+160
+00:07:04.060 --> 00:07:08.100 align:middle line:84%
+This particular method returns
+a list of search results.

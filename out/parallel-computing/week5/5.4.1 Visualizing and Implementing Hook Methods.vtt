@@ -1,0 +1,571 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.720 align:middle line:90%
+
+
+2
+00:00:00.720 --> 00:00:04.868 align:middle line:84%
+Now that I've shown you the
+object-oriented version,
+
+3
+00:00:04.868 --> 00:00:06.410 align:middle line:84%
+we're going to switch
+gears and start
+
+4
+00:00:06.410 --> 00:00:08.870 align:middle line:84%
+talking about the
+streams version
+
+5
+00:00:08.870 --> 00:00:11.250 align:middle line:84%
+and the functional programming
+features that it uses.
+
+6
+00:00:11.250 --> 00:00:14.300 align:middle line:84%
+And as I go along, I'll
+try to kind of refer back
+
+7
+00:00:14.300 --> 00:00:16.670 align:middle line:84%
+to the object-oriented
+version to talk about how
+
+8
+00:00:16.670 --> 00:00:18.830 align:middle line:84%
+the streams approach with
+functional programming
+
+9
+00:00:18.830 --> 00:00:21.890 align:middle line:84%
+overcomes some of those
+annoying limitations
+
+10
+00:00:21.890 --> 00:00:25.010 align:middle line:84%
+that we saw that are tedious
+and error-prone to program
+
+11
+00:00:25.010 --> 00:00:27.360 align:middle line:90%
+with object-oriented approaches.
+
+12
+00:00:27.360 --> 00:00:30.140 align:middle line:84%
+So this time, we're going
+to look at the processStream
+
+13
+00:00:30.140 --> 00:00:31.400 align:middle line:90%
+and processInput methods.
+
+14
+00:00:31.400 --> 00:00:34.240 align:middle line:84%
+We're going to visualize
+them to see how they behave.
+
+15
+00:00:34.240 --> 00:00:36.950 align:middle line:84%
+And this will hopefully make
+the implementation really easy
+
+16
+00:00:36.950 --> 00:00:39.090 align:middle line:90%
+to understand.
+
+17
+00:00:39.090 --> 00:00:41.250 align:middle line:84%
+As you may recall,
+processStream searces
+
+18
+00:00:41.250 --> 00:00:45.420 align:middle line:84%
+a list of input strings, one
+string per work of Shakespeare.
+
+19
+00:00:45.420 --> 00:00:48.840 align:middle line:84%
+We convert that list
+of input strings
+
+20
+00:00:48.840 --> 00:00:53.060 align:middle line:90%
+into a stream of strings.
+
+21
+00:00:53.060 --> 00:00:55.370 align:middle line:84%
+That stream of
+strings is then going
+
+22
+00:00:55.370 --> 00:00:58.010 align:middle line:90%
+to be connected to the map call.
+
+23
+00:00:58.010 --> 00:01:01.700 align:middle line:84%
+And map will then call the
+processInput method reference
+
+24
+00:01:01.700 --> 00:01:03.740 align:middle line:84%
+to search for phrases
+in each input string.
+
+25
+00:01:03.740 --> 00:01:05.209 align:middle line:84%
+We'll look at that
+implementation
+
+26
+00:01:05.209 --> 00:01:07.260 align:middle line:90%
+in just a moment.
+
+27
+00:01:07.260 --> 00:01:10.100 align:middle line:84%
+Notice how map converts
+a stream of strings
+
+28
+00:01:10.100 --> 00:01:13.170 align:middle line:84%
+into a stream of lists
+of search results.
+
+29
+00:01:13.170 --> 00:01:15.200 align:middle line:84%
+So that's a good
+example of how map
+
+30
+00:01:15.200 --> 00:01:20.690 align:middle line:84%
+can transform its input stream
+type into a different output
+
+31
+00:01:20.690 --> 00:01:23.730 align:middle line:90%
+stream type.
+
+32
+00:01:23.730 --> 00:01:26.570 align:middle line:84%
+We then go ahead
+and take that stream
+
+33
+00:01:26.570 --> 00:01:30.830 align:middle line:84%
+of lists of search results and
+call collect, which, as usual,
+
+34
+00:01:30.830 --> 00:01:34.760 align:middle line:84%
+triggers all the intermediate
+operation processing,
+
+35
+00:01:34.760 --> 00:01:37.800 align:middle line:84%
+and then goes ahead
+and creates a list--
+
+36
+00:01:37.800 --> 00:01:39.510 align:middle line:90%
+actually, an array list--
+
+37
+00:01:39.510 --> 00:01:43.640 align:middle line:84%
+which will end up being a list
+of lists of search results
+
+38
+00:01:43.640 --> 00:01:45.440 align:middle line:84%
+that are based on
+encounter order.
+
+39
+00:01:45.440 --> 00:01:47.360 align:middle line:84%
+And encounter order
+here is just the order
+
+40
+00:01:47.360 --> 00:01:49.850 align:middle line:84%
+in which the works
+of Shakespeare
+
+41
+00:01:49.850 --> 00:01:53.600 align:middle line:84%
+appeared in the original
+list of input strings.
+
+42
+00:01:53.600 --> 00:01:58.340 align:middle line:84%
+So if, for example, Caesar
+came before Hamlet, then
+
+43
+00:01:58.340 --> 00:02:00.740 align:middle line:84%
+that's the way it would be
+in the output order in here
+
+44
+00:02:00.740 --> 00:02:02.930 align:middle line:90%
+as well.
+
+45
+00:02:02.930 --> 00:02:05.300 align:middle line:84%
+Now that we talked
+about processStream
+
+46
+00:02:05.300 --> 00:02:09.780 align:middle line:84%
+and visualized it, let's go
+and visualize processInput.
+
+47
+00:02:09.780 --> 00:02:13.260 align:middle line:84%
+So this takes a list
+of phrases to find,
+
+48
+00:02:13.260 --> 00:02:14.660 align:middle line:84%
+and so it converts
+the collection
+
+49
+00:02:14.660 --> 00:02:17.870 align:middle line:84%
+to a sequential stream
+by calling stream.
+
+50
+00:02:17.870 --> 00:02:19.640 align:middle line:84%
+And now we have a
+stream of phrases.
+
+51
+00:02:19.640 --> 00:02:23.180 align:middle line:84%
+And for each phrase,
+we're going to call map.
+
+52
+00:02:23.180 --> 00:02:27.080 align:middle line:84%
+And what map will do is it
+will use this lambda expression
+
+53
+00:02:27.080 --> 00:02:32.672 align:middle line:84%
+to call searchForPhrase,
+or searchForPhrase,
+
+54
+00:02:32.672 --> 00:02:34.130 align:middle line:84%
+passing in the
+phrase we're looking
+
+55
+00:02:34.130 --> 00:02:35.570 align:middle line:90%
+for in the input string--
+
+56
+00:02:35.570 --> 00:02:36.710 align:middle line:90%
+and some other stuff--
+
+57
+00:02:36.710 --> 00:02:42.630 align:middle line:84%
+in order to be able to create
+a stream of search results.
+
+58
+00:02:42.630 --> 00:02:44.090 align:middle line:84%
+So wherever we
+find matches, we'll
+
+59
+00:02:44.090 --> 00:02:46.670 align:middle line:84%
+get back search results
+that will indicate
+
+60
+00:02:46.670 --> 00:02:48.095 align:middle line:90%
+where the matches occurred.
+
+61
+00:02:48.095 --> 00:02:49.970 align:middle line:84%
+Now for this particular
+example, if we end up
+
+62
+00:02:49.970 --> 00:02:54.320 align:middle line:84%
+looking for a phrase like,
+"Brevity is the soul of wit,"
+
+63
+00:02:54.320 --> 00:02:56.340 align:middle line:84%
+it's probably only going
+to appear in Hamlet.
+
+64
+00:02:56.340 --> 00:02:59.570 align:middle line:84%
+It's not going to appear
+in Julius Caesar or Macbeth
+
+65
+00:02:59.570 --> 00:03:02.237 align:middle line:84%
+or Twelfth Night,
+or anything else.
+
+66
+00:03:02.237 --> 00:03:04.820 align:middle line:84%
+So in that case, we'll actually
+have a bunch of search results
+
+67
+00:03:04.820 --> 00:03:07.050 align:middle line:90%
+that would be empty.
+
+68
+00:03:07.050 --> 00:03:08.870 align:middle line:84%
+So to get rid of
+those search results,
+
+69
+00:03:08.870 --> 00:03:12.620 align:middle line:84%
+we're going to filter
+the output of map
+
+70
+00:03:12.620 --> 00:03:16.740 align:middle line:84%
+so that we can get rid of any
+search results that are empty.
+
+71
+00:03:16.740 --> 00:03:20.180 align:middle line:84%
+So any and all search results
+will be removed from the stream
+
+72
+00:03:20.180 --> 00:03:25.190 align:middle line:84%
+if they have no
+result data in them.
+
+73
+00:03:25.190 --> 00:03:27.760 align:middle line:84%
+So as a result, we'll end up
+with a stream of search results
+
+74
+00:03:27.760 --> 00:03:29.260 align:middle line:84%
+that will have
+been winnowed down,
+
+75
+00:03:29.260 --> 00:03:31.750 align:middle line:84%
+and probably, actually, quite
+substantially winnowed down
+
+76
+00:03:31.750 --> 00:03:33.760 align:middle line:84%
+because certain
+phrases in Shakespeare
+
+77
+00:03:33.760 --> 00:03:37.090 align:middle line:84%
+only appear in one place,
+or at most, a few places.
+
+78
+00:03:37.090 --> 00:03:39.070 align:middle line:84%
+So it would be
+unlikely, unless you're
+
+79
+00:03:39.070 --> 00:03:42.670 align:middle line:84%
+looking for a word like
+"the" or "anon", which
+
+80
+00:03:42.670 --> 00:03:45.490 align:middle line:84%
+is a great Shakespeare word
+that appears lots of places.
+
+81
+00:03:45.490 --> 00:03:47.950 align:middle line:84%
+You're probably going to end
+up with lots of empty search
+
+82
+00:03:47.950 --> 00:03:51.053 align:middle line:84%
+results that you want to get
+rid of by filtering them out.
+
+83
+00:03:51.053 --> 00:03:52.720 align:middle line:84%
+The next thing in the
+stream, of course,
+
+84
+00:03:52.720 --> 00:03:55.510 align:middle line:84%
+is our good friend collect,
+terminal operation, which
+
+85
+00:03:55.510 --> 00:03:57.940 align:middle line:84%
+triggers all the
+intermediate processing,
+
+86
+00:03:57.940 --> 00:04:03.610 align:middle line:84%
+collects everything up into
+a list of search results.
+
+87
+00:04:03.610 --> 00:04:07.120 align:middle line:84%
+And so we'll end up with
+a list of search results
+
+88
+00:04:07.120 --> 00:04:10.030 align:middle line:84%
+that gets returned back
+in encounter order.
+
+89
+00:04:10.030 --> 00:04:11.720 align:middle line:84%
+And in many cases,
+as I mentioned,
+
+90
+00:04:11.720 --> 00:04:15.760 align:middle line:84%
+if there's no matches at all
+for the phrases in a given play,
+
+91
+00:04:15.760 --> 00:04:18.570 align:middle line:90%
+there will be an empty--
+
+92
+00:04:18.570 --> 00:04:21.579 align:middle line:84%
+the lists that come
+back here will be empty.
+
+93
+00:04:21.579 --> 00:04:23.440 align:middle line:84%
+And we'll talk
+later about how we
+
+94
+00:04:23.440 --> 00:04:25.787 align:middle line:84%
+deal with empty lists
+of search results later.
+
+95
+00:04:25.787 --> 00:04:28.120 align:middle line:84%
+We've talked about how to
+deal with empty search results
+
+96
+00:04:28.120 --> 00:04:29.475 align:middle line:90%
+here by using filter.
+
+97
+00:04:29.475 --> 00:04:31.570 align:middle line:84%
+And we'll talk
+later about how we
+
+98
+00:04:31.570 --> 00:04:35.200 align:middle line:84%
+deal with empty lists
+of search results.
+
+99
+00:04:35.200 --> 00:04:37.330 align:middle line:84%
+And the way we're
+going to do this
+
+100
+00:04:37.330 --> 00:04:41.590 align:middle line:84%
+is we're going to end up
+handling this in a later method
+
+101
+00:04:41.590 --> 00:04:43.210 align:middle line:90%
+called printPhrases.
+
+102
+00:04:43.210 --> 00:04:45.130 align:middle line:84%
+And the printPhrases
+method will end up
+
+103
+00:04:45.130 --> 00:04:50.920 align:middle line:84%
+using a cool feature
+of flat map in order
+
+104
+00:04:50.920 --> 00:04:57.340 align:middle line:84%
+to remove all the empty
+lists of search results.
+
+105
+00:04:57.340 --> 00:05:00.030 align:middle line:84%
+So thus far, as you've
+undoubtedly noticed,
+
+106
+00:05:00.030 --> 00:05:04.290 align:middle line:84%
+we've been focusing exclusively
+on sequential streams that
+
+107
+00:05:04.290 --> 00:05:07.790 align:middle line:90%
+have one and only one thread.
+
+108
+00:05:07.790 --> 00:05:10.050 align:middle line:84%
+We'll cover parallel
+streams later.
+
+109
+00:05:10.050 --> 00:05:13.890 align:middle line:84%
+When we talk about parallel
+streams in upcoming weeks,
+
+110
+00:05:13.890 --> 00:05:16.013 align:middle line:90%
+we will revisit this example.
+
+111
+00:05:16.013 --> 00:05:17.430 align:middle line:84%
+And we'll show you
+just how simple
+
+112
+00:05:17.430 --> 00:05:20.790 align:middle line:84%
+it is to convert from
+a sequential stream
+
+113
+00:05:20.790 --> 00:05:23.370 align:middle line:84%
+implementation to a parallel
+stream implementation.
+
+114
+00:05:23.370 --> 00:05:25.380 align:middle line:84%
+And in particular, you'll
+see that there's just
+
+115
+00:05:25.380 --> 00:05:26.430 align:middle line:90%
+minuscule changes.
+
+116
+00:05:26.430 --> 00:05:31.350 align:middle line:84%
+We change stream to
+parallel stream, and voila.
+
+117
+00:05:31.350 --> 00:05:33.780 align:middle line:84%
+We magically now have a
+parallel streams approach
+
+118
+00:05:33.780 --> 00:05:39.230 align:middle line:84%
+which performs much, much better
+on modern multicore processors.

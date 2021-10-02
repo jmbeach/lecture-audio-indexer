@@ -1,0 +1,459 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.500 align:middle line:90%
+
+
+2
+00:00:00.500 --> 00:00:04.470 align:middle line:84%
+Now that I've given you an
+overview of the phrase match
+
+3
+00:00:04.470 --> 00:00:08.550 align:middle line:84%
+spliterator class and its
+fields, let's go ahead
+
+4
+00:00:08.550 --> 00:00:11.160 align:middle line:84%
+and talk about how you
+can actually implement it,
+
+5
+00:00:11.160 --> 00:00:13.770 align:middle line:84%
+and use it in the
+context of our search
+
+6
+00:00:13.770 --> 00:00:17.410 align:middle line:90%
+with sequential streams class.
+
+7
+00:00:17.410 --> 00:00:21.120 align:middle line:84%
+So we're going to focus first
+on the constructor for phrase
+
+8
+00:00:21.120 --> 00:00:22.530 align:middle line:90%
+match spliterator.
+
+9
+00:00:22.530 --> 00:00:24.330 align:middle line:84%
+And as you'll see,
+it's very powerful.
+
+10
+00:00:24.330 --> 00:00:25.747 align:middle line:84%
+It's got some
+really sophisticated
+
+11
+00:00:25.747 --> 00:00:28.010 align:middle line:90%
+regular expressions in it.
+
+12
+00:00:28.010 --> 00:00:32.299 align:middle line:84%
+It's going to take the input
+string and the input phrase
+
+13
+00:00:32.299 --> 00:00:33.620 align:middle line:90%
+we're searching for.
+
+14
+00:00:33.620 --> 00:00:36.890 align:middle line:84%
+And it creates a regular
+expression for that phrase.
+
+15
+00:00:36.890 --> 00:00:40.010 align:middle line:84%
+And as you can see, that regular
+expression is quite a mouthful.
+
+16
+00:00:40.010 --> 00:00:42.892 align:middle line:84%
+It's going to bracket
+it in such a way
+
+17
+00:00:42.892 --> 00:00:44.600 align:middle line:84%
+to indicate we want
+to look at this thing
+
+18
+00:00:44.600 --> 00:00:46.910 align:middle line:90%
+sort of as a single entity.
+
+19
+00:00:46.910 --> 00:00:48.740 align:middle line:84%
+We're going to trim
+out whitespace.
+
+20
+00:00:48.740 --> 00:00:52.640 align:middle line:84%
+We're going to replace
+all the multiple spaces
+
+21
+00:00:52.640 --> 00:00:53.870 align:middle line:90%
+with single spaces.
+
+22
+00:00:53.870 --> 00:00:56.940 align:middle line:84%
+We're also going to do a
+bunch of other fancy things.
+
+23
+00:00:56.940 --> 00:00:59.150 align:middle line:84%
+So it's a very powerful
+regular expression.
+
+24
+00:00:59.150 --> 00:01:02.010 align:middle line:84%
+It's even more elaborate
+than I had room to show here.
+
+25
+00:01:02.010 --> 00:01:03.710 align:middle line:84%
+So I recommend
+you go take a look
+
+26
+00:01:03.710 --> 00:01:06.470 align:middle line:84%
+at the source code, which
+comments all this stuff very
+
+27
+00:01:06.470 --> 00:01:07.930 align:middle line:90%
+heavily.
+
+28
+00:01:07.930 --> 00:01:10.540 align:middle line:84%
+We then take that regular
+expression string,
+
+29
+00:01:10.540 --> 00:01:13.030 align:middle line:84%
+and we compile it
+into a pattern.
+
+30
+00:01:13.030 --> 00:01:15.250 align:middle line:84%
+And then we go ahead
+and have that pattern
+
+31
+00:01:15.250 --> 00:01:21.190 align:middle line:84%
+be case insensitive, and allow
+it to search across line breaks
+
+32
+00:01:21.190 --> 00:01:23.940 align:middle line:90%
+by using the dot all flag.
+
+33
+00:01:23.940 --> 00:01:26.360 align:middle line:84%
+We then associate
+that input string
+
+34
+00:01:26.360 --> 00:01:29.145 align:middle line:84%
+that was passed as a
+parameter with the matcher.
+
+35
+00:01:29.145 --> 00:01:30.770 align:middle line:84%
+So now we have a
+pattern matcher that's
+
+36
+00:01:30.770 --> 00:01:32.930 align:middle line:84%
+associated with that
+particular input, that
+
+37
+00:01:32.930 --> 00:01:34.910 align:middle line:90%
+work with Shakespeare.
+
+38
+00:01:34.910 --> 00:01:38.030 align:middle line:84%
+We assign the input
+to the M input field,
+
+39
+00:01:38.030 --> 00:01:39.940 align:middle line:84%
+and the phrase to
+the mPhrase field,
+
+40
+00:01:39.940 --> 00:01:42.390 align:middle line:84%
+cause we're going to need
+that for various things.
+
+41
+00:01:42.390 --> 00:01:46.610 align:middle line:84%
+And then we go ahead and
+define the MminSplitSize.
+
+42
+00:01:46.610 --> 00:01:49.670 align:middle line:84%
+And what we do here is we just
+take the size of the input
+
+43
+00:01:49.670 --> 00:01:50.930 align:middle line:90%
+and divide it by 2.
+
+44
+00:01:50.930 --> 00:01:53.360 align:middle line:84%
+And what this means in
+practice is basically,
+
+45
+00:01:53.360 --> 00:01:55.370 align:middle line:84%
+when we do the
+parallel spliterator
+
+46
+00:01:55.370 --> 00:01:56.870 align:middle line:84%
+version of this
+program, we're going
+
+47
+00:01:56.870 --> 00:02:02.960 align:middle line:84%
+to be able to search for phrases
+in a given work of Shakespeare
+
+48
+00:02:02.960 --> 00:02:03.960 align:middle line:90%
+in parallel.
+
+49
+00:02:03.960 --> 00:02:04.930 align:middle line:90%
+So that's kind of cool.
+
+50
+00:02:04.930 --> 00:02:06.305 align:middle line:84%
+And we'll talk
+about that when we
+
+51
+00:02:06.305 --> 00:02:08.720 align:middle line:84%
+talk about parallel
+spliterators later.
+
+52
+00:02:08.720 --> 00:02:11.150 align:middle line:84%
+Right now, however, we're
+focusing exclusively
+
+53
+00:02:11.150 --> 00:02:13.820 align:middle line:90%
+on sequential spliterators.
+
+54
+00:02:13.820 --> 00:02:16.640 align:middle line:84%
+So all we care about is
+the try advanced method.
+
+55
+00:02:16.640 --> 00:02:18.620 align:middle line:84%
+This is called by the
+Java streams framework
+
+56
+00:02:18.620 --> 00:02:21.830 align:middle line:84%
+to attempt to advance the
+spliterator by one word match.
+
+57
+00:02:21.830 --> 00:02:24.260 align:middle line:84%
+This is pretty much
+the same as what
+
+58
+00:02:24.260 --> 00:02:28.270 align:middle line:84%
+we looked at for the
+search with stream example.
+
+59
+00:02:28.270 --> 00:02:31.070 align:middle line:84%
+I'll go through it for
+completeness very quickly.
+
+60
+00:02:31.070 --> 00:02:33.510 align:middle line:84%
+But you can go back and
+re-watch that example
+
+61
+00:02:33.510 --> 00:02:35.850 align:middle line:90%
+if you want a bit more detail.
+
+62
+00:02:35.850 --> 00:02:39.620 align:middle line:84%
+Basically, it's past
+the consumer, action.
+
+63
+00:02:39.620 --> 00:02:42.980 align:middle line:84%
+And that's used to
+pass the results back
+
+64
+00:02:42.980 --> 00:02:45.860 align:middle line:84%
+to the stream's framework
+if there's any matches.
+
+65
+00:02:45.860 --> 00:02:49.190 align:middle line:84%
+We attempt to use the phrase
+matcher to find a match.
+
+66
+00:02:49.190 --> 00:02:51.950 align:middle line:84%
+If there are no matches, we
+bail out, and tell the stream's
+
+67
+00:02:51.950 --> 00:02:53.630 align:middle line:90%
+framework we're done.
+
+68
+00:02:53.630 --> 00:02:54.985 align:middle line:90%
+Return false.
+
+69
+00:02:54.985 --> 00:02:56.360 align:middle line:84%
+If there was a
+match, however, we
+
+70
+00:02:56.360 --> 00:03:02.000 align:middle line:84%
+go ahead and accept the index
+where the match occurred
+
+71
+00:03:02.000 --> 00:03:05.660 align:middle line:84%
+by creating a new result
+object by taking the index
+
+72
+00:03:05.660 --> 00:03:06.605 align:middle line:90%
+and adding the offset.
+
+73
+00:03:06.605 --> 00:03:08.980 align:middle line:84%
+And the offset is needed for
+the parallel streams version
+
+74
+00:03:08.980 --> 00:03:11.580 align:middle line:90%
+that we'll talk about later.
+
+75
+00:03:11.580 --> 00:03:13.550 align:middle line:84%
+If we got a match,
+we update the action
+
+76
+00:03:13.550 --> 00:03:16.130 align:middle line:84%
+that'll pass that result back
+to the streams framework.
+
+77
+00:03:16.130 --> 00:03:18.380 align:middle line:84%
+And we return true,
+which is an indication
+
+78
+00:03:18.380 --> 00:03:21.350 align:middle line:84%
+to the streams framework,
+hey, keep looking.
+
+79
+00:03:21.350 --> 00:03:22.880 align:middle line:84%
+There might be
+more matches to be
+
+80
+00:03:22.880 --> 00:03:27.810 align:middle line:84%
+found in this particular
+work of Shakespeare.
+
+81
+00:03:27.810 --> 00:03:30.160 align:middle line:84%
+Then there's also, of
+course, the trySplit method.
+
+82
+00:03:30.160 --> 00:03:33.555 align:middle line:84%
+This is the method that's
+used with parallel streams.
+
+83
+00:03:33.555 --> 00:03:34.930 align:middle line:84%
+And so we'll talk
+about this when
+
+84
+00:03:34.930 --> 00:03:39.540 align:middle line:84%
+we talk about the search
+with parallel spliterator
+
+85
+00:03:39.540 --> 00:03:40.780 align:middle line:90%
+implementation.
+
+86
+00:03:40.780 --> 00:03:42.880 align:middle line:84%
+It's not used for the
+sequential version at all.
+
+87
+00:03:42.880 --> 00:03:45.960 align:middle line:84%
+It's only used for one of
+the parallel versions, which
+
+88
+00:03:45.960 --> 00:03:48.157 align:middle line:84%
+is the spliterator
+version of all this stuff.
+
+89
+00:03:48.157 --> 00:03:49.740 align:middle line:84%
+So we're going to
+ignore that for now.
+
+90
+00:03:49.740 --> 00:03:51.390 align:middle line:84%
+You're welcome, of
+course, to go take a look
+
+91
+00:03:51.390 --> 00:03:52.598 align:middle line:90%
+and see how it's implemented.
+
+92
+00:03:52.598 --> 00:03:54.870 align:middle line:84%
+But I'll cover it in
+much more detail later.
+
+93
+00:03:54.870 --> 00:03:57.450 align:middle line:84%
+It's a very, very
+complicated implementation,
+
+94
+00:03:57.450 --> 00:03:59.190 align:middle line:84%
+for reasons that'll
+become clearer
+
+95
+00:03:59.190 --> 00:04:01.710 align:middle line:84%
+when we have more time to
+discuss parallel processing
+
+96
+00:04:01.710 --> 00:04:04.220 align:middle line:90%
+and parallel spliterators.

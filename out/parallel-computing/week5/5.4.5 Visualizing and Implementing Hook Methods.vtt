@@ -1,0 +1,656 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.830 align:middle line:90%
+
+
+2
+00:00:00.830 --> 00:00:02.540 align:middle line:84%
+So now that we've
+spent some time going
+
+3
+00:00:02.540 --> 00:00:07.250 align:middle line:84%
+through the object-oriented
+and functional implementations
+
+4
+00:00:07.250 --> 00:00:11.030 align:middle line:84%
+of our SearchStreamGang,
+example the search
+
+5
+00:00:11.030 --> 00:00:15.500 align:middle line:84%
+with sequential stream example,
+let's take a little side detour
+
+6
+00:00:15.500 --> 00:00:17.330 align:middle line:84%
+and talk about some
+of the helper methods
+
+7
+00:00:17.330 --> 00:00:20.030 align:middle line:84%
+that we use to get
+input from files.
+
+8
+00:00:20.030 --> 00:00:22.040 align:middle line:84%
+And this will give us
+some other examples
+
+9
+00:00:22.040 --> 00:00:25.310 align:middle line:84%
+of doing cool
+things with streams.
+
+10
+00:00:25.310 --> 00:00:28.610 align:middle line:84%
+If you take a look at the main
+program, as we'll see here,
+
+11
+00:00:28.610 --> 00:00:32.509 align:middle line:84%
+there's a couple of places where
+we go ahead and get ourselves
+
+12
+00:00:32.509 --> 00:00:36.530 align:middle line:84%
+the input of
+Shakespeare's works,
+
+13
+00:00:36.530 --> 00:00:39.410 align:middle line:84%
+as well as the phrases
+that we want to find.
+
+14
+00:00:39.410 --> 00:00:41.990 align:middle line:84%
+And these are going to use a
+bunch of cool Java aggregate
+
+15
+00:00:41.990 --> 00:00:45.132 align:middle line:84%
+operations in the context
+of sequential streams.
+
+16
+00:00:45.132 --> 00:00:47.340 align:middle line:84%
+So let's take a look at some
+of these helper methods.
+
+17
+00:00:47.340 --> 00:00:51.230 align:middle line:84%
+So if you take a look at
+the main driver program,
+
+18
+00:00:51.230 --> 00:00:55.100 align:middle line:84%
+you'll see that it gets the
+input and the list of phrases
+
+19
+00:00:55.100 --> 00:00:57.180 align:middle line:90%
+from two text files.
+
+20
+00:00:57.180 --> 00:00:59.600 align:middle line:84%
+And just to make
+life easier for me,
+
+21
+00:00:59.600 --> 00:01:02.300 align:middle line:84%
+and to show off some
+cool features here,
+
+22
+00:01:02.300 --> 00:01:07.280 align:middle line:84%
+each of the works in the
+input file containing
+
+23
+00:01:07.280 --> 00:01:11.220 align:middle line:84%
+the works of Shakespeare are
+separated by the @ character.
+
+24
+00:01:11.220 --> 00:01:15.550 align:middle line:84%
+So if you look carefully here,
+you can see we have some--
+
+25
+00:01:15.550 --> 00:01:17.897 align:middle line:84%
+The Tragedy of
+Hamlet, and then we
+
+26
+00:01:17.897 --> 00:01:19.730 align:middle line:84%
+have all the text for
+The Tragedy of Hamlet.
+
+27
+00:01:19.730 --> 00:01:22.010 align:middle line:84%
+Then we have The Tragedy
+of Julius Caesar,
+
+28
+00:01:22.010 --> 00:01:25.130 align:middle line:84%
+following the @ sign, a
+bunch of text for that.
+
+29
+00:01:25.130 --> 00:01:27.230 align:middle line:84%
+We have the next @ sign,
+The Tragedy of Macbeth,
+
+30
+00:01:27.230 --> 00:01:28.590 align:middle line:90%
+and so on, and so forth.
+
+31
+00:01:28.590 --> 00:01:31.460 align:middle line:84%
+So we're going to use the @
+sign as essentially a separator
+
+32
+00:01:31.460 --> 00:01:34.340 align:middle line:84%
+between the different
+works of Shakespeare.
+
+33
+00:01:34.340 --> 00:01:38.690 align:middle line:84%
+And to turn these things into
+our proper data structure
+
+34
+00:01:38.690 --> 00:01:40.420 align:middle line:90%
+that we need--
+
+35
+00:01:40.420 --> 00:01:42.930 align:middle line:84%
+which is basically a list
+of character sequences--
+
+36
+00:01:42.930 --> 00:01:47.370 align:middle line:84%
+we end up calling this
+TestDataFactory.getSharedInput
+
+37
+00:01:47.370 --> 00:01:52.620 align:middle line:84%
+method, passing in the file that
+contains this text and a string
+
+38
+00:01:52.620 --> 00:01:54.510 align:middle line:90%
+containing the @ sign.
+
+39
+00:01:54.510 --> 00:01:57.380 align:middle line:84%
+That's going to be
+used as a separator.
+
+40
+00:01:57.380 --> 00:02:02.150 align:middle line:84%
+Likewise, we have a file where
+we have a bunch of phrases.
+
+41
+00:02:02.150 --> 00:02:06.500 align:middle line:84%
+And the phrases are
+going to be obtained
+
+42
+00:02:06.500 --> 00:02:11.810 align:middle line:84%
+by getPhraseList method, defined
+on our test data factory.
+
+43
+00:02:11.810 --> 00:02:14.540 align:middle line:84%
+That takes, in a different
+file, the phrase list file.
+
+44
+00:02:14.540 --> 00:02:17.300 align:middle line:84%
+And each phrase is going to
+appear on a separate line.
+
+45
+00:02:17.300 --> 00:02:20.870 align:middle line:84%
+So you can see, my
+kingdom for a horse,
+
+46
+00:02:20.870 --> 00:02:23.905 align:middle line:84%
+all that glisters is not gold,
+which is actually the way
+
+47
+00:02:23.905 --> 00:02:25.030 align:middle line:90%
+that Shakespeare said that.
+
+48
+00:02:25.030 --> 00:02:28.460 align:middle line:84%
+People often misquote that is
+all that glitters is not gold,
+
+49
+00:02:28.460 --> 00:02:30.908 align:middle line:84%
+but it's actually all
+that glisters is not gold.
+
+50
+00:02:30.908 --> 00:02:33.200 align:middle line:84%
+In fact, when I first was
+having these slides reviewed,
+
+51
+00:02:33.200 --> 00:02:35.720 align:middle line:84%
+someone said, I think
+you misspelled glittered.
+
+52
+00:02:35.720 --> 00:02:37.880 align:middle line:90%
+But it's glisters.
+
+53
+00:02:37.880 --> 00:02:40.620 align:middle line:84%
+At any rate, enough of
+the Shakespeare trivia.
+
+54
+00:02:40.620 --> 00:02:43.640 align:middle line:84%
+What we do here is we
+read in those phrases
+
+55
+00:02:43.640 --> 00:02:47.000 align:middle line:84%
+and we turn them into
+a list of strings.
+
+56
+00:02:47.000 --> 00:02:50.360 align:middle line:84%
+So let's take a quick look
+at that getInput method.
+
+57
+00:02:50.360 --> 00:02:54.910 align:middle line:84%
+This is the one that will return
+the input data in a given file
+
+58
+00:02:54.910 --> 00:02:56.840 align:middle line:90%
+as a non-empty list of strings.
+
+59
+00:02:56.840 --> 00:03:01.820 align:middle line:84%
+So it's a list of strings
+that contain the elements.
+
+60
+00:03:01.820 --> 00:03:03.370 align:middle line:84%
+So what we're
+going to do here is
+
+61
+00:03:03.370 --> 00:03:08.720 align:middle line:84%
+we're first going to go
+ahead and get ourselves a--
+
+62
+00:03:08.720 --> 00:03:11.020 align:middle line:84%
+there's a variable
+name missing here.
+
+63
+00:03:11.020 --> 00:03:13.375 align:middle line:84%
+Sorry, I should say you or
+I, just like we have there.
+
+64
+00:03:13.375 --> 00:03:15.380 align:middle line:90%
+It should also occur here.
+
+65
+00:03:15.380 --> 00:03:19.370 align:middle line:84%
+So we're going to say get
+ourselves the system resource--
+
+66
+00:03:19.370 --> 00:03:22.840 align:middle line:84%
+get ourselves a file from
+the system resources,
+
+67
+00:03:22.840 --> 00:03:25.593 align:middle line:84%
+and then convert
+that to the URI.
+
+68
+00:03:25.593 --> 00:03:27.010 align:middle line:84%
+So what we're
+basically doing here
+
+69
+00:03:27.010 --> 00:03:32.410 align:middle line:84%
+is finding the path
+name to a given file.
+
+70
+00:03:32.410 --> 00:03:34.270 align:middle line:84%
+And then what we
+do is we go ahead
+
+71
+00:03:34.270 --> 00:03:42.220 align:middle line:84%
+and use the readAllBytes
+method on the Files class
+
+72
+00:03:42.220 --> 00:03:47.870 align:middle line:84%
+to open that file using
+Paths.get for that URI.
+
+73
+00:03:47.870 --> 00:03:50.950 align:middle line:84%
+And we go ahead and we read
+all the contents of that file
+
+74
+00:03:50.950 --> 00:03:53.660 align:middle line:90%
+into a new string.
+
+75
+00:03:53.660 --> 00:03:55.840 align:middle line:84%
+And that string is
+called Bytes, just
+
+76
+00:03:55.840 --> 00:03:57.310 align:middle line:90%
+to be really clear what it is.
+
+77
+00:03:57.310 --> 00:04:00.400 align:middle line:90%
+It's a string of bytes.
+
+78
+00:04:00.400 --> 00:04:03.670 align:middle line:84%
+And then we go ahead and
+we take our splitter, which
+
+79
+00:04:03.670 --> 00:04:07.210 align:middle line:84%
+is passed in as the second
+parameter to getInput above,
+
+80
+00:04:07.210 --> 00:04:09.130 align:middle line:84%
+and we compile that into
+a regular expression.
+
+81
+00:04:09.130 --> 00:04:10.672 align:middle line:84%
+Remember, the splitter
+is going to be
+
+82
+00:04:10.672 --> 00:04:14.840 align:middle line:84%
+the @ sign that separates the
+different works of Shakespeare.
+
+83
+00:04:14.840 --> 00:04:21.910 align:middle line:84%
+And then we split that bytes
+string into a stream of strings
+
+84
+00:04:21.910 --> 00:04:25.250 align:middle line:84%
+using the @ sign
+as the splitter.
+
+85
+00:04:25.250 --> 00:04:29.290 align:middle line:84%
+So we end up with a
+stream of strings.
+
+86
+00:04:29.290 --> 00:04:33.940 align:middle line:84%
+Each string corresponds to a
+different work of Shakespeare.
+
+87
+00:04:33.940 --> 00:04:36.280 align:middle line:84%
+We then go ahead and
+apply the filter operation
+
+88
+00:04:36.280 --> 00:04:39.085 align:middle line:84%
+to get rid of everything
+that is an empty string.
+
+89
+00:04:39.085 --> 00:04:41.210 align:middle line:84%
+So if there was some reason
+it was an empty string,
+
+90
+00:04:41.210 --> 00:04:43.233 align:middle line:90%
+and there, we ignore it.
+
+91
+00:04:43.233 --> 00:04:44.650 align:middle line:84%
+And then the last
+thing we do here
+
+92
+00:04:44.650 --> 00:04:50.110 align:middle line:84%
+is we call a collect with a
+toList collector factor method,
+
+93
+00:04:50.110 --> 00:04:52.660 align:middle line:84%
+trigger all the
+intermediate operations,
+
+94
+00:04:52.660 --> 00:04:56.200 align:middle line:84%
+read everything in, filter
+everything out, and then create
+
+95
+00:04:56.200 --> 00:04:59.050 align:middle line:84%
+a list of strings
+that correspond
+
+96
+00:04:59.050 --> 00:05:00.790 align:middle line:90%
+to the works of Shakespeare.
+
+97
+00:05:00.790 --> 00:05:04.730 align:middle line:84%
+And that's what gets
+returned from getInput.
+
+98
+00:05:04.730 --> 00:05:07.790 align:middle line:84%
+Now just for kicks, if we
+want to-- and I actually want
+
+99
+00:05:07.790 --> 00:05:09.830 align:middle line:84%
+to, so my implementation
+does this--
+
+100
+00:05:09.830 --> 00:05:13.490 align:middle line:84%
+I actually convert each of
+the strings to something
+
+101
+00:05:13.490 --> 00:05:15.500 align:middle line:90%
+called a shared string.
+
+102
+00:05:15.500 --> 00:05:19.190 align:middle line:84%
+And that will then be
+returned as a care sequence.
+
+103
+00:05:19.190 --> 00:05:22.760 align:middle line:84%
+And I do this because I
+want to be able to leverage
+
+104
+00:05:22.760 --> 00:05:26.540 align:middle line:84%
+that subSequence
+method, which has
+
+105
+00:05:26.540 --> 00:05:29.090 align:middle line:84%
+less overhead than substring
+And you can go and take
+
+106
+00:05:29.090 --> 00:05:32.150 align:middle line:84%
+a look at the
+shared string class
+
+107
+00:05:32.150 --> 00:05:34.970 align:middle line:84%
+to see the clever
+way I do all this.
+
+108
+00:05:34.970 --> 00:05:36.940 align:middle line:84%
+OK, so that was basically
+how we get the input,
+
+109
+00:05:36.940 --> 00:05:40.000 align:middle line:84%
+by breaking up the
+works of Shakespeare
+
+110
+00:05:40.000 --> 00:05:43.870 align:middle line:84%
+into different input strings,
+or input care sequences
+
+111
+00:05:43.870 --> 00:05:47.620 align:middle line:84%
+by using the @ sign as
+a splitter via the split
+
+112
+00:05:47.620 --> 00:05:50.380 align:middle line:84%
+a string regular
+expression-- pattern matching
+
+113
+00:05:50.380 --> 00:05:53.380 align:middle line:90%
+features of Java 8 and beyond.
+
+114
+00:05:53.380 --> 00:05:55.090 align:middle line:84%
+The next method we're
+going to look at
+
+115
+00:05:55.090 --> 00:05:57.595 align:middle line:90%
+is the getPhraseList method.
+
+116
+00:05:57.595 --> 00:05:59.470 align:middle line:84%
+This is a little bit
+simpler because it's not
+
+117
+00:05:59.470 --> 00:06:01.270 align:middle line:90%
+trying to do so many things.
+
+118
+00:06:01.270 --> 00:06:03.410 align:middle line:84%
+But it also illustrates
+some cool features.
+
+119
+00:06:03.410 --> 00:06:08.350 align:middle line:84%
+So what it does is it goes ahead
+and it uses the lines factory
+
+120
+00:06:08.350 --> 00:06:12.340 align:middle line:84%
+method on the files class,
+which, as you can see here,
+
+121
+00:06:12.340 --> 00:06:17.000 align:middle line:84%
+will go ahead and open
+up the file that we've
+
+122
+00:06:17.000 --> 00:06:19.670 align:middle line:90%
+passed in as a file name.
+
+123
+00:06:19.670 --> 00:06:23.990 align:middle line:84%
+And files.lines will
+go ahead and convert
+
+124
+00:06:23.990 --> 00:06:27.900 align:middle line:84%
+the contents of that file
+into a stream of lines.
+
+125
+00:06:27.900 --> 00:06:29.450 align:middle line:84%
+And of course,
+each line contains
+
+126
+00:06:29.450 --> 00:06:32.040 align:middle line:90%
+a phrase of Shakespeare.
+
+127
+00:06:32.040 --> 00:06:34.650 align:middle line:84%
+Once again, just for kind
+of sanity-checking sake,
+
+128
+00:06:34.650 --> 00:06:37.660 align:middle line:84%
+we filter out
+anything that's empty.
+
+129
+00:06:37.660 --> 00:06:42.540 align:middle line:84%
+And so we end up with a
+stream of non-empty phrases.
+
+130
+00:06:42.540 --> 00:06:46.080 align:middle line:84%
+And then, of course, our good
+friend Collect gets called.
+
+131
+00:06:46.080 --> 00:06:49.020 align:middle line:84%
+It triggers the intermediate
+operation processing
+
+132
+00:06:49.020 --> 00:06:52.530 align:middle line:84%
+and makes ourselves
+a list of strings.
+
+133
+00:06:52.530 --> 00:06:54.090 align:middle line:84%
+So this just kind
+of illustrates how
+
+134
+00:06:54.090 --> 00:06:56.910 align:middle line:84%
+we can process
+this code in order
+
+135
+00:06:56.910 --> 00:07:00.080 align:middle line:84%
+to get the results that
+we need to have here.

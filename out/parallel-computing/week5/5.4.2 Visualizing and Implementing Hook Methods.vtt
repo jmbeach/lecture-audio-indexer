@@ -1,0 +1,1170 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:01.050 align:middle line:90%
+
+
+2
+00:00:01.050 --> 00:00:03.690 align:middle line:84%
+So now that we've talked about
+how to visualize these hook
+
+3
+00:00:03.690 --> 00:00:05.910 align:middle line:84%
+methods, let's go ahead
+and look more carefully
+
+4
+00:00:05.910 --> 00:00:07.470 align:middle line:90%
+at their implementations.
+
+5
+00:00:07.470 --> 00:00:08.850 align:middle line:84%
+And again, I don't
+think there'll
+
+6
+00:00:08.850 --> 00:00:10.980 align:middle line:84%
+be a lot of surprises
+at this point,
+
+7
+00:00:10.980 --> 00:00:13.883 align:middle line:84%
+because some of this stuff
+will look very familiar to you.
+
+8
+00:00:13.883 --> 00:00:15.300 align:middle line:84%
+But I think it's
+important for you
+
+9
+00:00:15.300 --> 00:00:19.620 align:middle line:84%
+to have comfort in knowing sort
+of how you go from visualizing
+
+10
+00:00:19.620 --> 00:00:20.550 align:middle line:90%
+to implementing.
+
+11
+00:00:20.550 --> 00:00:24.570 align:middle line:84%
+You could also see how the
+behavior of this implementation
+
+12
+00:00:24.570 --> 00:00:27.420 align:middle line:84%
+stacks up against the other
+implementations, especially
+
+13
+00:00:27.420 --> 00:00:29.640 align:middle line:84%
+the ones that use
+the parallelism
+
+14
+00:00:29.640 --> 00:00:32.610 align:middle line:84%
+features of parallel streams
+and CompletableFutures
+
+15
+00:00:32.610 --> 00:00:33.757 align:middle line:90%
+much more effectively.
+
+16
+00:00:33.757 --> 00:00:36.090 align:middle line:84%
+And we'll cover that when we
+do some analysis at the end
+
+17
+00:00:36.090 --> 00:00:39.000 align:middle line:90%
+of this week's lesson.
+
+18
+00:00:39.000 --> 00:00:42.240 align:middle line:84%
+So just to reiterate,
+here's processStream.
+
+19
+00:00:42.240 --> 00:00:44.940 align:middle line:84%
+This searches
+sequentially for phrases
+
+20
+00:00:44.940 --> 00:00:47.553 align:middle line:90%
+in lists of the input strings.
+
+21
+00:00:47.553 --> 00:00:49.470 align:middle line:84%
+And here's what the
+implementation looks like.
+
+22
+00:00:49.470 --> 00:00:53.140 align:middle line:84%
+We have the
+processStream method.
+
+23
+00:00:53.140 --> 00:00:57.500 align:middle line:84%
+And it calls the
+getInput helper method,
+
+24
+00:00:57.500 --> 00:01:00.460 align:middle line:84%
+which gets a list of
+character sequences
+
+25
+00:01:00.460 --> 00:01:02.870 align:middle line:84%
+that contain all the
+works of Shakespeare.
+
+26
+00:01:02.870 --> 00:01:04.360 align:middle line:90%
+We talked about that before.
+
+27
+00:01:04.360 --> 00:01:07.060 align:middle line:84%
+getInput is something
+that's defined deep
+
+28
+00:01:07.060 --> 00:01:10.640 align:middle line:84%
+in the bowels of the StreamGang
+framework, just gets the input.
+
+29
+00:01:10.640 --> 00:01:13.990 align:middle line:84%
+In this case, it reads it from
+a file, which we'll talk about
+
+30
+00:01:13.990 --> 00:01:16.090 align:middle line:90%
+in just a little bit.
+
+31
+00:01:16.090 --> 00:01:18.208 align:middle line:84%
+We end up with a
+list of CharSequences
+
+32
+00:01:18.208 --> 00:01:19.750 align:middle line:84%
+here, because we
+were trying to avoid
+
+33
+00:01:19.750 --> 00:01:23.410 align:middle line:84%
+the overhead of
+substring, which is not
+
+34
+00:01:23.410 --> 00:01:28.080 align:middle line:84%
+incurred by using subSequence
+with a CharSequence instead.
+
+35
+00:01:28.080 --> 00:01:33.610 align:middle line:84%
+And we're going to return a
+list of lists of search results.
+
+36
+00:01:33.610 --> 00:01:35.390 align:middle line:84%
+And as I mentioned
+before, we're going
+
+37
+00:01:35.390 --> 00:01:38.280 align:middle line:84%
+to flatten this list
+into a stream of search
+
+38
+00:01:38.280 --> 00:01:41.040 align:middle line:84%
+results in the
+print phrases method
+
+39
+00:01:41.040 --> 00:01:44.250 align:middle line:84%
+by using the flatMap
+method, which
+
+40
+00:01:44.250 --> 00:01:49.040 align:middle line:84%
+is a very cool intermediate
+operation defined
+
+41
+00:01:49.040 --> 00:01:52.280 align:middle line:84%
+on streams, which we've
+talked briefly about before.
+
+42
+00:01:52.280 --> 00:01:53.960 align:middle line:84%
+And now we'll
+really see it being
+
+43
+00:01:53.960 --> 00:01:59.250 align:middle line:84%
+used in all its full-blown glory
+to do some really cool stuff.
+
+44
+00:01:59.250 --> 00:02:02.310 align:middle line:84%
+As before, SearchResults
+is just the data structure
+
+45
+00:02:02.310 --> 00:02:06.120 align:middle line:84%
+that keeps track of the number
+of times a phrase appeared
+
+46
+00:02:06.120 --> 00:02:07.747 align:middle line:90%
+in a given input string.
+
+47
+00:02:07.747 --> 00:02:10.080 align:middle line:84%
+And in addition to keeping
+track of the number of times,
+
+48
+00:02:10.080 --> 00:02:12.060 align:middle line:84%
+it also keeps track
+of the location
+
+49
+00:02:12.060 --> 00:02:14.910 align:middle line:90%
+where the result occurred.
+
+50
+00:02:14.910 --> 00:02:19.680 align:middle line:84%
+And it does this by basically
+having a list of result objects
+
+51
+00:02:19.680 --> 00:02:22.980 align:middle line:84%
+that keep track of the index
+where that result was found,
+
+52
+00:02:22.980 --> 00:02:26.190 align:middle line:90%
+where the phrase was matched.
+
+53
+00:02:26.190 --> 00:02:29.420 align:middle line:84%
+As you can see here, we
+implement process stream
+
+54
+00:02:29.420 --> 00:02:33.050 align:middle line:90%
+as a sequential stream pipeline.
+
+55
+00:02:33.050 --> 00:02:34.628 align:middle line:90%
+Looks pretty straightforward.
+
+56
+00:02:34.628 --> 00:02:36.170 align:middle line:84%
+You'll notice a
+whole bunch of things
+
+57
+00:02:36.170 --> 00:02:38.720 align:middle line:84%
+here relative to our
+object-oriented approach, which
+
+58
+00:02:38.720 --> 00:02:41.360 align:middle line:84%
+we'll talk about as we
+go through this code.
+
+59
+00:02:41.360 --> 00:02:45.050 align:middle line:84%
+The first thing you see here is
+that we call the .stream method
+
+60
+00:02:45.050 --> 00:02:47.210 align:middle line:84%
+on the input list,
+and that, of course,
+
+61
+00:02:47.210 --> 00:02:50.918 align:middle line:84%
+converts the input
+list into a stream.
+
+62
+00:02:50.918 --> 00:02:53.210 align:middle line:84%
+And under the hood, as we've
+talked about several times
+
+63
+00:02:53.210 --> 00:02:56.360 align:middle line:84%
+before, the stream
+factory method uses
+
+64
+00:02:56.360 --> 00:03:01.820 align:middle line:84%
+StreamSupport.stream, passing in
+the spliterator for the list--
+
+65
+00:03:01.820 --> 00:03:03.470 align:middle line:90%
+in this case the ArrayList--
+
+66
+00:03:03.470 --> 00:03:05.900 align:middle line:84%
+and the value false,
+indicating that we just want
+
+67
+00:03:05.900 --> 00:03:09.050 align:middle line:90%
+to have a sequential stream.
+
+68
+00:03:09.050 --> 00:03:11.090 align:middle line:84%
+So now we have a
+sequential stream.
+
+69
+00:03:11.090 --> 00:03:16.780 align:middle line:84%
+The next stage in the stream is
+the map intermediate operation.
+
+70
+00:03:16.780 --> 00:03:21.880 align:middle line:84%
+Map, of course, will take
+every input string, every input
+
+71
+00:03:21.880 --> 00:03:24.310 align:middle line:84%
+character sequence, and
+call a method reference
+
+72
+00:03:24.310 --> 00:03:26.833 align:middle line:84%
+on it, which is a
+behavior, in this case.
+
+73
+00:03:26.833 --> 00:03:28.750 align:middle line:84%
+In this case, the behavior
+we're going to call
+
+74
+00:03:28.750 --> 00:03:30.880 align:middle line:90%
+is the processinput method.
+
+75
+00:03:30.880 --> 00:03:33.610 align:middle line:84%
+And that will be applied to
+each input in the stream.
+
+76
+00:03:33.610 --> 00:03:35.980 align:middle line:84%
+And that will then go look
+up the various phrases
+
+77
+00:03:35.980 --> 00:03:38.080 align:middle line:90%
+we care about.
+
+78
+00:03:38.080 --> 00:03:41.860 align:middle line:84%
+And processinput will return
+a list of search results, one
+
+79
+00:03:41.860 --> 00:03:43.990 align:middle line:90%
+for each input string.
+
+80
+00:03:43.990 --> 00:03:45.890 align:middle line:84%
+And they may be empty,
+as we've seen before,
+
+81
+00:03:45.890 --> 00:03:47.932 align:middle line:84%
+so they may have an empty
+list of search results.
+
+82
+00:03:47.932 --> 00:03:50.560 align:middle line:84%
+We'll talk later about
+how to deal with that.
+
+83
+00:03:50.560 --> 00:03:53.410 align:middle line:84%
+Collect, as always, is
+a terminal operation
+
+84
+00:03:53.410 --> 00:03:56.110 align:middle line:84%
+that triggers the intermediate
+operation processing.
+
+85
+00:03:56.110 --> 00:04:00.138 align:middle line:84%
+In this case, we're going
+to end up creating a list.
+
+86
+00:04:00.138 --> 00:04:01.930 align:middle line:84%
+So if you think about
+this list will end up
+
+87
+00:04:01.930 --> 00:04:04.720 align:middle line:84%
+being a nonconcurrent
+collector, since we
+
+88
+00:04:04.720 --> 00:04:06.430 align:middle line:90%
+have a sequential stream.
+
+89
+00:04:06.430 --> 00:04:11.500 align:middle line:84%
+And this list will be used
+in order to essentially
+
+90
+00:04:11.500 --> 00:04:16.240 align:middle line:84%
+collect the list
+of search results
+
+91
+00:04:16.240 --> 00:04:18.388 align:middle line:84%
+into a list of list
+of search results.
+
+92
+00:04:18.388 --> 00:04:20.680 align:middle line:84%
+So we're going to have a list
+of list of search results
+
+93
+00:04:20.680 --> 00:04:26.670 align:middle line:84%
+being the reduced value
+coming back from collect.
+
+94
+00:04:26.670 --> 00:04:28.950 align:middle line:84%
+And one of the cool
+things about this,
+
+95
+00:04:28.950 --> 00:04:31.325 align:middle line:84%
+one of the things I really
+want to emphasize here, if you
+
+96
+00:04:31.325 --> 00:04:34.230 align:middle line:84%
+go back and compare and
+contrast this with our earlier
+
+97
+00:04:34.230 --> 00:04:36.180 align:middle line:84%
+object-oriented
+implementation, I
+
+98
+00:04:36.180 --> 00:04:41.510 align:middle line:84%
+think you'll be able to see very
+quickly that collect and tolist
+
+99
+00:04:41.510 --> 00:04:43.910 align:middle line:84%
+work together to allocate
+memory for the results.
+
+100
+00:04:43.910 --> 00:04:46.850 align:middle line:84%
+And in fact, that's really
+done by the collector returned
+
+101
+00:04:46.850 --> 00:04:48.380 align:middle line:90%
+by tolist.
+
+102
+00:04:48.380 --> 00:04:52.430 align:middle line:84%
+And as a result, this is much
+less tedious and error-prone
+
+103
+00:04:52.430 --> 00:04:54.680 align:middle line:84%
+to write than the
+object-oriented version,
+
+104
+00:04:54.680 --> 00:04:58.520 align:middle line:84%
+where we had to
+remember to initialize
+
+105
+00:04:58.520 --> 00:05:03.890 align:middle line:84%
+this list of list of results
+list object with an array list
+
+106
+00:05:03.890 --> 00:05:04.970 align:middle line:90%
+explicitly.
+
+107
+00:05:04.970 --> 00:05:05.720 align:middle line:90%
+Now we don't know.
+
+108
+00:05:05.720 --> 00:05:06.350 align:middle line:90%
+We don't care.
+
+109
+00:05:06.350 --> 00:05:09.200 align:middle line:84%
+We just call the two lists
+collector, factor method,
+
+110
+00:05:09.200 --> 00:05:10.400 align:middle line:90%
+and boom.
+
+111
+00:05:10.400 --> 00:05:13.280 align:middle line:84%
+We get a data structure
+that automatically creates
+
+112
+00:05:13.280 --> 00:05:15.470 align:middle line:90%
+the appropriate type of list.
+
+113
+00:05:15.470 --> 00:05:18.500 align:middle line:84%
+And that then will get
+returned as the return value
+
+114
+00:05:18.500 --> 00:05:22.170 align:middle line:90%
+from the processStream method.
+
+115
+00:05:22.170 --> 00:05:24.480 align:middle line:84%
+So again, I think
+this is much cleaner.
+
+116
+00:05:24.480 --> 00:05:26.570 align:middle line:90%
+There's no control constructs.
+
+117
+00:05:26.570 --> 00:05:27.500 align:middle line:90%
+There's no looping.
+
+118
+00:05:27.500 --> 00:05:29.210 align:middle line:90%
+There's no if statements.
+
+119
+00:05:29.210 --> 00:05:33.680 align:middle line:84%
+It just does its thing and
+it allocates the memory
+
+120
+00:05:33.680 --> 00:05:34.890 align:middle line:90%
+automatically.
+
+121
+00:05:34.890 --> 00:05:39.200 align:middle line:84%
+In fact, we probably could have
+been even more concise here
+
+122
+00:05:39.200 --> 00:05:43.250 align:middle line:84%
+and just said,
+getInput ().stream,
+
+123
+00:05:43.250 --> 00:05:46.880 align:middle line:84%
+without even creating this
+intermediate list variable
+
+124
+00:05:46.880 --> 00:05:47.720 align:middle line:90%
+called inputList.
+
+125
+00:05:47.720 --> 00:05:49.762 align:middle line:84%
+I just did that so I had
+something to talk about.
+
+126
+00:05:49.762 --> 00:05:51.560 align:middle line:84%
+But a real streams
+programmer would have
+
+127
+00:05:51.560 --> 00:05:54.790 align:middle line:90%
+made this even more concise.
+
+128
+00:05:54.790 --> 00:05:56.830 align:middle line:84%
+Let's now go ahead
+and talk about how
+
+129
+00:05:56.830 --> 00:06:02.940 align:middle line:84%
+to implement processInput
+as a sequential stream.
+
+130
+00:06:02.940 --> 00:06:08.520 align:middle line:84%
+So thinking back to our earlier
+discussion about visualization,
+
+131
+00:06:08.520 --> 00:06:13.683 align:middle line:84%
+the processInput method will
+search the input stream--
+
+132
+00:06:13.683 --> 00:06:15.600 align:middle line:84%
+which, of course, is the
+work of Shakespeare--
+
+133
+00:06:15.600 --> 00:06:18.720 align:middle line:84%
+for all occurrences
+of phrases to find,
+
+134
+00:06:18.720 --> 00:06:21.715 align:middle line:84%
+where hopefully, the phrases
+are phrases from Shakespeare.
+
+135
+00:06:21.715 --> 00:06:23.340 align:middle line:84%
+Otherwise, we'll be
+rather disappointed
+
+136
+00:06:23.340 --> 00:06:25.320 align:middle line:84%
+when we go about
+trying to look them up
+
+137
+00:06:25.320 --> 00:06:28.560 align:middle line:90%
+and we'll always come up empty.
+
+138
+00:06:28.560 --> 00:06:32.130 align:middle line:84%
+So-- and the other funny thing,
+of course, is a lot of people
+
+139
+00:06:32.130 --> 00:06:33.280 align:middle line:90%
+misquote Shakespeare.
+
+140
+00:06:33.280 --> 00:06:36.090 align:middle line:84%
+So if you try to
+look up the phrase,
+
+141
+00:06:36.090 --> 00:06:38.435 align:middle line:84%
+"alas, poor Yorick,
+I knew him well,"
+
+142
+00:06:38.435 --> 00:06:39.810 align:middle line:84%
+you're probably
+not going to find
+
+143
+00:06:39.810 --> 00:06:41.340 align:middle line:84%
+that, because that's
+not actually something
+
+144
+00:06:41.340 --> 00:06:42.270 align:middle line:90%
+that Hamlet said.
+
+145
+00:06:42.270 --> 00:06:45.490 align:middle line:84%
+He said something a little
+different than that.
+
+146
+00:06:45.490 --> 00:06:48.270 align:middle line:84%
+So here is the
+processInput method.
+
+147
+00:06:48.270 --> 00:06:51.720 align:middle line:84%
+processinput takes
+a character sequence
+
+148
+00:06:51.720 --> 00:06:56.040 align:middle line:84%
+that corresponds to the
+text file, a section of it--
+
+149
+00:06:56.040 --> 00:06:58.470 align:middle line:84%
+a section of the file that
+was managed by the test driver
+
+150
+00:06:58.470 --> 00:06:59.160 align:middle line:90%
+program.
+
+151
+00:06:59.160 --> 00:07:01.830 align:middle line:84%
+We'll come back and look in
+more detail at this test driver
+
+152
+00:07:01.830 --> 00:07:04.998 align:middle line:84%
+program a little bit later
+in this week's lesson.
+
+153
+00:07:04.998 --> 00:07:06.540 align:middle line:84%
+So just imagine for
+sake of argument,
+
+154
+00:07:06.540 --> 00:07:09.210 align:middle line:84%
+that this input
+sequence parameter
+
+155
+00:07:09.210 --> 00:07:15.230 align:middle line:84%
+points to text from one
+of Shakespeare's works.
+
+156
+00:07:15.230 --> 00:07:18.720 align:middle line:84%
+As we saw before with the
+object-oriented version,
+
+157
+00:07:18.720 --> 00:07:22.190 align:middle line:84%
+we're going to go ahead and kind
+of split up this input sequence
+
+158
+00:07:22.190 --> 00:07:27.680 align:middle line:84%
+into two parts, the title and
+the actual body of the play,
+
+159
+00:07:27.680 --> 00:07:30.060 align:middle line:90%
+the text of the play itself.
+
+160
+00:07:30.060 --> 00:07:35.190 align:middle line:84%
+And again, we use subSequence
+to make this a little cleaner.
+
+161
+00:07:35.190 --> 00:07:38.610 align:middle line:84%
+subSequence-- not
+subsequence-- but subSequence
+
+162
+00:07:38.610 --> 00:07:41.320 align:middle line:84%
+is used to avoid memory
+copying overhead.
+
+163
+00:07:41.320 --> 00:07:44.400 align:middle line:90%
+So it's just a nicer way to go.
+
+164
+00:07:44.400 --> 00:07:48.180 align:middle line:84%
+We then go ahead and
+create another stream.
+
+165
+00:07:48.180 --> 00:07:50.940 align:middle line:84%
+Remember, last time, we had
+for loops and if statements,
+
+166
+00:07:50.940 --> 00:07:53.850 align:middle line:84%
+and so on, in our
+object-oriented implementation.
+
+167
+00:07:53.850 --> 00:07:56.280 align:middle line:90%
+That's all been eliminated.
+
+168
+00:07:56.280 --> 00:07:59.370 align:middle line:84%
+What we do now is we
+take mPhrasesToFind,
+
+169
+00:07:59.370 --> 00:08:02.160 align:middle line:84%
+which is the list of phrases
+we're going to look up.
+
+170
+00:08:02.160 --> 00:08:05.140 align:middle line:84%
+And we convert that to a
+stream of phrases to look up.
+
+171
+00:08:05.140 --> 00:08:07.380 align:middle line:84%
+And then for each
+phrase, we're going
+
+172
+00:08:07.380 --> 00:08:11.010 align:middle line:84%
+to call the searchForPhrase
+function, which
+
+173
+00:08:11.010 --> 00:08:12.420 align:middle line:90%
+we'll look at later.
+
+174
+00:08:12.420 --> 00:08:14.490 align:middle line:84%
+Passing in the phrase,
+we're looking up
+
+175
+00:08:14.490 --> 00:08:17.910 align:middle line:84%
+the input string containing
+the work of Shakespeare,
+
+176
+00:08:17.910 --> 00:08:19.680 align:middle line:84%
+the title of the
+work of Shakespeare,
+
+177
+00:08:19.680 --> 00:08:22.260 align:middle line:90%
+and the false flag.
+
+178
+00:08:22.260 --> 00:08:24.840 align:middle line:84%
+And the false Boolean
+flag is very important,
+
+179
+00:08:24.840 --> 00:08:28.680 align:middle line:84%
+because this instructs
+the searchForPhrase method
+
+180
+00:08:28.680 --> 00:08:32.940 align:middle line:84%
+to use a sequential stream, as
+opposed to a parallel stream.
+
+181
+00:08:32.940 --> 00:08:36.179 align:middle line:84%
+And when we talk about the
+parallel spliterator example
+
+182
+00:08:36.179 --> 00:08:39.752 align:middle line:84%
+much, much later, you'll see
+how we turn false to true.
+
+183
+00:08:39.752 --> 00:08:41.919 align:middle line:84%
+And all of a sudden, we
+have a parallel stream here,
+
+184
+00:08:41.919 --> 00:08:44.240 align:middle line:90%
+which is pretty cool.
+
+185
+00:08:44.240 --> 00:08:46.630 align:middle line:84%
+So what we're going
+to do now is we're
+
+186
+00:08:46.630 --> 00:08:50.380 align:middle line:84%
+going to go ahead and take
+that stream of search results
+
+187
+00:08:50.380 --> 00:08:53.140 align:middle line:84%
+that comes back, and
+we're going to throw out
+
+188
+00:08:53.140 --> 00:08:55.220 align:middle line:90%
+anything that's empty.
+
+189
+00:08:55.220 --> 00:08:57.505 align:middle line:84%
+So another way of looking
+at that is we only--
+
+190
+00:08:57.505 --> 00:09:03.660 align:middle line:84%
+the filter only lets through
+elements that are non-empty--
+
+191
+00:09:03.660 --> 00:09:04.860 align:middle line:90%
+that's how you read that.
+
+192
+00:09:04.860 --> 00:09:08.070 align:middle line:84%
+So we'll have non-empty
+search results come through.
+
+193
+00:09:08.070 --> 00:09:10.210 align:middle line:84%
+And there's a couple of
+different ways to do that.
+
+194
+00:09:10.210 --> 00:09:13.560 align:middle line:84%
+This way I show here, which
+is kind of the way I like--
+
+195
+00:09:13.560 --> 00:09:18.120 align:middle line:84%
+because I am admittedly a
+former C++ programmer and I like
+
+196
+00:09:18.120 --> 00:09:21.330 align:middle line:84%
+the way that STL provided
+composition of functors
+
+197
+00:09:21.330 --> 00:09:23.350 align:middle line:90%
+and adapters, and so on.
+
+198
+00:09:23.350 --> 00:09:26.700 align:middle line:84%
+So I basically use a negator
+predicate lambda in conjunction
+
+199
+00:09:26.700 --> 00:09:30.900 align:middle line:84%
+with a method reference for the
+isEmpty method in the search
+
+200
+00:09:30.900 --> 00:09:32.490 align:middle line:90%
+results class.
+
+201
+00:09:32.490 --> 00:09:35.087 align:middle line:84%
+So I only let things
+through that are non-empty.
+
+202
+00:09:35.087 --> 00:09:36.670 align:middle line:84%
+There's other ways
+to do this, though.
+
+203
+00:09:36.670 --> 00:09:40.720 align:middle line:84%
+One way to do this would be
+to take SearchResults isEmpty
+
+204
+00:09:40.720 --> 00:09:43.390 align:middle line:84%
+and cast it to be a
+predicate, and then
+
+205
+00:09:43.390 --> 00:09:46.030 align:middle line:90%
+call the negate method on it.
+
+206
+00:09:46.030 --> 00:09:49.030 align:middle line:84%
+And that's what's often
+called a composed predicate,
+
+207
+00:09:49.030 --> 00:09:50.740 align:middle line:90%
+so I could do it that way.
+
+208
+00:09:50.740 --> 00:09:55.320 align:middle line:84%
+Or, an even simpler way to do it
+is to use a lambda expression,
+
+209
+00:09:55.320 --> 00:09:57.120 align:middle line:84%
+where I take a search
+result and I say,
+
+210
+00:09:57.120 --> 00:09:59.620 align:middle line:84%
+hey, is the search result
+size greater than zero?
+
+211
+00:09:59.620 --> 00:10:03.170 align:middle line:84%
+If the answer is
+no, I ignore it.
+
+212
+00:10:03.170 --> 00:10:07.450 align:middle line:84%
+If the answer is yes, I let
+it pass through the filter.
+
+213
+00:10:07.450 --> 00:10:11.800 align:middle line:84%
+Map and filter, of course, are
+both intermediate operations.
+
+214
+00:10:11.800 --> 00:10:14.200 align:middle line:84%
+There are no control
+constructs in this code.
+
+215
+00:10:14.200 --> 00:10:15.070 align:middle line:90%
+So there's no loops.
+
+216
+00:10:15.070 --> 00:10:15.910 align:middle line:90%
+There's no if statements.
+
+217
+00:10:15.910 --> 00:10:17.618 align:middle line:84%
+So you can just read
+this thing linearly.
+
+218
+00:10:17.618 --> 00:10:20.410 align:middle line:84%
+You just say, make
+a stream of phrases.
+
+219
+00:10:20.410 --> 00:10:23.590 align:middle line:84%
+Search for the phrases, filter
+out the empty search results,
+
+220
+00:10:23.590 --> 00:10:27.070 align:middle line:84%
+and then the last thing we do
+is we collect everything up
+
+221
+00:10:27.070 --> 00:10:30.520 align:middle line:90%
+into a list of search results.
+
+222
+00:10:30.520 --> 00:10:33.520 align:middle line:84%
+As always, collect triggers
+intermediate operation
+
+223
+00:10:33.520 --> 00:10:36.250 align:middle line:84%
+processing and
+yields a result which
+
+224
+00:10:36.250 --> 00:10:40.660 align:middle line:84%
+is a list, which of course, is
+implemented as an array list.
+
+225
+00:10:40.660 --> 00:10:44.350 align:middle line:84%
+And we'll talk about how the
+toList factor method works
+
+226
+00:10:44.350 --> 00:10:47.830 align:middle line:84%
+later, when we talk about
+the predefined non-concurrent
+
+227
+00:10:47.830 --> 00:10:51.040 align:middle line:84%
+collectors that come out of
+the box with the Java Streams
+
+228
+00:10:51.040 --> 00:10:53.310 align:middle line:90%
+package.
+
+229
+00:10:53.310 --> 00:10:56.550 align:middle line:84%
+Again, a nice thing about this
+is that collect and toList
+
+230
+00:10:56.550 --> 00:10:59.500 align:middle line:84%
+work together to allocate
+all the memory we need here.
+
+231
+00:10:59.500 --> 00:11:02.580 align:middle line:84%
+And so this is a lot less error
+prone than the OO version.
+
+232
+00:11:02.580 --> 00:11:07.290 align:middle line:84%
+So no control constructs and
+no explicit memory allocation,
+
+233
+00:11:07.290 --> 00:11:10.650 align:middle line:84%
+can read the thing top to
+bottom, much less tedious, much
+
+234
+00:11:10.650 --> 00:11:11.730 align:middle line:90%
+less error prone--
+
+235
+00:11:11.730 --> 00:11:14.280 align:middle line:84%
+just a big win all
+the way around.
+
+236
+00:11:14.280 --> 00:11:17.670 align:middle line:84%
+We end up with a list of
+search results as the results
+
+237
+00:11:17.670 --> 00:11:20.310 align:middle line:90%
+of this terminal operation.
+
+238
+00:11:20.310 --> 00:11:23.490 align:middle line:84%
+And this then gets returned
+as the return value
+
+239
+00:11:23.490 --> 00:11:25.965 align:middle line:90%
+from the processInput methods.
+
+240
+00:11:25.965 --> 00:11:29.280 align:middle line:84%
+So processInput returns a
+list of search results, which
+
+241
+00:11:29.280 --> 00:11:33.330 align:middle line:84%
+will then be used and combined
+by processStream to end up
+
+242
+00:11:33.330 --> 00:11:35.920 align:middle line:84%
+with a list of list
+of search results
+
+243
+00:11:35.920 --> 00:11:38.160 align:middle line:84%
+and we'll talk shortly
+about how that all gets
+
+244
+00:11:38.160 --> 00:11:42.150 align:middle line:84%
+flattened out as we go a
+little further into our lessons
+
+245
+00:11:42.150 --> 00:11:43.970 align:middle line:90%
+this week.

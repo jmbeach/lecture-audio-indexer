@@ -1,0 +1,873 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:01.090 align:middle line:90%
+
+
+2
+00:00:01.090 --> 00:00:04.360 align:middle line:84%
+So now that we've spend some
+time visualizing printPhrases,
+
+3
+00:00:04.360 --> 00:00:06.490 align:middle line:84%
+let's go take a
+little closer look
+
+4
+00:00:06.490 --> 00:00:10.420 align:middle line:84%
+at its actual
+implementation logic.
+
+5
+00:00:10.420 --> 00:00:12.610 align:middle line:84%
+And the implementation,
+of course,
+
+6
+00:00:12.610 --> 00:00:16.660 align:middle line:84%
+is going to use all the streams
+mechanisms we've talked about
+
+7
+00:00:16.660 --> 00:00:23.190 align:middle line:84%
+as well as some other fun things
+that come from Java 8 maps.
+
+8
+00:00:23.190 --> 00:00:26.820 align:middle line:84%
+So printPhrases uses
+a stream to convert
+
+9
+00:00:26.820 --> 00:00:29.670 align:middle line:84%
+a list of lists of
+search results to a map
+
+10
+00:00:29.670 --> 00:00:33.333 align:middle line:84%
+that associates phrases found
+in the input with the works
+
+11
+00:00:33.333 --> 00:00:34.250 align:middle line:90%
+where they were found.
+
+12
+00:00:34.250 --> 00:00:37.000 align:middle line:84%
+So I've kind of showed
+you that from before.
+
+13
+00:00:37.000 --> 00:00:39.910 align:middle line:84%
+So here's the way the
+implementation works.
+
+14
+00:00:39.910 --> 00:00:43.680 align:middle line:84%
+As you can see, printPhrases
+is passed a list
+
+15
+00:00:43.680 --> 00:00:45.660 align:middle line:90%
+of list of search results.
+
+16
+00:00:45.660 --> 00:00:48.330 align:middle line:84%
+And that list of lists
+of search results
+
+17
+00:00:48.330 --> 00:00:51.000 align:middle line:84%
+was actually obtained from
+the process stream methods.
+
+18
+00:00:51.000 --> 00:00:55.080 align:middle line:84%
+A process stream got back the
+list of list of search results.
+
+19
+00:00:55.080 --> 00:00:57.990 align:middle line:84%
+And then, at some point,
+the printPhrases method
+
+20
+00:00:57.990 --> 00:01:01.100 align:middle line:90%
+is called passing that is input.
+
+21
+00:01:01.100 --> 00:01:03.370 align:middle line:84%
+The first thing we do
+here is we take our list
+
+22
+00:01:03.370 --> 00:01:05.620 align:middle line:90%
+of list of search results.
+
+23
+00:01:05.620 --> 00:01:09.440 align:middle line:84%
+And we convert it into a stream
+of lists of search results.
+
+24
+00:01:09.440 --> 00:01:09.940 align:middle line:90%
+Sorry.
+
+25
+00:01:09.940 --> 00:01:12.520 align:middle line:84%
+It's a bit of a mouthful
+to keep saying this.
+
+26
+00:01:12.520 --> 00:01:16.460 align:middle line:84%
+So we'll now have a stream
+of lists of search results.
+
+27
+00:01:16.460 --> 00:01:21.730 align:middle line:84%
+Keeping in mind that some
+of these lists of results
+
+28
+00:01:21.730 --> 00:01:23.360 align:middle line:90%
+will be empty.
+
+29
+00:01:23.360 --> 00:01:27.610 align:middle line:84%
+So to deal with this, we then
+type the output of stream
+
+30
+00:01:27.610 --> 00:01:31.360 align:middle line:84%
+into the flat map
+intermediate operation.
+
+31
+00:01:31.360 --> 00:01:35.500 align:middle line:84%
+And the output a flat map
+will be the flattened stream
+
+32
+00:01:35.500 --> 00:01:40.052 align:middle line:84%
+of lists of search results into
+a stream of search results.
+
+33
+00:01:40.052 --> 00:01:41.760 align:middle line:84%
+So that's why I always
+like to show the--
+
+34
+00:01:41.760 --> 00:01:44.750 align:middle line:84%
+I always like to try to show
+the bulldozer to illustrate
+
+35
+00:01:44.750 --> 00:01:46.570 align:middle line:90%
+it's flattened everything out.
+
+36
+00:01:46.570 --> 00:01:51.280 align:middle line:84%
+And that works by combining
+flat map with List::stream.
+
+37
+00:01:51.280 --> 00:01:55.300 align:middle line:84%
+That knows how to do these magic
+things to lists to convert them
+
+38
+00:01:55.300 --> 00:01:59.550 align:middle line:84%
+into streams and also to throw
+out any of the empty lists
+
+39
+00:01:59.550 --> 00:02:03.530 align:middle line:84%
+so those empty lists of search
+results are just ignored.
+
+40
+00:02:03.530 --> 00:02:06.770 align:middle line:84%
+So we don't include
+them in the stream.
+
+41
+00:02:06.770 --> 00:02:08.758 align:middle line:84%
+So the key point to
+take away from this--
+
+42
+00:02:08.758 --> 00:02:09.800 align:middle line:90%
+or one of the key points.
+
+43
+00:02:09.800 --> 00:02:11.340 align:middle line:84%
+Ther's a number of key points
+to take away from this.
+
+44
+00:02:11.340 --> 00:02:13.798 align:middle line:84%
+But one of the key points to
+take away from this discussion
+
+45
+00:02:13.798 --> 00:02:17.990 align:middle line:84%
+is that flat map
+can return an output
+
+46
+00:02:17.990 --> 00:02:21.830 align:middle line:84%
+stream that differs from
+the number of input stream
+
+47
+00:02:21.830 --> 00:02:22.790 align:middle line:90%
+elements.
+
+48
+00:02:22.790 --> 00:02:25.430 align:middle line:84%
+This is obviously very
+different from map.
+
+49
+00:02:25.430 --> 00:02:27.740 align:middle line:84%
+Always has to return
+an output stream that
+
+50
+00:02:27.740 --> 00:02:31.770 align:middle line:84%
+has the same number of
+input stream elements.
+
+51
+00:02:31.770 --> 00:02:37.140 align:middle line:84%
+Filter either returns less
+than or equal but flat map
+
+52
+00:02:37.140 --> 00:02:42.280 align:middle line:84%
+can actually return equal,
+less than, or greater than.
+
+53
+00:02:42.280 --> 00:02:46.500 align:middle line:84%
+Now in this particular
+example, the number
+
+54
+00:02:46.500 --> 00:02:48.510 align:middle line:84%
+of input elements
+coming into flat map
+
+55
+00:02:48.510 --> 00:02:52.500 align:middle line:84%
+will be however many lists
+of lists of search results
+
+56
+00:02:52.500 --> 00:02:53.170 align:middle line:90%
+there are.
+
+57
+00:02:53.170 --> 00:02:57.300 align:middle line:84%
+So let's say that there were
+38 works of Shakespeare.
+
+58
+00:02:57.300 --> 00:03:01.890 align:middle line:84%
+We're going to end up with 38
+lists of search results coming
+
+59
+00:03:01.890 --> 00:03:04.040 align:middle line:90%
+into flat map.
+
+60
+00:03:04.040 --> 00:03:08.510 align:middle line:84%
+What comes out of flat
+map depends on basically
+
+61
+00:03:08.510 --> 00:03:11.730 align:middle line:90%
+what phrases happen to match.
+
+62
+00:03:11.730 --> 00:03:14.090 align:middle line:84%
+So if we ended up with a
+handful of phrases that match,
+
+63
+00:03:14.090 --> 00:03:15.770 align:middle line:84%
+we may end up with
+a stream that's
+
+64
+00:03:15.770 --> 00:03:18.890 align:middle line:84%
+much less because all those
+empty lists of search results
+
+65
+00:03:18.890 --> 00:03:20.330 align:middle line:90%
+will all be ignored.
+
+66
+00:03:20.330 --> 00:03:25.190 align:middle line:84%
+Conversely, if we looked up
+dozens or hundreds of phrases,
+
+67
+00:03:25.190 --> 00:03:28.430 align:middle line:84%
+or phrases that matched lots
+of places in Shakespeare,
+
+68
+00:03:28.430 --> 00:03:32.210 align:middle line:84%
+we could very well end up
+with many more search results
+
+69
+00:03:32.210 --> 00:03:32.990 align:middle line:90%
+as the output.
+
+70
+00:03:32.990 --> 00:03:35.540 align:middle line:84%
+So it really kind of
+depends on various factors
+
+71
+00:03:35.540 --> 00:03:38.300 align:middle line:84%
+whether we end up with
+less than, greater than,
+
+72
+00:03:38.300 --> 00:03:41.900 align:middle line:84%
+or equal to number of
+output stream elements
+
+73
+00:03:41.900 --> 00:03:45.690 align:middle line:84%
+relative to the number
+of input stream elements.
+
+74
+00:03:45.690 --> 00:03:47.550 align:middle line:84%
+You could also see
+that flat map is
+
+75
+00:03:47.550 --> 00:03:49.320 align:middle line:84%
+able to transform
+its input stream
+
+76
+00:03:49.320 --> 00:03:52.030 align:middle line:84%
+type into a different
+output stream type.
+
+77
+00:03:52.030 --> 00:03:53.940 align:middle line:84%
+So in this case,
+we take a stream
+
+78
+00:03:53.940 --> 00:03:55.857 align:middle line:84%
+of lists of search
+results and end up
+
+79
+00:03:55.857 --> 00:03:57.190 align:middle line:90%
+with a stream of search results.
+
+80
+00:03:57.190 --> 00:03:59.670 align:middle line:84%
+So that's obviously
+a change in type.
+
+81
+00:03:59.670 --> 00:04:02.910 align:middle line:90%
+
+
+82
+00:04:02.910 --> 00:04:05.490 align:middle line:84%
+So the next thing
+that happens is
+
+83
+00:04:05.490 --> 00:04:08.250 align:middle line:84%
+we trigger the intermediate
+processing operation,
+
+84
+00:04:08.250 --> 00:04:12.390 align:middle line:84%
+the flat map call essentially,
+by having collect run.
+
+85
+00:04:12.390 --> 00:04:14.310 align:middle line:90%
+That calls grouping by.
+
+86
+00:04:14.310 --> 00:04:18.870 align:middle line:84%
+And that will group the elements
+via the classification function
+
+87
+00:04:18.870 --> 00:04:21.209 align:middle line:84%
+and return the
+results into a map.
+
+88
+00:04:21.209 --> 00:04:24.990 align:middle line:84%
+And so you can see here that
+the classification function
+
+89
+00:04:24.990 --> 00:04:28.140 align:middle line:84%
+will create keys
+in the map based
+
+90
+00:04:28.140 --> 00:04:30.040 align:middle line:90%
+on the titles of the plays.
+
+91
+00:04:30.040 --> 00:04:32.080 align:middle line:90%
+So each key will be the title.
+
+92
+00:04:32.080 --> 00:04:35.100 align:middle line:84%
+So the Tragedy of Hamlet,
+Prince of Denmark,
+
+93
+00:04:35.100 --> 00:04:38.240 align:middle line:84%
+the Tragedy of Julius Caesar,
+the Tragedy of Macbeth,
+
+94
+00:04:38.240 --> 00:04:39.520 align:middle line:90%
+blah, blah, blah.
+
+95
+00:04:39.520 --> 00:04:42.150 align:middle line:84%
+So those will end up
+being the keys in the map.
+
+96
+00:04:42.150 --> 00:04:44.220 align:middle line:84%
+And then the type of map
+we're going to use here
+
+97
+00:04:44.220 --> 00:04:46.350 align:middle line:84%
+will be a tree map,
+although it really
+
+98
+00:04:46.350 --> 00:04:48.910 align:middle line:84%
+could be anything we want
+doesn't really matter.
+
+99
+00:04:48.910 --> 00:04:52.950 align:middle line:84%
+And the last piece here that
+we pass into grouping by
+
+100
+00:04:52.950 --> 00:04:56.130 align:middle line:84%
+is the downstream collector,
+which in this case
+
+101
+00:04:56.130 --> 00:04:58.320 align:middle line:84%
+will create a list
+collector that's
+
+102
+00:04:58.320 --> 00:05:01.470 align:middle line:84%
+applied to the results of
+the classification function.
+
+103
+00:05:01.470 --> 00:05:02.970 align:middle line:84%
+So that's just a
+fancy way of saying
+
+104
+00:05:02.970 --> 00:05:07.530 align:middle line:84%
+that what you end up doing here
+is you end up taking the title
+
+105
+00:05:07.530 --> 00:05:09.150 align:middle line:90%
+and using that as the key.
+
+106
+00:05:09.150 --> 00:05:12.800 align:middle line:84%
+And then you take what the
+search result that corresponded
+
+107
+00:05:12.800 --> 00:05:16.350 align:middle line:84%
+to the title and you
+add that to the end
+
+108
+00:05:16.350 --> 00:05:19.710 align:middle line:84%
+of a list that will
+grow as we end up
+
+109
+00:05:19.710 --> 00:05:23.560 align:middle line:84%
+with matching phrases that
+match that particular title.
+
+110
+00:05:23.560 --> 00:05:25.980 align:middle line:84%
+So we'll end up with a
+list of search results, one
+
+111
+00:05:25.980 --> 00:05:29.880 align:middle line:90%
+for everything that matched.
+
+112
+00:05:29.880 --> 00:05:32.930 align:middle line:84%
+Now what we end up
+with here is a map
+
+113
+00:05:32.930 --> 00:05:36.530 align:middle line:84%
+which maps strings, which
+are the titles to the list
+
+114
+00:05:36.530 --> 00:05:38.180 align:middle line:84%
+of search results,
+which correspond
+
+115
+00:05:38.180 --> 00:05:42.263 align:middle line:84%
+to where the phrases were
+actually found in the input.
+
+116
+00:05:42.263 --> 00:05:44.180 align:middle line:84%
+And I happened to write
+the code this way just
+
+117
+00:05:44.180 --> 00:05:47.300 align:middle line:84%
+to make it a little bit more
+clear that we had a map here.
+
+118
+00:05:47.300 --> 00:05:49.770 align:middle line:84%
+If you think back to some
+of our earlier discussions,
+
+119
+00:05:49.770 --> 00:05:54.410 align:middle line:84%
+we talked about things like
+the print suffix slice method.
+
+120
+00:05:54.410 --> 00:05:58.460 align:middle line:84%
+In that example, I didn't have
+any intermediate variables.
+
+121
+00:05:58.460 --> 00:06:00.210 align:middle line:84%
+This time I have
+intermediate variables.
+
+122
+00:06:00.210 --> 00:06:01.710 align:middle line:84%
+It just makes it a
+little bit easier
+
+123
+00:06:01.710 --> 00:06:04.170 align:middle line:90%
+to explain what's going on.
+
+124
+00:06:04.170 --> 00:06:05.650 align:middle line:90%
+So we now take our map--
+
+125
+00:06:05.650 --> 00:06:09.480 align:middle line:84%
+so we have a map of strings
+to list of search results.
+
+126
+00:06:09.480 --> 00:06:11.197 align:middle line:90%
+And we use the forEach method.
+
+127
+00:06:11.197 --> 00:06:12.780 align:middle line:84%
+This is, of course,
+the forEach method
+
+128
+00:06:12.780 --> 00:06:15.900 align:middle line:84%
+that's defined on the
+map not on the stream.
+
+129
+00:06:15.900 --> 00:06:17.880 align:middle line:84%
+And what this
+forEach method does
+
+130
+00:06:17.880 --> 00:06:21.550 align:middle line:84%
+is we use a lambda
+expression as a parameter.
+
+131
+00:06:21.550 --> 00:06:23.760 align:middle line:84%
+And you can see it
+today's key value
+
+132
+00:06:23.760 --> 00:06:27.840 align:middle line:84%
+pairs using Java's wonderful
+type deduction mechanism.
+
+133
+00:06:27.840 --> 00:06:29.970 align:middle line:84%
+Key, of course, is
+going to be a string.
+
+134
+00:06:29.970 --> 00:06:33.030 align:middle line:84%
+And value, of course, will
+be a list of search results.
+
+135
+00:06:33.030 --> 00:06:36.420 align:middle line:84%
+And it will iterate through all
+the key value pairs in the map.
+
+136
+00:06:36.420 --> 00:06:38.550 align:middle line:84%
+And it'll print
+out the key, which
+
+137
+00:06:38.550 --> 00:06:43.680 align:middle line:84%
+will be the title, like Tragedy
+of Hamlet, Tragedy of Julius
+
+138
+00:06:43.680 --> 00:06:45.270 align:middle line:90%
+Caesar, and so on.
+
+139
+00:06:45.270 --> 00:06:48.180 align:middle line:84%
+And then it'll go
+ahead and for each
+
+140
+00:06:48.180 --> 00:06:52.020 align:middle line:84%
+of the elements in the
+list, each of the search
+
+141
+00:06:52.020 --> 00:06:55.620 align:middle line:84%
+results in the list, where
+it says value.forEach,
+
+142
+00:06:55.620 --> 00:06:59.160 align:middle line:84%
+that's for each of the elements
+in the list of search results.
+
+143
+00:06:59.160 --> 00:07:02.972 align:middle line:84%
+We will go ahead and print out
+each of the search results.
+
+144
+00:07:02.972 --> 00:07:05.430 align:middle line:84%
+So that will go ahead and print
+out each of the phrases one
+
+145
+00:07:05.430 --> 00:07:06.360 align:middle line:90%
+at the time.
+
+146
+00:07:06.360 --> 00:07:10.710 align:middle line:84%
+And of course, that'll all occur
+under the heading of the title
+
+147
+00:07:10.710 --> 00:07:13.690 align:middle line:90%
+of the play, which was the key.
+
+148
+00:07:13.690 --> 00:07:16.240 align:middle line:84%
+So hopefully that
+makes some sense.
+
+149
+00:07:16.240 --> 00:07:18.430 align:middle line:90%
+I think it's super cool.
+
+150
+00:07:18.430 --> 00:07:21.990 align:middle line:84%
+This example is
+very, very concise.
+
+151
+00:07:21.990 --> 00:07:23.700 align:middle line:90%
+It's very clean.
+
+152
+00:07:23.700 --> 00:07:31.110 align:middle line:84%
+We use the flat map to eliminate
+the empty list of search
+
+153
+00:07:31.110 --> 00:07:31.680 align:middle line:90%
+results.
+
+154
+00:07:31.680 --> 00:07:35.580 align:middle line:84%
+We use collect grouping by to
+combine everything together
+
+155
+00:07:35.580 --> 00:07:37.320 align:middle line:90%
+in a nice clean way.
+
+156
+00:07:37.320 --> 00:07:40.410 align:middle line:84%
+We use the forEach method on
+map to go through the keys
+
+157
+00:07:40.410 --> 00:07:42.250 align:middle line:90%
+and values and print them out.
+
+158
+00:07:42.250 --> 00:07:44.370 align:middle line:84%
+And if you go back
+and think about how
+
+159
+00:07:44.370 --> 00:07:47.202 align:middle line:84%
+you would write this code with
+the object-oriented solution,
+
+160
+00:07:47.202 --> 00:07:48.660 align:middle line:84%
+I think you'll
+quickly see it would
+
+161
+00:07:48.660 --> 00:07:50.580 align:middle line:90%
+be a lot more complicated.
+
+162
+00:07:50.580 --> 00:07:52.830 align:middle line:84%
+I probably actually should
+go back in and do that just
+
+163
+00:07:52.830 --> 00:07:54.340 align:middle line:90%
+for kicks to see how it looks.
+
+164
+00:07:54.340 --> 00:07:57.960 align:middle line:84%
+But I think it would be much
+longer, much more convoluted.
+
+165
+00:07:57.960 --> 00:08:01.350 align:middle line:84%
+You'd have all kinds of
+variables being defined,
+
+166
+00:08:01.350 --> 00:08:03.610 align:middle line:84%
+and control constructs,
+and so on and so forth.
+
+167
+00:08:03.610 --> 00:08:04.600 align:middle line:90%
+It would just be ugly.
+
+168
+00:08:04.600 --> 00:08:08.130 align:middle line:90%
+So this is a lot cleaner.
+
+169
+00:08:08.130 --> 00:08:10.750 align:middle line:84%
+As I mentioned before,
+if you're so inclined,
+
+170
+00:08:10.750 --> 00:08:13.950 align:middle line:84%
+you can get rid of that
+map local variable.
+
+171
+00:08:13.950 --> 00:08:16.917 align:middle line:84%
+Can go from this
+code to this code.
+
+172
+00:08:16.917 --> 00:08:18.750 align:middle line:84%
+This code, of course,
+is a bit more concise.
+
+173
+00:08:18.750 --> 00:08:23.250 align:middle line:84%
+But until you really get
+your head around Java 8,
+
+174
+00:08:23.250 --> 00:08:26.650 align:middle line:84%
+and Java functional programming,
+and Java streams and so on,
+
+175
+00:08:26.650 --> 00:08:28.830 align:middle line:84%
+it could be a bit
+harder to understand.
+
+176
+00:08:28.830 --> 00:08:32.159 align:middle line:84%
+If you have a good text editor,
+a good interactive development
+
+177
+00:08:32.159 --> 00:08:35.398 align:middle line:84%
+environment, it'll probably help
+to show you what the types are
+
+178
+00:08:35.398 --> 00:08:37.440 align:middle line:84%
+and make it a little bit
+clearer what's going on.
+
+179
+00:08:37.440 --> 00:08:41.580 align:middle line:84%
+But I probably would prefer
+to read code like this
+
+180
+00:08:41.580 --> 00:08:43.890 align:middle line:84%
+although if I'm trying
+to be clever and cute
+
+181
+00:08:43.890 --> 00:08:46.380 align:middle line:84%
+I might prefer to write code
+like that just because you
+
+182
+00:08:46.380 --> 00:08:51.680 align:middle line:84%
+can put everything together in
+one cohesive, fluent interface.
