@@ -1,0 +1,763 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.500 align:middle line:90%
+
+
+2
+00:00:00.500 --> 00:00:02.910 align:middle line:84%
+So now that we've finished
+with our discussion
+
+3
+00:00:02.910 --> 00:00:05.790 align:middle line:84%
+of the simple search
+stream example,
+
+4
+00:00:05.790 --> 00:00:08.910 align:middle line:84%
+we can kind of move
+on to another topic
+
+5
+00:00:08.910 --> 00:00:12.660 align:middle line:84%
+that I've alluded to throughout
+earlier lessons in earlier
+
+6
+00:00:12.660 --> 00:00:15.930 align:middle line:84%
+weeks, but we really haven't
+explored in great detail
+
+7
+00:00:15.930 --> 00:00:17.190 align:middle line:90%
+until now.
+
+8
+00:00:17.190 --> 00:00:20.670 align:middle line:84%
+And this topic, of course,
+will be internal versus
+
+9
+00:00:20.670 --> 00:00:23.480 align:middle line:90%
+external iterators in Java.
+
+10
+00:00:23.480 --> 00:00:27.020 align:middle line:84%
+So in this lesson, I'll
+explain the difference
+
+11
+00:00:27.020 --> 00:00:29.412 align:middle line:84%
+between internal and
+external iterators
+
+12
+00:00:29.412 --> 00:00:30.620 align:middle line:90%
+and how they're used in Java.
+
+13
+00:00:30.620 --> 00:00:32.313 align:middle line:84%
+And I think some of
+this will be review,
+
+14
+00:00:32.313 --> 00:00:33.980 align:middle line:84%
+but it'll also give
+us a chance to delve
+
+15
+00:00:33.980 --> 00:00:36.680 align:middle line:84%
+a little deeper into
+what's actually happening
+
+16
+00:00:36.680 --> 00:00:39.890 align:middle line:84%
+and how to make it work
+effectively for you.
+
+17
+00:00:39.890 --> 00:00:44.240 align:middle line:84%
+So Java programmers
+before Java 8, of course,
+
+18
+00:00:44.240 --> 00:00:46.280 align:middle line:90%
+have historically--
+
+19
+00:00:46.280 --> 00:00:51.552 align:middle line:84%
+had to before Java 8 iterate
+through collections externally.
+
+20
+00:00:51.552 --> 00:00:53.510 align:middle line:84%
+So this is kind of a
+visualization illustrating
+
+21
+00:00:53.510 --> 00:00:54.010 align:middle line:90%
+the point.
+
+22
+00:00:54.010 --> 00:00:56.390 align:middle line:84%
+Let's say we have
+a Java collection.
+
+23
+00:00:56.390 --> 00:00:58.520 align:middle line:84%
+And then you would
+have some kind of loop
+
+24
+00:00:58.520 --> 00:01:00.110 align:middle line:90%
+like a forEach loop.
+
+25
+00:01:00.110 --> 00:01:02.450 align:middle line:84%
+And this loop
+obviously has to exist
+
+26
+00:01:02.450 --> 00:01:04.280 align:middle line:90%
+outside of any collection.
+
+27
+00:01:04.280 --> 00:01:08.000 align:middle line:84%
+It's just part of the
+Java control constructs,
+
+28
+00:01:08.000 --> 00:01:09.740 align:middle line:90%
+the iteration constructs.
+
+29
+00:01:09.740 --> 00:01:13.640 align:middle line:84%
+And it would then invoke
+application-supplied code
+
+30
+00:01:13.640 --> 00:01:16.430 align:middle line:84%
+on each element, which is
+what the forEach loop returns
+
+31
+00:01:16.430 --> 00:01:21.600 align:middle line:84%
+from the collection, during
+the external iteration process.
+
+32
+00:01:21.600 --> 00:01:23.533 align:middle line:84%
+So here's just a
+very simple example.
+
+33
+00:01:23.533 --> 00:01:24.950 align:middle line:84%
+This is sort of
+the visualization.
+
+34
+00:01:24.950 --> 00:01:26.430 align:middle line:90%
+This is the code.
+
+35
+00:01:26.430 --> 00:01:31.370 align:middle line:84%
+So let's say that we had a list
+of names, which would be Larry,
+
+36
+00:01:31.370 --> 00:01:33.470 align:middle line:90%
+Curly, Moe, the Three Stooges.
+
+37
+00:01:33.470 --> 00:01:35.870 align:middle line:84%
+I always like to use the
+Three Stooges for stuff.
+
+38
+00:01:35.870 --> 00:01:38.570 align:middle line:84%
+And then we're going to go
+ahead and have a for loop.
+
+39
+00:01:38.570 --> 00:01:40.190 align:middle line:90%
+And this is a forEach loop.
+
+40
+00:01:40.190 --> 00:01:42.680 align:middle line:84%
+And this forEach loop will
+iterate through the collection
+
+41
+00:01:42.680 --> 00:01:44.180 align:middle line:90%
+externally.
+
+42
+00:01:44.180 --> 00:01:46.640 align:middle line:84%
+As you can see, we
+give it the name list,
+
+43
+00:01:46.640 --> 00:01:50.360 align:middle line:84%
+which gives us back a
+string name for each element
+
+44
+00:01:50.360 --> 00:01:51.920 align:middle line:90%
+in the name list.
+
+45
+00:01:51.920 --> 00:01:56.080 align:middle line:84%
+And then we apply some
+app-specific or app-supplied
+
+46
+00:01:56.080 --> 00:01:56.780 align:middle line:90%
+action.
+
+47
+00:01:56.780 --> 00:02:00.540 align:middle line:84%
+In this case, it's just
+printing the name to the output.
+
+48
+00:02:00.540 --> 00:02:02.720 align:middle line:84%
+So that's kind of the
+classic way of doing things.
+
+49
+00:02:02.720 --> 00:02:07.850 align:middle line:84%
+If we wanted to use an even
+more overt iteration pattern,
+
+50
+00:02:07.850 --> 00:02:10.080 align:middle line:90%
+we could use Java iterators.
+
+51
+00:02:10.080 --> 00:02:12.080 align:middle line:84%
+So Java iterators
+are an implementation
+
+52
+00:02:12.080 --> 00:02:15.080 align:middle line:84%
+of the iterator pattern from the
+so-called Gang of Four Design
+
+53
+00:02:15.080 --> 00:02:16.760 align:middle line:90%
+Patterns catalog book.
+
+54
+00:02:16.760 --> 00:02:19.490 align:middle line:84%
+And in this case, we're going
+to have an iterator to a string.
+
+55
+00:02:19.490 --> 00:02:22.760 align:middle line:84%
+We go ahead and get an
+iterator for this list.
+
+56
+00:02:22.760 --> 00:02:24.830 align:middle line:84%
+And then while there's
+something left,
+
+57
+00:02:24.830 --> 00:02:28.430 align:middle line:84%
+we go ahead and print out the
+next element in the collection.
+
+58
+00:02:28.430 --> 00:02:31.520 align:middle line:84%
+So I think you'll agree with
+me that this implementation
+
+59
+00:02:31.520 --> 00:02:36.470 align:middle line:84%
+and this implementation
+both iterate externally
+
+60
+00:02:36.470 --> 00:02:38.660 align:middle line:90%
+in the data structure.
+
+61
+00:02:38.660 --> 00:02:42.030 align:middle line:84%
+This is not behavior that's
+done inside of the list,
+
+62
+00:02:42.030 --> 00:02:42.530 align:middle line:90%
+for example.
+
+63
+00:02:42.530 --> 00:02:45.500 align:middle line:90%
+
+
+64
+00:02:45.500 --> 00:02:50.450 align:middle line:84%
+So in contrast, aggregate
+operations in Java
+
+65
+00:02:50.450 --> 00:02:54.260 align:middle line:84%
+are responsible for iterating
+through Java Streams
+
+66
+00:02:54.260 --> 00:02:55.760 align:middle line:90%
+internally.
+
+67
+00:02:55.760 --> 00:02:59.600 align:middle line:84%
+And so what happens here is
+that application-specific code
+
+68
+00:02:59.600 --> 00:03:03.800 align:middle line:90%
+is passed into the framework.
+
+69
+00:03:03.800 --> 00:03:05.840 align:middle line:84%
+And then the Java
+stream will invoke
+
+70
+00:03:05.840 --> 00:03:09.440 align:middle line:84%
+this code on each stream element
+during the internal iteration
+
+71
+00:03:09.440 --> 00:03:10.320 align:middle line:90%
+process.
+
+72
+00:03:10.320 --> 00:03:12.590 align:middle line:84%
+So some type of
+aggregate operation
+
+73
+00:03:12.590 --> 00:03:16.250 align:middle line:84%
+is going to take some behavior
+and then do something to it.
+
+74
+00:03:16.250 --> 00:03:19.550 align:middle line:84%
+And that's done internally,
+as opposed to being
+
+75
+00:03:19.550 --> 00:03:21.792 align:middle line:90%
+done externally.
+
+76
+00:03:21.792 --> 00:03:23.750 align:middle line:84%
+So once again, that's
+kind of the visualization
+
+77
+00:03:23.750 --> 00:03:25.070 align:middle line:90%
+of the concept.
+
+78
+00:03:25.070 --> 00:03:27.980 align:middle line:84%
+And let's go take a closer
+look at how it might actually
+
+79
+00:03:27.980 --> 00:03:29.840 align:middle line:90%
+work in practice.
+
+80
+00:03:29.840 --> 00:03:34.130 align:middle line:84%
+So as before, we've got
+ourselves a name list
+
+81
+00:03:34.130 --> 00:03:35.473 align:middle line:90%
+containing the Three Stooges.
+
+82
+00:03:35.473 --> 00:03:36.890 align:middle line:84%
+And what we're
+going to do here is
+
+83
+00:03:36.890 --> 00:03:39.620 align:middle line:84%
+we're going to convert
+that list into a stream.
+
+84
+00:03:39.620 --> 00:03:42.810 align:middle line:84%
+So now we have a
+stream of strings.
+
+85
+00:03:42.810 --> 00:03:46.430 align:middle line:84%
+And then what we do is we
+call the forEach method, which
+
+86
+00:03:46.430 --> 00:03:49.040 align:middle line:84%
+is, as you recall at
+this point, I'm sure,
+
+87
+00:03:49.040 --> 00:03:53.698 align:middle line:84%
+a terminal operation defined
+on the stream interface.
+
+88
+00:03:53.698 --> 00:03:55.240 align:middle line:84%
+Remember, it takes
+a stream as input,
+
+89
+00:03:55.240 --> 00:03:57.610 align:middle line:84%
+but does not have
+any stream output.
+
+90
+00:03:57.610 --> 00:03:59.380 align:middle line:84%
+Instead, what it
+does is it's going
+
+91
+00:03:59.380 --> 00:04:02.925 align:middle line:84%
+to perform some action on
+each element in the stream.
+
+92
+00:04:02.925 --> 00:04:04.550 align:middle line:84%
+And in this particular
+case, of course,
+
+93
+00:04:04.550 --> 00:04:06.980 align:middle line:84%
+the action is to
+print the results.
+
+94
+00:04:06.980 --> 00:04:08.620 align:middle line:84%
+So that's pretty
+straightforward.
+
+95
+00:04:08.620 --> 00:04:11.590 align:middle line:84%
+But notice how this
+is done internally.
+
+96
+00:04:11.590 --> 00:04:14.710 align:middle line:90%
+You pass the code into forEach.
+
+97
+00:04:14.710 --> 00:04:18.490 align:middle line:84%
+And that processing is
+done inside the context
+
+98
+00:04:18.490 --> 00:04:19.660 align:middle line:90%
+of the forEach method.
+
+99
+00:04:19.660 --> 00:04:21.850 align:middle line:84%
+So just looking back
+at this slide here,
+
+100
+00:04:21.850 --> 00:04:25.000 align:middle line:84%
+you can see that the stream's
+framework runs the application
+
+101
+00:04:25.000 --> 00:04:25.930 align:middle line:90%
+code.
+
+102
+00:04:25.930 --> 00:04:28.150 align:middle line:84%
+In contrast, if we go
+back to the visualization
+
+103
+00:04:28.150 --> 00:04:31.456 align:middle line:84%
+for the external iterator,
+which I show you here,
+
+104
+00:04:31.456 --> 00:04:34.950 align:middle line:84%
+the forEach loop is outside
+the context of the collection.
+
+105
+00:04:34.950 --> 00:04:38.590 align:middle line:84%
+And it's calling out to
+application-specific code.
+
+106
+00:04:38.590 --> 00:04:40.680 align:middle line:84%
+So it's just kind of
+illustrating the differences
+
+107
+00:04:40.680 --> 00:04:43.440 align:middle line:84%
+in these two different
+ways of doing things.
+
+108
+00:04:43.440 --> 00:04:46.500 align:middle line:84%
+Now, for something as
+simple as printing out
+
+109
+00:04:46.500 --> 00:04:50.060 align:middle line:84%
+the names of the
+Three Stooges, using
+
+110
+00:04:50.060 --> 00:04:54.440 align:middle line:84%
+a forEach loop or an iterator
+or the forEach method,
+
+111
+00:04:54.440 --> 00:04:56.730 align:middle line:90%
+it's probably in the noise.
+
+112
+00:04:56.730 --> 00:04:59.030 align:middle line:90%
+They're all about the same.
+
+113
+00:04:59.030 --> 00:05:01.250 align:middle line:84%
+Internal iterators
+become a lot more useful
+
+114
+00:05:01.250 --> 00:05:07.640 align:middle line:84%
+when stream pipelines become
+more complex and especially,
+
+115
+00:05:07.640 --> 00:05:10.520 align:middle line:84%
+as we'll see later, when
+stream pipelines start
+
+116
+00:05:10.520 --> 00:05:12.890 align:middle line:90%
+to include parallel streams.
+
+117
+00:05:12.890 --> 00:05:17.660 align:middle line:84%
+Then it's way better to use
+internal iteration as opposed
+
+118
+00:05:17.660 --> 00:05:20.847 align:middle line:84%
+to external iteration
+because internal iteration
+
+119
+00:05:20.847 --> 00:05:22.430 align:middle line:84%
+can manage all the
+parallel processing
+
+120
+00:05:22.430 --> 00:05:24.510 align:middle line:90%
+behind the scenes for you.
+
+121
+00:05:24.510 --> 00:05:26.540 align:middle line:84%
+So here's a revisit
+of the example
+
+122
+00:05:26.540 --> 00:05:27.830 align:middle line:90%
+we looked at much earlier.
+
+123
+00:05:27.830 --> 00:05:30.160 align:middle line:84%
+But now that you've
+learned more about internal
+
+124
+00:05:30.160 --> 00:05:31.910 align:middle line:84%
+versus external
+iteration, we can probably
+
+125
+00:05:31.910 --> 00:05:35.000 align:middle line:84%
+talk about this and compare and
+contrast things a little bit
+
+126
+00:05:35.000 --> 00:05:37.580 align:middle line:90%
+more thoroughly.
+
+127
+00:05:37.580 --> 00:05:42.800 align:middle line:84%
+So this is going to take a
+list of URLs or array of URLs
+
+128
+00:05:42.800 --> 00:05:47.410 align:middle line:84%
+and convert this array
+into a stream of URLs,
+
+129
+00:05:47.410 --> 00:05:49.360 align:middle line:90%
+actually strings in this case.
+
+130
+00:05:49.360 --> 00:05:50.830 align:middle line:84%
+Then what we go
+ahead and do is we
+
+131
+00:05:50.830 --> 00:05:54.940 align:middle line:84%
+replace the cse.wustl
+substring with
+
+132
+00:05:54.940 --> 00:05:58.000 align:middle line:90%
+the dre.vanderbilt substring.
+
+133
+00:05:58.000 --> 00:06:02.530 align:middle line:84%
+Then we go ahead and
+convert the strings to URLs.
+
+134
+00:06:02.530 --> 00:06:05.110 align:middle line:84%
+This is using the
+somewhat crufty try
+
+135
+00:06:05.110 --> 00:06:06.670 align:middle line:84%
+catch block approach
+that you would
+
+136
+00:06:06.670 --> 00:06:09.730 align:middle line:84%
+use because the URL
+constructor expects
+
+137
+00:06:09.730 --> 00:06:13.137 align:middle line:90%
+to throw a checked exception.
+
+138
+00:06:13.137 --> 00:06:15.220 align:middle line:84%
+So this is sort of the
+crufty way of doing things.
+
+139
+00:06:15.220 --> 00:06:16.595 align:middle line:84%
+There's a better
+way to do things
+
+140
+00:06:16.595 --> 00:06:18.340 align:middle line:90%
+I'll show you momentarily.
+
+141
+00:06:18.340 --> 00:06:22.190 align:middle line:84%
+And then we go ahead and
+take the stream of URLs
+
+142
+00:06:22.190 --> 00:06:25.260 align:middle line:84%
+that we collected
+into a list of URLs.
+
+143
+00:06:25.260 --> 00:06:30.270 align:middle line:84%
+So that's a way to do this using
+entirely internal iteration.
+
+144
+00:06:30.270 --> 00:06:32.890 align:middle line:84%
+I think it's probably pretty
+clear that checked exceptions
+
+145
+00:06:32.890 --> 00:06:33.390 align:middle line:90%
+are awkward.
+
+146
+00:06:33.390 --> 00:06:36.610 align:middle line:84%
+Checked exceptions just
+suck almost no matter what,
+
+147
+00:06:36.610 --> 00:06:39.060 align:middle line:84%
+but they get really
+ugly when you use them
+
+148
+00:06:39.060 --> 00:06:41.250 align:middle line:90%
+in the context of streams.
+
+149
+00:06:41.250 --> 00:06:44.130 align:middle line:84%
+So an alternative
+way to do things
+
+150
+00:06:44.130 --> 00:06:49.240 align:middle line:84%
+is by using some type of
+exception laundering adapter.
+
+151
+00:06:49.240 --> 00:06:51.870 align:middle line:84%
+And you can see here, here's
+a little example of this.
+
+152
+00:06:51.870 --> 00:06:55.350 align:middle line:84%
+There's a adapter
+called rethrowFunction,
+
+153
+00:06:55.350 --> 00:06:59.280 align:middle line:84%
+which takes a function that
+has a checked exception.
+
+154
+00:06:59.280 --> 00:07:03.150 align:middle line:84%
+And it basically does
+the processing inside
+
+155
+00:07:03.150 --> 00:07:05.490 align:middle line:84%
+of a try catch block
+and then converts
+
+156
+00:07:05.490 --> 00:07:07.830 align:middle line:84%
+the exception that was
+the checked exception
+
+157
+00:07:07.830 --> 00:07:12.240 align:middle line:84%
+into a runtime exception
+or an unchecked exception.
+
+158
+00:07:12.240 --> 00:07:16.590 align:middle line:84%
+So by using the
+rethrowFunction method here,
+
+159
+00:07:16.590 --> 00:07:21.000 align:middle line:84%
+we can get rid of this hideous
+try catch code in our stream
+
+160
+00:07:21.000 --> 00:07:23.550 align:middle line:84%
+and replace it with
+much cleaner, much more
+
+161
+00:07:23.550 --> 00:07:26.840 align:middle line:90%
+concise logic shown here.

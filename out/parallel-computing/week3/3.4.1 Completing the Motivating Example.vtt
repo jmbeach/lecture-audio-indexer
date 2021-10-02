@@ -1,0 +1,546 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.840 align:middle line:90%
+
+
+2
+00:00:00.840 --> 00:00:04.050 align:middle line:84%
+So now that we've talked
+about terminal operations
+
+3
+00:00:04.050 --> 00:00:07.830 align:middle line:84%
+at least enough to kind of
+understand how you use them,
+
+4
+00:00:07.830 --> 00:00:09.960 align:middle line:84%
+though perhaps not how
+to implement things
+
+5
+00:00:09.960 --> 00:00:12.900 align:middle line:84%
+like collectors as we'll
+talk about later, let's now
+
+6
+00:00:12.900 --> 00:00:15.900 align:middle line:84%
+turn our attention to a
+bunch of different examples
+
+7
+00:00:15.900 --> 00:00:18.420 align:middle line:84%
+that illustrate how
+to use all the things
+
+8
+00:00:18.420 --> 00:00:20.110 align:middle line:90%
+we've talked about so far.
+
+9
+00:00:20.110 --> 00:00:22.470 align:middle line:84%
+So the examples we're
+going to talk about here
+
+10
+00:00:22.470 --> 00:00:26.100 align:middle line:84%
+are going to illustrate how
+to use the various factory
+
+11
+00:00:26.100 --> 00:00:28.950 align:middle line:84%
+methods, the various
+intermediate operations,
+
+12
+00:00:28.950 --> 00:00:30.570 align:middle line:84%
+and some of the
+terminal operations
+
+13
+00:00:30.570 --> 00:00:33.900 align:middle line:84%
+that we've talked about to
+do various interesting things
+
+14
+00:00:33.900 --> 00:00:38.580 align:middle line:84%
+in the context of our
+WordSearcher class
+
+15
+00:00:38.580 --> 00:00:42.497 align:middle line:84%
+from our simple search
+stream case study.
+
+16
+00:00:42.497 --> 00:00:44.080 align:middle line:84%
+So we're going to
+start out by looking
+
+17
+00:00:44.080 --> 00:00:46.600 align:middle line:84%
+at the aggregate
+operations, which is just
+
+18
+00:00:46.600 --> 00:00:48.850 align:middle line:84%
+a fancy way of saying the
+intermediate operations
+
+19
+00:00:48.850 --> 00:00:50.830 align:middle line:84%
+and the terminal
+operations, that
+
+20
+00:00:50.830 --> 00:00:55.630 align:middle line:84%
+are part of the simple
+search streams WordSearcher
+
+21
+00:00:55.630 --> 00:00:58.460 align:middle line:90%
+printResult method.
+
+22
+00:00:58.460 --> 00:01:01.900 align:middle line:84%
+So what printResult does
+is it prints the index
+
+23
+00:01:01.900 --> 00:01:04.480 align:middle line:84%
+locations of any
+and all the words
+
+24
+00:01:04.480 --> 00:01:07.670 align:middle line:90%
+that are found in the input.
+
+25
+00:01:07.670 --> 00:01:09.580 align:middle line:84%
+So in this particular
+case, recall
+
+26
+00:01:09.580 --> 00:01:12.940 align:middle line:84%
+that the simple search
+stream program was reading
+
+27
+00:01:12.940 --> 00:01:17.110 align:middle line:84%
+in the lyrics to the do, re,
+mi song from The Sound of Music
+
+28
+00:01:17.110 --> 00:01:19.900 align:middle line:84%
+movie, and then it was
+going to go look up words
+
+29
+00:01:19.900 --> 00:01:22.090 align:middle line:90%
+like do, re, mi, and so on.
+
+30
+00:01:22.090 --> 00:01:24.130 align:middle line:84%
+And the output when
+we print the results
+
+31
+00:01:24.130 --> 00:01:27.820 align:middle line:84%
+will be the index
+locations, the indices,
+
+32
+00:01:27.820 --> 00:01:32.640 align:middle line:84%
+where those words appeared
+in the input string.
+
+33
+00:01:32.640 --> 00:01:34.570 align:middle line:84%
+And as you can see here
+that just kind of what
+
+34
+00:01:34.570 --> 00:01:36.010 align:middle line:90%
+the output looks like.
+
+35
+00:01:36.010 --> 00:01:39.210 align:middle line:84%
+If you recall, we
+used that we're
+
+36
+00:01:39.210 --> 00:01:41.710 align:middle line:84%
+going to be showing some
+cool examples later talking
+
+37
+00:01:41.710 --> 00:01:44.410 align:middle line:84%
+about how we're going to use
+various collectors to give us
+
+38
+00:01:44.410 --> 00:01:46.620 align:middle line:90%
+that cool formatting.
+
+39
+00:01:46.620 --> 00:01:49.440 align:middle line:84%
+This particular method and what
+we're going to walk through
+
+40
+00:01:49.440 --> 00:01:52.770 align:middle line:84%
+will showcase the collect and
+grouping by terminal operation,
+
+41
+00:01:52.770 --> 00:01:55.660 align:middle line:84%
+as well as some other
+intermediate operations.
+
+42
+00:01:55.660 --> 00:01:58.130 align:middle line:84%
+So before we look at
+the code in detail,
+
+43
+00:01:58.130 --> 00:02:02.800 align:middle line:84%
+let's first visualize
+what this program looks
+
+44
+00:02:02.800 --> 00:02:04.720 align:middle line:90%
+like as it's running.
+
+45
+00:02:04.720 --> 00:02:07.390 align:middle line:84%
+If you were to step
+back and be able to look
+
+46
+00:02:07.390 --> 00:02:10.810 align:middle line:84%
+into the memory of the machine
+with some kind of visualizer,
+
+47
+00:02:10.810 --> 00:02:12.830 align:middle line:90%
+this is what it would look like.
+
+48
+00:02:12.830 --> 00:02:15.975 align:middle line:84%
+So recall that the
+search results here--
+
+49
+00:02:15.975 --> 00:02:17.350 align:middle line:84%
+we get a list of
+search results--
+
+50
+00:02:17.350 --> 00:02:20.920 align:middle line:84%
+are the places in
+the input string
+
+51
+00:02:20.920 --> 00:02:24.480 align:middle line:84%
+where the words we're
+looking for occur.
+
+52
+00:02:24.480 --> 00:02:26.130 align:middle line:84%
+So that's a list
+of search results.
+
+53
+00:02:26.130 --> 00:02:28.220 align:middle line:84%
+So we take a list of
+search results in.
+
+54
+00:02:28.220 --> 00:02:30.500 align:middle line:84%
+We convert that list
+of search results
+
+55
+00:02:30.500 --> 00:02:32.820 align:middle line:90%
+into a stream of search results.
+
+56
+00:02:32.820 --> 00:02:36.420 align:middle line:84%
+So now we have a stream
+of search results.
+
+57
+00:02:36.420 --> 00:02:38.790 align:middle line:84%
+And this stream
+of search results
+
+58
+00:02:38.790 --> 00:02:45.730 align:middle line:84%
+is then fed as input into the
+collect terminal operation.
+
+59
+00:02:45.730 --> 00:02:48.810 align:middle line:84%
+So again, this is one of those
+interesting examples where
+
+60
+00:02:48.810 --> 00:02:52.380 align:middle line:84%
+we have a program that just
+goes straight from the stream
+
+61
+00:02:52.380 --> 00:02:55.830 align:middle line:84%
+factory method into
+a terminal operation.
+
+62
+00:02:55.830 --> 00:02:58.090 align:middle line:84%
+And what collect is
+going to do, of course,
+
+63
+00:02:58.090 --> 00:03:00.245 align:middle line:90%
+is it'll trigger the processing.
+
+64
+00:03:00.245 --> 00:03:02.370 align:middle line:84%
+In this case, there are no
+intermediate operations.
+
+65
+00:03:02.370 --> 00:03:05.520 align:middle line:84%
+But it'll start pulling the
+data from the data source,
+
+66
+00:03:05.520 --> 00:03:10.150 align:middle line:84%
+and then it will go ahead
+and group things accordingly.
+
+67
+00:03:10.150 --> 00:03:12.510 align:middle line:84%
+And we'll see how it's
+going to group everything
+
+68
+00:03:12.510 --> 00:03:14.622 align:middle line:84%
+when we look at this
+in a bit more detail.
+
+69
+00:03:14.622 --> 00:03:16.080 align:middle line:84%
+What it's going to
+do is it's going
+
+70
+00:03:16.080 --> 00:03:20.730 align:middle line:84%
+to create a map because
+groupingBy creates a map.
+
+71
+00:03:20.730 --> 00:03:24.000 align:middle line:84%
+And the map will group
+words with the indices
+
+72
+00:03:24.000 --> 00:03:25.450 align:middle line:90%
+where they were found.
+
+73
+00:03:25.450 --> 00:03:27.390 align:middle line:84%
+So we'll basically
+end up with a map
+
+74
+00:03:27.390 --> 00:03:33.330 align:middle line:84%
+that maps strings, namely the
+words, to lists of the search
+
+75
+00:03:33.330 --> 00:03:37.090 align:middle line:90%
+results result objects.
+
+76
+00:03:37.090 --> 00:03:41.740 align:middle line:84%
+Now, what comes out of
+this is a map of strings
+
+77
+00:03:41.740 --> 00:03:43.720 align:middle line:90%
+and lists of search results.
+
+78
+00:03:43.720 --> 00:03:45.460 align:middle line:90%
+That's what's in the map.
+
+79
+00:03:45.460 --> 00:03:47.810 align:middle line:84%
+And what we're going to do
+then is we're going to apply
+
+80
+00:03:47.810 --> 00:03:50.268 align:middle line:84%
+the forEach method-- and we'll
+talk in a second about which
+
+81
+00:03:50.268 --> 00:03:52.060 align:middle line:84%
+forEach method
+this actually is--
+
+82
+00:03:52.060 --> 00:03:55.912 align:middle line:84%
+in order to be able to
+print out all the results.
+
+83
+00:03:55.912 --> 00:03:58.120 align:middle line:84%
+So the forEach method is
+going to iterate through all
+
+84
+00:03:58.120 --> 00:04:00.490 align:middle line:90%
+the key value pairs in the map.
+
+85
+00:04:00.490 --> 00:04:04.570 align:middle line:84%
+And it will call the
+printResult method reference
+
+86
+00:04:04.570 --> 00:04:07.330 align:middle line:90%
+in order to print it.
+
+87
+00:04:07.330 --> 00:04:11.790 align:middle line:84%
+Now, the thing to note here
+is that this forEach method
+
+88
+00:04:11.790 --> 00:04:17.019 align:middle line:84%
+is the maps forEach method,
+not the streams forEach method.
+
+89
+00:04:17.019 --> 00:04:19.800 align:middle line:84%
+And that's because up here,
+we terminated the stream
+
+90
+00:04:19.800 --> 00:04:24.940 align:middle line:84%
+with our call to collect,
+used groupingBy to make a map,
+
+91
+00:04:24.940 --> 00:04:27.910 align:middle line:84%
+and then we went ahead and used
+our fluent interface to call
+
+92
+00:04:27.910 --> 00:04:30.400 align:middle line:90%
+the forEach method on that map.
+
+93
+00:04:30.400 --> 00:04:33.810 align:middle line:84%
+So it can sometimes be
+a little bit unclear
+
+94
+00:04:33.810 --> 00:04:36.660 align:middle line:84%
+when you just look at a
+stream at first glance
+
+95
+00:04:36.660 --> 00:04:39.690 align:middle line:84%
+whether the methods are
+for stream operations
+
+96
+00:04:39.690 --> 00:04:41.695 align:middle line:90%
+or for map operations.
+
+97
+00:04:41.695 --> 00:04:43.320 align:middle line:84%
+It doesn't really
+matter at some level.
+
+98
+00:04:43.320 --> 00:04:45.840 align:middle line:84%
+They get the same result.
+They iterate through
+
+99
+00:04:45.840 --> 00:04:49.050 align:middle line:84%
+and apply some method
+reference with a side effect.
+
+100
+00:04:49.050 --> 00:04:53.730 align:middle line:84%
+But you might in practice
+want to break this up
+
+101
+00:04:53.730 --> 00:04:58.810 align:middle line:84%
+to avoid having to
+fluently glom on forEach
+
+102
+00:04:58.810 --> 00:05:00.400 align:middle line:90%
+after the result of collect.
+
+103
+00:05:00.400 --> 00:05:03.400 align:middle line:84%
+You might want to store collect
+into a local variable called
+
+104
+00:05:03.400 --> 00:05:07.330 align:middle line:84%
+map or something like
+result map or something
+
+105
+00:05:07.330 --> 00:05:09.430 align:middle line:90%
+and then say resultMap.forEach.
+
+106
+00:05:09.430 --> 00:05:13.330 align:middle line:84%
+That could be a little bit more
+clear to the casual reader.
+
+107
+00:05:13.330 --> 00:05:15.160 align:middle line:84%
+But I didn't do
+that here because I
+
+108
+00:05:15.160 --> 00:05:17.470 align:middle line:84%
+didn't want to make
+my slide any more
+
+109
+00:05:17.470 --> 00:05:20.340 align:middle line:90%
+complicated than it already is.
+
+110
+00:05:20.340 --> 00:05:23.100 align:middle line:84%
+Now, as we talked about
+before, the forEach method
+
+111
+00:05:23.100 --> 00:05:25.150 align:middle line:90%
+doesn't return any results.
+
+112
+00:05:25.150 --> 00:05:26.670 align:middle line:90%
+It simply has a side effect.
+
+113
+00:05:26.670 --> 00:05:29.820 align:middle line:84%
+And the side effect here
+is to print out the results
+
+114
+00:05:29.820 --> 00:05:32.180 align:middle line:90%
+to the standard output.

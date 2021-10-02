@@ -1,0 +1,627 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.900 align:middle line:90%
+
+
+2
+00:00:00.900 --> 00:00:03.580 align:middle line:84%
+So now that we've talked about
+the print results method,
+
+3
+00:00:03.580 --> 00:00:06.300 align:middle line:84%
+let's take a look at another
+of the WordSearcher methods.
+
+4
+00:00:06.300 --> 00:00:09.930 align:middle line:84%
+And this one is called
+printSuffixSlice.
+
+5
+00:00:09.930 --> 00:00:14.125 align:middle line:84%
+And as we did with our earlier
+example with print results,
+
+6
+00:00:14.125 --> 00:00:15.750 align:middle line:84%
+we're first going to
+take a look at how
+
+7
+00:00:15.750 --> 00:00:17.190 align:middle line:90%
+to visualize this method.
+
+8
+00:00:17.190 --> 00:00:20.210 align:middle line:84%
+And then we'll take a look
+at how to implement it.
+
+9
+00:00:20.210 --> 00:00:23.095 align:middle line:84%
+So this will give us
+a chance to visualize
+
+10
+00:00:23.095 --> 00:00:24.470 align:middle line:84%
+the aggregate
+operations that are
+
+11
+00:00:24.470 --> 00:00:28.900 align:middle line:84%
+used in the implementation
+of printSuffixSlice.
+
+12
+00:00:28.900 --> 00:00:32.100 align:middle line:84%
+So first, let's talk about
+what printSuffixSlice
+
+13
+00:00:32.100 --> 00:00:33.520 align:middle line:90%
+is trying to do.
+
+14
+00:00:33.520 --> 00:00:37.570 align:middle line:84%
+It's going to print a slice
+of the list of search results,
+
+15
+00:00:37.570 --> 00:00:39.800 align:middle line:90%
+starting at a particular word.
+
+16
+00:00:39.800 --> 00:00:41.800 align:middle line:84%
+So, say, for sake
+of argument, we
+
+17
+00:00:41.800 --> 00:00:46.000 align:middle line:84%
+have a list of search
+results, which are ordered
+
+18
+00:00:46.000 --> 00:00:50.170 align:middle line:90%
+by Do Re Mi Fa So La Ti--
+
+19
+00:00:50.170 --> 00:00:51.580 align:middle line:90%
+those would be the ordering.
+
+20
+00:00:51.580 --> 00:00:56.020 align:middle line:84%
+And we print
+printSuffixSlice La.
+
+21
+00:00:56.020 --> 00:00:58.900 align:middle line:84%
+And what that's going to do
+is that's going to ignore
+
+22
+00:00:58.900 --> 00:01:02.410 align:middle line:90%
+all the entries of Do to So--
+
+23
+00:01:02.410 --> 00:01:04.313 align:middle line:90%
+Do Re Mi Fa So.
+
+24
+00:01:04.313 --> 00:01:06.730 align:middle line:84%
+And it's only going to print
+out the entries in the stream
+
+25
+00:01:06.730 --> 00:01:11.180 align:middle line:84%
+from La to Ti, which is
+what is shown up there.
+
+26
+00:01:11.180 --> 00:01:13.493 align:middle line:84%
+So this will give us a
+chance to talk yet again
+
+27
+00:01:13.493 --> 00:01:15.160 align:middle line:84%
+about [? collecting ?]
+groupingBy, which
+
+28
+00:01:15.160 --> 00:01:17.743 align:middle line:84%
+you're probably somewhat tired
+of hearing about at this point.
+
+29
+00:01:17.743 --> 00:01:20.200 align:middle line:84%
+But I need to show it for the
+example to make any sense.
+
+30
+00:01:20.200 --> 00:01:22.660 align:middle line:84%
+But we will get a chance
+to talk about dropWhile,
+
+31
+00:01:22.660 --> 00:01:25.540 align:middle line:84%
+which is a method we've only
+briefly alluded to before.
+
+32
+00:01:25.540 --> 00:01:29.050 align:middle line:84%
+And now we get a chance to
+talk about it in more detail.
+
+33
+00:01:29.050 --> 00:01:30.600 align:middle line:90%
+So here's the way this works.
+
+34
+00:01:30.600 --> 00:01:34.600 align:middle line:84%
+This is the way that the
+printSuffixSlice method works.
+
+35
+00:01:34.600 --> 00:01:38.130 align:middle line:84%
+We take a list of search
+results as the input,
+
+36
+00:01:38.130 --> 00:01:40.680 align:middle line:90%
+and we convert that to a stream.
+
+37
+00:01:40.680 --> 00:01:43.230 align:middle line:84%
+And we then have a
+sequential stream
+
+38
+00:01:43.230 --> 00:01:46.650 align:middle line:84%
+of search results, which, of
+course, correspond to the words
+
+39
+00:01:46.650 --> 00:01:49.170 align:middle line:90%
+we are trying to find.
+
+40
+00:01:49.170 --> 00:01:53.280 align:middle line:84%
+And then we're going to
+go ahead and basically
+
+41
+00:01:53.280 --> 00:01:58.840 align:middle line:84%
+feed that into the collect
+terminal operation, which
+
+42
+00:01:58.840 --> 00:02:01.600 align:middle line:84%
+performs intermediate operation
+processing, which in this case,
+
+43
+00:02:01.600 --> 00:02:03.490 align:middle line:84%
+that's a no op, but
+that will start to pull
+
+44
+00:02:03.490 --> 00:02:06.010 align:middle line:90%
+the data from the source.
+
+45
+00:02:06.010 --> 00:02:09.639 align:middle line:84%
+Then the groupingBy collector
+factory method gets called.
+
+46
+00:02:09.639 --> 00:02:15.570 align:middle line:84%
+That creates a collector
+that has a map.
+
+47
+00:02:15.570 --> 00:02:17.320 align:middle line:84%
+And you can decide
+what kind of map it is.
+
+48
+00:02:17.320 --> 00:02:19.237 align:middle line:84%
+You'll see what kind of
+map it is in a second.
+
+49
+00:02:19.237 --> 00:02:21.910 align:middle line:84%
+Shouldn't be too surprising when
+you see what it's going to be.
+
+50
+00:02:21.910 --> 00:02:26.050 align:middle line:84%
+And we end up then with a
+map of strings, as the keys,
+
+51
+00:02:26.050 --> 00:02:29.870 align:middle line:84%
+and lists of search
+results as the values.
+
+52
+00:02:29.870 --> 00:02:31.870 align:middle line:84%
+Now, here's where things
+get a little different.
+
+53
+00:02:31.870 --> 00:02:34.930 align:middle line:84%
+If you recall from our
+previous print results example,
+
+54
+00:02:34.930 --> 00:02:38.020 align:middle line:90%
+we just took that stream of--
+
+55
+00:02:38.020 --> 00:02:40.960 align:middle line:84%
+we took the map, and we used
+the forEach method on the map
+
+56
+00:02:40.960 --> 00:02:42.328 align:middle line:90%
+to print all the results.
+
+57
+00:02:42.328 --> 00:02:44.620 align:middle line:84%
+This time we're going to do
+something a little bit more
+
+58
+00:02:44.620 --> 00:02:45.873 align:middle line:90%
+sophisticated.
+
+59
+00:02:45.873 --> 00:02:47.290 align:middle line:84%
+So what we're first
+going to do is
+
+60
+00:02:47.290 --> 00:02:52.600 align:middle line:84%
+we're going to go ahead and take
+out the entrySet from the map.
+
+61
+00:02:52.600 --> 00:02:54.220 align:middle line:84%
+Remember, the
+entrySet is basically
+
+62
+00:02:54.220 --> 00:02:57.790 align:middle line:84%
+a set of entries for
+the key value pairs
+
+63
+00:02:57.790 --> 00:02:59.110 align:middle line:90%
+that are in the map.
+
+64
+00:02:59.110 --> 00:03:02.920 align:middle line:84%
+And we're going to convert
+them into a stream.
+
+65
+00:03:02.920 --> 00:03:07.240 align:middle line:84%
+So we now have a stream of
+entries with key value pairs
+
+66
+00:03:07.240 --> 00:03:10.500 align:middle line:90%
+for all the entries in the map.
+
+67
+00:03:10.500 --> 00:03:12.920 align:middle line:84%
+So we have a stream
+of map entries.
+
+68
+00:03:12.920 --> 00:03:14.810 align:middle line:84%
+And then we're going
+to kind of pipe
+
+69
+00:03:14.810 --> 00:03:19.220 align:middle line:84%
+that into the dropWhile
+intermediate operation.
+
+70
+00:03:19.220 --> 00:03:23.150 align:middle line:84%
+Now, recall that dropWhile
+is a stateful operation that
+
+71
+00:03:23.150 --> 00:03:25.280 align:middle line:90%
+also can be short circuiting.
+
+72
+00:03:25.280 --> 00:03:27.230 align:middle line:90%
+And we'll see here it will be.
+
+73
+00:03:27.230 --> 00:03:28.670 align:middle line:84%
+And what we're
+going to do here is
+
+74
+00:03:28.670 --> 00:03:31.460 align:middle line:90%
+we're going to drop the input.
+
+75
+00:03:31.460 --> 00:03:33.980 align:middle line:84%
+We're going to ignore the
+elements in the stream,
+
+76
+00:03:33.980 --> 00:03:37.130 align:middle line:84%
+as long as they don't
+equal the word that we're
+
+77
+00:03:37.130 --> 00:03:41.600 align:middle line:84%
+trying to use as the place
+to start printing the stream.
+
+78
+00:03:41.600 --> 00:03:44.527 align:middle line:84%
+So we're going to
+basically print a suffix.
+
+79
+00:03:44.527 --> 00:03:46.610 align:middle line:84%
+We're going to take a slice
+and print the suffix--
+
+80
+00:03:46.610 --> 00:03:49.090 align:middle line:90%
+not the prefix, but the suffix.
+
+81
+00:03:49.090 --> 00:03:50.720 align:middle line:84%
+It would probably
+not surprise you
+
+82
+00:03:50.720 --> 00:03:54.080 align:middle line:84%
+to know that there's
+also basically
+
+83
+00:03:54.080 --> 00:03:56.960 align:middle line:84%
+a printPrefixSlice
+method that uses
+
+84
+00:03:56.960 --> 00:03:59.210 align:middle line:90%
+takeWhile to print to prefix.
+
+85
+00:03:59.210 --> 00:04:01.687 align:middle line:90%
+This one prints a suffix.
+
+86
+00:04:01.687 --> 00:04:03.770 align:middle line:84%
+And we use dropWhile to
+do that, because dropWhile
+
+87
+00:04:03.770 --> 00:04:05.510 align:middle line:90%
+works very nicely for that.
+
+88
+00:04:05.510 --> 00:04:09.290 align:middle line:84%
+So what dropWhile does
+is it slices the stream
+
+89
+00:04:09.290 --> 00:04:14.420 align:middle line:84%
+to only contain elements
+after dropping or ignoring
+
+90
+00:04:14.420 --> 00:04:18.290 align:middle line:84%
+the subset of elements that
+don't match the word that we
+
+91
+00:04:18.290 --> 00:04:19.110 align:middle line:90%
+passed in.
+
+92
+00:04:19.110 --> 00:04:21.829 align:middle line:84%
+So it just skips over anything
+that doesn't match the word,
+
+93
+00:04:21.829 --> 00:04:24.590 align:middle line:84%
+and then it gives
+back the substream
+
+94
+00:04:24.590 --> 00:04:26.760 align:middle line:84%
+where the word matched,
+and anything that follows,
+
+95
+00:04:26.760 --> 00:04:27.830 align:middle line:90%
+of course.
+
+96
+00:04:27.830 --> 00:04:30.310 align:middle line:84%
+So that's what dropWhile
+while is going to do.
+
+97
+00:04:30.310 --> 00:04:33.380 align:middle line:84%
+The not equal method that
+we're using here to do this
+
+98
+00:04:33.380 --> 00:04:36.705 align:middle line:84%
+is basically going to take
+the key from the entrySet,
+
+99
+00:04:36.705 --> 00:04:39.080 align:middle line:84%
+and check to see if it equals
+the word we're looking for.
+
+100
+00:04:39.080 --> 00:04:41.180 align:middle line:84%
+And since it's not
+equal, we negate
+
+101
+00:04:41.180 --> 00:04:43.050 align:middle line:90%
+the result of that comparison.
+
+102
+00:04:43.050 --> 00:04:45.687 align:middle line:84%
+So that's how we figure
+out what not equal is.
+
+103
+00:04:45.687 --> 00:04:47.270 align:middle line:84%
+So we're going to
+keep dropping things
+
+104
+00:04:47.270 --> 00:04:51.660 align:middle line:84%
+as long as they don't equal
+the word we're looking for.
+
+105
+00:04:51.660 --> 00:04:53.810 align:middle line:84%
+Now, as I think I
+mentioned before,
+
+106
+00:04:53.810 --> 00:04:56.970 align:middle line:84%
+dropWhile differs
+from filter, since it
+
+107
+00:04:56.970 --> 00:05:00.700 align:middle line:84%
+doesn't need to examine
+the entire input stream.
+
+108
+00:05:00.700 --> 00:05:05.460 align:middle line:84%
+And in contrast, filter has
+to look at every element
+
+109
+00:05:05.460 --> 00:05:07.590 align:middle line:84%
+in order to know whether
+it needs to let it
+
+110
+00:05:07.590 --> 00:05:09.550 align:middle line:90%
+through the filter or not.
+
+111
+00:05:09.550 --> 00:05:12.997 align:middle line:84%
+Whereas, dropWhile will
+simply ignore everything up
+
+112
+00:05:12.997 --> 00:05:14.580 align:middle line:84%
+to the point where
+it finds its match,
+
+113
+00:05:14.580 --> 00:05:16.372 align:middle line:84%
+and then it returns
+the rest of the stream.
+
+114
+00:05:16.372 --> 00:05:19.050 align:middle line:84%
+So it's short circuiting,
+and it's also stateful,
+
+115
+00:05:19.050 --> 00:05:21.540 align:middle line:84%
+because it has to keep
+track of what it saw to know
+
+116
+00:05:21.540 --> 00:05:24.890 align:middle line:90%
+whether it equaled before.
+
+117
+00:05:24.890 --> 00:05:27.500 align:middle line:84%
+The output of this
+will be a substream
+
+118
+00:05:27.500 --> 00:05:31.460 align:middle line:90%
+that starts at the word La.
+
+119
+00:05:31.460 --> 00:05:35.480 align:middle line:84%
+And at that point, we then go
+ahead and print the results
+
+120
+00:05:35.480 --> 00:05:36.950 align:middle line:90%
+with the forEach method.
+
+121
+00:05:36.950 --> 00:05:39.650 align:middle line:84%
+And that's going to go ahead
+and iterate through each element
+
+122
+00:05:39.650 --> 00:05:40.760 align:middle line:90%
+in the substream.
+
+123
+00:05:40.760 --> 00:05:43.280 align:middle line:84%
+Now this particular
+use of forEach actually
+
+124
+00:05:43.280 --> 00:05:47.120 align:middle line:90%
+is, in fact, the--
+
+125
+00:05:47.120 --> 00:05:49.530 align:middle line:84%
+this one is actually the
+streams for each method,
+
+126
+00:05:49.530 --> 00:05:51.510 align:middle line:84%
+whereas before it was
+the map for each method.
+
+127
+00:05:51.510 --> 00:05:54.230 align:middle line:84%
+This is the forEach method
+that's defined in the stream.
+
+128
+00:05:54.230 --> 00:05:56.330 align:middle line:84%
+And in this case,
+we'll print the results
+
+129
+00:05:56.330 --> 00:05:58.970 align:middle line:84%
+out using essentially
+the same print result
+
+130
+00:05:58.970 --> 00:06:00.560 align:middle line:84%
+method that we looked
+at when we were
+
+131
+00:06:00.560 --> 00:06:05.930 align:middle line:84%
+talking about the print results
+method on the WordSearcher
+
+132
+00:06:05.930 --> 00:06:07.180 align:middle line:90%
+class.

@@ -1,0 +1,693 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.690 align:middle line:90%
+
+
+2
+00:00:00.690 --> 00:00:02.490 align:middle line:84%
+So the final
+discussion here will
+
+3
+00:00:02.490 --> 00:00:06.300 align:middle line:84%
+be to evaluate the pros
+and cons of external
+
+4
+00:00:06.300 --> 00:00:08.280 align:middle line:84%
+versus internal
+iterators in Java
+
+5
+00:00:08.280 --> 00:00:11.245 align:middle line:84%
+now that we've kind of seen
+how internal iterators work.
+
+6
+00:00:11.245 --> 00:00:12.870 align:middle line:84%
+We've seen how external
+iterators work.
+
+7
+00:00:12.870 --> 00:00:15.330 align:middle line:84%
+Let's talk about the
+good and bad of them.
+
+8
+00:00:15.330 --> 00:00:17.520 align:middle line:84%
+We'll start first by
+talking about the advantages
+
+9
+00:00:17.520 --> 00:00:21.360 align:middle line:84%
+of internal iterators
+over external iterators.
+
+10
+00:00:21.360 --> 00:00:24.330 align:middle line:84%
+One of the things I
+think is pretty clear,
+
+11
+00:00:24.330 --> 00:00:26.550 align:middle line:84%
+unless you have
+super simple code,
+
+12
+00:00:26.550 --> 00:00:29.767 align:middle line:90%
+is improved code readability.
+
+13
+00:00:29.767 --> 00:00:31.350 align:middle line:84%
+Now, obviously, this
+is all a function
+
+14
+00:00:31.350 --> 00:00:33.220 align:middle line:84%
+of how well you
+understand Java Streams,
+
+15
+00:00:33.220 --> 00:00:35.550 align:middle line:84%
+but let's assume you
+understand Java Streams.
+
+16
+00:00:35.550 --> 00:00:38.430 align:middle line:84%
+So with Java Streams,
+they allow you
+
+17
+00:00:38.430 --> 00:00:42.600 align:middle line:84%
+to focus on the what
+rather than the how.
+
+18
+00:00:42.600 --> 00:00:46.170 align:middle line:84%
+In particular, there are
+no control flow operations.
+
+19
+00:00:46.170 --> 00:00:47.670 align:middle line:90%
+There's no loops.
+
+20
+00:00:47.670 --> 00:00:49.260 align:middle line:90%
+There's no if statements.
+
+21
+00:00:49.260 --> 00:00:53.010 align:middle line:84%
+Everything is handled using
+intermediate operations
+
+22
+00:00:53.010 --> 00:00:56.060 align:middle line:90%
+like filter and map and so on.
+
+23
+00:00:56.060 --> 00:00:59.650 align:middle line:84%
+In contrast, if you use
+external processing,
+
+24
+00:00:59.650 --> 00:01:02.830 align:middle line:84%
+if you use external
+iteration, then you
+
+25
+00:01:02.830 --> 00:01:04.510 align:middle line:90%
+have to focus on the how.
+
+26
+00:01:04.510 --> 00:01:06.310 align:middle line:84%
+You have to focus
+on the control flow.
+
+27
+00:01:06.310 --> 00:01:08.080 align:middle line:84%
+So here you can see
+we've got a for loop.
+
+28
+00:01:08.080 --> 00:01:09.560 align:middle line:90%
+We've got an if statement.
+
+29
+00:01:09.560 --> 00:01:11.020 align:middle line:90%
+So it just means more mechanism.
+
+30
+00:01:11.020 --> 00:01:13.920 align:middle line:84%
+You have to kind of play
+runtime system in your head
+
+31
+00:01:13.920 --> 00:01:15.670 align:middle line:84%
+and think, OK, this
+thing's going to loop.
+
+32
+00:01:15.670 --> 00:01:18.910 align:middle line:84%
+And if it goes through the
+loop, and it checks with an if
+
+33
+00:01:18.910 --> 00:01:20.650 align:middle line:90%
+statement, blah, blah, blah.
+
+34
+00:01:20.650 --> 00:01:22.340 align:middle line:90%
+Gets a little complicated.
+
+35
+00:01:22.340 --> 00:01:25.720 align:middle line:84%
+I think it's arguably more
+concise just to read the code
+
+36
+00:01:25.720 --> 00:01:28.760 align:middle line:90%
+from top to bottom here.
+
+37
+00:01:28.760 --> 00:01:31.600 align:middle line:84%
+Another thing you can do
+with the internal iteration
+
+38
+00:01:31.600 --> 00:01:34.330 align:middle line:84%
+that you really can't do at
+all with external iteration
+
+39
+00:01:34.330 --> 00:01:37.310 align:middle line:84%
+is apply transparent
+optimizations.
+
+40
+00:01:37.310 --> 00:01:40.030 align:middle line:84%
+So for example,
+you can trivially
+
+41
+00:01:40.030 --> 00:01:44.080 align:middle line:84%
+apply the parallel flag
+here, the parallel method,
+
+42
+00:01:44.080 --> 00:01:47.830 align:middle line:84%
+to convert the sequential
+stream into a parallel stream,
+
+43
+00:01:47.830 --> 00:01:50.170 align:middle line:84%
+and then all this filtering
+and mapping and so on
+
+44
+00:01:50.170 --> 00:01:51.940 align:middle line:90%
+will take place in parallel.
+
+45
+00:01:51.940 --> 00:01:55.330 align:middle line:84%
+So that if you have
+large numbers of URLs,
+
+46
+00:01:55.330 --> 00:01:58.420 align:middle line:84%
+you're updating large lists
+and so on, and your URL array,
+
+47
+00:01:58.420 --> 00:02:00.280 align:middle line:84%
+if it's got thousands
+of elements,
+
+48
+00:02:00.280 --> 00:02:03.290 align:middle line:84%
+that'll probably
+be a nice speed-up.
+
+49
+00:02:03.290 --> 00:02:07.930 align:middle line:84%
+In contrast, the external
+iteration approach
+
+50
+00:02:07.930 --> 00:02:09.430 align:middle line:90%
+always runs sequentially.
+
+51
+00:02:09.430 --> 00:02:12.250 align:middle line:84%
+And it uses something
+that Brian Goetz, who's
+
+52
+00:02:12.250 --> 00:02:16.090 align:middle line:84%
+a famous Java architect,
+likes to call the accumulator
+
+53
+00:02:16.090 --> 00:02:17.440 align:middle line:90%
+anti-pattern.
+
+54
+00:02:17.440 --> 00:02:20.458 align:middle line:84%
+And basically, it is
+stuck being sequential.
+
+55
+00:02:20.458 --> 00:02:22.000 align:middle line:84%
+And to make this
+not sequential would
+
+56
+00:02:22.000 --> 00:02:25.510 align:middle line:84%
+require a lot of extra work
+spotting threads, and dealing
+
+57
+00:02:25.510 --> 00:02:28.840 align:middle line:84%
+with queues, and all the kinds
+of nasty, low level things
+
+58
+00:02:28.840 --> 00:02:32.680 align:middle line:84%
+that Java Streams and parallel
+streams just hide from you.
+
+59
+00:02:32.680 --> 00:02:34.810 align:middle line:84%
+So transparent optimization
+is another benefit
+
+60
+00:02:34.810 --> 00:02:39.840 align:middle line:84%
+of using internal iteration
+via the streams mechanism.
+
+61
+00:02:39.840 --> 00:02:42.670 align:middle line:84%
+And then arguably, you
+may have fewer bugs
+
+62
+00:02:42.670 --> 00:02:45.665 align:middle line:84%
+with the internal
+iteration approach.
+
+63
+00:02:45.665 --> 00:02:48.040 align:middle line:84%
+In particular, notice how the
+internal iteration approach
+
+64
+00:02:48.040 --> 00:02:52.570 align:middle line:84%
+doesn't split creation
+from initialization
+
+65
+00:02:52.570 --> 00:02:54.760 align:middle line:84%
+of the collection
+that's used here.
+
+66
+00:02:54.760 --> 00:02:59.510 align:middle line:84%
+The list of URLs is
+initialized by collect.
+
+67
+00:02:59.510 --> 00:03:02.020 align:middle line:84%
+We don't have to remember
+to initialize it first.
+
+68
+00:03:02.020 --> 00:03:05.830 align:middle line:84%
+In contrast, this external
+iteration approach
+
+69
+00:03:05.830 --> 00:03:09.762 align:middle line:84%
+requires you to remember to
+initialize the URLs list.
+
+70
+00:03:09.762 --> 00:03:11.720 align:middle line:84%
+And if you forgot to do
+that, which by the way,
+
+71
+00:03:11.720 --> 00:03:15.790 align:middle line:84%
+is all too easy to do, then when
+you go to add the next element,
+
+72
+00:03:15.790 --> 00:03:17.920 align:middle line:84%
+chaos and insanity
+will break out
+
+73
+00:03:17.920 --> 00:03:20.410 align:middle line:84%
+because you'll end
+up trying to call
+
+74
+00:03:20.410 --> 00:03:23.710 align:middle line:84%
+add on a null reference,
+which will be very bad.
+
+75
+00:03:23.710 --> 00:03:26.240 align:middle line:90%
+
+
+76
+00:03:26.240 --> 00:03:29.480 align:middle line:84%
+However, everything is
+not rainbows and unicorns.
+
+77
+00:03:29.480 --> 00:03:32.540 align:middle line:84%
+There are some advantages
+of external iterators
+
+78
+00:03:32.540 --> 00:03:34.490 align:middle line:90%
+over internal iterators.
+
+79
+00:03:34.490 --> 00:03:37.460 align:middle line:84%
+And so I think it's worth taking
+a few minutes to just kind
+
+80
+00:03:37.460 --> 00:03:40.573 align:middle line:90%
+of summarize this very briefly.
+
+81
+00:03:40.573 --> 00:03:41.990 align:middle line:84%
+By the way, there's
+a nice article
+
+82
+00:03:41.990 --> 00:03:44.150 align:middle line:84%
+that you can see at the
+bottom of this link that
+
+83
+00:03:44.150 --> 00:03:46.910 align:middle line:84%
+talks through a lot
+of the pros and cons
+
+84
+00:03:46.910 --> 00:03:48.680 align:middle line:84%
+of internal and
+external iterators
+
+85
+00:03:48.680 --> 00:03:51.560 align:middle line:84%
+and may provide you with some
+additional insights about how
+
+86
+00:03:51.560 --> 00:03:56.130 align:middle line:84%
+they work and when to use
+one style versus another.
+
+87
+00:03:56.130 --> 00:04:00.350 align:middle line:84%
+So one of the nice things
+about internal iterators--
+
+88
+00:04:00.350 --> 00:04:02.300 align:middle line:90%
+sorry, rewind that.
+
+89
+00:04:02.300 --> 00:04:04.220 align:middle line:84%
+One of the nice things
+of external iterators
+
+90
+00:04:04.220 --> 00:04:06.320 align:middle line:84%
+relative to internal
+iterators is
+
+91
+00:04:06.320 --> 00:04:10.230 align:middle line:84%
+you can have much more control
+over the iteration steps.
+
+92
+00:04:10.230 --> 00:04:13.910 align:middle line:84%
+So with internal iteration,
+the only way you're getting out
+
+93
+00:04:13.910 --> 00:04:16.243 align:middle line:84%
+of this stream is by
+throwing an exception.
+
+94
+00:04:16.243 --> 00:04:17.660 align:middle line:84%
+Otherwise, it's
+just going to keep
+
+95
+00:04:17.660 --> 00:04:21.200 align:middle line:84%
+running until it stops on its
+own accord, which is sometimes
+
+96
+00:04:21.200 --> 00:04:23.370 align:middle line:90%
+too coarse grain.
+
+97
+00:04:23.370 --> 00:04:26.670 align:middle line:84%
+In contrast, because
+external iteration
+
+98
+00:04:26.670 --> 00:04:30.950 align:middle line:84%
+allows you to use all the
+familiar control constructs
+
+99
+00:04:30.950 --> 00:04:33.590 align:middle line:84%
+like if statements and
+for loops and so on,
+
+100
+00:04:33.590 --> 00:04:38.270 align:middle line:84%
+you can decide to exit a
+loop at an arbitrary point,
+
+101
+00:04:38.270 --> 00:04:41.000 align:middle line:84%
+or exit a method at
+an arbitrary point,
+
+102
+00:04:41.000 --> 00:04:42.590 align:middle line:90%
+or handle errors more precisely.
+
+103
+00:04:42.590 --> 00:04:44.780 align:middle line:84%
+Or whatever you need
+to do, you can do it
+
+104
+00:04:44.780 --> 00:04:48.260 align:middle line:84%
+because you are totally in
+control of the iteration
+
+105
+00:04:48.260 --> 00:04:48.860 align:middle line:90%
+process.
+
+106
+00:04:48.860 --> 00:04:52.640 align:middle line:84%
+You're not relying on some
+internal iterator doing things
+
+107
+00:04:52.640 --> 00:04:55.820 align:middle line:90%
+for you behind the scenes.
+
+108
+00:04:55.820 --> 00:04:59.960 align:middle line:84%
+Yet another nice feature
+of external iteration
+
+109
+00:04:59.960 --> 00:05:01.400 align:middle line:84%
+is it's actually
+possible to have
+
+110
+00:05:01.400 --> 00:05:07.760 align:middle line:84%
+multiple iterators active over
+the same object simultaneously.
+
+111
+00:05:07.760 --> 00:05:10.490 align:middle line:84%
+So here's an example where we
+go ahead and make ourselves
+
+112
+00:05:10.490 --> 00:05:13.970 align:middle line:84%
+a couple of iterators
+that are both iterating
+
+113
+00:05:13.970 --> 00:05:17.060 align:middle line:90%
+over the same URLs collection.
+
+114
+00:05:17.060 --> 00:05:18.560 align:middle line:84%
+And then we can do
+different logic.
+
+115
+00:05:18.560 --> 00:05:20.820 align:middle line:84%
+If there's something in iterator
+one, we can do one thing.
+
+116
+00:05:20.820 --> 00:05:23.445 align:middle line:84%
+If there's something in iterator
+two, we can do something else.
+
+117
+00:05:23.445 --> 00:05:24.780 align:middle line:90%
+We are in control.
+
+118
+00:05:24.780 --> 00:05:27.080 align:middle line:84%
+We can have many things
+going on at the same time.
+
+119
+00:05:27.080 --> 00:05:29.120 align:middle line:84%
+Now, this particular
+example may not
+
+120
+00:05:29.120 --> 00:05:31.760 align:middle line:84%
+be the best example
+to showcase why
+
+121
+00:05:31.760 --> 00:05:34.370 align:middle line:84%
+you would want to have multiple
+iterations iterating over
+
+122
+00:05:34.370 --> 00:05:36.620 align:middle line:84%
+the same collection
+simultaneously.
+
+123
+00:05:36.620 --> 00:05:40.930 align:middle line:84%
+But external iterators gives
+you the option to do that.
+
+124
+00:05:40.930 --> 00:05:46.728 align:middle line:84%
+In contrast, there's only one
+internal iterator for a stream.
+
+125
+00:05:46.728 --> 00:05:48.520 align:middle line:84%
+Now, most of the time,
+you could care less.
+
+126
+00:05:48.520 --> 00:05:50.910 align:middle line:84%
+Because if you need to
+do another iteration
+
+127
+00:05:50.910 --> 00:05:52.660 align:middle line:84%
+over the stream, you
+create the new stream
+
+128
+00:05:52.660 --> 00:05:54.790 align:middle line:90%
+and start over from scratch.
+
+129
+00:05:54.790 --> 00:05:57.340 align:middle line:84%
+But I think to be fair,
+it's important to realize
+
+130
+00:05:57.340 --> 00:06:01.150 align:middle line:84%
+that there are some benefits,
+some additional controls,
+
+131
+00:06:01.150 --> 00:06:03.760 align:middle line:84%
+some additional
+flexibility you get
+
+132
+00:06:03.760 --> 00:06:06.580 align:middle line:84%
+by using external
+iterators directly rather
+
+133
+00:06:06.580 --> 00:06:08.140 align:middle line:90%
+than internal iterators.
+
+134
+00:06:08.140 --> 00:06:09.640 align:middle line:84%
+And I should probably
+also point out
+
+135
+00:06:09.640 --> 00:06:12.490 align:middle line:84%
+that for very, very
+simple Java programs
+
+136
+00:06:12.490 --> 00:06:16.990 align:middle line:84%
+like looping through the
+list of Three Stooges names,
+
+137
+00:06:16.990 --> 00:06:20.080 align:middle line:84%
+using a forEach loop is a
+pretty darn concise way to go.
+
+138
+00:06:20.080 --> 00:06:24.430 align:middle line:84%
+So I prefer to use streams
+and internal iterators
+
+139
+00:06:24.430 --> 00:06:28.780 align:middle line:84%
+as my programs get more complex,
+especially as I anticipate
+
+140
+00:06:28.780 --> 00:06:32.920 align:middle line:84%
+the eventual need to have to
+go ahead and create streams
+
+141
+00:06:32.920 --> 00:06:34.460 align:middle line:90%
+that will run in parallel.
+
+142
+00:06:34.460 --> 00:06:37.000 align:middle line:84%
+That's really where
+internal iteration
+
+143
+00:06:37.000 --> 00:06:39.970 align:middle line:84%
+shines far and above what
+you could ever expect
+
+144
+00:06:39.970 --> 00:06:42.870 align:middle line:90%
+to get with external iteration.

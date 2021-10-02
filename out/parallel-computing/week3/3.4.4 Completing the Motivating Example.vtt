@@ -1,0 +1,480 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.500 align:middle line:90%
+
+
+2
+00:00:00.500 --> 00:00:03.270 align:middle line:84%
+So the final method we're going
+to look at in implementation
+
+3
+00:00:03.270 --> 00:00:08.220 align:middle line:84%
+detail from the WordSearcher
+class is the printSuffixSlice()
+
+4
+00:00:08.220 --> 00:00:12.900 align:middle line:84%
+method, whose design and
+behavior we just visualized
+
+5
+00:00:12.900 --> 00:00:15.360 align:middle line:90%
+in the previous lesson.
+
+6
+00:00:15.360 --> 00:00:18.860 align:middle line:84%
+So this particular approach
+will show you how to use all
+
+7
+00:00:18.860 --> 00:00:21.890 align:middle line:84%
+the things we talked about,
+focusing primarily, of course,
+
+8
+00:00:21.890 --> 00:00:25.460 align:middle line:84%
+on dropWhile(), which is
+the interesting one that was
+
+9
+00:00:25.460 --> 00:00:28.650 align:middle line:90%
+introduced in this example.
+
+10
+00:00:28.650 --> 00:00:31.370 align:middle line:90%
+So here's printSuffixSlice().
+
+11
+00:00:31.370 --> 00:00:33.290 align:middle line:84%
+This prints a slice
+of the results that
+
+12
+00:00:33.290 --> 00:00:36.090 align:middle line:90%
+start at a particular word.
+
+13
+00:00:36.090 --> 00:00:39.200 align:middle line:84%
+And again, we're going to
+show collect(groupingBy()),
+
+14
+00:00:39.200 --> 00:00:42.240 align:middle line:90%
+dropWhile() and forEach().
+
+15
+00:00:42.240 --> 00:00:46.790 align:middle line:84%
+So as you can see, we take
+a list of search result
+
+16
+00:00:46.790 --> 00:00:49.940 align:middle line:84%
+parameters that are passed
+in, and we convert that
+
+17
+00:00:49.940 --> 00:00:53.060 align:middle line:90%
+into a stream of search results.
+
+18
+00:00:53.060 --> 00:00:57.200 align:middle line:84%
+We then go ahead and use the
+collect() terminal method
+
+19
+00:00:57.200 --> 00:01:02.320 align:middle line:84%
+of operation in conjunction
+with groupingBy to create a map.
+
+20
+00:01:02.320 --> 00:01:05.710 align:middle line:84%
+And as with before,
+the key to the map
+
+21
+00:01:05.710 --> 00:01:08.260 align:middle line:84%
+will be the word in
+the search results,
+
+22
+00:01:08.260 --> 00:01:13.300 align:middle line:84%
+and the values will be created
+by the downstream collector.
+
+23
+00:01:13.300 --> 00:01:16.150 align:middle line:84%
+We'll talk about that later
+when we talk about collectors
+
+24
+00:01:16.150 --> 00:01:18.220 align:middle line:90%
+in more detail.
+
+25
+00:01:18.220 --> 00:01:22.165 align:middle line:84%
+Again, as before we use
+the LinkedHashMap here.
+
+26
+00:01:22.165 --> 00:01:24.430 align:middle line:84%
+And we use a
+LinkedHashMap because we
+
+27
+00:01:24.430 --> 00:01:27.820 align:middle line:84%
+want to be able to have the
+iterators be able to iterate
+
+28
+00:01:27.820 --> 00:01:31.450 align:middle line:84%
+through the map in the order in
+which the items were originally
+
+29
+00:01:31.450 --> 00:01:32.500 align:middle line:90%
+inserted.
+
+30
+00:01:32.500 --> 00:01:35.230 align:middle line:84%
+And so that is what
+LinkedHashMap is well
+
+31
+00:01:35.230 --> 00:01:36.520 align:middle line:90%
+suited for.
+
+32
+00:01:36.520 --> 00:01:39.460 align:middle line:84%
+Even though the value is
+hashed to wherever they hash,
+
+33
+00:01:39.460 --> 00:01:41.460 align:middle line:84%
+LinkedHashMap keeps track
+of the insertion order
+
+34
+00:01:41.460 --> 00:01:43.690 align:middle line:84%
+so we can be iterated
+in that order.
+
+35
+00:01:43.690 --> 00:01:46.420 align:middle line:84%
+And that's exactly what
+we want for this behavior.
+
+36
+00:01:46.420 --> 00:01:47.920 align:middle line:84%
+And then, as we'll
+talk about later,
+
+37
+00:01:47.920 --> 00:01:49.780 align:middle line:84%
+the factory method
+toDownstreamCollector
+
+38
+00:01:49.780 --> 00:01:52.900 align:middle line:84%
+creates a downstream collector,
+then merges all the result
+
+39
+00:01:52.900 --> 00:01:54.730 align:middle line:84%
+lists together into
+a single result list,
+
+40
+00:01:54.730 --> 00:01:57.555 align:middle line:84%
+just to make things
+a little cleaner.
+
+41
+00:01:57.555 --> 00:01:58.930 align:middle line:84%
+And you'll see
+the implementation
+
+42
+00:01:58.930 --> 00:02:02.410 align:middle line:84%
+of this in the "Java
+Streams, Implementing Custom
+
+43
+00:02:02.410 --> 00:02:07.630 align:middle line:84%
+Non-Concurrent
+Collectors" lesson.
+
+44
+00:02:07.630 --> 00:02:10.889 align:middle line:84%
+What happens next is,
+now we have a map--
+
+45
+00:02:10.889 --> 00:02:14.500 align:middle line:84%
+and it's a LinkedHashMap, but
+for our purposes it's a map.
+
+46
+00:02:14.500 --> 00:02:18.700 align:middle line:84%
+So we call the entrySet() method
+to get the list of entries
+
+47
+00:02:18.700 --> 00:02:19.360 align:middle line:90%
+in the map.
+
+48
+00:02:19.360 --> 00:02:22.000 align:middle line:84%
+And then we call stream() to
+convert the list of entries
+
+49
+00:02:22.000 --> 00:02:24.200 align:middle line:90%
+into a stream of entries.
+
+50
+00:02:24.200 --> 00:02:27.450 align:middle line:84%
+And then we go ahead and
+apply the dropWhile() method.
+
+51
+00:02:27.450 --> 00:02:30.230 align:middle line:84%
+And as you'll recall, the
+dropWhile() method will slice
+
+52
+00:02:30.230 --> 00:02:34.460 align:middle line:84%
+the stream by basically dropping
+or ignoring anything that
+
+53
+00:02:34.460 --> 00:02:39.680 align:middle line:84%
+doesn't match the word that's
+passed in as a parameter
+
+54
+00:02:39.680 --> 00:02:41.570 align:middle line:90%
+to printSuffixSlice().
+
+55
+00:02:41.570 --> 00:02:44.150 align:middle line:90%
+
+
+56
+00:02:44.150 --> 00:02:48.290 align:middle line:84%
+And then the final thing we'll
+do is we end up with a stream
+
+57
+00:02:48.290 --> 00:02:53.750 align:middle line:84%
+of entries that were the
+ones that were not dropped
+
+58
+00:02:53.750 --> 00:02:57.377 align:middle line:84%
+by dropWhile(), the ones
+starting at "la" and beyond.
+
+59
+00:02:57.377 --> 00:02:59.210 align:middle line:84%
+And then we go ahead
+and call printResult(),
+
+60
+00:02:59.210 --> 00:03:03.590 align:middle line:84%
+passing in the key for that
+entry and the value for that
+
+61
+00:03:03.590 --> 00:03:04.330 align:middle line:90%
+entry.
+
+62
+00:03:04.330 --> 00:03:06.288 align:middle line:84%
+And that, again, is just
+a little bit different
+
+63
+00:03:06.288 --> 00:03:10.050 align:middle line:84%
+syntactically from what you saw
+with the printResult()'s entry,
+
+64
+00:03:10.050 --> 00:03:12.050 align:middle line:84%
+which was a little
+bit simpler than this.
+
+65
+00:03:12.050 --> 00:03:14.478 align:middle line:84%
+This one is more
+interesting in many ways.
+
+66
+00:03:14.478 --> 00:03:16.770 align:middle line:84%
+You can go back and look at
+[? printResult()s ?] if you
+
+67
+00:03:16.770 --> 00:03:20.340 align:middle line:84%
+want to kind of compare and
+contrast how it was used
+
+68
+00:03:20.340 --> 00:03:23.635 align:middle line:84%
+before, and also if you want
+to see how printResult() is
+
+69
+00:03:23.635 --> 00:03:24.510 align:middle line:90%
+actually implemented.
+
+70
+00:03:24.510 --> 00:03:27.900 align:middle line:84%
+I'm not going to
+repeat that code here.
+
+71
+00:03:27.900 --> 00:03:30.600 align:middle line:84%
+Once again, this is the
+Stream's forEach() method,
+
+72
+00:03:30.600 --> 00:03:33.120 align:middle line:90%
+not the Map's forEach() method.
+
+73
+00:03:33.120 --> 00:03:36.520 align:middle line:84%
+Map's forEach() method was used
+in the printResult()'s example.
+
+74
+00:03:36.520 --> 00:03:39.562 align:middle line:84%
+Stream's method is used
+in printSuffixSlice().
+
+75
+00:03:39.562 --> 00:03:41.020 align:middle line:84%
+And the reason for
+that, of course,
+
+76
+00:03:41.020 --> 00:03:43.055 align:middle line:84%
+is that here we're
+able to have a stream.
+
+77
+00:03:43.055 --> 00:03:44.430 align:middle line:84%
+And we needed a
+stream because we
+
+78
+00:03:44.430 --> 00:03:48.400 align:middle line:84%
+had to drop the entries
+we didn't care about.
+
+79
+00:03:48.400 --> 00:03:50.800 align:middle line:84%
+Just for kicks, here's
+the implementation
+
+80
+00:03:50.800 --> 00:03:52.840 align:middle line:90%
+of the notEqual() method.
+
+81
+00:03:52.840 --> 00:03:57.280 align:middle line:84%
+So this returns true if the
+entry's key that's passed
+
+82
+00:03:57.280 --> 00:04:00.040 align:middle line:84%
+to notEqual() doesn't
+equal the word.
+
+83
+00:04:00.040 --> 00:04:01.260 align:middle line:90%
+Otherwise it returns false.
+
+84
+00:04:01.260 --> 00:04:02.995 align:middle line:84%
+So if they're equal
+it returns true,
+
+85
+00:04:02.995 --> 00:04:05.120 align:middle line:84%
+if they're not equal--
+sorry, if they're not equal,
+
+86
+00:04:05.120 --> 00:04:05.890 align:middle line:90%
+it returns true.
+
+87
+00:04:05.890 --> 00:04:09.732 align:middle line:84%
+If they're equal
+it returns false.
+
+88
+00:04:09.732 --> 00:04:11.690 align:middle line:84%
+You can see here that
+the parameters of the map
+
+89
+00:04:11.690 --> 00:04:13.420 align:middle line:90%
+entry and the word to match.
+
+90
+00:04:13.420 --> 00:04:15.590 align:middle line:84%
+And then we just have
+this little expression
+
+91
+00:04:15.590 --> 00:04:17.660 align:middle line:84%
+that gets the key
+from the entry, which
+
+92
+00:04:17.660 --> 00:04:19.070 align:middle line:90%
+of course is a string.
+
+93
+00:04:19.070 --> 00:04:23.530 align:middle line:84%
+And we compare that to the word
+by using the equals() method
+
+94
+00:04:23.530 --> 00:04:25.000 align:middle line:90%
+on a string.
+
+95
+00:04:25.000 --> 00:04:27.320 align:middle line:84%
+We don't, of course, want
+to be using the == method,
+
+96
+00:04:27.320 --> 00:04:29.320 align:middle line:84%
+which will not give you
+the right result at all.
+
+97
+00:04:29.320 --> 00:04:31.230 align:middle line:90%
+So instead we use the--
+
+98
+00:04:31.230 --> 00:04:33.280 align:middle line:90%
+sorry, the == operator.
+
+99
+00:04:33.280 --> 00:04:36.340 align:middle line:84%
+We want to use the equals()
+method to find our string,
+
+100
+00:04:36.340 --> 00:04:40.060 align:middle line:84%
+and then we invert the
+sense of the case to get
+
+101
+00:04:40.060 --> 00:04:42.240 align:middle line:90%
+the notEqual()'s behavior.

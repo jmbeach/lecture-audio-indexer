@@ -1,0 +1,780 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:01.080 align:middle line:90%
+
+
+2
+00:00:01.080 --> 00:00:04.560 align:middle line:84%
+So now that we've taken
+a shot at visualizing
+
+3
+00:00:04.560 --> 00:00:08.100 align:middle line:84%
+the printResults method,
+let's go take a closer look
+
+4
+00:00:08.100 --> 00:00:10.512 align:middle line:84%
+at its implementation,
+which admittedly
+
+5
+00:00:10.512 --> 00:00:12.720 align:middle line:84%
+isn't all that much different
+from the visualization.
+
+6
+00:00:12.720 --> 00:00:15.990 align:middle line:84%
+But it will give us a chance
+to focus on some of the details
+
+7
+00:00:15.990 --> 00:00:18.420 align:middle line:84%
+that we glossed over
+when we were just
+
+8
+00:00:18.420 --> 00:00:22.200 align:middle line:84%
+looking at what the results were
+and visualizing those results.
+
+9
+00:00:22.200 --> 00:00:24.910 align:middle line:84%
+This particular lesson will
+showcase a few other things.
+
+10
+00:00:24.910 --> 00:00:27.980 align:middle line:84%
+It once again showcases
+collect and groupingBy,
+
+11
+00:00:27.980 --> 00:00:29.610 align:middle line:90%
+which we already talked about.
+
+12
+00:00:29.610 --> 00:00:32.509 align:middle line:84%
+And it also illustrates
+the mapTo Int
+
+13
+00:00:32.509 --> 00:00:35.428 align:middle line:90%
+intermediate operation as well.
+
+14
+00:00:35.428 --> 00:00:37.220 align:middle line:84%
+So let's take a look
+at the implementation.
+
+15
+00:00:37.220 --> 00:00:39.480 align:middle line:90%
+Here is printResults.
+
+16
+00:00:39.480 --> 00:00:42.200 align:middle line:84%
+As you can see, the
+purpose of this method
+
+17
+00:00:42.200 --> 00:00:45.980 align:middle line:84%
+is to present and print the
+results of whatever word
+
+18
+00:00:45.980 --> 00:00:48.160 align:middle line:90%
+search returned.
+
+19
+00:00:48.160 --> 00:00:51.610 align:middle line:84%
+It's passed in a list of
+results as the parameters,
+
+20
+00:00:51.610 --> 00:00:52.713 align:middle line:90%
+list of search results.
+
+21
+00:00:52.713 --> 00:00:54.880 align:middle line:84%
+So of course, the very first
+thing we're going to do
+
+22
+00:00:54.880 --> 00:00:58.120 align:middle line:84%
+is we're going to convert
+the list of search results
+
+23
+00:00:58.120 --> 00:01:00.760 align:middle line:84%
+into a stream of search results
+by using the StreamFactory
+
+24
+00:01:00.760 --> 00:01:02.690 align:middle line:90%
+method.
+
+25
+00:01:02.690 --> 00:01:05.209 align:middle line:84%
+Then we go ahead and
+call collect immediately.
+
+26
+00:01:05.209 --> 00:01:07.430 align:middle line:84%
+And that collects this
+stream of search results
+
+27
+00:01:07.430 --> 00:01:12.860 align:middle line:84%
+into a map with
+the word as the key
+
+28
+00:01:12.860 --> 00:01:15.620 align:middle line:84%
+and the list of
+indices as the value.
+
+29
+00:01:15.620 --> 00:01:17.360 align:middle line:84%
+Now, in this
+particular case, we're
+
+30
+00:01:17.360 --> 00:01:21.110 align:middle line:84%
+going to make a
+so-called LinkedHashMap.
+
+31
+00:01:21.110 --> 00:01:25.310 align:middle line:84%
+And a LinkedHashMap is a
+hash map that uses hashing.
+
+32
+00:01:25.310 --> 00:01:28.860 align:middle line:84%
+But it stores the contents,
+or its internal data structure
+
+33
+00:01:28.860 --> 00:01:34.520 align:middle line:84%
+is arranged in such a way
+that it keeps a linked
+
+34
+00:01:34.520 --> 00:01:39.370 align:middle line:84%
+structure internally that, when
+iterating through the hash map,
+
+35
+00:01:39.370 --> 00:01:41.983 align:middle line:84%
+will keep track of
+the insertion order.
+
+36
+00:01:41.983 --> 00:01:43.400 align:middle line:84%
+So if you come
+back later, and you
+
+37
+00:01:43.400 --> 00:01:47.030 align:middle line:84%
+want to iterate through
+the LinkedHashMap,
+
+38
+00:01:47.030 --> 00:01:49.490 align:middle line:84%
+you'll end up iterating
+through the elements
+
+39
+00:01:49.490 --> 00:01:51.290 align:middle line:84%
+in the order in which
+they were inserted,
+
+40
+00:01:51.290 --> 00:01:53.915 align:middle line:84%
+as opposed to the order in which
+they were hashed into the hash
+
+41
+00:01:53.915 --> 00:01:54.457 align:middle line:90%
+table.
+
+42
+00:01:54.457 --> 00:01:56.040 align:middle line:84%
+And you'll see why
+we want to do that.
+
+43
+00:01:56.040 --> 00:02:00.870 align:middle line:84%
+We want to be able to preserve
+the ordering of the words
+
+44
+00:02:00.870 --> 00:02:04.440 align:middle line:84%
+do, re, mi, fa, so,
+la, ti, and so on.
+
+45
+00:02:04.440 --> 00:02:07.370 align:middle line:84%
+We want them to be
+printed out in that order.
+
+46
+00:02:07.370 --> 00:02:10.640 align:middle line:84%
+And the third parameter
+here to groupingBy
+
+47
+00:02:10.640 --> 00:02:12.140 align:middle line:84%
+is a factor method,
+which we'll look
+
+48
+00:02:12.140 --> 00:02:17.960 align:middle line:84%
+at later when we talk about
+the concept of collectors.
+
+49
+00:02:17.960 --> 00:02:20.090 align:middle line:84%
+And this is basically
+a factor method
+
+50
+00:02:20.090 --> 00:02:22.970 align:middle line:84%
+that creates a downstream
+collector that will
+
+51
+00:02:22.970 --> 00:02:25.750 align:middle line:90%
+merge result lists together.
+
+52
+00:02:25.750 --> 00:02:27.500 align:middle line:84%
+So this is just a way
+of making the output
+
+53
+00:02:27.500 --> 00:02:30.500 align:middle line:84%
+a little bit simpler, a
+little bit more compact.
+
+54
+00:02:30.500 --> 00:02:33.350 align:middle line:84%
+And when we talk about
+non-concurrent collectors
+
+55
+00:02:33.350 --> 00:02:37.280 align:middle line:84%
+next time or in the future,
+in the not too distant future,
+
+56
+00:02:37.280 --> 00:02:39.830 align:middle line:84%
+you will find out
+how to implement
+
+57
+00:02:39.830 --> 00:02:41.220 align:middle line:90%
+the downstream collector.
+
+58
+00:02:41.220 --> 00:02:43.460 align:middle line:84%
+And this is in
+the Java streams--
+
+59
+00:02:43.460 --> 00:02:49.160 align:middle line:84%
+applying non-concurrent
+collectors lesson.
+
+60
+00:02:49.160 --> 00:02:51.170 align:middle line:84%
+What we have at this
+point, of course,
+
+61
+00:02:51.170 --> 00:02:54.680 align:middle line:84%
+will be a map that's
+been returned by collect
+
+62
+00:02:54.680 --> 00:02:57.530 align:middle line:84%
+and created by groupingBy,
+which is the collector.
+
+63
+00:02:57.530 --> 00:03:00.260 align:middle line:84%
+And then we go ahead and
+print the matching results
+
+64
+00:03:00.260 --> 00:03:02.600 align:middle line:84%
+in the stream using
+the forEach method
+
+65
+00:03:02.600 --> 00:03:05.167 align:middle line:84%
+and the printResults
+method reference.
+
+66
+00:03:05.167 --> 00:03:07.250 align:middle line:84%
+And once again, just keep
+in the back of your head
+
+67
+00:03:07.250 --> 00:03:09.470 align:middle line:84%
+that this is maps
+for each method,
+
+68
+00:03:09.470 --> 00:03:12.870 align:middle line:90%
+not streams for each method.
+
+69
+00:03:12.870 --> 00:03:15.980 align:middle line:84%
+So let's take a look now at
+printResult. So here's where
+
+70
+00:03:15.980 --> 00:03:18.020 align:middle line:90%
+printResult is called.
+
+71
+00:03:18.020 --> 00:03:20.960 align:middle line:84%
+Here's where
+printResult is defined.
+
+72
+00:03:20.960 --> 00:03:26.090 align:middle line:84%
+And printResult takes a word
+and its list of indices.
+
+73
+00:03:26.090 --> 00:03:30.270 align:middle line:84%
+And it goes ahead and prints
+them to the standard output.
+
+74
+00:03:30.270 --> 00:03:33.680 align:middle line:84%
+So as you can see here, it
+takes the word and the results.
+
+75
+00:03:33.680 --> 00:03:37.260 align:middle line:84%
+And the results come in as
+a list of search results
+
+76
+00:03:37.260 --> 00:03:40.010 align:middle line:84%
+dot result objects, which
+basically keep track
+
+77
+00:03:40.010 --> 00:03:42.230 align:middle line:90%
+of the index where the word--
+
+78
+00:03:42.230 --> 00:03:44.865 align:middle line:84%
+all the places where the word
+appeared in the input string.
+
+79
+00:03:44.865 --> 00:03:45.990 align:middle line:90%
+So we're going to go ahead.
+
+80
+00:03:45.990 --> 00:03:47.657 align:middle line:84%
+And we're going to
+print out the result.
+
+81
+00:03:47.657 --> 00:03:51.060 align:middle line:84%
+We're going to say the word
+appeared at indices whatever.
+
+82
+00:03:51.060 --> 00:03:54.108 align:middle line:84%
+And then we're going to say
+SearchResults.printResults
+
+83
+00:03:54.108 --> 00:03:54.900 align:middle line:90%
+giving the results.
+
+84
+00:03:54.900 --> 00:03:56.608 align:middle line:84%
+So that'll go ahead
+and print the results
+
+85
+00:03:56.608 --> 00:03:58.372 align:middle line:90%
+in a nice, formatted way.
+
+86
+00:03:58.372 --> 00:04:00.080 align:middle line:84%
+And then the last
+thing we're going to do
+
+87
+00:04:00.080 --> 00:04:03.050 align:middle line:84%
+is we're going to call this
+method called computeMax.
+
+88
+00:04:03.050 --> 00:04:04.970 align:middle line:84%
+And this is going to,
+just for kicks, just
+
+89
+00:04:04.970 --> 00:04:08.060 align:middle line:84%
+to illustrate a few
+other streams features,
+
+90
+00:04:08.060 --> 00:04:11.540 align:middle line:84%
+it's going to go ahead and
+take that list of results.
+
+91
+00:04:11.540 --> 00:04:15.440 align:middle line:84%
+And it's going to find out
+the maximum indices or index
+
+92
+00:04:15.440 --> 00:04:17.670 align:middle line:90%
+value in that list.
+
+93
+00:04:17.670 --> 00:04:19.310 align:middle line:84%
+So let's go ahead
+and take a look
+
+94
+00:04:19.310 --> 00:04:22.730 align:middle line:84%
+at how computeMax
+is implemented.
+
+95
+00:04:22.730 --> 00:04:25.670 align:middle line:84%
+And this will show off a
+few other interesting things
+
+96
+00:04:25.670 --> 00:04:31.700 align:middle line:84%
+in Java Streams and other
+related Java 8 classes.
+
+97
+00:04:31.700 --> 00:04:35.780 align:middle line:84%
+So computeMax is going to
+take a list of search results
+
+98
+00:04:35.780 --> 00:04:39.740 align:middle line:84%
+result objects and convert
+that list of results
+
+99
+00:04:39.740 --> 00:04:41.700 align:middle line:90%
+into a stream of results.
+
+100
+00:04:41.700 --> 00:04:45.050 align:middle line:84%
+So now, we have a stream
+of result objects,
+
+101
+00:04:45.050 --> 00:04:47.150 align:middle line:90%
+which are reference types.
+
+102
+00:04:47.150 --> 00:04:49.700 align:middle line:84%
+So what we want to do is
+we want to go ahead and use
+
+103
+00:04:49.700 --> 00:04:53.390 align:middle line:84%
+the mapToInt intermediate
+operation, which
+
+104
+00:04:53.390 --> 00:04:56.990 align:middle line:84%
+will be passed the search
+results that result colon colon
+
+105
+00:04:56.990 --> 00:04:59.323 align:middle line:90%
+getIndex method reference.
+
+106
+00:04:59.323 --> 00:05:00.740 align:middle line:84%
+And what that will
+do is that will
+
+107
+00:05:00.740 --> 00:05:03.680 align:middle line:84%
+go into the result
+object that's being
+
+108
+00:05:03.680 --> 00:05:05.270 align:middle line:90%
+passed as a stream element.
+
+109
+00:05:05.270 --> 00:05:08.270 align:middle line:84%
+And it will extract out
+the index corresponding
+
+110
+00:05:08.270 --> 00:05:10.160 align:middle line:90%
+to the int primitive.
+
+111
+00:05:10.160 --> 00:05:12.740 align:middle line:84%
+So mapToInt will
+then end up creating
+
+112
+00:05:12.740 --> 00:05:18.230 align:middle line:84%
+a stream of int primitives
+corresponding to the indices
+
+113
+00:05:18.230 --> 00:05:22.310 align:middle line:84%
+where the search results
+found relative to the word
+
+114
+00:05:22.310 --> 00:05:24.350 align:middle line:90%
+that we were looking up.
+
+115
+00:05:24.350 --> 00:05:29.510 align:middle line:84%
+What we do then is we take
+that stream of int primitives.
+
+116
+00:05:29.510 --> 00:05:31.520 align:middle line:90%
+And we call the map--
+
+117
+00:05:31.520 --> 00:05:32.480 align:middle line:90%
+the max method.
+
+118
+00:05:32.480 --> 00:05:34.430 align:middle line:84%
+Not the map method,
+the max method.
+
+119
+00:05:34.430 --> 00:05:36.800 align:middle line:84%
+And the max method
+is the method as you
+
+120
+00:05:36.800 --> 00:05:39.940 align:middle line:84%
+might expect that's
+going to return
+
+121
+00:05:39.940 --> 00:05:42.700 align:middle line:84%
+a maximum element
+if there's actually
+
+122
+00:05:42.700 --> 00:05:44.650 align:middle line:90%
+contents in the stream.
+
+123
+00:05:44.650 --> 00:05:47.950 align:middle line:84%
+Or if the stream for
+some reason was empty,
+
+124
+00:05:47.950 --> 00:05:50.835 align:middle line:84%
+then it's going to return
+something called an optional.
+
+125
+00:05:50.835 --> 00:05:52.210 align:middle line:84%
+And more specifically,
+it's going
+
+126
+00:05:52.210 --> 00:05:55.660 align:middle line:84%
+to return a so-called
+empty optional.
+
+127
+00:05:55.660 --> 00:06:00.038 align:middle line:84%
+So what max returns is it
+returns an optional int.
+
+128
+00:06:00.038 --> 00:06:02.080 align:middle line:84%
+And the reason it needs
+to return an optional int
+
+129
+00:06:02.080 --> 00:06:04.120 align:middle line:84%
+is it might be the
+case that there's
+
+130
+00:06:04.120 --> 00:06:05.890 align:middle line:84%
+nothing in the
+stream in which case
+
+131
+00:06:05.890 --> 00:06:08.440 align:middle line:84%
+we don't want to try to compute
+the max of something that
+
+132
+00:06:08.440 --> 00:06:10.430 align:middle line:90%
+didn't exist.
+
+133
+00:06:10.430 --> 00:06:13.780 align:middle line:84%
+So what max gives back
+is an optional int,
+
+134
+00:06:13.780 --> 00:06:17.270 align:middle line:84%
+and then we call
+the orElse method,
+
+135
+00:06:17.270 --> 00:06:20.890 align:middle line:84%
+which is the method defined
+on the optional class.
+
+136
+00:06:20.890 --> 00:06:23.800 align:middle line:84%
+Optional was a class
+that was added in Java 8.
+
+137
+00:06:23.800 --> 00:06:26.440 align:middle line:84%
+And of course, it's still
+in the later versions too.
+
+138
+00:06:26.440 --> 00:06:28.180 align:middle line:84%
+And it basically
+allows you to get
+
+139
+00:06:28.180 --> 00:06:30.970 align:middle line:84%
+rid of checking for
+null references you
+
+140
+00:06:30.970 --> 00:06:33.280 align:middle line:84%
+don't have to worry about
+no references anymore
+
+141
+00:06:33.280 --> 00:06:34.680 align:middle line:90%
+if you use options.
+
+142
+00:06:34.680 --> 00:06:39.630 align:middle line:84%
+So in this case, if there is an
+actual value that max returned,
+
+143
+00:06:39.630 --> 00:06:42.970 align:middle line:84%
+we are going to
+return that value.
+
+144
+00:06:42.970 --> 00:06:45.800 align:middle line:84%
+Or else if the
+optional was empty,
+
+145
+00:06:45.800 --> 00:06:48.280 align:middle line:84%
+we're going to return
+the value 0, which
+
+146
+00:06:48.280 --> 00:06:50.925 align:middle line:84%
+is just an indication
+that there was no max.
+
+147
+00:06:50.925 --> 00:06:52.300 align:middle line:84%
+So this is an
+interesting example
+
+148
+00:06:52.300 --> 00:06:54.970 align:middle line:84%
+that illustrates how
+to combine a bunch
+
+149
+00:06:54.970 --> 00:06:57.370 align:middle line:84%
+of the intermediate
+operations we've talked about
+
+150
+00:06:57.370 --> 00:07:04.300 align:middle line:84%
+so far like mapToInt, along with
+an interesting stream terminal
+
+151
+00:07:04.300 --> 00:07:06.940 align:middle line:84%
+operator, which
+is max, as well as
+
+152
+00:07:06.940 --> 00:07:11.290 align:middle line:84%
+the orElse method on Optional
+which will either return
+
+153
+00:07:11.290 --> 00:07:12.952 align:middle line:90%
+a value or not.
+
+154
+00:07:12.952 --> 00:07:14.410 align:middle line:84%
+And if it doesn't
+have a value, you
+
+155
+00:07:14.410 --> 00:07:16.720 align:middle line:84%
+can give it a value
+that it'll use
+
+156
+00:07:16.720 --> 00:07:19.960 align:middle line:84%
+if there is no value in the
+optional that's returned.
+
+157
+00:07:19.960 --> 00:07:22.310 align:middle line:84%
+So I strongly recommend you
+take a look at this code.
+
+158
+00:07:22.310 --> 00:07:23.393 align:middle line:90%
+It's really pretty simple.
+
+159
+00:07:23.393 --> 00:07:25.770 align:middle line:84%
+But look at it and
+think about it.
+
+160
+00:07:25.770 --> 00:07:27.840 align:middle line:84%
+Look at the references
+to the various methods.
+
+161
+00:07:27.840 --> 00:07:29.310 align:middle line:84%
+And make sure you
+understand how it
+
+162
+00:07:29.310 --> 00:07:31.640 align:middle line:90%
+works because it's very cool.
