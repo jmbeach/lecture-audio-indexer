@@ -1,0 +1,267 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.770 align:middle line:90%
+
+
+2
+00:00:00.770 --> 00:00:02.870 align:middle line:84%
+Welcome to the next
+week of our course,
+
+3
+00:00:02.870 --> 00:00:05.842 align:middle line:84%
+on parallel functional
+programming with Java.
+
+4
+00:00:05.842 --> 00:00:09.310 align:middle line:84%
+The lessons this week continue
+to explore key features
+
+5
+00:00:09.310 --> 00:00:11.860 align:middle line:90%
+of the Java streams framework.
+
+6
+00:00:11.860 --> 00:00:14.830 align:middle line:84%
+We begin by explaining
+and visualizing
+
+7
+00:00:14.830 --> 00:00:17.620 align:middle line:84%
+the structure and functionality
+of the simple search stream
+
+8
+00:00:17.620 --> 00:00:20.200 align:middle line:84%
+program, which
+sequentially searches
+
+9
+00:00:20.200 --> 00:00:24.000 align:middle line:84%
+for words in a string
+initialized from a file.
+
+10
+00:00:24.000 --> 00:00:25.500 align:middle line:84%
+This program is
+used as a case study
+
+11
+00:00:25.500 --> 00:00:27.660 align:middle line:84%
+throughout this week's
+lessons to showcase
+
+12
+00:00:27.660 --> 00:00:30.270 align:middle line:84%
+Java's functional programming
+features, such as lambda
+
+13
+00:00:30.270 --> 00:00:32.040 align:middle line:84%
+expressions and
+method references,
+
+14
+00:00:32.040 --> 00:00:36.260 align:middle line:84%
+in conjunction with core Java
+sequential stream capabilities.
+
+15
+00:00:36.260 --> 00:00:38.050 align:middle line:84%
+We next explore
+many factory methods
+
+16
+00:00:38.050 --> 00:00:41.300 align:middle line:84%
+that can be applied to create
+streams from various sources,
+
+17
+00:00:41.300 --> 00:00:44.050 align:middle line:84%
+including Java collections,
+built-in arrays,
+
+18
+00:00:44.050 --> 00:00:46.430 align:middle line:90%
+and file input classes.
+
+19
+00:00:46.430 --> 00:00:49.052 align:middle line:84%
+After a stream is created
+via factory method,
+
+20
+00:00:49.052 --> 00:00:50.510 align:middle line:84%
+the data elements
+in the stream are
+
+21
+00:00:50.510 --> 00:00:54.230 align:middle line:84%
+processed by a pipeline of
+so-called aggregate operations,
+
+22
+00:00:54.230 --> 00:00:56.570 align:middle line:84%
+which apply behaviors on
+elements in the stream
+
+23
+00:00:56.570 --> 00:00:59.420 align:middle line:84%
+to perform processing steps,
+such as downloading images
+
+24
+00:00:59.420 --> 00:01:03.770 align:middle line:84%
+from URLs or searching for
+words in an input string.
+
+25
+00:01:03.770 --> 00:01:07.290 align:middle line:84%
+A stream consists of two types
+of aggregate operations, zero
+
+26
+00:01:07.290 --> 00:01:09.480 align:middle line:84%
+or more intermediate
+operations, which
+
+27
+00:01:09.480 --> 00:01:11.430 align:middle line:84%
+process elements in
+their input stream
+
+28
+00:01:11.430 --> 00:01:14.640 align:middle line:84%
+and yield an output stream,
+followed by one terminal
+
+29
+00:01:14.640 --> 00:01:17.640 align:middle line:84%
+operation, which triggers
+the processing of data
+
+30
+00:01:17.640 --> 00:01:19.710 align:middle line:84%
+by all the preceding
+intermediate operations
+
+31
+00:01:19.710 --> 00:01:23.480 align:middle line:84%
+in the stream, and yields
+a non-stream result.
+
+32
+00:01:23.480 --> 00:01:25.960 align:middle line:84%
+A behavior passed to an
+intermediate operation
+
+33
+00:01:25.960 --> 00:01:28.930 align:middle line:84%
+is typically implemented by a
+lambda expression or a method
+
+34
+00:01:28.930 --> 00:01:30.100 align:middle line:90%
+reference.
+
+35
+00:01:30.100 --> 00:01:33.170 align:middle line:84%
+Ideally, a behavior
+has no side effects,
+
+36
+00:01:33.170 --> 00:01:34.930 align:middle line:84%
+which means the
+output it produces
+
+37
+00:01:34.930 --> 00:01:38.230 align:middle line:84%
+depends only on the input it
+receives, thereby simplifying
+
+38
+00:01:38.230 --> 00:01:41.140 align:middle line:84%
+program analysis and
+debugging, as well as enabling
+
+39
+00:01:41.140 --> 00:01:45.436 align:middle line:84%
+transparent optimizations
+and scalable paralyzed.
+
+40
+00:01:45.436 --> 00:01:48.000 align:middle line:84%
+Each stream contains
+three phases.
+
+41
+00:01:48.000 --> 00:01:50.460 align:middle line:84%
+The first phase
+performs splitting,
+
+42
+00:01:50.460 --> 00:01:53.220 align:middle line:84%
+which converts a data
+source into a stream.
+
+43
+00:01:53.220 --> 00:01:55.460 align:middle line:84%
+The second phase
+performs applying,
+
+44
+00:01:55.460 --> 00:01:57.620 align:middle line:84%
+which processes the
+elements in the stream
+
+45
+00:01:57.620 --> 00:02:01.610 align:middle line:84%
+by running through a pipeline
+of intermediate operations.
+
+46
+00:02:01.610 --> 00:02:03.890 align:middle line:84%
+The third phase
+performs combining,
+
+47
+00:02:03.890 --> 00:02:07.340 align:middle line:84%
+which uses a terminal operation
+to merge the sub-results
+
+48
+00:02:07.340 --> 00:02:12.910 align:middle line:84%
+from the applying phase to
+form a single reduced result.
+
+49
+00:02:12.910 --> 00:02:15.570 align:middle line:84%
+The final lessons this week
+provide detailed coverage
+
+50
+00:02:15.570 --> 00:02:18.300 align:middle line:84%
+of the most common stream
+intermediate operations,
+
+51
+00:02:18.300 --> 00:02:21.775 align:middle line:84%
+such as map, filter,
+and flat map.
+
+52
+00:02:21.775 --> 00:02:23.400 align:middle line:84%
+These and other
+intermediate operations
+
+53
+00:02:23.400 --> 00:02:26.640 align:middle line:84%
+are showcased in the context of
+the simple search stream case
+
+54
+00:02:26.640 --> 00:02:30.080 align:middle line:84%
+study to demonstrate how they
+can be applied in practice.

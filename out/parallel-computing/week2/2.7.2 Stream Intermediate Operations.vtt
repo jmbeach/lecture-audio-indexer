@@ -1,0 +1,656 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.750 align:middle line:90%
+
+
+2
+00:00:00.750 --> 00:00:02.280 align:middle line:84%
+Now that we've
+talked about the map
+
+3
+00:00:02.280 --> 00:00:04.830 align:middle line:84%
+family of intermediate
+operations,
+
+4
+00:00:04.830 --> 00:00:08.460 align:middle line:84%
+let's turn our attention to
+filter and flatMap, which
+
+5
+00:00:08.460 --> 00:00:11.640 align:middle line:84%
+have some interesting
+similarities and even more
+
+6
+00:00:11.640 --> 00:00:14.880 align:middle line:84%
+interesting differences
+compared to the map family
+
+7
+00:00:14.880 --> 00:00:17.820 align:middle line:90%
+of intermediate operations.
+
+8
+00:00:17.820 --> 00:00:23.760 align:middle line:84%
+So filter and flatMap,
+like map and mapToInt,
+
+9
+00:00:23.760 --> 00:00:30.065 align:middle line:84%
+are also both stateless,
+run-to-completion operations.
+
+10
+00:00:30.065 --> 00:00:31.440 align:middle line:84%
+So let's go ahead
+first and start
+
+11
+00:00:31.440 --> 00:00:35.520 align:middle line:84%
+by covering the filter
+intermediate operation.
+
+12
+00:00:35.520 --> 00:00:38.190 align:middle line:84%
+So the filter
+intermediate operation
+
+13
+00:00:38.190 --> 00:00:42.530 align:middle line:84%
+is passed a predicate, and
+it tests that predicate
+
+14
+00:00:42.530 --> 00:00:46.220 align:middle line:84%
+against each element
+of its input stream
+
+15
+00:00:46.220 --> 00:00:47.660 align:middle line:84%
+and returns an
+output stream that
+
+16
+00:00:47.660 --> 00:00:51.980 align:middle line:84%
+contains only the elements
+that match the predicate.
+
+17
+00:00:51.980 --> 00:00:53.645 align:middle line:84%
+So of course, if
+everything matches,
+
+18
+00:00:53.645 --> 00:00:55.020 align:middle line:84%
+it will get back
+the same number.
+
+19
+00:00:55.020 --> 00:00:56.520 align:middle line:84%
+But if not everything
+matches, it'll
+
+20
+00:00:56.520 --> 00:00:58.680 align:middle line:90%
+return less than the number.
+
+21
+00:00:58.680 --> 00:01:02.330 align:middle line:84%
+So one of the first obvious
+differences between filter
+
+22
+00:01:02.330 --> 00:01:06.860 align:middle line:84%
+and map is that, unlike map--
+which had the same number
+
+23
+00:01:06.860 --> 00:01:10.070 align:middle line:84%
+of elements in the output stream
+as it had in its input stream--
+
+24
+00:01:10.070 --> 00:01:14.330 align:middle line:84%
+filter may have
+less than the number
+
+25
+00:01:14.330 --> 00:01:17.030 align:middle line:84%
+of input stream elements
+in its output stream
+
+26
+00:01:17.030 --> 00:01:19.130 align:middle line:90%
+than came into its input stream.
+
+27
+00:01:19.130 --> 00:01:21.210 align:middle line:84%
+Now, of course, it might
+have the same number
+
+28
+00:01:21.210 --> 00:01:22.710 align:middle line:84%
+if the predicate
+matches everything.
+
+29
+00:01:22.710 --> 00:01:26.550 align:middle line:84%
+But if it doesn't match,
+then it'll be less.
+
+30
+00:01:26.550 --> 00:01:30.000 align:middle line:84%
+We use this particular
+intermediate operation
+
+31
+00:01:30.000 --> 00:01:32.980 align:middle line:84%
+to filter out any
+empty search results.
+
+32
+00:01:32.980 --> 00:01:36.210 align:middle line:84%
+So after searching for a
+given word in an input string,
+
+33
+00:01:36.210 --> 00:01:38.370 align:middle line:84%
+if there's just
+no matches at all,
+
+34
+00:01:38.370 --> 00:01:41.400 align:middle line:84%
+rather than keeping around
+a search result object that
+
+35
+00:01:41.400 --> 00:01:45.270 align:middle line:84%
+has nothing in it, we're
+going to filter out and remove
+
+36
+00:01:45.270 --> 00:01:46.930 align:middle line:90%
+anything that's empty.
+
+37
+00:01:46.930 --> 00:01:50.010 align:middle line:84%
+So that's what's shown
+here in the example.
+
+38
+00:01:50.010 --> 00:01:53.100 align:middle line:84%
+So visually, you can see we
+go potentially from a larger
+
+39
+00:01:53.100 --> 00:01:55.080 align:middle line:84%
+number of search
+results to a smaller
+
+40
+00:01:55.080 --> 00:01:59.140 align:middle line:84%
+number of search results
+wherever things are empty.
+
+41
+00:01:59.140 --> 00:02:01.580 align:middle line:84%
+One thing to note, however--
+and this is a key difference,
+
+42
+00:02:01.580 --> 00:02:04.450 align:middle line:84%
+another key difference between
+filter and map in addition
+
+43
+00:02:04.450 --> 00:02:06.760 align:middle line:84%
+to having potential differences
+in the number of output
+
+44
+00:02:06.760 --> 00:02:07.930 align:middle line:90%
+elements--
+
+45
+00:02:07.930 --> 00:02:12.250 align:middle line:84%
+filter can't change the type
+or the value of the elements
+
+46
+00:02:12.250 --> 00:02:13.570 align:middle line:90%
+it processes.
+
+47
+00:02:13.570 --> 00:02:17.050 align:middle line:84%
+So if it comes in as a
+stream of search results,
+
+48
+00:02:17.050 --> 00:02:19.180 align:middle line:84%
+it's going to go out as a
+stream of search results.
+
+49
+00:02:19.180 --> 00:02:22.752 align:middle line:84%
+There will not be any
+change in the type.
+
+50
+00:02:22.752 --> 00:02:24.460 align:middle line:84%
+There could be a
+reduction in the number,
+
+51
+00:02:24.460 --> 00:02:27.760 align:middle line:84%
+but no change in that type
+is allowed with filter.
+
+52
+00:02:27.760 --> 00:02:31.290 align:middle line:84%
+And that's, again, very
+different from map.
+
+53
+00:02:31.290 --> 00:02:34.260 align:middle line:84%
+Here's, again, how we use
+our fluent interface model.
+
+54
+00:02:34.260 --> 00:02:37.470 align:middle line:84%
+We take the output of
+search for a word, which
+
+55
+00:02:37.470 --> 00:02:41.970 align:middle line:84%
+is what map applied, and then
+we go ahead and connect it up
+
+56
+00:02:41.970 --> 00:02:42.912 align:middle line:90%
+with filter.
+
+57
+00:02:42.912 --> 00:02:44.370 align:middle line:84%
+And you can see
+what filter does is
+
+58
+00:02:44.370 --> 00:02:50.350 align:middle line:84%
+it checks to see if the
+element is empty by calling
+
+59
+00:02:50.350 --> 00:02:52.060 align:middle line:84%
+the isEmpty method
+reference, and then we
+
+60
+00:02:52.060 --> 00:02:57.460 align:middle line:84%
+use basically a negator method
+here called not which I wrote,
+
+61
+00:02:57.460 --> 00:02:59.710 align:middle line:84%
+which is very similar to
+the negate method that's
+
+62
+00:02:59.710 --> 00:03:01.270 align:middle line:90%
+defined on predicate.
+
+63
+00:03:01.270 --> 00:03:04.900 align:middle line:84%
+And what you can do here
+is basically we're saying,
+
+64
+00:03:04.900 --> 00:03:07.663 align:middle line:84%
+only allow things through
+that are not empty.
+
+65
+00:03:07.663 --> 00:03:08.830 align:middle line:90%
+That's the way to read this.
+
+66
+00:03:08.830 --> 00:03:14.050 align:middle line:84%
+So not isEmpty means
+not empty, or full,
+
+67
+00:03:14.050 --> 00:03:15.730 align:middle line:84%
+or has an element--
+has at least one
+
+68
+00:03:15.730 --> 00:03:19.250 align:middle line:84%
+matching search result. Let
+those things go through.
+
+69
+00:03:19.250 --> 00:03:22.300 align:middle line:90%
+Otherwise, drop them.
+
+70
+00:03:22.300 --> 00:03:23.950 align:middle line:90%
+So that's filter.
+
+71
+00:03:23.950 --> 00:03:26.050 align:middle line:90%
+Let's now talk about flatMap.
+
+72
+00:03:26.050 --> 00:03:29.320 align:middle line:84%
+FlatMap is a very
+powerful operation,
+
+73
+00:03:29.320 --> 00:03:31.730 align:middle line:90%
+and it's also quite interesting.
+
+74
+00:03:31.730 --> 00:03:35.140 align:middle line:84%
+What it does is it
+returns a stream that
+
+75
+00:03:35.140 --> 00:03:38.620 align:middle line:84%
+replaces each element
+of its input stream
+
+76
+00:03:38.620 --> 00:03:42.130 align:middle line:84%
+with the contents of a map
+stream, which is produced
+
+77
+00:03:42.130 --> 00:03:44.200 align:middle line:84%
+by applying the provided
+mapping function
+
+78
+00:03:44.200 --> 00:03:45.740 align:middle line:90%
+to each element of the stream.
+
+79
+00:03:45.740 --> 00:03:48.980 align:middle line:84%
+Now, that's pretty much straight
+out of the box-- straight out
+
+80
+00:03:48.980 --> 00:03:50.980 align:middle line:84%
+of the book, straight out
+of the documentation--
+
+81
+00:03:50.980 --> 00:03:52.750 align:middle line:90%
+for what flatMap does.
+
+82
+00:03:52.750 --> 00:03:54.293 align:middle line:84%
+If I was you, I'd
+be going, hmm, I'm
+
+83
+00:03:54.293 --> 00:03:55.960 align:middle line:84%
+not quite sure what
+the heck that means.
+
+84
+00:03:55.960 --> 00:03:58.480 align:middle line:84%
+So let me see if I
+can break it down.
+
+85
+00:03:58.480 --> 00:04:01.630 align:middle line:84%
+At one level, it sounds an
+awful lot like map, in that,
+
+86
+00:04:01.630 --> 00:04:04.270 align:middle line:84%
+it's applying some
+mapper function.
+
+87
+00:04:04.270 --> 00:04:07.910 align:middle line:84%
+But it's actually quite
+different in reality,
+
+88
+00:04:07.910 --> 00:04:13.200 align:middle line:84%
+and so we'll kind of take a look
+and see how we could use it.
+
+89
+00:04:13.200 --> 00:04:15.150 align:middle line:84%
+One of the things to
+note about flatMap,
+
+90
+00:04:15.150 --> 00:04:17.339 align:middle line:84%
+which is really quite
+different from map,
+
+91
+00:04:17.339 --> 00:04:21.089 align:middle line:84%
+is that the number of
+elements in the output stream
+
+92
+00:04:21.089 --> 00:04:25.710 align:middle line:84%
+can be greater than,
+equal to, or less
+
+93
+00:04:25.710 --> 00:04:29.070 align:middle line:84%
+than the number of elements
+in the input stream.
+
+94
+00:04:29.070 --> 00:04:31.020 align:middle line:84%
+So it's the most
+different of them
+
+95
+00:04:31.020 --> 00:04:37.050 align:middle line:84%
+all, and we'll see how this
+shakes out as things go on.
+
+96
+00:04:37.050 --> 00:04:40.350 align:middle line:84%
+This particular
+example here is kind of
+
+97
+00:04:40.350 --> 00:04:42.210 align:middle line:84%
+interesting because
+what it does is
+
+98
+00:04:42.210 --> 00:04:48.990 align:middle line:84%
+it's going to take a
+stream of lists of strings.
+
+99
+00:04:48.990 --> 00:04:51.610 align:middle line:84%
+So we have a stream
+of lists of strings,
+
+100
+00:04:51.610 --> 00:04:54.180 align:middle line:84%
+and then it's going
+to call flatMap.
+
+101
+00:04:54.180 --> 00:04:58.680 align:middle line:84%
+And what that does is it
+flattens the list of strings
+
+102
+00:04:58.680 --> 00:04:59.790 align:middle line:90%
+into--
+
+103
+00:04:59.790 --> 00:05:03.480 align:middle line:84%
+it flattens the array
+of lists of strings
+
+104
+00:05:03.480 --> 00:05:06.240 align:middle line:90%
+into a stream of strings.
+
+105
+00:05:06.240 --> 00:05:09.040 align:middle line:84%
+So rather than having a
+stream of lists of strings--
+
+106
+00:05:09.040 --> 00:05:12.060 align:middle line:84%
+which is what we would
+get if we used map--
+
+107
+00:05:12.060 --> 00:05:14.160 align:middle line:84%
+instead, what flatMap
+does is it ends up
+
+108
+00:05:14.160 --> 00:05:17.430 align:middle line:84%
+flattening the elements, kind of
+concatenating them all together
+
+109
+00:05:17.430 --> 00:05:20.980 align:middle line:84%
+so we end up with
+a stream of strings
+
+110
+00:05:20.980 --> 00:05:24.150 align:middle line:84%
+which have been flattened--
+kind of run over by a bulldozer.
+
+111
+00:05:24.150 --> 00:05:26.540 align:middle line:84%
+You'll see me use a bulldozer
+metaphor a lot of times
+
+112
+00:05:26.540 --> 00:05:30.140 align:middle line:90%
+when we talk about flatMap.
+
+113
+00:05:30.140 --> 00:05:35.060 align:middle line:84%
+Like map, flatMap is able to
+transform the type of elements
+
+114
+00:05:35.060 --> 00:05:35.900 align:middle line:90%
+it processes.
+
+115
+00:05:35.900 --> 00:05:37.400 align:middle line:84%
+In this particular
+case, you can see
+
+116
+00:05:37.400 --> 00:05:40.880 align:middle line:84%
+that we took a stream
+of lists of strings
+
+117
+00:05:40.880 --> 00:05:43.930 align:middle line:84%
+and turned them into
+a stream of strings.
+
+118
+00:05:43.930 --> 00:05:47.170 align:middle line:84%
+And so that's a good example
+of the powerful things
+
+119
+00:05:47.170 --> 00:05:51.108 align:middle line:90%
+you can do with flatMap.
+
+120
+00:05:51.108 --> 00:05:53.150 align:middle line:84%
+Here's just a little
+snippet of code kind of show
+
+121
+00:05:53.150 --> 00:05:55.220 align:middle line:90%
+what this might look like.
+
+122
+00:05:55.220 --> 00:06:01.340 align:middle line:84%
+This example is not really found
+in my simple search stream app
+
+123
+00:06:01.340 --> 00:06:01.920 align:middle line:90%
+case study.
+
+124
+00:06:01.920 --> 00:06:05.510 align:middle line:84%
+So instead, I show an
+example here in ex12 folder
+
+125
+00:06:05.510 --> 00:06:06.733 align:middle line:90%
+on my GitHub account.
+
+126
+00:06:06.733 --> 00:06:08.900 align:middle line:84%
+And you can see here what
+we do is we basically make
+
+127
+00:06:08.900 --> 00:06:10.585 align:middle line:84%
+a whole bunch of
+lists of strings.
+
+128
+00:06:10.585 --> 00:06:11.960 align:middle line:84%
+I haven't really
+shown them here,
+
+129
+00:06:11.960 --> 00:06:13.668 align:middle line:84%
+but you can imagine
+they'd be initialized
+
+130
+00:06:13.668 --> 00:06:18.380 align:middle line:84%
+with lists of strings using
+Arrays.asList or whatever.
+
+131
+00:06:18.380 --> 00:06:20.540 align:middle line:84%
+And then we go ahead
+and say Stream.of.
+
+132
+00:06:20.540 --> 00:06:23.270 align:middle line:84%
+That takes the array, turns
+it into a stream of lists
+
+133
+00:06:23.270 --> 00:06:28.850 align:middle line:84%
+of strings, and then we call
+flatMap with the List::stream
+
+134
+00:06:28.850 --> 00:06:32.060 align:middle line:84%
+method and that goes ahead--
+it's a method reference--
+
+135
+00:06:32.060 --> 00:06:37.400 align:middle line:84%
+and that goes ahead and converts
+this into a stream of strings,
+
+136
+00:06:37.400 --> 00:06:39.220 align:middle line:90%
+which is pretty cool.

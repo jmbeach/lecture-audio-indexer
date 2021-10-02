@@ -1,0 +1,906 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:01.380 align:middle line:90%
+
+
+2
+00:00:01.380 --> 00:00:04.000 align:middle line:84%
+So now that we've talked
+about factory methods,
+
+3
+00:00:04.000 --> 00:00:06.300 align:middle line:84%
+ways of creating streams
+from different types
+
+4
+00:00:06.300 --> 00:00:09.690 align:middle line:84%
+of data and data sources,
+let's turn our attention
+
+5
+00:00:09.690 --> 00:00:12.503 align:middle line:90%
+to aggregate operations.
+
+6
+00:00:12.503 --> 00:00:13.920 align:middle line:84%
+And we're going
+to talk about some
+
+7
+00:00:13.920 --> 00:00:16.200 align:middle line:84%
+of the most common
+aggregate operations.
+
+8
+00:00:16.200 --> 00:00:18.240 align:middle line:84%
+And then we'll go and
+go into more detail
+
+9
+00:00:18.240 --> 00:00:20.370 align:middle line:84%
+about each of the
+different classes
+
+10
+00:00:20.370 --> 00:00:23.320 align:middle line:90%
+of aggregate operations.
+
+11
+00:00:23.320 --> 00:00:26.250 align:middle line:84%
+So as we talked about
+earlier, just a recap of what
+
+12
+00:00:26.250 --> 00:00:27.840 align:middle line:84%
+I mentioned at the
+very beginning,
+
+13
+00:00:27.840 --> 00:00:31.890 align:middle line:84%
+an aggregate operation is
+a higher-order function
+
+14
+00:00:31.890 --> 00:00:36.160 align:middle line:84%
+that applies a behavior on
+the elements of a stream.
+
+15
+00:00:36.160 --> 00:00:38.040 align:middle line:84%
+And so a higher-order
+function is just
+
+16
+00:00:38.040 --> 00:00:40.670 align:middle line:84%
+a fancy name for a
+function that's passed
+
+17
+00:00:40.670 --> 00:00:42.480 align:middle line:90%
+a function as a parameter.
+
+18
+00:00:42.480 --> 00:00:44.850 align:middle line:84%
+So in this particular case,
+the aggregate operations
+
+19
+00:00:44.850 --> 00:00:47.390 align:middle line:84%
+are going to be
+passed parameters
+
+20
+00:00:47.390 --> 00:00:49.430 align:middle line:90%
+that will be functions.
+
+21
+00:00:49.430 --> 00:00:51.200 align:middle line:84%
+And these functions,
+which are really
+
+22
+00:00:51.200 --> 00:00:54.830 align:middle line:84%
+known as behaviors
+in stream parlance,
+
+23
+00:00:54.830 --> 00:00:58.430 align:middle line:84%
+are typically either going to
+be lambda expressions or method
+
+24
+00:00:58.430 --> 00:01:01.370 align:middle line:84%
+references to various
+functional interfaces,
+
+25
+00:01:01.370 --> 00:01:03.170 align:middle line:84%
+like the function
+functional interface,
+
+26
+00:01:03.170 --> 00:01:05.660 align:middle line:84%
+the predicate functional
+interface, the consumer
+
+27
+00:01:05.660 --> 00:01:08.480 align:middle line:84%
+functional interface, the
+supplier functional interface,
+
+28
+00:01:08.480 --> 00:01:11.450 align:middle line:90%
+and so on and so forth.
+
+29
+00:01:11.450 --> 00:01:14.000 align:middle line:84%
+Aggregate operations
+are very powerful,
+
+30
+00:01:14.000 --> 00:01:18.200 align:middle line:84%
+because they help us define
+a declarative pipeline that
+
+31
+00:01:18.200 --> 00:01:22.520 align:middle line:84%
+focuses on what processing
+we want to perform
+
+32
+00:01:22.520 --> 00:01:27.480 align:middle line:84%
+rather than on how the
+processing will be implemented.
+
+33
+00:01:27.480 --> 00:01:31.070 align:middle line:84%
+And I always like
+to visualize this
+
+34
+00:01:31.070 --> 00:01:35.140 align:middle line:84%
+as an iceberg, where there's
+a top part that's visible.
+
+35
+00:01:35.140 --> 00:01:36.590 align:middle line:90%
+It's kind of the what.
+
+36
+00:01:36.590 --> 00:01:38.180 align:middle line:84%
+And then there's a
+bottom part, which
+
+37
+00:01:38.180 --> 00:01:41.180 align:middle line:84%
+is really the bulk of the
+iceberg, that's not visible.
+
+38
+00:01:41.180 --> 00:01:42.600 align:middle line:90%
+That's the how.
+
+39
+00:01:42.600 --> 00:01:44.210 align:middle line:84%
+And I think you'll
+agree, especially
+
+40
+00:01:44.210 --> 00:01:46.690 align:middle line:84%
+after the discussions we've
+had of functional programming
+
+41
+00:01:46.690 --> 00:01:50.870 align:middle line:84%
+in other courses
+in this program,
+
+42
+00:01:50.870 --> 00:01:53.207 align:middle line:84%
+that functional
+programming is useful
+
+43
+00:01:53.207 --> 00:01:55.290 align:middle line:84%
+because it helps you focus
+on what you want to do,
+
+44
+00:01:55.290 --> 00:01:57.240 align:middle line:90%
+not how it's done.
+
+45
+00:01:57.240 --> 00:01:59.220 align:middle line:90%
+Now again, the how matters.
+
+46
+00:01:59.220 --> 00:02:01.830 align:middle line:84%
+But we want the how to be an
+implementation detail that's
+
+47
+00:02:01.830 --> 00:02:04.470 align:middle line:84%
+bundled up in a framework,
+not something that's
+
+48
+00:02:04.470 --> 00:02:07.500 align:middle line:90%
+kind of the top level item.
+
+49
+00:02:07.500 --> 00:02:10.800 align:middle line:84%
+Now, it turns out that
+there are two types
+
+50
+00:02:10.800 --> 00:02:13.080 align:middle line:90%
+of aggregate operations.
+
+51
+00:02:13.080 --> 00:02:16.420 align:middle line:84%
+The first type are called
+intermediate operations.
+
+52
+00:02:16.420 --> 00:02:21.090 align:middle line:84%
+And these are operations that
+process elements in their input
+
+53
+00:02:21.090 --> 00:02:27.197 align:middle line:84%
+stream and then yield an
+output stream as the result.
+
+54
+00:02:27.197 --> 00:02:28.530 align:middle line:90%
+And there's a bunch of examples.
+
+55
+00:02:28.530 --> 00:02:30.360 align:middle line:84%
+We've talked about
+some of them already.
+
+56
+00:02:30.360 --> 00:02:33.120 align:middle line:84%
+Briefly we'll cover them
+a lot more here shortly.
+
+57
+00:02:33.120 --> 00:02:36.840 align:middle line:84%
+Filter and map are ones
+we've talked about already.
+
+58
+00:02:36.840 --> 00:02:40.590 align:middle line:84%
+We haven't talked yet
+about flatMap or much about
+
+59
+00:02:40.590 --> 00:02:41.730 align:middle line:90%
+dropWhile.
+
+60
+00:02:41.730 --> 00:02:43.287 align:middle line:84%
+We haven't talked
+about takeWhile.
+
+61
+00:02:43.287 --> 00:02:44.370 align:middle line:90%
+We'll cover those shortly.
+
+62
+00:02:44.370 --> 00:02:45.787 align:middle line:84%
+Those are intermediate
+operations.
+
+63
+00:02:45.787 --> 00:02:48.360 align:middle line:84%
+They transform things
+or filter things
+
+64
+00:02:48.360 --> 00:02:53.900 align:middle line:84%
+and do some processing from
+input stream to output stream.
+
+65
+00:02:53.900 --> 00:02:55.940 align:middle line:84%
+Interestingly enough,
+intermediate operations
+
+66
+00:02:55.940 --> 00:02:57.810 align:middle line:90%
+are actually optional.
+
+67
+00:02:57.810 --> 00:03:01.400 align:middle line:84%
+So it's actually possible to
+go ahead and create a stream
+
+68
+00:03:01.400 --> 00:03:03.852 align:middle line:84%
+and then just apply
+something called a terminal
+
+69
+00:03:03.852 --> 00:03:05.810 align:middle line:84%
+operation, which is the
+other type of operation
+
+70
+00:03:05.810 --> 00:03:07.490 align:middle line:90%
+we're about to talk about.
+
+71
+00:03:07.490 --> 00:03:09.080 align:middle line:84%
+That's a pretty
+rare thing to do.
+
+72
+00:03:09.080 --> 00:03:09.990 align:middle line:90%
+But you can do it.
+
+73
+00:03:09.990 --> 00:03:14.570 align:middle line:84%
+So here's an example where we
+create a stream of character
+
+74
+00:03:14.570 --> 00:03:18.200 align:middle line:84%
+names and then instantly
+return the number of names
+
+75
+00:03:18.200 --> 00:03:20.170 align:middle line:90%
+in the stream.
+
+76
+00:03:20.170 --> 00:03:24.010 align:middle line:84%
+Interestingly enough, more
+recent versions of Java
+
+77
+00:03:24.010 --> 00:03:26.635 align:middle line:84%
+actually optimize
+streams that contain
+
+78
+00:03:26.635 --> 00:03:27.760 align:middle line:90%
+no intermediate operations.
+
+79
+00:03:27.760 --> 00:03:29.500 align:middle line:84%
+They don't actually
+create a stream at all.
+
+80
+00:03:29.500 --> 00:03:30.640 align:middle line:84%
+They just go ahead
+and, in this case,
+
+81
+00:03:30.640 --> 00:03:32.830 align:middle line:84%
+just return the count
+of the original list.
+
+82
+00:03:32.830 --> 00:03:35.110 align:middle line:84%
+So they're obviously
+clever things
+
+83
+00:03:35.110 --> 00:03:40.125 align:middle line:84%
+the stream's framework does when
+it detects certain use cases.
+
+84
+00:03:40.125 --> 00:03:41.500 align:middle line:84%
+These intermediate
+operations can
+
+85
+00:03:41.500 --> 00:03:43.600 align:middle line:84%
+be further classified
+according to
+
+86
+00:03:43.600 --> 00:03:45.880 align:middle line:90%
+several different dimensions.
+
+87
+00:03:45.880 --> 00:03:47.800 align:middle line:90%
+And we see them here.
+
+88
+00:03:47.800 --> 00:03:51.550 align:middle line:84%
+One is whether the
+operations are stateful.
+
+89
+00:03:51.550 --> 00:03:53.830 align:middle line:84%
+And what that means
+is, is the information
+
+90
+00:03:53.830 --> 00:03:58.942 align:middle line:84%
+from a prior invocation used as
+part of the future invocation?
+
+91
+00:03:58.942 --> 00:04:00.400 align:middle line:84%
+And we'll see that
+there's a number
+
+92
+00:04:00.400 --> 00:04:02.980 align:middle line:84%
+of intermediate operations
+where that is the case.
+
+93
+00:04:02.980 --> 00:04:08.080 align:middle line:84%
+There's methods like
+distinct, skip, sorted,
+
+94
+00:04:08.080 --> 00:04:10.090 align:middle line:84%
+which have to know
+what came before.
+
+95
+00:04:10.090 --> 00:04:12.700 align:middle line:84%
+You obviously can't sort
+the elements in a stream
+
+96
+00:04:12.700 --> 00:04:14.620 align:middle line:84%
+unless you've seen
+all the other elements
+
+97
+00:04:14.620 --> 00:04:17.102 align:middle line:90%
+and stash them away someplace.
+
+98
+00:04:17.102 --> 00:04:18.519 align:middle line:84%
+There's some other
+operations that
+
+99
+00:04:18.519 --> 00:04:21.425 align:middle line:84%
+are also going to be
+stateful-like-- limit, which
+
+100
+00:04:21.425 --> 00:04:23.800 align:middle line:84%
+has to keep track of how many
+things you've already seen,
+
+101
+00:04:23.800 --> 00:04:25.640 align:middle line:90%
+takeWhile, dropWhile, and so on.
+
+102
+00:04:25.640 --> 00:04:29.100 align:middle line:90%
+We'll talk about those shortly.
+
+103
+00:04:29.100 --> 00:04:33.508 align:middle line:84%
+There's also a bunch of
+operations that are stateless.
+
+104
+00:04:33.508 --> 00:04:35.550 align:middle line:84%
+So there's some stateless
+intermediate operations
+
+105
+00:04:35.550 --> 00:04:39.490 align:middle line:84%
+that don't store any information
+for many prior invocations.
+
+106
+00:04:39.490 --> 00:04:44.280 align:middle line:84%
+So these would include things
+like filter, map, flatMap,
+
+107
+00:04:44.280 --> 00:04:47.030 align:middle line:90%
+and so on.
+
+108
+00:04:47.030 --> 00:04:50.210 align:middle line:84%
+As a general rule of
+thumb, stateless operations
+
+109
+00:04:50.210 --> 00:04:54.920 align:middle line:84%
+require a lot less processing
+and memory resources
+
+110
+00:04:54.920 --> 00:04:56.120 align:middle line:90%
+than stateful operations.
+
+111
+00:04:56.120 --> 00:04:59.870 align:middle line:84%
+So you shouldn't avoid the
+use of stateful operations.
+
+112
+00:04:59.870 --> 00:05:02.540 align:middle line:84%
+Just think carefully about
+how you're going to use them.
+
+113
+00:05:02.540 --> 00:05:04.430 align:middle line:84%
+And consider whether
+that's really
+
+114
+00:05:04.430 --> 00:05:06.138 align:middle line:84%
+the way you need to
+do things, because it
+
+115
+00:05:06.138 --> 00:05:08.495 align:middle line:84%
+will take more time and
+more space to do that,
+
+116
+00:05:08.495 --> 00:05:11.370 align:middle line:84%
+because you have to buffer
+up intermediate results.
+
+117
+00:05:11.370 --> 00:05:13.730 align:middle line:84%
+The stream framework
+has to buffer up
+
+118
+00:05:13.730 --> 00:05:16.880 align:middle line:84%
+these intermediate
+results on your behalf.
+
+119
+00:05:16.880 --> 00:05:20.430 align:middle line:84%
+Yet another dimension
+is run-to-completion.
+
+120
+00:05:20.430 --> 00:05:22.700 align:middle line:84%
+And this means that these
+intermediate operations
+
+121
+00:05:22.700 --> 00:05:25.970 align:middle line:84%
+process all the elements
+in the input stream
+
+122
+00:05:25.970 --> 00:05:27.710 align:middle line:84%
+and then produce an
+output stream that
+
+123
+00:05:27.710 --> 00:05:31.520 align:middle line:84%
+contain all the results or
+a subset of those results.
+
+124
+00:05:31.520 --> 00:05:34.120 align:middle line:84%
+But all the elements in
+the stream are processed.
+
+125
+00:05:34.120 --> 00:05:36.610 align:middle line:84%
+So examples would be
+things like sorted
+
+126
+00:05:36.610 --> 00:05:40.330 align:middle line:84%
+again, which has to get all the
+elements in order to sort them;
+
+127
+00:05:40.330 --> 00:05:43.737 align:middle line:84%
+map, which does the
+transformation; filter, which
+
+128
+00:05:43.737 --> 00:05:45.820 align:middle line:84%
+processes all the elements
+but doesn't necessarily
+
+129
+00:05:45.820 --> 00:05:50.290 align:middle line:84%
+let them all go through;
+flatMap; skip; distinct;
+
+130
+00:05:50.290 --> 00:05:52.000 align:middle line:90%
+and so on.
+
+131
+00:05:52.000 --> 00:05:54.270 align:middle line:84%
+And then the fourth
+and final dimension
+
+132
+00:05:54.270 --> 00:05:58.350 align:middle line:84%
+here are the so-called
+short-circuiting operations.
+
+133
+00:05:58.350 --> 00:06:02.290 align:middle line:84%
+And these are operations that
+will make the stream operate
+
+134
+00:06:02.290 --> 00:06:04.870 align:middle line:90%
+on a reduced size.
+
+135
+00:06:04.870 --> 00:06:07.630 align:middle line:84%
+So classic examples of these
+would be things like limit--
+
+136
+00:06:07.630 --> 00:06:09.830 align:middle line:84%
+obviously once you've
+reached the limit,
+
+137
+00:06:09.830 --> 00:06:11.832 align:middle line:90%
+the stream processing ceases--
+
+138
+00:06:11.832 --> 00:06:14.290 align:middle line:84%
+and then some other operations
+like takeWhile and dropWhile
+
+139
+00:06:14.290 --> 00:06:17.020 align:middle line:84%
+that we'll discuss
+that take predicates,
+
+140
+00:06:17.020 --> 00:06:19.720 align:middle line:84%
+and they either take
+the data in the stream
+
+141
+00:06:19.720 --> 00:06:21.220 align:middle line:84%
+as long as the
+predicate is matched,
+
+142
+00:06:21.220 --> 00:06:23.620 align:middle line:84%
+stopping when the predicate
+is no longer matched.
+
+143
+00:06:23.620 --> 00:06:25.690 align:middle line:84%
+Or they drop the
+data in the stream
+
+144
+00:06:25.690 --> 00:06:28.300 align:middle line:84%
+up until the predicate is
+matched, at which point
+
+145
+00:06:28.300 --> 00:06:32.760 align:middle line:84%
+they return a SubStream for
+the remainder of the stream.
+
+146
+00:06:32.760 --> 00:06:34.530 align:middle line:84%
+So you can see that
+we can make basically
+
+147
+00:06:34.530 --> 00:06:38.293 align:middle line:84%
+a table that cross-cuts
+the stateful and stateless
+
+148
+00:06:38.293 --> 00:06:39.960 align:middle line:84%
+dimension with the
+run-to-completion and
+
+149
+00:06:39.960 --> 00:06:43.650 align:middle line:84%
+short-circuiting dimension to
+get various ways of classifying
+
+150
+00:06:43.650 --> 00:06:46.720 align:middle line:90%
+these intermediate operations.
+
+151
+00:06:46.720 --> 00:06:48.680 align:middle line:84%
+The second type of
+aggregate operation,
+
+152
+00:06:48.680 --> 00:06:53.180 align:middle line:84%
+which I've already hinted at,
+are called terminal operations.
+
+153
+00:06:53.180 --> 00:06:56.320 align:middle line:84%
+And these do two general
+classes of things.
+
+154
+00:06:56.320 --> 00:06:59.130 align:middle line:84%
+They trigger the intermediate
+operations to run,
+
+155
+00:06:59.130 --> 00:07:01.220 align:middle line:90%
+because streams are lazy.
+
+156
+00:07:01.220 --> 00:07:04.490 align:middle line:84%
+And they also produce
+a non-stream result,
+
+157
+00:07:04.490 --> 00:07:06.500 align:middle line:84%
+meaning that they don't
+create an output stream.
+
+158
+00:07:06.500 --> 00:07:08.840 align:middle line:84%
+So examples of these would
+be things like forEach,
+
+159
+00:07:08.840 --> 00:07:13.010 align:middle line:84%
+reduce, collect, findAny,
+various other kinds
+
+160
+00:07:13.010 --> 00:07:18.260 align:middle line:84%
+of things that will match
+any or none, and so on.
+
+161
+00:07:18.260 --> 00:07:21.820 align:middle line:84%
+Always remember that a stream
+has to have one, and only one,
+
+162
+00:07:21.820 --> 00:07:22.660 align:middle line:90%
+terminal operation.
+
+163
+00:07:22.660 --> 00:07:24.130 align:middle line:84%
+You can never have
+more than one.
+
+164
+00:07:24.130 --> 00:07:26.530 align:middle line:84%
+If you have more than
+one, there's a bug.
+
+165
+00:07:26.530 --> 00:07:29.010 align:middle line:84%
+If you-- because
+it just won't work.
+
+166
+00:07:29.010 --> 00:07:32.680 align:middle line:84%
+And if you have zero,
+then it'll compile.
+
+167
+00:07:32.680 --> 00:07:34.693 align:middle line:84%
+But you won't get any
+behavior, because you
+
+168
+00:07:34.693 --> 00:07:36.610 align:middle line:84%
+need to have the terminal
+operation to trigger
+
+169
+00:07:36.610 --> 00:07:40.030 align:middle line:90%
+the intermediate operations.
+
+170
+00:07:40.030 --> 00:07:43.090 align:middle line:84%
+As with intermediate
+operations, terminal operations
+
+171
+00:07:43.090 --> 00:07:47.610 align:middle line:84%
+can also be classified
+by several dimensions.
+
+172
+00:07:47.610 --> 00:07:51.030 align:middle line:84%
+One of them is
+run-to-completion.
+
+173
+00:07:51.030 --> 00:07:54.170 align:middle line:84%
+And this means that the
+terminating operation
+
+174
+00:07:54.170 --> 00:07:57.100 align:middle line:84%
+will finish only after all
+the elements in the stream
+
+175
+00:07:57.100 --> 00:07:58.680 align:middle line:90%
+have been processed.
+
+176
+00:07:58.680 --> 00:08:02.520 align:middle line:84%
+So examples of that would
+be forEach, collect, reduce,
+
+177
+00:08:02.520 --> 00:08:03.640 align:middle line:90%
+and so on.
+
+178
+00:08:03.640 --> 00:08:06.470 align:middle line:84%
+And then there's also a bunch
+of short-circuiting operations,
+
+179
+00:08:06.470 --> 00:08:08.900 align:middle line:84%
+which may cause the stream
+to terminate before all
+
+180
+00:08:08.900 --> 00:08:10.610 align:middle line:90%
+the values are processed.
+
+181
+00:08:10.610 --> 00:08:12.110 align:middle line:84%
+So these would
+include operations
+
+182
+00:08:12.110 --> 00:08:16.610 align:middle line:84%
+like allMatch, anyMatch,
+findAny, findFirst, noneMatch,
+
+183
+00:08:16.610 --> 00:08:17.510 align:middle line:90%
+and so on.
+
+184
+00:08:17.510 --> 00:08:20.120 align:middle line:84%
+And as soon as something
+violates the predicate,
+
+185
+00:08:20.120 --> 00:08:22.130 align:middle line:90%
+then the processing stops.
+
+186
+00:08:22.130 --> 00:08:25.220 align:middle line:84%
+So for example, if you do
+allMatch and you find something
+
+187
+00:08:25.220 --> 00:08:28.250 align:middle line:84%
+that doesn't match, no sense
+in processing any further.
+
+188
+00:08:28.250 --> 00:08:31.520 align:middle line:84%
+Likewise, findAny, once you
+find anything that matches,
+
+189
+00:08:31.520 --> 00:08:33.140 align:middle line:90%
+you're done.

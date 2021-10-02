@@ -1,0 +1,947 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.807 align:middle line:90%
+
+
+2
+00:00:00.807 --> 00:00:02.390 align:middle line:84%
+So what we're going
+to do now is we're
+
+3
+00:00:02.390 --> 00:00:06.230 align:middle line:84%
+going to turn our attention
+to the various intermediate
+
+4
+00:00:06.230 --> 00:00:10.130 align:middle line:84%
+operations that are most common,
+and most interesting, and also,
+
+5
+00:00:10.130 --> 00:00:12.950 align:middle line:84%
+quite frankly, ones that we're
+going to need to understand
+
+6
+00:00:12.950 --> 00:00:15.590 align:middle line:84%
+in order to make sense
+of the later case studies
+
+7
+00:00:15.590 --> 00:00:18.650 align:middle line:84%
+that we cover related to
+sequential and parallel
+
+8
+00:00:18.650 --> 00:00:20.002 align:middle line:90%
+streams.
+
+9
+00:00:20.002 --> 00:00:21.460 align:middle line:84%
+We're going to
+start our discussion
+
+10
+00:00:21.460 --> 00:00:26.770 align:middle line:84%
+by focusing on the map
+and mapToInt intermediate
+
+11
+00:00:26.770 --> 00:00:29.000 align:middle line:90%
+operations.
+
+12
+00:00:29.000 --> 00:00:31.030 align:middle line:84%
+So again, recall that
+intermediate operations
+
+13
+00:00:31.030 --> 00:00:33.070 align:middle line:84%
+are the ones that sit
+between the data source
+
+14
+00:00:33.070 --> 00:00:35.462 align:middle line:90%
+and the terminal operations.
+
+15
+00:00:35.462 --> 00:00:37.420 align:middle line:84%
+Now, the interesting
+thing about our discussion
+
+16
+00:00:37.420 --> 00:00:40.330 align:middle line:84%
+here is that the
+operations that we're doing
+
+17
+00:00:40.330 --> 00:00:45.250 align:middle line:84%
+are going to apply to both
+sequential and to parallel
+
+18
+00:00:45.250 --> 00:00:47.040 align:middle line:90%
+streams.
+
+19
+00:00:47.040 --> 00:00:49.740 align:middle line:84%
+And that turns out to
+be really important.
+
+20
+00:00:49.740 --> 00:00:51.300 align:middle line:84%
+And I guess the
+main reason why this
+
+21
+00:00:51.300 --> 00:00:53.622 align:middle line:84%
+is important is you're
+probably scratching
+
+22
+00:00:53.622 --> 00:00:55.080 align:middle line:84%
+your head at this
+point, going this
+
+23
+00:00:55.080 --> 00:00:57.930 align:middle line:84%
+is a class on parallel
+functional programming,
+
+24
+00:00:57.930 --> 00:01:00.810 align:middle line:84%
+but most of what we've
+covered up to this point
+
+25
+00:01:00.810 --> 00:01:03.450 align:middle line:84%
+has focused on
+sequential streams.
+
+26
+00:01:03.450 --> 00:01:04.780 align:middle line:90%
+Why is that?
+
+27
+00:01:04.780 --> 00:01:07.740 align:middle line:84%
+Well, the reason is that being
+a good sequential streams
+
+28
+00:01:07.740 --> 00:01:11.318 align:middle line:84%
+programmer-- in other words,
+understanding the operations,
+
+29
+00:01:11.318 --> 00:01:13.860 align:middle line:84%
+and the terminal operations,
+and the intermediate operations,
+
+30
+00:01:13.860 --> 00:01:15.900 align:middle line:90%
+and their semantics, and so on--
+
+31
+00:01:15.900 --> 00:01:18.570 align:middle line:84%
+is guaranteed to make
+you a better parallel
+
+32
+00:01:18.570 --> 00:01:20.010 align:middle line:90%
+streams programmer.
+
+33
+00:01:20.010 --> 00:01:22.830 align:middle line:84%
+And that's because converting
+between a sequential stream
+
+34
+00:01:22.830 --> 00:01:25.830 align:middle line:84%
+and a parallel stream
+as a snap that requires
+
+35
+00:01:25.830 --> 00:01:27.450 align:middle line:90%
+very minuscule changes.
+
+36
+00:01:27.450 --> 00:01:29.910 align:middle line:84%
+And so once you understand
+good streams programming,
+
+37
+00:01:29.910 --> 00:01:32.118 align:middle line:84%
+then it's very easy to become
+a good parallel streams
+
+38
+00:01:32.118 --> 00:01:32.670 align:middle line:90%
+programmer.
+
+39
+00:01:32.670 --> 00:01:34.087 align:middle line:84%
+Although there are
+some subtleties
+
+40
+00:01:34.087 --> 00:01:36.870 align:middle line:84%
+that we will cover
+at later weeks that
+
+41
+00:01:36.870 --> 00:01:39.270 align:middle line:84%
+go into the conditions
+under which it makes
+
+42
+00:01:39.270 --> 00:01:43.180 align:middle line:84%
+sense to apply parallel
+streams in practice.
+
+43
+00:01:43.180 --> 00:01:45.720 align:middle line:84%
+So the point of this is that
+everything we cover here
+
+44
+00:01:45.720 --> 00:01:50.440 align:middle line:84%
+for sequential streams will
+apply pretty much lock, stock,
+
+45
+00:01:50.440 --> 00:01:52.698 align:middle line:84%
+and barrel or straight
+through to anything
+
+46
+00:01:52.698 --> 00:01:54.990 align:middle line:84%
+you're going to do with
+parallel functional programming
+
+47
+00:01:54.990 --> 00:01:57.590 align:middle line:90%
+that we cover later.
+
+48
+00:01:57.590 --> 00:02:00.020 align:middle line:84%
+Now, we're going to
+continue to showcase
+
+49
+00:02:00.020 --> 00:02:03.740 align:middle line:84%
+these intermediate
+operations in the context
+
+50
+00:02:03.740 --> 00:02:07.490 align:middle line:84%
+of our simple search
+stream case study program.
+
+51
+00:02:07.490 --> 00:02:11.810 align:middle line:84%
+So you can find consistency
+and solace in the fact
+
+52
+00:02:11.810 --> 00:02:14.120 align:middle line:84%
+that what we've covered
+before will still be relevant.
+
+53
+00:02:14.120 --> 00:02:16.790 align:middle line:84%
+And I'll let when we move on
+to a new case study, which
+
+54
+00:02:16.790 --> 00:02:20.040 align:middle line:90%
+won't come for a bit.
+
+55
+00:02:20.040 --> 00:02:21.650 align:middle line:84%
+So one thing to
+recall here is that
+
+56
+00:02:21.650 --> 00:02:24.350 align:middle line:84%
+these intermediate
+operations are lazy,
+
+57
+00:02:24.350 --> 00:02:28.500 align:middle line:84%
+and they only run after the
+terminal operation is reached.
+
+58
+00:02:28.500 --> 00:02:32.290 align:middle line:84%
+So as you'll see,
+map and mapToInt--
+
+59
+00:02:32.290 --> 00:02:33.710 align:middle line:90%
+which is our focus here--
+
+60
+00:02:33.710 --> 00:02:37.040 align:middle line:84%
+aren't called until some
+terminal operation is reached
+
+61
+00:02:37.040 --> 00:02:41.030 align:middle line:84%
+in the stream processing stage--
+so collect, reduce, forEach,
+
+62
+00:02:41.030 --> 00:02:43.200 align:middle line:90%
+whatever it might be.
+
+63
+00:02:43.200 --> 00:02:46.370 align:middle line:84%
+So let's talk about
+map and mapToInt.
+
+64
+00:02:46.370 --> 00:02:49.610 align:middle line:84%
+Map and mapToInt
+are both stateless,
+
+65
+00:02:49.610 --> 00:02:51.435 align:middle line:90%
+run-to-completion operations.
+
+66
+00:02:51.435 --> 00:02:53.810 align:middle line:84%
+And you'll see that they have
+some interesting properties
+
+67
+00:02:53.810 --> 00:02:56.810 align:middle line:84%
+that are worth noting,
+especially when we could start
+
+68
+00:02:56.810 --> 00:02:59.900 align:middle line:84%
+comparing and contrasting
+them to other intermediate
+
+69
+00:02:59.900 --> 00:03:03.820 align:middle line:84%
+operations we're going to
+cover here in just a moment.
+
+70
+00:03:03.820 --> 00:03:07.630 align:middle line:84%
+We'll start by discussing the
+map intermediate operation.
+
+71
+00:03:07.630 --> 00:03:13.040 align:middle line:84%
+So what map does is it
+applies a mapper function
+
+72
+00:03:13.040 --> 00:03:15.440 align:middle line:84%
+to every element
+of the input stream
+
+73
+00:03:15.440 --> 00:03:17.420 align:middle line:84%
+and returns an
+output stream that
+
+74
+00:03:17.420 --> 00:03:21.750 align:middle line:84%
+consists of the results of
+applying the mapper function.
+
+75
+00:03:21.750 --> 00:03:24.110 align:middle line:84%
+So that's kind of a
+high-level discussion.
+
+76
+00:03:24.110 --> 00:03:25.808 align:middle line:84%
+One thing to
+remember about map--
+
+77
+00:03:25.808 --> 00:03:28.100 align:middle line:84%
+and this will become very
+important when we contrast it
+
+78
+00:03:28.100 --> 00:03:31.460 align:middle line:84%
+with filter, and we can
+trust it later with flatMap,
+
+79
+00:03:31.460 --> 00:03:35.390 align:middle line:84%
+and dropWhile, and takeWhile,
+and all these good things--
+
+80
+00:03:35.390 --> 00:03:42.720 align:middle line:84%
+is the number of output stream
+elements that come into map
+
+81
+00:03:42.720 --> 00:03:48.000 align:middle line:84%
+will end up being the same
+number of elements-- sorry,
+
+82
+00:03:48.000 --> 00:03:48.980 align:middle line:90%
+let me rephrase that.
+
+83
+00:03:48.980 --> 00:03:50.480 align:middle line:84%
+The number of output
+stream elements
+
+84
+00:03:50.480 --> 00:03:52.740 align:middle line:84%
+that are generated
+from map must match
+
+85
+00:03:52.740 --> 00:03:55.290 align:middle line:84%
+the number of input stream
+elements that come into map.
+
+86
+00:03:55.290 --> 00:03:58.080 align:middle line:84%
+So what that says is map
+is applying the mapper
+
+87
+00:03:58.080 --> 00:04:00.220 align:middle line:84%
+function to every
+element from the input,
+
+88
+00:04:00.220 --> 00:04:02.470 align:middle line:84%
+and it's producing the same
+number of output elements.
+
+89
+00:04:02.470 --> 00:04:06.730 align:middle line:84%
+So it's equal, unless, of
+course, an exception is thrown,
+
+90
+00:04:06.730 --> 00:04:11.490 align:middle line:84%
+but we're not going to think
+about that in this context.
+
+91
+00:04:11.490 --> 00:04:14.888 align:middle line:84%
+So here's the context in which
+we apply that the map method--
+
+92
+00:04:14.888 --> 00:04:16.430 align:middle line:84%
+one of the contexts
+in which we apply
+
+93
+00:04:16.430 --> 00:04:21.140 align:middle line:84%
+the map method in our simple
+search stream program.
+
+94
+00:04:21.140 --> 00:04:22.970 align:middle line:90%
+What we do is we call map.
+
+95
+00:04:22.970 --> 00:04:26.720 align:middle line:84%
+After we generate a
+stream of search words,
+
+96
+00:04:26.720 --> 00:04:29.660 align:middle line:84%
+we call the map
+intermediate operation
+
+97
+00:04:29.660 --> 00:04:35.320 align:middle line:84%
+and pass it the searchForWord
+method reference behavior
+
+98
+00:04:35.320 --> 00:04:42.400 align:middle line:84%
+to figure out whether that word
+appears in the input string.
+
+99
+00:04:42.400 --> 00:04:44.105 align:middle line:84%
+So that's basically
+how it gets used.
+
+100
+00:04:44.105 --> 00:04:46.480 align:middle line:84%
+And as I mentioned before,
+one of the cool things to note
+
+101
+00:04:46.480 --> 00:04:52.210 align:middle line:84%
+here is that map can be used to
+transform the type of element
+
+102
+00:04:52.210 --> 00:04:53.530 align:middle line:90%
+that it processes.
+
+103
+00:04:53.530 --> 00:04:55.780 align:middle line:84%
+So as you can see here,
+literally visually,
+
+104
+00:04:55.780 --> 00:05:00.820 align:middle line:84%
+we use map to convert
+a stream of strings
+
+105
+00:05:00.820 --> 00:05:02.415 align:middle line:90%
+into a stream of search results.
+
+106
+00:05:02.415 --> 00:05:03.790 align:middle line:84%
+And of course,
+the way that works
+
+107
+00:05:03.790 --> 00:05:09.070 align:middle line:84%
+is that searchForWord is a
+method that takes a string--
+
+108
+00:05:09.070 --> 00:05:12.250 align:middle line:84%
+which is the word and
+some other stuff--
+
+109
+00:05:12.250 --> 00:05:15.670 align:middle line:84%
+and then it goes ahead and
+returns a search result object.
+
+110
+00:05:15.670 --> 00:05:20.790 align:middle line:84%
+And so map is simply obeying
+that type-matching from input
+
+111
+00:05:20.790 --> 00:05:24.550 align:middle line:84%
+to output for the
+searchForWord method, which
+
+112
+00:05:24.550 --> 00:05:28.570 align:middle line:84%
+is passed as the behavior to
+the map aggregate operation
+
+113
+00:05:28.570 --> 00:05:31.510 align:middle line:90%
+or intermediate operation.
+
+114
+00:05:31.510 --> 00:05:34.160 align:middle line:84%
+Here is kind of how this
+fits into the broader
+
+115
+00:05:34.160 --> 00:05:35.160 align:middle line:90%
+context of the code.
+
+116
+00:05:35.160 --> 00:05:38.090 align:middle line:84%
+You can see that we're using
+this fluent programming
+
+117
+00:05:38.090 --> 00:05:43.100 align:middle line:84%
+style with nice, cascading
+method calls, where we first
+
+118
+00:05:43.100 --> 00:05:46.700 align:middle line:84%
+say wordsToFind.stream to
+create a stream of words.
+
+119
+00:05:46.700 --> 00:05:48.224 align:middle line:90%
+Then we say .map.
+
+120
+00:05:48.224 --> 00:05:50.600 align:middle line:84%
+We [INAUDIBLE] with a
+stream of search results.
+
+121
+00:05:50.600 --> 00:05:53.812 align:middle line:84%
+Then we say .filter, we get
+rid of things that are empty,
+
+122
+00:05:53.812 --> 00:05:54.770 align:middle line:90%
+and so on and so forth.
+
+123
+00:05:54.770 --> 00:05:59.030 align:middle line:84%
+So it's nice, and fluent,
+and clean, and very stylized.
+
+124
+00:05:59.030 --> 00:06:02.270 align:middle line:84%
+In fact, I'd like to write
+my code much like this.
+
+125
+00:06:02.270 --> 00:06:06.110 align:middle line:84%
+I always write each of the
+aggregate operations on a line
+
+126
+00:06:06.110 --> 00:06:07.650 align:middle line:90%
+by itself.
+
+127
+00:06:07.650 --> 00:06:10.550 align:middle line:84%
+And I usually, in real
+life, would put comments
+
+128
+00:06:10.550 --> 00:06:12.530 align:middle line:84%
+before each one
+explaining what it does.
+
+129
+00:06:12.530 --> 00:06:17.270 align:middle line:84%
+Try to avoid the urge to cram
+them all together on one line.
+
+130
+00:06:17.270 --> 00:06:21.400 align:middle line:84%
+It gets very unwieldy
+and very hard to comment.
+
+131
+00:06:21.400 --> 00:06:22.130 align:middle line:90%
+So that's map.
+
+132
+00:06:22.130 --> 00:06:24.660 align:middle line:84%
+Map is pretty
+straightforward to understand
+
+133
+00:06:24.660 --> 00:06:29.748 align:middle line:84%
+and a very, very common
+operation applied in streams.
+
+134
+00:06:29.748 --> 00:06:31.290 align:middle line:84%
+We're going to turn
+our attention now
+
+135
+00:06:31.290 --> 00:06:35.700 align:middle line:84%
+to a variant of the map
+intermediate operation called
+
+136
+00:06:35.700 --> 00:06:38.050 align:middle line:90%
+mapToInt.
+
+137
+00:06:38.050 --> 00:06:40.480 align:middle line:90%
+And what this method does--
+
+138
+00:06:40.480 --> 00:06:43.060 align:middle line:84%
+this aggregate operation
+or intermediate operation--
+
+139
+00:06:43.060 --> 00:06:46.900 align:middle line:84%
+is it returns an
+IntStream consisting
+
+140
+00:06:46.900 --> 00:06:49.660 align:middle line:84%
+of the results of applying the
+[? giver ?] mapping function
+
+141
+00:06:49.660 --> 00:06:52.480 align:middle line:84%
+to all the elements
+of the input stream.
+
+142
+00:06:52.480 --> 00:06:59.740 align:middle line:84%
+And as you'll see here, this is
+kind of an interesting variant
+
+143
+00:06:59.740 --> 00:07:01.060 align:middle line:90%
+of map.
+
+144
+00:07:01.060 --> 00:07:04.390 align:middle line:84%
+Map took an input stream that
+worked with reference data
+
+145
+00:07:04.390 --> 00:07:08.020 align:middle line:84%
+types and created an
+output stream that
+
+146
+00:07:08.020 --> 00:07:10.030 align:middle line:84%
+would work with
+reference data types,
+
+147
+00:07:10.030 --> 00:07:15.340 align:middle line:84%
+whereas mapToInt is going to
+work to convert things into int
+
+148
+00:07:15.340 --> 00:07:16.660 align:middle line:90%
+streams.
+
+149
+00:07:16.660 --> 00:07:19.900 align:middle line:84%
+So basically, you can
+think of int stream, which
+
+150
+00:07:19.900 --> 00:07:24.610 align:middle line:84%
+is mapToInt returns, as being
+a specialization of the stream
+
+151
+00:07:24.610 --> 00:07:28.780 align:middle line:84%
+interface for the
+int primitive type.
+
+152
+00:07:28.780 --> 00:07:31.090 align:middle line:84%
+And sadly, we need
+to do this in Java
+
+153
+00:07:31.090 --> 00:07:34.420 align:middle line:84%
+because Java, for a whole
+variety of historical reasons,
+
+154
+00:07:34.420 --> 00:07:38.300 align:middle line:84%
+has relatively
+unintegrated type systems.
+
+155
+00:07:38.300 --> 00:07:40.510 align:middle line:84%
+It has a type system for
+its built-in primitive types
+
+156
+00:07:40.510 --> 00:07:44.560 align:middle line:84%
+like int, to double, and long,
+with lowercase i, and lowercase
+
+157
+00:07:44.560 --> 00:07:46.140 align:middle line:90%
+d, and lowercase l.
+
+158
+00:07:46.140 --> 00:07:49.870 align:middle line:84%
+And then it has corresponding
+so-called reference types,
+
+159
+00:07:49.870 --> 00:07:52.480 align:middle line:84%
+things like integer
+with a capital I,
+
+160
+00:07:52.480 --> 00:07:55.480 align:middle line:84%
+and double with a capital
+D, and long with a L,
+
+161
+00:07:55.480 --> 00:07:57.740 align:middle line:84%
+and then all kinds of other
+classes and interfaces,
+
+162
+00:07:57.740 --> 00:07:58.318 align:middle line:90%
+and so on.
+
+163
+00:07:58.318 --> 00:08:00.610 align:middle line:84%
+And they're treated separately
+by the Java type system,
+
+164
+00:08:00.610 --> 00:08:03.280 align:middle line:90%
+which is a bit confusing.
+
+165
+00:08:03.280 --> 00:08:08.050 align:middle line:84%
+As with map, mapToInt
+has an output stream
+
+166
+00:08:08.050 --> 00:08:11.240 align:middle line:84%
+whose number of elements must
+match the number of elements
+
+167
+00:08:11.240 --> 00:08:12.350 align:middle line:90%
+in its input stream.
+
+168
+00:08:12.350 --> 00:08:16.790 align:middle line:84%
+So that's the same
+as we had before.
+
+169
+00:08:16.790 --> 00:08:21.470 align:middle line:84%
+So here is actually how we
+use this particular method,
+
+170
+00:08:21.470 --> 00:08:24.830 align:middle line:84%
+and it's used in one
+of the helper methods
+
+171
+00:08:24.830 --> 00:08:28.910 align:middle line:84%
+in the program that
+prints results, and does
+
+172
+00:08:28.910 --> 00:08:30.620 align:middle line:90%
+various processing, and so on.
+
+173
+00:08:30.620 --> 00:08:34.460 align:middle line:84%
+And what we do here is we have
+a list of results that comes
+
+174
+00:08:34.460 --> 00:08:38.480 align:middle line:90%
+in as a list of result objects.
+
+175
+00:08:38.480 --> 00:08:41.270 align:middle line:84%
+We convert that to a
+stream of result objects,
+
+176
+00:08:41.270 --> 00:08:44.810 align:middle line:84%
+and then we go ahead and
+we use the mapToInt method
+
+177
+00:08:44.810 --> 00:08:47.810 align:middle line:84%
+to transform the stream
+of result objects
+
+178
+00:08:47.810 --> 00:08:51.540 align:middle line:84%
+into a stream of
+primitive int indices.
+
+179
+00:08:51.540 --> 00:08:57.230 align:middle line:84%
+So we'll have a stream of
+ints, like 128, 140, 199,
+
+180
+00:08:57.230 --> 00:08:58.530 align:middle line:90%
+or whatever.
+
+181
+00:08:58.530 --> 00:09:00.980 align:middle line:84%
+And so these are actually
+now treated as ints,
+
+182
+00:09:00.980 --> 00:09:07.120 align:middle line:84%
+as opposed to being integers
+or some reference type.
+
+183
+00:09:07.120 --> 00:09:09.880 align:middle line:84%
+As you can see,
+obviously, mapToInt
+
+184
+00:09:09.880 --> 00:09:14.650 align:middle line:84%
+is going to transform the
+results into a specialized
+
+185
+00:09:14.650 --> 00:09:18.010 align:middle line:84%
+type, which, in this case,
+is a stream of ints--
+
+186
+00:09:18.010 --> 00:09:20.080 align:middle line:84%
+or primitive ints, in
+this particular case.
+
+187
+00:09:20.080 --> 00:09:21.580 align:middle line:84%
+So again, it can
+do transformations,
+
+188
+00:09:21.580 --> 00:09:23.755 align:middle line:90%
+as we see here.
+
+189
+00:09:23.755 --> 00:09:25.130 align:middle line:84%
+This is what the
+code looks like.
+
+190
+00:09:25.130 --> 00:09:28.430 align:middle line:84%
+This method is actually
+called computeMax,
+
+191
+00:09:28.430 --> 00:09:30.410 align:middle line:84%
+and you can see the
+computeMax method
+
+192
+00:09:30.410 --> 00:09:36.370 align:middle line:84%
+takes a list of result
+objects, and converts them
+
+193
+00:09:36.370 --> 00:09:37.300 align:middle line:90%
+into a stream.
+
+194
+00:09:37.300 --> 00:09:40.510 align:middle line:84%
+And then it goes ahead and
+transforms the stream of result
+
+195
+00:09:40.510 --> 00:09:42.780 align:middle line:90%
+objects into a stream of ints.
+
+196
+00:09:42.780 --> 00:09:46.900 align:middle line:84%
+Once again, you can see we
+use the fluent programming
+
+197
+00:09:46.900 --> 00:09:52.170 align:middle line:84%
+style with our nicely ordered,
+cascading method calls.

@@ -1,0 +1,846 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.880 align:middle line:90%
+
+
+2
+00:00:00.880 --> 00:00:03.340 align:middle line:84%
+So now that we've talked about
+some of the common factory
+
+3
+00:00:03.340 --> 00:00:07.450 align:middle line:84%
+methods, let's also talk about
+the other factory methods.
+
+4
+00:00:07.450 --> 00:00:10.600 align:middle line:84%
+These are not as
+common, as indicated
+
+5
+00:00:10.600 --> 00:00:12.730 align:middle line:84%
+by the title of this
+lesson, but it's
+
+6
+00:00:12.730 --> 00:00:14.530 align:middle line:90%
+useful to know that they exist.
+
+7
+00:00:14.530 --> 00:00:18.880 align:middle line:84%
+And you may find occasion to
+apply them in your Java streams
+
+8
+00:00:18.880 --> 00:00:20.382 align:middle line:90%
+programming.
+
+9
+00:00:20.382 --> 00:00:22.340 align:middle line:84%
+So as I mentioned, there
+are several other ways
+
+10
+00:00:22.340 --> 00:00:23.630 align:middle line:90%
+to obtain a stream.
+
+11
+00:00:23.630 --> 00:00:27.220 align:middle line:84%
+In fact, we had talked about
+this in earlier lessons
+
+12
+00:00:27.220 --> 00:00:32.540 align:middle line:84%
+when I described the fact that
+I/O streams and Java streams
+
+13
+00:00:32.540 --> 00:00:35.720 align:middle line:90%
+have some synergies nowadays.
+
+14
+00:00:35.720 --> 00:00:37.250 align:middle line:84%
+So in particular,
+there is a bunch
+
+15
+00:00:37.250 --> 00:00:42.290 align:middle line:84%
+of input classes in
+Java's I/O Streams package
+
+16
+00:00:42.290 --> 00:00:45.900 align:middle line:84%
+that have been retrofitted,
+once job eight came out,
+
+17
+00:00:45.900 --> 00:00:49.310 align:middle line:84%
+to have methods that
+will generate streams
+
+18
+00:00:49.310 --> 00:00:51.210 align:middle line:90%
+from input files.
+
+19
+00:00:51.210 --> 00:00:54.710 align:middle line:84%
+So for example, the
+BufferedReader class
+
+20
+00:00:54.710 --> 00:00:59.300 align:middle line:84%
+has a lines method that will
+take the contents of the file
+
+21
+00:00:59.300 --> 00:01:03.620 align:middle line:84%
+and obtain a stream of
+lines corresponding to what
+
+22
+00:01:03.620 --> 00:01:05.209 align:middle line:90%
+was in that file.
+
+23
+00:01:05.209 --> 00:01:07.940 align:middle line:84%
+So you can see, in this
+particular example, we go ahead
+
+24
+00:01:07.940 --> 00:01:13.430 align:middle line:84%
+and have a try with
+resources clause
+
+25
+00:01:13.430 --> 00:01:18.140 align:middle line:84%
+here where we're going to
+initialize a BufferedReader
+
+26
+00:01:18.140 --> 00:01:21.920 align:middle line:84%
+object called reader with
+the results of calling
+
+27
+00:01:21.920 --> 00:01:25.070 align:middle line:90%
+files.newBufferedReader.
+
+28
+00:01:25.070 --> 00:01:30.080 align:middle line:84%
+And we go ahead and pass
+into that a file name,
+
+29
+00:01:30.080 --> 00:01:32.480 align:middle line:84%
+and that goes ahead and
+creates a new BufferedReader
+
+30
+00:01:32.480 --> 00:01:35.250 align:middle line:90%
+for that particular file.
+
+31
+00:01:35.250 --> 00:01:37.970 align:middle line:84%
+And once we have
+that, we store it
+
+32
+00:01:37.970 --> 00:01:42.062 align:middle line:84%
+in this try-with-resources
+syntax block, if you will.
+
+33
+00:01:42.062 --> 00:01:44.270 align:middle line:84%
+And the reason for this is
+we want the BufferedReader
+
+34
+00:01:44.270 --> 00:01:47.960 align:middle line:84%
+to be closed automatically after
+the try-with-resources block
+
+35
+00:01:47.960 --> 00:01:48.980 align:middle line:90%
+exits.
+
+36
+00:01:48.980 --> 00:01:53.420 align:middle line:84%
+This is sort of Java's attempt
+at trying to approximate
+
+37
+00:01:53.420 --> 00:01:56.480 align:middle line:84%
+destructors in a
+language like C++ or C#.
+
+38
+00:01:56.480 --> 00:01:59.750 align:middle line:84%
+It's a little bit weird, but
+it does the trick for what
+
+39
+00:01:59.750 --> 00:02:01.690 align:middle line:90%
+we're trying to do here.
+
+40
+00:02:01.690 --> 00:02:03.610 align:middle line:84%
+Then what we do
+is, inside the body
+
+41
+00:02:03.610 --> 00:02:05.920 align:middle line:84%
+of this
+try-with-resources block,
+
+42
+00:02:05.920 --> 00:02:09.220 align:middle line:84%
+we're going to call the
+lines method to create
+
+43
+00:02:09.220 --> 00:02:14.080 align:middle line:84%
+a stream that contains all
+of the lines in the file.
+
+44
+00:02:14.080 --> 00:02:19.240 align:middle line:84%
+So the reader reader variable--
+which is a BufferedReader
+
+45
+00:02:19.240 --> 00:02:20.440 align:middle line:90%
+object--
+
+46
+00:02:20.440 --> 00:02:22.292 align:middle line:90%
+will contain all the lines.
+
+47
+00:02:22.292 --> 00:02:23.750 align:middle line:84%
+And then we call
+the .lines method,
+
+48
+00:02:23.750 --> 00:02:25.960 align:middle line:84%
+which creates a stream
+of these things--
+
+49
+00:02:25.960 --> 00:02:27.490 align:middle line:90%
+stream of lines.
+
+50
+00:02:27.490 --> 00:02:30.460 align:middle line:84%
+And then we will go ahead and
+print out each of the lines
+
+51
+00:02:30.460 --> 00:02:32.770 align:middle line:84%
+in the file by using
+the forEach method
+
+52
+00:02:32.770 --> 00:02:37.100 align:middle line:84%
+and the System.out::println
+method reference.
+
+53
+00:02:37.100 --> 00:02:39.100 align:middle line:84%
+So this is just a way of
+being able to print out
+
+54
+00:02:39.100 --> 00:02:43.630 align:middle line:84%
+all the contents of a
+file as a stream of lines.
+
+55
+00:02:43.630 --> 00:02:46.450 align:middle line:84%
+Now, obviously, in practice,
+this is a lot more interesting
+
+56
+00:02:46.450 --> 00:02:49.630 align:middle line:84%
+if you do something between
+the .lines factory method
+
+57
+00:02:49.630 --> 00:02:52.090 align:middle line:84%
+and the forEach, but I was
+just trying to illustrate
+
+58
+00:02:52.090 --> 00:02:55.660 align:middle line:84%
+the concept of how there's a
+factory method that can be used
+
+59
+00:02:55.660 --> 00:02:57.910 align:middle line:90%
+to obtain a stream.
+
+60
+00:02:57.910 --> 00:03:01.220 align:middle line:84%
+Here's yet another way of doing
+pretty much the same thing.
+
+61
+00:03:01.220 --> 00:03:04.060 align:middle line:84%
+There's also a
+class called Files,
+
+62
+00:03:04.060 --> 00:03:08.990 align:middle line:84%
+and the Files class has
+a lines method on it.
+
+63
+00:03:08.990 --> 00:03:12.550 align:middle line:84%
+And if you go ahead and
+give it a file name,
+
+64
+00:03:12.550 --> 00:03:17.200 align:middle line:84%
+you can open up a file,
+and the lines method
+
+65
+00:03:17.200 --> 00:03:18.585 align:middle line:90%
+will create a stream.
+
+66
+00:03:18.585 --> 00:03:19.960 align:middle line:84%
+And again, you
+can see here we're
+
+67
+00:03:19.960 --> 00:03:23.050 align:middle line:84%
+using a
+try-with-resources block.
+
+68
+00:03:23.050 --> 00:03:24.730 align:middle line:84%
+And once we get
+a stream of this,
+
+69
+00:03:24.730 --> 00:03:27.640 align:middle line:84%
+then in the body of the
+try-with-resources block,
+
+70
+00:03:27.640 --> 00:03:31.600 align:middle line:84%
+we can go ahead and print out
+each element in the stream--
+
+71
+00:03:31.600 --> 00:03:33.910 align:middle line:84%
+each of the lines
+in the stream--
+
+72
+00:03:33.910 --> 00:03:37.210 align:middle line:84%
+just like we've done before
+by using the println method
+
+73
+00:03:37.210 --> 00:03:37.960 align:middle line:90%
+reference.
+
+74
+00:03:37.960 --> 00:03:41.350 align:middle line:84%
+So pretty much the same
+idea, just different packages
+
+75
+00:03:41.350 --> 00:03:45.490 align:middle line:84%
+in the Java I/O streams classes
+that have been retrofit nicely
+
+76
+00:03:45.490 --> 00:03:48.930 align:middle line:90%
+to work with streams.
+
+77
+00:03:48.930 --> 00:03:50.370 align:middle line:84%
+Here's another
+kind of fun example
+
+78
+00:03:50.370 --> 00:03:54.000 align:middle line:84%
+that illustrates how
+the random class has
+
+79
+00:03:54.000 --> 00:03:58.963 align:middle line:84%
+been retrofit to provide factory
+methods that generate streams
+
+80
+00:03:58.963 --> 00:04:01.380 align:middle line:84%
+of random numbers, which is
+actually a pretty useful thing
+
+81
+00:04:01.380 --> 00:04:02.940 align:middle line:90%
+to be able to do.
+
+82
+00:04:02.940 --> 00:04:08.167 align:middle line:84%
+So in this particular example,
+we're going to call Random--
+
+83
+00:04:08.167 --> 00:04:09.750 align:middle line:84%
+call the constructor
+of Random-- which
+
+84
+00:04:09.750 --> 00:04:13.000 align:middle line:90%
+makes us a new Random object.
+
+85
+00:04:13.000 --> 00:04:15.770 align:middle line:84%
+And then we're going to call
+the ints factory method.
+
+86
+00:04:15.770 --> 00:04:19.230 align:middle line:84%
+So random.ints will
+go ahead and generate
+
+87
+00:04:19.230 --> 00:04:21.930 align:middle line:84%
+an unbounded stream
+of random numbers
+
+88
+00:04:21.930 --> 00:04:22.950 align:middle line:90%
+between a certain range.
+
+89
+00:04:22.950 --> 00:04:26.735 align:middle line:84%
+In this case, the
+range is 0 to 100.
+
+90
+00:04:26.735 --> 00:04:28.110 align:middle line:84%
+In this case,
+also, we don't want
+
+91
+00:04:28.110 --> 00:04:31.200 align:middle line:84%
+to wait forever generating
+an endless stream
+
+92
+00:04:31.200 --> 00:04:32.440 align:middle line:90%
+of random numbers.
+
+93
+00:04:32.440 --> 00:04:35.190 align:middle line:84%
+So we're going to limit
+the size of the stream
+
+94
+00:04:35.190 --> 00:04:39.710 align:middle line:84%
+to 50 random numbers
+between 0 and 100.
+
+95
+00:04:39.710 --> 00:04:41.460 align:middle line:84%
+And I think you'll
+agree with me that this
+
+96
+00:04:41.460 --> 00:04:45.870 align:middle line:84%
+is a pretty useful sort of
+style, or pattern, or idiom,
+
+97
+00:04:45.870 --> 00:04:49.200 align:middle line:84%
+if you will, for
+being able to generate
+
+98
+00:04:49.200 --> 00:04:52.983 align:middle line:84%
+input data for various kinds of
+benchmarking and test programs.
+
+99
+00:04:52.983 --> 00:04:54.400 align:middle line:84%
+And then what we
+do as we go ahead
+
+100
+00:04:54.400 --> 00:04:56.380 align:middle line:84%
+and we just print out
+the results by using
+
+101
+00:04:56.380 --> 00:05:01.060 align:middle line:84%
+the forEach terminal operation
+and the println method
+
+102
+00:05:01.060 --> 00:05:04.280 align:middle line:90%
+reference.
+
+103
+00:05:04.280 --> 00:05:07.220 align:middle line:84%
+Another place that can be
+used-- another way of generating
+
+104
+00:05:07.220 --> 00:05:07.850 align:middle line:90%
+a stream--
+
+105
+00:05:07.850 --> 00:05:11.860 align:middle line:84%
+is by using the
+StreamSupport.stream factory
+
+106
+00:05:11.860 --> 00:05:12.580 align:middle line:90%
+method.
+
+107
+00:05:12.580 --> 00:05:14.360 align:middle line:84%
+And this is a very
+interesting method,
+
+108
+00:05:14.360 --> 00:05:17.330 align:middle line:84%
+and we're going to revisit
+this a number of times
+
+109
+00:05:17.330 --> 00:05:20.540 align:middle line:84%
+later when we start
+talking about spliterators.
+
+110
+00:05:20.540 --> 00:05:23.330 align:middle line:84%
+Spliterators are a
+really cool feature
+
+111
+00:05:23.330 --> 00:05:26.510 align:middle line:84%
+that's part of the splitting
+phase of a Java stream.
+
+112
+00:05:26.510 --> 00:05:31.460 align:middle line:84%
+And a split trader can be
+used to take input and be
+
+113
+00:05:31.460 --> 00:05:36.920 align:middle line:84%
+able to split it up into chunks,
+thereby being able to create
+
+114
+00:05:36.920 --> 00:05:38.990 align:middle line:90%
+a stream from the input.
+
+115
+00:05:38.990 --> 00:05:41.300 align:middle line:84%
+And we'll talk a lot more
+about how this works.
+
+116
+00:05:41.300 --> 00:05:42.920 align:middle line:84%
+But essentially, we
+have ways of being
+
+117
+00:05:42.920 --> 00:05:49.530 align:middle line:84%
+able to, say, take input strains
+like a work of Shakespeare,
+
+118
+00:05:49.530 --> 00:05:51.350 align:middle line:90%
+for example, as we show here.
+
+119
+00:05:51.350 --> 00:05:54.410 align:middle line:84%
+And then we use a split narrator
+to search through the input
+
+120
+00:05:54.410 --> 00:05:57.260 align:middle line:84%
+string and find all the
+occurrences in that input
+
+121
+00:05:57.260 --> 00:06:01.670 align:middle line:84%
+string where a regular
+expression phase--
+
+122
+00:06:01.670 --> 00:06:06.140 align:middle line:84%
+phrase, not phase-- phrase
+may match against the string.
+
+123
+00:06:06.140 --> 00:06:09.060 align:middle line:84%
+And what will be produced there,
+as we can see in this example,
+
+124
+00:06:09.060 --> 00:06:15.140 align:middle line:84%
+will be a stream of matching
+phrases in the input string
+
+125
+00:06:15.140 --> 00:06:18.120 align:middle line:84%
+where those things
+actually occur.
+
+126
+00:06:18.120 --> 00:06:21.620 align:middle line:84%
+And so, in this particular
+case, the other thing
+
+127
+00:06:21.620 --> 00:06:24.860 align:middle line:84%
+you can do with the
+StreamSupport.stream factory
+
+128
+00:06:24.860 --> 00:06:28.310 align:middle line:84%
+method is you can indicate
+as the second parameter to it
+
+129
+00:06:28.310 --> 00:06:30.830 align:middle line:84%
+whether it should be
+creating a sequential stream
+
+130
+00:06:30.830 --> 00:06:33.220 align:middle line:90%
+or a parallel stream.
+
+131
+00:06:33.220 --> 00:06:35.950 align:middle line:84%
+So we'll see how that gets
+used quite a bit later
+
+132
+00:06:35.950 --> 00:06:36.957 align:middle line:90%
+in the course.
+
+133
+00:06:36.957 --> 00:06:38.790 align:middle line:84%
+But the key point I
+want to point out here--
+
+134
+00:06:38.790 --> 00:06:40.330 align:middle line:90%
+key point I want to make here--
+
+135
+00:06:40.330 --> 00:06:43.930 align:middle line:84%
+is that StreamSupport.stream
+is a factory method that
+
+136
+00:06:43.930 --> 00:06:46.330 align:middle line:84%
+is given a spliterator
+and is used
+
+137
+00:06:46.330 --> 00:06:48.190 align:middle line:90%
+to create a stream from that.
+
+138
+00:06:48.190 --> 00:06:50.830 align:middle line:90%
+
+
+139
+00:06:50.830 --> 00:06:53.800 align:middle line:84%
+Yet another way of being
+able to create streams
+
+140
+00:06:53.800 --> 00:06:58.180 align:middle line:84%
+is by using the
+splitAsStream method that's
+
+141
+00:06:58.180 --> 00:07:00.967 align:middle line:84%
+part of Java's regular
+expression package.
+
+142
+00:07:00.967 --> 00:07:03.550 align:middle line:84%
+So what we're doing here-- and
+this is actually something that
+
+143
+00:07:03.550 --> 00:07:06.008 align:middle line:84%
+we're going to talk about in
+more detail later when we look
+
+144
+00:07:06.008 --> 00:07:09.700 align:middle line:84%
+in detail at how our simple
+search stream program is
+
+145
+00:07:09.700 --> 00:07:10.790 align:middle line:90%
+implemented--
+
+146
+00:07:10.790 --> 00:07:12.610 align:middle line:84%
+the getInputData
+method, which takes
+
+147
+00:07:12.610 --> 00:07:16.150 align:middle line:84%
+a file name and a splitter
+character or string
+
+148
+00:07:16.150 --> 00:07:22.140 align:middle line:84%
+goes ahead and compiles
+a regular expression,
+
+149
+00:07:22.140 --> 00:07:25.350 align:middle line:84%
+which is based on the
+splitter parameter.
+
+150
+00:07:25.350 --> 00:07:30.660 align:middle line:84%
+And then that regular expression
+is applied to a string.
+
+151
+00:07:30.660 --> 00:07:34.140 align:middle line:84%
+And what happens is the
+string that's created
+
+152
+00:07:34.140 --> 00:07:38.400 align:middle line:84%
+will then be split up into
+a stream of elements where
+
+153
+00:07:38.400 --> 00:07:43.980 align:middle line:84%
+the splitter string is used to
+demarcate what each element is
+
+154
+00:07:43.980 --> 00:07:45.610 align:middle line:90%
+in the stream.
+
+155
+00:07:45.610 --> 00:07:49.380 align:middle line:84%
+So what we do here is we split
+a file into a stream of strings.
+
+156
+00:07:49.380 --> 00:07:52.170 align:middle line:84%
+And as you can see,
+what's going to happen
+
+157
+00:07:52.170 --> 00:07:57.190 align:middle line:84%
+is that we're going to read
+all the bytes of a file
+
+158
+00:07:57.190 --> 00:08:01.330 align:middle line:84%
+into a string, and then we go
+ahead and split that string
+
+159
+00:08:01.330 --> 00:08:02.640 align:middle line:90%
+based on the splitter.
+
+160
+00:08:02.640 --> 00:08:05.140 align:middle line:84%
+And I'll show you how that gets
+used a little bit later when
+
+161
+00:08:05.140 --> 00:08:08.680 align:middle line:84%
+we talk about the details
+of the getInputData method
+
+162
+00:08:08.680 --> 00:08:14.230 align:middle line:84%
+and how it applies to the
+simple search string program.
+
+163
+00:08:14.230 --> 00:08:18.420 align:middle line:84%
+And I think one final example
+of other stream-bearing methods
+
+164
+00:08:18.420 --> 00:08:21.760 align:middle line:84%
+is another method on a
+stream called generate.
+
+165
+00:08:21.760 --> 00:08:27.020 align:middle line:84%
+And generate basically will
+apply a lambda expression
+
+166
+00:08:27.020 --> 00:08:29.090 align:middle line:84%
+indefinitely-- over,
+and, over and over again.
+
+167
+00:08:29.090 --> 00:08:30.590 align:middle line:84%
+In this particular
+case, we're going
+
+168
+00:08:30.590 --> 00:08:35.659 align:middle line:84%
+to generate an infinite
+stream of Tree Map objects.
+
+169
+00:08:35.659 --> 00:08:39.740 align:middle line:84%
+And that infinite stream
+of Tree Map objects
+
+170
+00:08:39.740 --> 00:08:42.830 align:middle line:84%
+will then be limited
+to 100, so we're
+
+171
+00:08:42.830 --> 00:08:47.840 align:middle line:84%
+going to end up with a list
+of 100 TreeMap objects.
+
+172
+00:08:47.840 --> 00:08:49.340 align:middle line:84%
+And you could use
+this again perhaps
+
+173
+00:08:49.340 --> 00:08:51.703 align:middle line:84%
+for testing or
+some other purpose.
+
+174
+00:08:51.703 --> 00:08:53.120 align:middle line:84%
+But generate, as
+you can see, will
+
+175
+00:08:53.120 --> 00:08:55.490 align:middle line:84%
+generate an infinite
+stream, which is usually
+
+176
+00:08:55.490 --> 00:08:59.560 align:middle line:84%
+going to be limited in order to
+actually be useful in practice.

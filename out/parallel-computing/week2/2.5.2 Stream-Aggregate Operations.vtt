@@ -1,0 +1,248 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:01.140 align:middle line:90%
+
+
+2
+00:00:01.140 --> 00:00:02.630 align:middle line:84%
+What we're going
+to talk about now
+
+3
+00:00:02.630 --> 00:00:06.650 align:middle line:84%
+is show some examples of
+so-called short circuit
+
+4
+00:00:06.650 --> 00:00:07.430 align:middle line:90%
+operations.
+
+5
+00:00:07.430 --> 00:00:09.770 align:middle line:84%
+We've talked about them
+in the previous lesson.
+
+6
+00:00:09.770 --> 00:00:12.500 align:middle line:84%
+And now I'm going to go through
+and give you a bit more details
+
+7
+00:00:12.500 --> 00:00:14.690 align:middle line:90%
+about how they work.
+
+8
+00:00:14.690 --> 00:00:18.780 align:middle line:84%
+So as we talked about earlier,
+an aggregate operation--
+
+9
+00:00:18.780 --> 00:00:21.740 align:middle line:84%
+be it intermediate,
+be a terminal--
+
+10
+00:00:21.740 --> 00:00:25.810 align:middle line:84%
+may process all the
+elements in a stream.
+
+11
+00:00:25.810 --> 00:00:29.740 align:middle line:84%
+For example, the map
+intermediate operation
+
+12
+00:00:29.740 --> 00:00:32.883 align:middle line:84%
+processes all of the
+elements in its input stream
+
+13
+00:00:32.883 --> 00:00:34.300 align:middle line:84%
+and produces an
+output stream that
+
+14
+00:00:34.300 --> 00:00:38.370 align:middle line:84%
+contains the results of
+applying the macro function.
+
+15
+00:00:38.370 --> 00:00:41.190 align:middle line:84%
+Now, of course, if
+the macro function--
+
+16
+00:00:41.190 --> 00:00:44.100 align:middle line:84%
+if that behavior were
+to throw an exception,
+
+17
+00:00:44.100 --> 00:00:47.190 align:middle line:84%
+then the control would
+transfer from wherever
+
+18
+00:00:47.190 --> 00:00:50.940 align:middle line:84%
+the exception was thrown up to
+the first exception handler.
+
+19
+00:00:50.940 --> 00:00:54.210 align:middle line:84%
+And so map doesn't always
+guarantee to terminate.
+
+20
+00:00:54.210 --> 00:00:56.790 align:middle line:84%
+But if it's going to
+terminate prematurely,
+
+21
+00:00:56.790 --> 00:00:59.940 align:middle line:84%
+it's because an
+exception was thrown.
+
+22
+00:00:59.940 --> 00:01:03.390 align:middle line:84%
+In contrast, short
+circuit operations
+
+23
+00:01:03.390 --> 00:01:07.620 align:middle line:84%
+halt further processing after
+their condition is reached.
+
+24
+00:01:07.620 --> 00:01:10.920 align:middle line:84%
+And there's a whole bunch of
+examples here, one of which
+
+25
+00:01:10.920 --> 00:01:13.680 align:middle line:90%
+is the takeWhile operation.
+
+26
+00:01:13.680 --> 00:01:18.330 align:middle line:84%
+And this is a short-circuiting
+intermediate operation
+
+27
+00:01:18.330 --> 00:01:20.190 align:middle line:84%
+that returns a
+stream that consists
+
+28
+00:01:20.190 --> 00:01:23.790 align:middle line:84%
+of a subset of the elements
+taken from this stream that
+
+29
+00:01:23.790 --> 00:01:25.920 align:middle line:90%
+match the given predicate.
+
+30
+00:01:25.920 --> 00:01:29.700 align:middle line:84%
+So as long as the
+predicates matching, then
+
+31
+00:01:29.700 --> 00:01:32.100 align:middle line:84%
+the stream will
+continue to be taken.
+
+32
+00:01:32.100 --> 00:01:34.110 align:middle line:84%
+But the second it doesn't
+match, it'll stop.
+
+33
+00:01:34.110 --> 00:01:37.740 align:middle line:84%
+So it takes the input as long
+as the predicate matches.
+
+34
+00:01:37.740 --> 00:01:40.800 align:middle line:84%
+So it short-circuits
+if it stops matching.
+
+35
+00:01:40.800 --> 00:01:44.040 align:middle line:84%
+Limit is another good example
+of a short-circuit intermediate
+
+36
+00:01:44.040 --> 00:01:45.060 align:middle line:90%
+operation.
+
+37
+00:01:45.060 --> 00:01:47.250 align:middle line:84%
+And this says once
+the condition is
+
+38
+00:01:47.250 --> 00:01:49.920 align:middle line:84%
+met-- once we've reached
+the size that we've
+
+39
+00:01:49.920 --> 00:01:54.330 align:middle line:84%
+given as the parameter--
+then stop any further stream
+
+40
+00:01:54.330 --> 00:01:56.600 align:middle line:90%
+processing.
+
+41
+00:01:56.600 --> 00:02:01.610 align:middle line:84%
+And then there's a whole pile
+of these short-circuiting
+
+42
+00:02:01.610 --> 00:02:05.405 align:middle line:84%
+operations that are terminal
+operations. findFirst, findAny,
+
+43
+00:02:05.405 --> 00:02:08.490 align:middle line:84%
+anyMatch, allMatch,
+noneMatch, and so on.
+
+44
+00:02:08.490 --> 00:02:10.400 align:middle line:84%
+And what these
+methods do is they
+
+45
+00:02:10.400 --> 00:02:14.420 align:middle line:84%
+will finish before
+traversing all the elements
+
+46
+00:02:14.420 --> 00:02:18.140 align:middle line:84%
+in the underlying stream if
+something about the stream
+
+47
+00:02:18.140 --> 00:02:20.480 align:middle line:84%
+doesn't match whatever
+that terminal operation is
+
+48
+00:02:20.480 --> 00:02:23.950 align:middle line:84%
+trying to do or if it
+finds the first matches,
+
+49
+00:02:23.950 --> 00:02:24.770 align:middle line:90%
+as is shown here.
+
+50
+00:02:24.770 --> 00:02:27.740 align:middle line:84%
+So the second you find the
+first match, you're done.
+
+51
+00:02:27.740 --> 00:02:32.110 align:middle line:84%
+No sense in considering
+anything further in the stream.

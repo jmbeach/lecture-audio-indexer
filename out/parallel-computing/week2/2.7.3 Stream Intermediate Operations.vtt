@@ -1,0 +1,1524 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.500 align:middle line:90%
+
+
+2
+00:00:00.500 --> 00:00:02.230 align:middle line:84%
+So what we're going
+to talk about now
+
+3
+00:00:02.230 --> 00:00:05.860 align:middle line:84%
+are the final set of
+intermediate operations
+
+4
+00:00:05.860 --> 00:00:07.570 align:middle line:84%
+we're going to cover
+in this discussion,
+
+5
+00:00:07.570 --> 00:00:09.040 align:middle line:90%
+intermediate operations.
+
+6
+00:00:09.040 --> 00:00:13.390 align:middle line:84%
+And these will be the
+dropWhile and takeWhile
+
+7
+00:00:13.390 --> 00:00:15.680 align:middle line:90%
+intermediate operations.
+
+8
+00:00:15.680 --> 00:00:19.670 align:middle line:84%
+DropWhile and takeWhile
+are both stateful,
+
+9
+00:00:19.670 --> 00:00:22.010 align:middle line:84%
+short-circuiting
+operations that were
+
+10
+00:00:22.010 --> 00:00:25.820 align:middle line:84%
+introduced into Java
+Streams starting with Java 9
+
+11
+00:00:25.820 --> 00:00:26.750 align:middle line:90%
+and beyond.
+
+12
+00:00:26.750 --> 00:00:30.350 align:middle line:84%
+These were actually not
+in Java 8 originally.
+
+13
+00:00:30.350 --> 00:00:34.400 align:middle line:84%
+And this is somewhat
+significant because if you're
+
+14
+00:00:34.400 --> 00:00:37.370 align:middle line:84%
+an Android programmer, you
+have to be aware that Android--
+
+15
+00:00:37.370 --> 00:00:40.280 align:middle line:84%
+at least up to this point--
+only supports up to Java 8.
+
+16
+00:00:40.280 --> 00:00:43.047 align:middle line:84%
+It doesn't support versions
+of Java beyond Java 8.
+
+17
+00:00:43.047 --> 00:00:44.630 align:middle line:84%
+So if you're programming
+with Android,
+
+18
+00:00:44.630 --> 00:00:47.210 align:middle line:84%
+you won't be able to use
+these Java 9 features.
+
+19
+00:00:47.210 --> 00:00:49.560 align:middle line:84%
+But, of course, if you're
+not programming for Android
+
+20
+00:00:49.560 --> 00:00:52.910 align:middle line:84%
+and you can use the latest
+versions of anything
+
+21
+00:00:52.910 --> 00:00:56.360 align:middle line:84%
+after Java 9 or Java 9
+and beyond, then of course
+
+22
+00:00:56.360 --> 00:00:59.840 align:middle line:84%
+you'll be able to use
+dropWhile and takeWhile
+
+23
+00:00:59.840 --> 00:01:01.940 align:middle line:90%
+intermediate operations.
+
+24
+00:01:01.940 --> 00:01:06.470 align:middle line:84%
+Unlike filter, flatMap,
+map, and mapToInt--
+
+25
+00:01:06.470 --> 00:01:10.760 align:middle line:84%
+which were stateless,
+run-to-completion operations--
+
+26
+00:01:10.760 --> 00:01:14.240 align:middle line:84%
+dropWhile and
+takeWhile are stateful,
+
+27
+00:01:14.240 --> 00:01:16.500 align:middle line:90%
+short-circuiting operations.
+
+28
+00:01:16.500 --> 00:01:18.330 align:middle line:90%
+I take that back--
+
+29
+00:01:18.330 --> 00:01:19.550 align:middle line:90%
+no, I don't take that back.
+
+30
+00:01:19.550 --> 00:01:20.720 align:middle line:90%
+Short-circuiting operations.
+
+31
+00:01:20.720 --> 00:01:23.330 align:middle line:84%
+At first glance, you
+might think that filter is
+
+32
+00:01:23.330 --> 00:01:25.730 align:middle line:84%
+a short-circuiting operation,
+but it actually isn't.
+
+33
+00:01:25.730 --> 00:01:28.460 align:middle line:84%
+Filter has to look at
+every element in the input
+
+34
+00:01:28.460 --> 00:01:30.530 align:middle line:84%
+in order to decide what
+to let through or not.
+
+35
+00:01:30.530 --> 00:01:31.963 align:middle line:90%
+So it's not short-circuiting.
+
+36
+00:01:31.963 --> 00:01:33.380 align:middle line:84%
+And we'll see that
+when we compare
+
+37
+00:01:33.380 --> 00:01:37.210 align:middle line:84%
+and contrast dropWhile
+and filter more closely
+
+38
+00:01:37.210 --> 00:01:39.950 align:middle line:90%
+in just a moment.
+
+39
+00:01:39.950 --> 00:01:43.030 align:middle line:84%
+So let's begin our
+discussion by talking
+
+40
+00:01:43.030 --> 00:01:47.110 align:middle line:84%
+about the dropWhile
+intermediate operation.
+
+41
+00:01:47.110 --> 00:01:50.020 align:middle line:84%
+So this is an
+interesting operation.
+
+42
+00:01:50.020 --> 00:01:52.840 align:middle line:84%
+And it has a couple of
+different semantics depending
+
+43
+00:01:52.840 --> 00:01:56.470 align:middle line:90%
+on properties of the stream.
+
+44
+00:01:56.470 --> 00:02:00.730 align:middle line:84%
+So it turns out that streams
+can either be ordered
+
+45
+00:02:00.730 --> 00:02:03.220 align:middle line:90%
+or they can be unordered.
+
+46
+00:02:03.220 --> 00:02:06.130 align:middle line:84%
+So if they're unordered,
+then we don't really
+
+47
+00:02:06.130 --> 00:02:09.500 align:middle line:90%
+care what the ordering is.
+
+48
+00:02:09.500 --> 00:02:11.750 align:middle line:84%
+If they're ordered, then
+they have a particular order.
+
+49
+00:02:11.750 --> 00:02:16.240 align:middle line:84%
+So if a stream is
+unordered, then dropWhile
+
+50
+00:02:16.240 --> 00:02:20.850 align:middle line:84%
+will return a stream that
+consists of the remaining
+
+51
+00:02:20.850 --> 00:02:25.590 align:middle line:84%
+elements in the stream
+after first dropping
+
+52
+00:02:25.590 --> 00:02:29.040 align:middle line:84%
+the subset of the elements in
+the stream, the input stream,
+
+53
+00:02:29.040 --> 00:02:31.658 align:middle line:90%
+that match the given predicate.
+
+54
+00:02:31.658 --> 00:02:33.450 align:middle line:84%
+So what we're going to
+do here-- basically,
+
+55
+00:02:33.450 --> 00:02:35.340 align:middle line:84%
+you can sort of think
+of this as like a while
+
+56
+00:02:35.340 --> 00:02:37.950 align:middle line:84%
+loop instead of the
+equivalent of a while loop.
+
+57
+00:02:37.950 --> 00:02:42.690 align:middle line:84%
+And as long as the
+predicate is not satisfied,
+
+58
+00:02:42.690 --> 00:02:44.340 align:middle line:84%
+we're going to the
+dropWhile method.
+
+59
+00:02:44.340 --> 00:02:46.730 align:middle line:84%
+We'll just drop the
+elements from the stream.
+
+60
+00:02:46.730 --> 00:02:50.490 align:middle line:84%
+And only if and
+when the predicate
+
+61
+00:02:50.490 --> 00:02:54.390 align:middle line:84%
+is satisfied or is met,
+then those elements
+
+62
+00:02:54.390 --> 00:02:55.410 align:middle line:90%
+will proceed through.
+
+63
+00:02:55.410 --> 00:02:57.510 align:middle line:84%
+So it's kind of like
+filter, but it's
+
+64
+00:02:57.510 --> 00:03:02.140 align:middle line:84%
+going to skip over
+things that don't match.
+
+65
+00:03:02.140 --> 00:03:06.610 align:middle line:84%
+Now if the stream is ordered,
+then the output stream
+
+66
+00:03:06.610 --> 00:03:09.610 align:middle line:84%
+that's returned from dropWhile
+will contain the remaining
+
+67
+00:03:09.610 --> 00:03:11.920 align:middle line:84%
+elements of the
+stream after dropping
+
+68
+00:03:11.920 --> 00:03:17.210 align:middle line:84%
+the longest prefix of elements
+that match the given predicate.
+
+69
+00:03:17.210 --> 00:03:20.000 align:middle line:84%
+So again, if it's
+ordered then things
+
+70
+00:03:20.000 --> 00:03:22.730 align:middle line:84%
+have a slightly
+different behavior
+
+71
+00:03:22.730 --> 00:03:27.340 align:middle line:84%
+than if they're not
+ordered or unordered.
+
+72
+00:03:27.340 --> 00:03:30.460 align:middle line:84%
+Now, dropWhile it's kind of
+an interesting operation.
+
+73
+00:03:30.460 --> 00:03:35.320 align:middle line:84%
+Because it's stateful, it
+tends not to work very well
+
+74
+00:03:35.320 --> 00:03:38.200 align:middle line:90%
+in ordered parallel streams.
+
+75
+00:03:38.200 --> 00:03:42.730 align:middle line:84%
+And that's because the semantics
+of ordering and parallel
+
+76
+00:03:42.730 --> 00:03:45.910 align:middle line:84%
+mean that this threads that
+are running in the thread
+
+77
+00:03:45.910 --> 00:03:48.520 align:middle line:84%
+pool in the parallel
+stream implementation
+
+78
+00:03:48.520 --> 00:03:51.490 align:middle line:84%
+have to actually
+cooperate to find
+
+79
+00:03:51.490 --> 00:03:54.400 align:middle line:84%
+the longest contiguous
+sequence of matching elements
+
+80
+00:03:54.400 --> 00:03:57.070 align:middle line:90%
+in the encounter order.
+
+81
+00:03:57.070 --> 00:03:59.720 align:middle line:84%
+And this turns out
+to be rather tricky.
+
+82
+00:03:59.720 --> 00:04:01.590 align:middle line:90%
+It's not that it doesn't work.
+
+83
+00:04:01.590 --> 00:04:03.400 align:middle line:84%
+The streams framework
+will make sure you
+
+84
+00:04:03.400 --> 00:04:07.310 align:middle line:84%
+get the correct result. However,
+it just takes more time.
+
+85
+00:04:07.310 --> 00:04:09.070 align:middle line:84%
+And if you think back
+to our discussion
+
+86
+00:04:09.070 --> 00:04:12.700 align:middle line:84%
+about when is parallelism
+effective-- when is parallelism
+
+87
+00:04:12.700 --> 00:04:13.750 align:middle line:90%
+worth it?
+
+88
+00:04:13.750 --> 00:04:16.240 align:middle line:84%
+One of things I mentioned
+was in situations
+
+89
+00:04:16.240 --> 00:04:19.750 align:middle line:84%
+where the tasks that
+run are independent,
+
+90
+00:04:19.750 --> 00:04:22.029 align:middle line:84%
+you have embarrassingly
+parallel tasks.
+
+91
+00:04:22.029 --> 00:04:24.130 align:middle line:90%
+They don't depend on each other.
+
+92
+00:04:24.130 --> 00:04:26.260 align:middle line:84%
+Well, for this
+particular case, if you
+
+93
+00:04:26.260 --> 00:04:29.080 align:middle line:84%
+have an ordered
+parallel stream, that
+
+94
+00:04:29.080 --> 00:04:31.780 align:middle line:84%
+means that the order in
+which the input comes in it
+
+95
+00:04:31.780 --> 00:04:33.700 align:middle line:90%
+actually matters.
+
+96
+00:04:33.700 --> 00:04:39.160 align:middle line:84%
+And so as a result, the parallel
+threads have to collaborate,
+
+97
+00:04:39.160 --> 00:04:41.970 align:middle line:84%
+which means that there are
+dependencies that now exist.
+
+98
+00:04:41.970 --> 00:04:44.890 align:middle line:84%
+And so this just makes
+things take longer to run.
+
+99
+00:04:44.890 --> 00:04:50.470 align:middle line:84%
+So dropWhile, it will work
+semantically and correctly
+
+100
+00:04:50.470 --> 00:04:51.790 align:middle line:90%
+for an ordered parallel stream.
+
+101
+00:04:51.790 --> 00:04:55.660 align:middle line:84%
+It probably won't give you
+very much of a performance win.
+
+102
+00:04:55.660 --> 00:04:57.160 align:middle line:84%
+And we'll talk about
+this later when
+
+103
+00:04:57.160 --> 00:05:00.070 align:middle line:84%
+we talk more
+systematically about when
+
+104
+00:05:00.070 --> 00:05:03.287 align:middle line:84%
+to use parallel streams and when
+not to use parallel streams.
+
+105
+00:05:03.287 --> 00:05:04.870 align:middle line:84%
+So for right now,
+we're going to focus
+
+106
+00:05:04.870 --> 00:05:09.010 align:middle line:84%
+on sequential streams, which
+has been our main emphasis has
+
+107
+00:05:09.010 --> 00:05:12.330 align:middle line:90%
+been for these several weeks.
+
+108
+00:05:12.330 --> 00:05:14.760 align:middle line:84%
+Now thinking back
+to whether you get
+
+109
+00:05:14.760 --> 00:05:17.820 align:middle line:84%
+the same results in the output
+stream as the input stream,
+
+110
+00:05:17.820 --> 00:05:22.230 align:middle line:84%
+dropWhile is more like
+filter in the sense
+
+111
+00:05:22.230 --> 00:05:24.110 align:middle line:84%
+that the number of
+output stream elements
+
+112
+00:05:24.110 --> 00:05:28.490 align:middle line:84%
+may be less than the number
+of input stream elements.
+
+113
+00:05:28.490 --> 00:05:35.530 align:middle line:84%
+So obviously, if the
+predicate matches
+
+114
+00:05:35.530 --> 00:05:39.700 align:middle line:84%
+the entire stream that comes
+in, everything will get dropped.
+
+115
+00:05:39.700 --> 00:05:43.490 align:middle line:84%
+And it will only not be dropped
+when it starts to not match.
+
+116
+00:05:43.490 --> 00:05:47.320 align:middle line:84%
+So it's possible for dropWhile
+to return a different number
+
+117
+00:05:47.320 --> 00:05:52.060 align:middle line:84%
+of elements in it's output
+than it received as its input.
+
+118
+00:05:52.060 --> 00:05:54.730 align:middle line:84%
+However, even
+though I used filter
+
+119
+00:05:54.730 --> 00:05:57.640 align:middle line:84%
+as sort of the analogous
+discussion point here,
+
+120
+00:05:57.640 --> 00:06:00.880 align:middle line:84%
+it's important to realize that
+the semantics of dropWhile
+
+121
+00:06:00.880 --> 00:06:03.550 align:middle line:84%
+differ in subtle
+and important ways
+
+122
+00:06:03.550 --> 00:06:05.563 align:middle line:90%
+from the semantics of filter.
+
+123
+00:06:05.563 --> 00:06:06.730 align:middle line:90%
+The main difference is this.
+
+124
+00:06:06.730 --> 00:06:09.880 align:middle line:84%
+Filter has to look at
+every single element
+
+125
+00:06:09.880 --> 00:06:13.720 align:middle line:84%
+in order to decide whether it
+passes the predicate or not.
+
+126
+00:06:13.720 --> 00:06:19.000 align:middle line:84%
+DropWhile, in contrast, will
+keep dropping up to the point
+
+127
+00:06:19.000 --> 00:06:22.660 align:middle line:84%
+where the predicate
+no longer matches
+
+128
+00:06:22.660 --> 00:06:25.540 align:middle line:84%
+at which point it short
+circuits and then returns
+
+129
+00:06:25.540 --> 00:06:28.903 align:middle line:84%
+the rest of the stream to the
+next phase in the pipeline.
+
+130
+00:06:28.903 --> 00:06:30.820 align:middle line:84%
+So it doesn't have to
+look at all the elements
+
+131
+00:06:30.820 --> 00:06:34.100 align:middle line:90%
+whereas filter does.
+
+132
+00:06:34.100 --> 00:06:35.740 align:middle line:84%
+Another important
+thing to remember--
+
+133
+00:06:35.740 --> 00:06:38.360 align:middle line:84%
+and this is a bit more
+like filter as well--
+
+134
+00:06:38.360 --> 00:06:42.260 align:middle line:84%
+is the dropWhile can't
+change the type or values
+
+135
+00:06:42.260 --> 00:06:44.330 align:middle line:84%
+of the elements
+that it processes.
+
+136
+00:06:44.330 --> 00:06:49.160 align:middle line:84%
+So if you end up with a stream
+of integers, you'll end up--
+
+137
+00:06:49.160 --> 00:06:50.570 align:middle line:84%
+after you dropWhile
+with a stream
+
+138
+00:06:50.570 --> 00:06:52.160 align:middle line:90%
+of integers-- as the output.
+
+139
+00:06:52.160 --> 00:06:55.040 align:middle line:90%
+So it can't change the results.
+
+140
+00:06:55.040 --> 00:06:58.040 align:middle line:84%
+And we'll see some examples of
+this when we look at the code
+
+141
+00:06:58.040 --> 00:07:01.300 align:middle line:90%
+that we want to analyze.
+
+142
+00:07:01.300 --> 00:07:03.260 align:middle line:84%
+Here's a program
+that illustrates
+
+143
+00:07:03.260 --> 00:07:05.870 align:middle line:90%
+the use of dropWhile.
+
+144
+00:07:05.870 --> 00:07:10.640 align:middle line:84%
+And this is used to basically
+print slices of the results.
+
+145
+00:07:10.640 --> 00:07:13.408 align:middle line:84%
+And so the way this works is
+we've got a list of results--
+
+146
+00:07:13.408 --> 00:07:15.200 align:middle line:84%
+let's say we have a
+list of all the results
+
+147
+00:07:15.200 --> 00:07:16.880 align:middle line:90%
+that matched in the stream.
+
+148
+00:07:16.880 --> 00:07:20.240 align:middle line:84%
+And just make the example
+fun let's assume it's our do,
+
+149
+00:07:20.240 --> 00:07:22.350 align:middle line:90%
+re, mi example.
+
+150
+00:07:22.350 --> 00:07:25.220 align:middle line:84%
+So we're going to convert
+the list of search results
+
+151
+00:07:25.220 --> 00:07:27.140 align:middle line:90%
+into a stream.
+
+152
+00:07:27.140 --> 00:07:30.853 align:middle line:84%
+And then we're going to
+collect the stream into a map.
+
+153
+00:07:30.853 --> 00:07:33.020 align:middle line:84%
+And I'm not going to talk
+about this in great detail
+
+154
+00:07:33.020 --> 00:07:35.270 align:middle line:84%
+now because we haven't
+really gone through all
+
+155
+00:07:35.270 --> 00:07:37.220 align:middle line:90%
+the examples in great detail.
+
+156
+00:07:37.220 --> 00:07:40.730 align:middle line:84%
+But basically, there's a
+collector called groupingBy.
+
+157
+00:07:40.730 --> 00:07:42.950 align:middle line:84%
+And what groupingBy
+does is it goes ahead
+
+158
+00:07:42.950 --> 00:07:45.680 align:middle line:84%
+and it will group the
+elements in the stream in
+
+159
+00:07:45.680 --> 00:07:49.200 align:middle line:90%
+to, essentially, a map.
+
+160
+00:07:49.200 --> 00:07:52.760 align:middle line:84%
+And in this case, the map
+will be a map of words.
+
+161
+00:07:52.760 --> 00:07:56.450 align:middle line:84%
+And then it's going to
+have the results that
+
+162
+00:07:56.450 --> 00:07:58.700 align:middle line:84%
+come after that-- basically,
+where the things occurred
+
+163
+00:07:58.700 --> 00:08:01.560 align:middle line:90%
+in the input.
+
+164
+00:08:01.560 --> 00:08:04.250 align:middle line:84%
+So we then take the
+map, and we convert it
+
+165
+00:08:04.250 --> 00:08:06.410 align:middle line:90%
+into a stream of its entries.
+
+166
+00:08:06.410 --> 00:08:09.770 align:middle line:84%
+So we say map.entrySet, which
+gives you a set of entries,
+
+167
+00:08:09.770 --> 00:08:11.570 align:middle line:90%
+a set of key value pairs.
+
+168
+00:08:11.570 --> 00:08:14.420 align:middle line:84%
+We turn that into a stream
+of these entries or key value
+
+169
+00:08:14.420 --> 00:08:15.590 align:middle line:90%
+pairs.
+
+170
+00:08:15.590 --> 00:08:20.150 align:middle line:84%
+And then we're going
+to drop everything that
+
+171
+00:08:20.150 --> 00:08:23.450 align:middle line:90%
+doesn't equal a given word.
+
+172
+00:08:23.450 --> 00:08:26.690 align:middle line:84%
+So let's say our
+stream contained
+
+173
+00:08:26.690 --> 00:08:30.470 align:middle line:84%
+our original list of results
+was for do, re, mi, fa, so,
+
+174
+00:08:30.470 --> 00:08:32.522 align:middle line:90%
+la, ti in that order.
+
+175
+00:08:32.522 --> 00:08:33.980 align:middle line:84%
+And let's say we
+just want to print
+
+176
+00:08:33.980 --> 00:08:38.030 align:middle line:90%
+the ones that are going to be--
+
+177
+00:08:38.030 --> 00:08:40.593 align:middle line:84%
+we're going to drop a
+subset of these things.
+
+178
+00:08:40.593 --> 00:08:43.010 align:middle line:84%
+So we're going to ignore entries
+up until there's a match.
+
+179
+00:08:43.010 --> 00:08:47.350 align:middle line:84%
+Let's say we want to
+print from fa to the end.
+
+180
+00:08:47.350 --> 00:08:49.780 align:middle line:84%
+So in that particular
+case, dropWhile
+
+181
+00:08:49.780 --> 00:08:52.547 align:middle line:84%
+will ignore everything up into
+the point where we get a match.
+
+182
+00:08:52.547 --> 00:08:54.130 align:middle line:84%
+And in this particular
+case, the match
+
+183
+00:08:54.130 --> 00:08:56.500 align:middle line:84%
+is just matching to see
+whether the word that we
+
+184
+00:08:56.500 --> 00:08:59.650 align:middle line:84%
+want to start
+printing from matches
+
+185
+00:08:59.650 --> 00:09:01.630 align:middle line:90%
+the key that's in the entrySet.
+
+186
+00:09:01.630 --> 00:09:03.910 align:middle line:84%
+So we just keep dropping
+stuff until we hit a match.
+
+187
+00:09:03.910 --> 00:09:07.300 align:middle line:84%
+At that point, the rest
+of the stream is included.
+
+188
+00:09:07.300 --> 00:09:09.700 align:middle line:84%
+And then we'll go ahead and
+print the results starting
+
+189
+00:09:09.700 --> 00:09:11.800 align:middle line:90%
+at wherever we found the match.
+
+190
+00:09:11.800 --> 00:09:14.930 align:middle line:84%
+We'll walk through this
+example in more detail later.
+
+191
+00:09:14.930 --> 00:09:18.700 align:middle line:84%
+I just wanted to give you a
+quick overview of how dropWhile
+
+192
+00:09:18.700 --> 00:09:22.762 align:middle line:84%
+fits visually and
+with a little code
+
+193
+00:09:22.762 --> 00:09:24.220 align:middle line:84%
+into the overall
+programming model.
+
+194
+00:09:24.220 --> 00:09:28.670 align:middle line:90%
+
+
+195
+00:09:28.670 --> 00:09:30.770 align:middle line:84%
+What I'd like to
+do now is describe
+
+196
+00:09:30.770 --> 00:09:34.010 align:middle line:84%
+the takeWhile
+intermediate operation.
+
+197
+00:09:34.010 --> 00:09:36.320 align:middle line:84%
+And as you'll see,
+takeWhile is essentially
+
+198
+00:09:36.320 --> 00:09:39.050 align:middle line:90%
+the inverse of dropWhile.
+
+199
+00:09:39.050 --> 00:09:40.850 align:middle line:84%
+So again, if a
+stream is unordered,
+
+200
+00:09:40.850 --> 00:09:43.730 align:middle line:84%
+if we don't really care what
+order the data comes in,
+
+201
+00:09:43.730 --> 00:09:47.180 align:middle line:84%
+then takeWhile will
+return a stream consisting
+
+202
+00:09:47.180 --> 00:09:50.720 align:middle line:84%
+of the subset of elements taking
+from the input stream that
+
+203
+00:09:50.720 --> 00:09:52.350 align:middle line:90%
+match the given predicate.
+
+204
+00:09:52.350 --> 00:09:55.250 align:middle line:84%
+So it'll keep taking
+while there's a match.
+
+205
+00:09:55.250 --> 00:09:57.740 align:middle line:84%
+And then when there's no more
+match, it'll stop taking.
+
+206
+00:09:57.740 --> 00:10:00.860 align:middle line:90%
+Those pieces will be ignored.
+
+207
+00:10:00.860 --> 00:10:03.980 align:middle line:84%
+In contrast, if the
+stream is ordered,
+
+208
+00:10:03.980 --> 00:10:06.230 align:middle line:84%
+then it will return a stream
+consisting of the longest
+
+209
+00:10:06.230 --> 00:10:09.470 align:middle line:84%
+prefix of elements taken from
+the stream that match the given
+
+210
+00:10:09.470 --> 00:10:10.700 align:middle line:90%
+predicate.
+
+211
+00:10:10.700 --> 00:10:13.460 align:middle line:84%
+And this distinction between
+ordered and unordered
+
+212
+00:10:13.460 --> 00:10:17.030 align:middle line:84%
+is again important
+because takeWhile
+
+213
+00:10:17.030 --> 00:10:20.330 align:middle line:84%
+is a stateful operation
+that's very expensive to use
+
+214
+00:10:20.330 --> 00:10:22.640 align:middle line:90%
+for ordered parallel streams.
+
+215
+00:10:22.640 --> 00:10:24.860 align:middle line:84%
+Because once again,
+the threads that
+
+216
+00:10:24.860 --> 00:10:27.170 align:middle line:84%
+are running in
+the fork-join pool
+
+217
+00:10:27.170 --> 00:10:31.130 align:middle line:84%
+have to cooperate to find the
+longest contiguous sequence
+
+218
+00:10:31.130 --> 00:10:33.530 align:middle line:84%
+of matching elements
+in encounter order.
+
+219
+00:10:33.530 --> 00:10:35.330 align:middle line:90%
+And that can get costly.
+
+220
+00:10:35.330 --> 00:10:36.740 align:middle line:90%
+And it'll take a while to run.
+
+221
+00:10:36.740 --> 00:10:39.680 align:middle line:84%
+So it'll work, but
+probably not a good idea
+
+222
+00:10:39.680 --> 00:10:43.340 align:middle line:84%
+to use takeWhile for
+ordered parallel streams.
+
+223
+00:10:43.340 --> 00:10:47.890 align:middle line:84%
+And our example doesn't
+need to do that.
+
+224
+00:10:47.890 --> 00:10:52.060 align:middle line:84%
+The semantics of takeWhile
+are very similar in some ways
+
+225
+00:10:52.060 --> 00:10:54.610 align:middle line:84%
+to the semantics of
+dropWhile in that
+
+226
+00:10:54.610 --> 00:10:56.560 align:middle line:84%
+the number of output
+stream elements
+
+227
+00:10:56.560 --> 00:11:01.090 align:middle line:84%
+might be less than the number
+of input stream elements.
+
+228
+00:11:01.090 --> 00:11:04.180 align:middle line:84%
+So again, if you takeWhile,
+something matches.
+
+229
+00:11:04.180 --> 00:11:06.610 align:middle line:84%
+So that will be included
+in the output stream.
+
+230
+00:11:06.610 --> 00:11:09.260 align:middle line:84%
+But once you don't get
+a match, at that point,
+
+231
+00:11:09.260 --> 00:11:11.560 align:middle line:90%
+the elements are ignored.
+
+232
+00:11:11.560 --> 00:11:14.500 align:middle line:84%
+However, as with dropWhile,
+the semantics of takeWhile
+
+233
+00:11:14.500 --> 00:11:16.277 align:middle line:84%
+will differ from the
+semantic of filter.
+
+234
+00:11:16.277 --> 00:11:17.860 align:middle line:84%
+Because once again,
+filter has to look
+
+235
+00:11:17.860 --> 00:11:19.780 align:middle line:84%
+at everything in
+the input stream
+
+236
+00:11:19.780 --> 00:11:22.070 align:middle line:84%
+in order to decide
+whether to keep it or not.
+
+237
+00:11:22.070 --> 00:11:24.782 align:middle line:84%
+Whereas takeWhile only
+keeps looking until it finds
+
+238
+00:11:24.782 --> 00:11:25.990 align:middle line:90%
+something that doesn't match.
+
+239
+00:11:25.990 --> 00:11:29.330 align:middle line:84%
+And then it ignores
+everything else.
+
+240
+00:11:29.330 --> 00:11:33.500 align:middle line:84%
+Also like the dropWhile
+method, takeWhile
+
+241
+00:11:33.500 --> 00:11:38.360 align:middle line:84%
+is not able to change the type
+or the value of the elements
+
+242
+00:11:38.360 --> 00:11:41.160 align:middle line:90%
+that it happens to process.
+
+243
+00:11:41.160 --> 00:11:43.300 align:middle line:84%
+So let's take a
+look at an example.
+
+244
+00:11:43.300 --> 00:11:46.640 align:middle line:84%
+This will look very similar
+to what we did before
+
+245
+00:11:46.640 --> 00:11:48.853 align:middle line:90%
+with the dropWhile method.
+
+246
+00:11:48.853 --> 00:11:50.270 align:middle line:84%
+The main difference,
+of course, is
+
+247
+00:11:50.270 --> 00:11:53.460 align:middle line:84%
+we're using takeWhile
+not dropWhile this time.
+
+248
+00:11:53.460 --> 00:11:55.620 align:middle line:84%
+But other than that,
+it's much the same thing.
+
+249
+00:11:55.620 --> 00:11:58.640 align:middle line:84%
+So again, let's say we
+have a list of results
+
+250
+00:11:58.640 --> 00:12:00.480 align:middle line:90%
+that come into the program.
+
+251
+00:12:00.480 --> 00:12:03.710 align:middle line:84%
+And we convert the list
+of results into a stream.
+
+252
+00:12:03.710 --> 00:12:06.950 align:middle line:84%
+We then go ahead and collect
+that stream of results
+
+253
+00:12:06.950 --> 00:12:11.480 align:middle line:84%
+into a map where the key
+and the map will be the word
+
+254
+00:12:11.480 --> 00:12:13.820 align:middle line:84%
+and the value will
+be the location where
+
+255
+00:12:13.820 --> 00:12:17.068 align:middle line:90%
+the word occurred in the input.
+
+256
+00:12:17.068 --> 00:12:19.360 align:middle line:84%
+We'll come back again later
+and talk about how this all
+
+257
+00:12:19.360 --> 00:12:21.950 align:middle line:90%
+works in more detail.
+
+258
+00:12:21.950 --> 00:12:23.960 align:middle line:84%
+We then take that
+map of entries.
+
+259
+00:12:23.960 --> 00:12:27.020 align:middle line:84%
+And we convert it
+into an entry set,
+
+260
+00:12:27.020 --> 00:12:30.770 align:middle line:84%
+which is a data structure
+that contains key value pairs.
+
+261
+00:12:30.770 --> 00:12:33.710 align:middle line:84%
+We turn that into a stream of
+these key value pairs, which
+
+262
+00:12:33.710 --> 00:12:35.510 align:middle line:90%
+are known as entries.
+
+263
+00:12:35.510 --> 00:12:37.760 align:middle line:84%
+And then we go ahead
+and do takeWhile.
+
+264
+00:12:37.760 --> 00:12:43.370 align:middle line:84%
+And takeWhile will keep
+returning entries up
+
+265
+00:12:43.370 --> 00:12:47.990 align:middle line:84%
+until the point where
+the predicate matches.
+
+266
+00:12:47.990 --> 00:12:52.770 align:middle line:84%
+So we keep returning entries
+until it doesn't match.
+
+267
+00:12:52.770 --> 00:12:57.040 align:middle line:84%
+So we're going to go
+through and return
+
+268
+00:12:57.040 --> 00:13:02.530 align:middle line:84%
+the entries until the
+predicate no longer works.
+
+269
+00:13:02.530 --> 00:13:06.460 align:middle line:84%
+What we end up with then
+is basically a prefix
+
+270
+00:13:06.460 --> 00:13:08.410 align:middle line:90%
+of the things that matched.
+
+271
+00:13:08.410 --> 00:13:10.420 align:middle line:84%
+And it'll start
+from the beginning
+
+272
+00:13:10.420 --> 00:13:13.240 align:middle line:84%
+and continue up to,
+but not including,
+
+273
+00:13:13.240 --> 00:13:15.560 align:middle line:90%
+where the actual match occurred.
+
+274
+00:13:15.560 --> 00:13:18.190 align:middle line:84%
+So in this particular case,
+the match that we're doing
+
+275
+00:13:18.190 --> 00:13:20.270 align:middle line:90%
+is notEquals.
+
+276
+00:13:20.270 --> 00:13:23.395 align:middle line:84%
+So we're basically
+going to ignore things.
+
+277
+00:13:23.395 --> 00:13:25.520 align:middle line:84%
+We take stuff up to the
+point where we find a word,
+
+278
+00:13:25.520 --> 00:13:27.380 align:middle line:84%
+and then we ignore
+it at that point.
+
+279
+00:13:27.380 --> 00:13:30.998 align:middle line:84%
+So that's basically the behavior
+of this particular example.
+
+280
+00:13:30.998 --> 00:13:33.040 align:middle line:84%
+Now, once again, we will
+come back in more detail
+
+281
+00:13:33.040 --> 00:13:38.170 align:middle line:84%
+and look at this in a
+lot more full-blown glory
+
+282
+00:13:38.170 --> 00:13:40.630 align:middle line:84%
+when we look at some of
+the other methods that
+
+283
+00:13:40.630 --> 00:13:44.860 align:middle line:84%
+are part of the simple
+search stream program.
+
+284
+00:13:44.860 --> 00:13:47.680 align:middle line:84%
+Just to kind of take stock of
+all the intermediate operations
+
+285
+00:13:47.680 --> 00:13:50.440 align:middle line:84%
+we've covered as we've been
+going through this section,
+
+286
+00:13:50.440 --> 00:13:54.510 align:middle line:84%
+the map intermediate
+operation is very common.
+
+287
+00:13:54.510 --> 00:13:57.040 align:middle line:84%
+The filter intermediate
+operation is very common.
+
+288
+00:13:57.040 --> 00:14:00.790 align:middle line:84%
+Those are arguably the two most
+common intermediate operations
+
+289
+00:14:00.790 --> 00:14:02.740 align:middle line:84%
+of all time and
+certainly the ones
+
+290
+00:14:02.740 --> 00:14:04.780 align:middle line:84%
+we've talked about
+the most common.
+
+291
+00:14:04.780 --> 00:14:09.140 align:middle line:84%
+FlatMap not quite as common
+but very powerful, very useful.
+
+292
+00:14:09.140 --> 00:14:12.290 align:middle line:84%
+I'll use it repeatedly
+throughout the examples.
+
+293
+00:14:12.290 --> 00:14:14.680 align:middle line:84%
+Things like mapToInt
+turn out to be useful
+
+294
+00:14:14.680 --> 00:14:17.380 align:middle line:84%
+if you have to do
+with primitive types.
+
+295
+00:14:17.380 --> 00:14:19.450 align:middle line:84%
+We'll see some more
+examples of those later.
+
+296
+00:14:19.450 --> 00:14:22.300 align:middle line:84%
+And some of the things like
+takeWhile and dropWhile,
+
+297
+00:14:22.300 --> 00:14:27.400 align:middle line:84%
+while they're useful, much
+more limited in applicability.
+
+298
+00:14:27.400 --> 00:14:29.392 align:middle line:84%
+So as we go through
+the rest of the course,
+
+299
+00:14:29.392 --> 00:14:31.600 align:middle line:84%
+you'll see other examples
+that use all these methods.
+
+300
+00:14:31.600 --> 00:14:34.840 align:middle line:84%
+But I think you'll find that map
+and filter are by far the most
+
+301
+00:14:34.840 --> 00:14:37.900 align:middle line:90%
+common ones followed by flatMap.
+
+302
+00:14:37.900 --> 00:14:41.050 align:middle line:84%
+And the other ones get used
+sparingly and on occasion.
+
+303
+00:14:41.050 --> 00:14:43.360 align:middle line:84%
+But it's helpful
+to understand how
+
+304
+00:14:43.360 --> 00:14:46.120 align:middle line:84%
+these different
+intermediate operations fit
+
+305
+00:14:46.120 --> 00:14:50.800 align:middle line:84%
+into that taxonomy of
+stateless/stateful on one hand
+
+306
+00:14:50.800 --> 00:14:55.760 align:middle line:84%
+and run to completion and
+short-circuiting on the other.
+
+307
+00:14:55.760 --> 00:14:58.420 align:middle line:84%
+So again, as you'll see, as
+we go through this stuff,
+
+308
+00:14:58.420 --> 00:15:01.330 align:middle line:84%
+we'll talk a lot more about
+the details of why things
+
+309
+00:15:01.330 --> 00:15:03.400 align:middle line:90%
+work one way or the other.
+
+310
+00:15:03.400 --> 00:15:05.800 align:middle line:84%
+What are the
+performance implications
+
+311
+00:15:05.800 --> 00:15:07.258 align:middle line:90%
+of stateless vs. state?
+
+312
+00:15:07.258 --> 00:15:08.800 align:middle line:84%
+What are the
+performance implications
+
+313
+00:15:08.800 --> 00:15:11.110 align:middle line:84%
+of short-circuit versus
+run to completion?
+
+314
+00:15:11.110 --> 00:15:12.610 align:middle line:84%
+And this gets
+especially interesting
+
+315
+00:15:12.610 --> 00:15:15.100 align:middle line:84%
+when we get into the
+parallel streams world
+
+316
+00:15:15.100 --> 00:15:19.600 align:middle line:84%
+where simple syntactic
+solutions that are easy to write
+
+317
+00:15:19.600 --> 00:15:23.170 align:middle line:84%
+may not work the way you
+expect performance wise because
+
+318
+00:15:23.170 --> 00:15:27.090 align:middle line:84%
+of the semantics of
+Java parallel streams.
