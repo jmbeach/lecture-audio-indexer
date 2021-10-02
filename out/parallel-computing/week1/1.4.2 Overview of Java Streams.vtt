@@ -1,0 +1,877 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.528 align:middle line:90%
+
+
+2
+00:00:00.528 --> 00:00:02.820 align:middle line:84%
+Now that we've talked a bit
+about streams and the three
+
+3
+00:00:02.820 --> 00:00:04.830 align:middle line:84%
+phases, let's spend
+a little time giving
+
+4
+00:00:04.830 --> 00:00:07.680 align:middle line:84%
+an overview of some of
+the common operations that
+
+5
+00:00:07.680 --> 00:00:09.072 align:middle line:90%
+can occur in a stream.
+
+6
+00:00:09.072 --> 00:00:11.280 align:middle line:84%
+We're going to talk about
+some common operations that
+
+7
+00:00:11.280 --> 00:00:14.040 align:middle line:84%
+are used to create a stream as
+part of the splitting phase.
+
+8
+00:00:14.040 --> 00:00:16.290 align:middle line:84%
+And we'll also talk about
+some of the common aggregate
+
+9
+00:00:16.290 --> 00:00:20.490 align:middle line:84%
+operations in the stream, which
+involve the various supplying
+
+10
+00:00:20.490 --> 00:00:23.173 align:middle line:90%
+and combining phases.
+
+11
+00:00:23.173 --> 00:00:25.590 align:middle line:84%
+Let's first start by giving a
+quick overview of operations
+
+12
+00:00:25.590 --> 00:00:27.760 align:middle line:90%
+that can create a stream.
+
+13
+00:00:27.760 --> 00:00:30.460 align:middle line:84%
+The operations that create
+streams, surprisingly enough,
+
+14
+00:00:30.460 --> 00:00:34.000 align:middle line:84%
+or not surprisingly enough,
+are known as factory methods.
+
+15
+00:00:34.000 --> 00:00:36.580 align:middle line:84%
+And factory methods, of
+course, create things.
+
+16
+00:00:36.580 --> 00:00:38.170 align:middle line:84%
+In this case,
+factory methods can
+
+17
+00:00:38.170 --> 00:00:41.510 align:middle line:84%
+be used to create a
+stream from some source.
+
+18
+00:00:41.510 --> 00:00:44.140 align:middle line:84%
+So for example, here,
+we see the of method
+
+19
+00:00:44.140 --> 00:00:48.030 align:middle line:84%
+being used to create a
+stream from an array.
+
+20
+00:00:48.030 --> 00:00:49.720 align:middle line:84%
+The of factory
+method essentially
+
+21
+00:00:49.720 --> 00:00:52.780 align:middle line:84%
+converts an array of
+elements of type T--
+
+22
+00:00:52.780 --> 00:00:54.220 align:middle line:90%
+in this case, string--
+
+23
+00:00:54.220 --> 00:00:57.100 align:middle line:84%
+into a stream of
+elements of type T--
+
+24
+00:00:57.100 --> 00:01:00.060 align:middle line:90%
+again, in this case, string.
+
+25
+00:01:00.060 --> 00:01:02.180 align:middle line:84%
+There are many,
+many factory methods
+
+26
+00:01:02.180 --> 00:01:04.489 align:middle line:84%
+available in the
+streams framework that
+
+27
+00:01:04.489 --> 00:01:07.280 align:middle line:90%
+can be used to create streams.
+
+28
+00:01:07.280 --> 00:01:09.670 align:middle line:84%
+These are some of the key
+factory methods we'll focus on
+
+29
+00:01:09.670 --> 00:01:12.070 align:middle line:84%
+in this course, which
+will be the stream factory
+
+30
+00:01:12.070 --> 00:01:14.720 align:middle line:84%
+method, the parallel
+stream factory method,
+
+31
+00:01:14.720 --> 00:01:19.030 align:middle line:84%
+the split as stream factory
+method, the of factory method,
+
+32
+00:01:19.030 --> 00:01:22.640 align:middle line:84%
+and finally the stream support
+dot stream factory method,
+
+33
+00:01:22.640 --> 00:01:25.540 align:middle line:84%
+which takes a spliterator
+and goes ahead
+
+34
+00:01:25.540 --> 00:01:30.225 align:middle line:84%
+and will create either a
+parallel or sequential stream.
+
+35
+00:01:30.225 --> 00:01:31.600 align:middle line:84%
+There's an upcoming
+lesson, which
+
+36
+00:01:31.600 --> 00:01:34.183 align:middle line:84%
+we'll talk about these factory
+methods in more detail shortly.
+
+37
+00:01:34.183 --> 00:01:36.210 align:middle line:90%
+
+
+38
+00:01:36.210 --> 00:01:39.620 align:middle line:84%
+Let's now talk about Java
+stream aggregate operations.
+
+39
+00:01:39.620 --> 00:01:42.080 align:middle line:84%
+As you may recall from
+our previous discussion,
+
+40
+00:01:42.080 --> 00:01:45.410 align:middle line:84%
+an aggregate operation
+performs a behavior
+
+41
+00:01:45.410 --> 00:01:48.430 align:middle line:90%
+on each element in a stream.
+
+42
+00:01:48.430 --> 00:01:51.350 align:middle line:84%
+The behaviors that are
+going to be performed
+
+43
+00:01:51.350 --> 00:01:55.730 align:middle line:84%
+are typically implemented by a
+lambda expression or a method
+
+44
+00:01:55.730 --> 00:01:59.053 align:middle line:84%
+reference corresponding to
+some functional interface.
+
+45
+00:01:59.053 --> 00:02:00.470 align:middle line:84%
+So if you think
+about the coverage
+
+46
+00:02:00.470 --> 00:02:03.830 align:middle line:84%
+we've had in other courses about
+functional programming in Java,
+
+47
+00:02:03.830 --> 00:02:06.620 align:middle line:84%
+then you should be familiar
+with what a lambda expression is
+
+48
+00:02:06.620 --> 00:02:07.910 align:middle line:90%
+and the method reference.
+
+49
+00:02:07.910 --> 00:02:11.060 align:middle line:84%
+And of course, I will show lots
+and lots and lots of examples
+
+50
+00:02:11.060 --> 00:02:13.970 align:middle line:84%
+using lambda expressions
+and method references
+
+51
+00:02:13.970 --> 00:02:18.080 align:middle line:90%
+in the context of Java streams.
+
+52
+00:02:18.080 --> 00:02:21.050 align:middle line:84%
+Here's a simple example of how
+this gets applied in practice.
+
+53
+00:02:21.050 --> 00:02:23.030 align:middle line:84%
+This is our little
+case study example
+
+54
+00:02:23.030 --> 00:02:25.610 align:middle line:90%
+from Hamlet and its characters.
+
+55
+00:02:25.610 --> 00:02:29.900 align:middle line:84%
+And you can see here that the
+map intermediate operation
+
+56
+00:02:29.900 --> 00:02:33.950 align:middle line:84%
+takes the capitalized
+method reference and uses
+
+57
+00:02:33.950 --> 00:02:37.760 align:middle line:84%
+that to take the stream and
+consistently capitalize it,
+
+58
+00:02:37.760 --> 00:02:39.560 align:middle line:84%
+thereby producing an
+output stream that
+
+59
+00:02:39.560 --> 00:02:41.600 align:middle line:90%
+is capitalized consistently.
+
+60
+00:02:41.600 --> 00:02:43.910 align:middle line:84%
+All that means is that we
+uppercase the first letter
+
+61
+00:02:43.910 --> 00:02:45.410 align:middle line:84%
+and lowercase all
+the other letters.
+
+62
+00:02:45.410 --> 00:02:49.300 align:middle line:84%
+And I'll show you the code
+for this in just a bit.
+
+63
+00:02:49.300 --> 00:02:51.940 align:middle line:84%
+Aggregate operations
+in a stream can
+
+64
+00:02:51.940 --> 00:02:57.520 align:middle line:84%
+be composed together to form a
+pipeline of processing phases.
+
+65
+00:02:57.520 --> 00:03:00.250 align:middle line:84%
+And you can see here, there's
+lots of examples of pipelines.
+
+66
+00:03:00.250 --> 00:03:02.770 align:middle line:84%
+We'll talk about some
+other examples of pipelines
+
+67
+00:03:02.770 --> 00:03:04.400 align:middle line:90%
+a little bit later this week.
+
+68
+00:03:04.400 --> 00:03:06.400 align:middle line:84%
+But you can think of
+things as basically flowing
+
+69
+00:03:06.400 --> 00:03:11.320 align:middle line:84%
+from one source into a series
+of transformers or filters
+
+70
+00:03:11.320 --> 00:03:15.880 align:middle line:84%
+that modify the
+stream in some way.
+
+71
+00:03:15.880 --> 00:03:18.220 align:middle line:84%
+The output of one
+aggregate operation
+
+72
+00:03:18.220 --> 00:03:21.160 align:middle line:84%
+can be input into the
+next one in the stream.
+
+73
+00:03:21.160 --> 00:03:22.440 align:middle line:90%
+So that's why it's a pipeline.
+
+74
+00:03:22.440 --> 00:03:24.320 align:middle line:84%
+So if you take a look
+at the example here,
+
+75
+00:03:24.320 --> 00:03:26.230 align:middle line:84%
+we have some stream
+source that gets
+
+76
+00:03:26.230 --> 00:03:28.000 align:middle line:84%
+put into the first
+aggregate operation.
+
+77
+00:03:28.000 --> 00:03:29.770 align:middle line:90%
+And it's behavior f.
+
+78
+00:03:29.770 --> 00:03:33.130 align:middle line:84%
+And that will output,
+essentially, f of x.
+
+79
+00:03:33.130 --> 00:03:35.650 align:middle line:84%
+That then gets fed into the
+next aggregate operation
+
+80
+00:03:35.650 --> 00:03:39.290 align:middle line:84%
+in the stream which applies some
+behavior g to every element.
+
+81
+00:03:39.290 --> 00:03:42.550 align:middle line:84%
+So we get the output there,
+which is g of f of x.
+
+82
+00:03:42.550 --> 00:03:44.650 align:middle line:84%
+And then finally,
+we have that fed
+
+83
+00:03:44.650 --> 00:03:46.880 align:middle line:84%
+into yet another
+aggregate operation, which
+
+84
+00:03:46.880 --> 00:03:48.130 align:middle line:90%
+could be a terminal operation.
+
+85
+00:03:48.130 --> 00:03:50.450 align:middle line:84%
+So it actually won't
+have an output stream.
+
+86
+00:03:50.450 --> 00:03:51.950 align:middle line:84%
+But it may have
+some other behavior,
+
+87
+00:03:51.950 --> 00:03:53.158 align:middle line:90%
+which we'll talk about later.
+
+88
+00:03:53.158 --> 00:03:55.280 align:middle line:90%
+
+
+89
+00:03:55.280 --> 00:03:57.520 align:middle line:84%
+As you can see here, the
+way this works in practice
+
+90
+00:03:57.520 --> 00:04:00.940 align:middle line:84%
+is you typically end
+up chaining together
+
+91
+00:04:00.940 --> 00:04:04.870 align:middle line:84%
+the aggregate operations
+via something known
+
+92
+00:04:04.870 --> 00:04:07.015 align:middle line:90%
+as the fluent interface model.
+
+93
+00:04:07.015 --> 00:04:09.140 align:middle line:84%
+If you look at the link at
+the bottom of the slide,
+
+94
+00:04:09.140 --> 00:04:10.848 align:middle line:84%
+you'll learn more
+about fluid interfaces.
+
+95
+00:04:10.848 --> 00:04:12.400 align:middle line:84%
+But essentially,
+what happens is you
+
+96
+00:04:12.400 --> 00:04:14.200 align:middle line:90%
+take the output of one phase.
+
+97
+00:04:14.200 --> 00:04:16.990 align:middle line:84%
+And then you simply
+pipe it or connect it
+
+98
+00:04:16.990 --> 00:04:20.600 align:middle line:84%
+to the next phase or
+the next operation.
+
+99
+00:04:20.600 --> 00:04:23.460 align:middle line:84%
+So you can see here,
+we do stream dot of.
+
+100
+00:04:23.460 --> 00:04:25.150 align:middle line:84%
+And that feeds into
+the dot filter.
+
+101
+00:04:25.150 --> 00:04:26.500 align:middle line:90%
+And that feeds into the dot map.
+
+102
+00:04:26.500 --> 00:04:27.958 align:middle line:84%
+And that feeds into
+the dot sorted.
+
+103
+00:04:27.958 --> 00:04:29.670 align:middle line:84%
+And that feeds into
+the dot for each.
+
+104
+00:04:29.670 --> 00:04:32.080 align:middle line:84%
+So that the dots, here,
+are just ways of indicating
+
+105
+00:04:32.080 --> 00:04:38.447 align:middle line:84%
+this is a call to another step
+in the overall stream pipeline.
+
+106
+00:04:38.447 --> 00:04:40.030 align:middle line:84%
+In this model, you
+can see the factory
+
+107
+00:04:40.030 --> 00:04:43.210 align:middle line:84%
+method creates the stream
+from the array of inputs.
+
+108
+00:04:43.210 --> 00:04:46.450 align:middle line:84%
+This aggregate operation
+returns a stream
+
+109
+00:04:46.450 --> 00:04:48.430 align:middle line:84%
+that only contains
+elements that match
+
+110
+00:04:48.430 --> 00:04:50.740 align:middle line:84%
+the predicate-- in other
+words, only have letters
+
+111
+00:04:50.740 --> 00:04:53.510 align:middle line:84%
+that start with
+uppercase or lowercase h.
+
+112
+00:04:53.510 --> 00:04:56.590 align:middle line:84%
+We then go ahead
+and map the elements
+
+113
+00:04:56.590 --> 00:05:00.280 align:middle line:90%
+to consistently capitalize them.
+
+114
+00:05:00.280 --> 00:05:03.220 align:middle line:84%
+We apply the capitalized method
+reference, which is a function,
+
+115
+00:05:03.220 --> 00:05:05.620 align:middle line:90%
+to the elements of the stream.
+
+116
+00:05:05.620 --> 00:05:07.300 align:middle line:90%
+Then we sort everything.
+
+117
+00:05:07.300 --> 00:05:09.550 align:middle line:84%
+And then finally, we
+have a terminal operation
+
+118
+00:05:09.550 --> 00:05:11.240 align:middle line:90%
+that prints out the results.
+
+119
+00:05:11.240 --> 00:05:12.940 align:middle line:84%
+And for each of these
+different stages,
+
+120
+00:05:12.940 --> 00:05:16.457 align:middle line:84%
+we have lessons that will talk
+about the mechanisms involved
+
+121
+00:05:16.457 --> 00:05:18.040 align:middle line:84%
+with each of the
+stages and the phases
+
+122
+00:05:18.040 --> 00:05:22.330 align:middle line:84%
+in much more detail
+coming up shortly.
+
+123
+00:05:22.330 --> 00:05:26.920 align:middle line:84%
+Java Streams iterate internally,
+and from the programmer's point
+
+124
+00:05:26.920 --> 00:05:30.820 align:middle line:84%
+of view, invisibly, between the
+various aggregate operations
+
+125
+00:05:30.820 --> 00:05:32.800 align:middle line:90%
+that form the pipeline.
+
+126
+00:05:32.800 --> 00:05:35.020 align:middle line:84%
+And there's various
+reasons for doing this.
+
+127
+00:05:35.020 --> 00:05:36.520 align:middle line:84%
+This link at the
+bottom of the slide
+
+128
+00:05:36.520 --> 00:05:38.520 align:middle line:84%
+has some good
+discussions that compare
+
+129
+00:05:38.520 --> 00:05:41.680 align:middle line:84%
+and contrast internal iterators,
+which is what streams do,
+
+130
+00:05:41.680 --> 00:05:43.115 align:middle line:90%
+with external iterators.
+
+131
+00:05:43.115 --> 00:05:44.740 align:middle line:84%
+I'll come back and
+talk about this more
+
+132
+00:05:44.740 --> 00:05:46.010 align:middle line:90%
+in just a few minutes.
+
+133
+00:05:46.010 --> 00:05:47.830 align:middle line:84%
+But the basic point
+there is that you
+
+134
+00:05:47.830 --> 00:05:50.500 align:middle line:84%
+don't have to be responsible
+for iterations with the Java
+
+135
+00:05:50.500 --> 00:05:52.395 align:middle line:90%
+streams model.
+
+136
+00:05:52.395 --> 00:05:53.770 align:middle line:84%
+One of the nice
+things about this
+
+137
+00:05:53.770 --> 00:05:55.810 align:middle line:84%
+is it provides lots
+of opportunities
+
+138
+00:05:55.810 --> 00:06:00.070 align:middle line:84%
+for transparent optimizations
+by the stream framework.
+
+139
+00:06:00.070 --> 00:06:04.000 align:middle line:84%
+Streams can omit certain of
+these intermediate operations
+
+140
+00:06:04.000 --> 00:06:07.540 align:middle line:84%
+if they realize they
+aren't necessary.
+
+141
+00:06:07.540 --> 00:06:09.880 align:middle line:84%
+The streams framework
+can also transparently
+
+142
+00:06:09.880 --> 00:06:12.400 align:middle line:90%
+paralyze these various stages.
+
+143
+00:06:12.400 --> 00:06:13.990 align:middle line:84%
+And it just shields
+you from all kinds
+
+144
+00:06:13.990 --> 00:06:16.180 align:middle line:84%
+of accidental
+complexities that arise
+
+145
+00:06:16.180 --> 00:06:19.710 align:middle line:84%
+were you to try to program
+with external iterators.
+
+146
+00:06:19.710 --> 00:06:23.650 align:middle line:84%
+And I'll go through that in
+more detail in just a bit.
+
+147
+00:06:23.650 --> 00:06:25.560 align:middle line:84%
+Here's an example of
+what the code would
+
+148
+00:06:25.560 --> 00:06:27.330 align:middle line:84%
+look like were we
+to try to program
+
+149
+00:06:27.330 --> 00:06:31.210 align:middle line:90%
+this using external iterations.
+
+150
+00:06:31.210 --> 00:06:33.120 align:middle line:84%
+So as you can see in
+this particular model,
+
+151
+00:06:33.120 --> 00:06:36.340 align:middle line:84%
+we would end up getting
+a list of strings
+
+152
+00:06:36.340 --> 00:06:39.480 align:middle line:84%
+which can correspond to the
+names of the Hamlet characters.
+
+153
+00:06:39.480 --> 00:06:43.770 align:middle line:84%
+We would then have a loop
+that went from the index I
+
+154
+00:06:43.770 --> 00:06:46.938 align:middle line:90%
+to the list size.
+
+155
+00:06:46.938 --> 00:06:48.480 align:middle line:84%
+And then for each
+step along the way,
+
+156
+00:06:48.480 --> 00:06:50.640 align:middle line:84%
+we would go ahead
+and essentially
+
+157
+00:06:50.640 --> 00:06:52.725 align:middle line:84%
+check to see whether
+or not things were
+
+158
+00:06:52.725 --> 00:06:53.850 align:middle line:90%
+starting with the letter h.
+
+159
+00:06:53.850 --> 00:06:55.517 align:middle line:84%
+If they were starting
+with the letter h,
+
+160
+00:06:55.517 --> 00:06:59.070 align:middle line:84%
+we would go ahead and set
+them and capitalize them
+
+161
+00:06:59.070 --> 00:07:00.520 align:middle line:90%
+consistently in the list.
+
+162
+00:07:00.520 --> 00:07:02.610 align:middle line:84%
+Otherwise, we would
+remove it from the list.
+
+163
+00:07:02.610 --> 00:07:05.800 align:middle line:84%
+When we're done with that,
+we would sort the collection
+
+164
+00:07:05.800 --> 00:07:09.210 align:middle line:84%
+and finally go ahead and
+print it out using a for loop.
+
+165
+00:07:09.210 --> 00:07:11.400 align:middle line:84%
+This type of approach,
+as you can see,
+
+166
+00:07:11.400 --> 00:07:13.890 align:middle line:90%
+has a number of tricky elements.
+
+167
+00:07:13.890 --> 00:07:15.690 align:middle line:84%
+It's got more
+accidental complexities.
+
+168
+00:07:15.690 --> 00:07:19.140 align:middle line:84%
+You can get the loop
+index counters incorrect.
+
+169
+00:07:19.140 --> 00:07:21.840 align:middle line:84%
+You might forget to do
+something in the way in which
+
+170
+00:07:21.840 --> 00:07:23.573 align:middle line:90%
+the if-else statement works.
+
+171
+00:07:23.573 --> 00:07:24.990 align:middle line:84%
+It's also going
+to be a lot harder
+
+172
+00:07:24.990 --> 00:07:26.847 align:middle line:90%
+to optimize to run in parallel.
+
+173
+00:07:26.847 --> 00:07:28.680 align:middle line:84%
+And the code is just
+simply more complicated
+
+174
+00:07:28.680 --> 00:07:31.553 align:middle line:84%
+to read because you can't
+read it in a linear fashion,
+
+175
+00:07:31.553 --> 00:07:32.970 align:middle line:84%
+whereas if you
+look back here, you
+
+176
+00:07:32.970 --> 00:07:35.040 align:middle line:84%
+can read this code
+from top to bottom
+
+177
+00:07:35.040 --> 00:07:37.320 align:middle line:84%
+without having to think
+about conditional statements
+
+178
+00:07:37.320 --> 00:07:38.910 align:middle line:90%
+and iteration and so on.
+
+179
+00:07:38.910 --> 00:07:42.690 align:middle line:84%
+It's all handled magically
+through the internal iterators
+
+180
+00:07:42.690 --> 00:07:45.130 align:middle line:84%
+that are provided as part
+of the streams framework.
+
+181
+00:07:45.130 --> 00:07:47.380 align:middle line:84%
+We'll come back and talk
+about this a little bit later
+
+182
+00:07:47.380 --> 00:07:50.950 align:middle line:84%
+in the lesson on external
+and internal iterators
+
+183
+00:07:50.950 --> 00:07:54.030 align:middle line:84%
+that we'll cover
+before the week is out.

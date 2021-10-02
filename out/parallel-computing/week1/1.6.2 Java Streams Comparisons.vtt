@@ -1,0 +1,1273 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.537 align:middle line:90%
+
+
+2
+00:00:00.537 --> 00:00:02.120 align:middle line:84%
+So what we're going
+to do now is we're
+
+3
+00:00:02.120 --> 00:00:07.380 align:middle line:84%
+going to contrast Java streams
+with other technologies.
+
+4
+00:00:07.380 --> 00:00:09.590 align:middle line:84%
+And we'll compare
+and contrast streams
+
+5
+00:00:09.590 --> 00:00:11.570 align:middle line:84%
+with several other
+things that you probably
+
+6
+00:00:11.570 --> 00:00:13.403 align:middle line:84%
+are familiar with if
+you've been programming
+
+7
+00:00:13.403 --> 00:00:14.810 align:middle line:84%
+for any length of
+time, or you've
+
+8
+00:00:14.810 --> 00:00:18.650 align:middle line:84%
+been a computer user
+for any length of time.
+
+9
+00:00:18.650 --> 00:00:21.800 align:middle line:84%
+So a Java stream, as we
+talked about before--
+
+10
+00:00:21.800 --> 00:00:23.240 align:middle line:90%
+just to reiterate this--
+
+11
+00:00:23.240 --> 00:00:26.630 align:middle line:84%
+is a sequence of data
+elements or data items
+
+12
+00:00:26.630 --> 00:00:29.780 align:middle line:84%
+that are conceptually produced
+one at a time from some data
+
+13
+00:00:29.780 --> 00:00:31.010 align:middle line:90%
+source.
+
+14
+00:00:31.010 --> 00:00:34.850 align:middle line:84%
+And an operation can read these
+items from an input stream one
+
+15
+00:00:34.850 --> 00:00:38.210 align:middle line:84%
+by one and also then
+do some transformation
+
+16
+00:00:38.210 --> 00:00:41.000 align:middle line:84%
+and write them to
+an output stream.
+
+17
+00:00:41.000 --> 00:00:43.070 align:middle line:84%
+And the output stream
+of one operation
+
+18
+00:00:43.070 --> 00:00:47.780 align:middle line:84%
+can be input into the
+input stream of another.
+
+19
+00:00:47.780 --> 00:00:50.900 align:middle line:84%
+So that's the whole
+concept of a pipeline.
+
+20
+00:00:50.900 --> 00:00:52.090 align:middle line:90%
+Well, what is this?
+
+21
+00:00:52.090 --> 00:00:53.760 align:middle line:84%
+This should look
+very familiar to you.
+
+22
+00:00:53.760 --> 00:00:56.450 align:middle line:84%
+This is basically
+an implementation
+
+23
+00:00:56.450 --> 00:00:59.690 align:middle line:84%
+of the pipes and
+filters pattern that
+
+24
+00:00:59.690 --> 00:01:02.480 align:middle line:84%
+originally appeared in the
+Pattern-oriented Software
+
+25
+00:01:02.480 --> 00:01:03.930 align:middle line:90%
+Architecture, vol.
+
+26
+00:01:03.930 --> 00:01:05.269 align:middle line:90%
+1 book.
+
+27
+00:01:05.269 --> 00:01:07.040 align:middle line:84%
+So if you were to go
+look at that book,
+
+28
+00:01:07.040 --> 00:01:09.903 align:middle line:84%
+or if you were to go look at the
+link here, which is an updated
+
+29
+00:01:09.903 --> 00:01:11.570 align:middle line:84%
+version of the pipes
+and filters pattern
+
+30
+00:01:11.570 --> 00:01:14.510 align:middle line:84%
+description that you
+can get from the web,
+
+31
+00:01:14.510 --> 00:01:16.730 align:middle line:84%
+the intent of the pipes
+and filters pattern
+
+32
+00:01:16.730 --> 00:01:22.550 align:middle line:84%
+is to divide an app's tasks into
+multiple self-contained data
+
+33
+00:01:22.550 --> 00:01:26.090 align:middle line:84%
+processing steps, and then
+connect these steps together
+
+34
+00:01:26.090 --> 00:01:29.120 align:middle line:84%
+by intermediate
+data buffers to form
+
+35
+00:01:29.120 --> 00:01:31.280 align:middle line:90%
+a data-processing pipeline.
+
+36
+00:01:31.280 --> 00:01:34.700 align:middle line:84%
+Well, gosh, that sounds
+exactly like what a stream is.
+
+37
+00:01:34.700 --> 00:01:36.350 align:middle line:90%
+And there's no coincidence.
+
+38
+00:01:36.350 --> 00:01:39.205 align:middle line:90%
+That's actually the intent.
+
+39
+00:01:39.205 --> 00:01:40.830 align:middle line:84%
+Now, it turns out
+that there's actually
+
+40
+00:01:40.830 --> 00:01:43.920 align:middle line:84%
+a whole bunch of other
+implementations of the pipes
+
+41
+00:01:43.920 --> 00:01:47.340 align:middle line:84%
+and filters pattern that
+you're probably familiar with.
+
+42
+00:01:47.340 --> 00:01:51.390 align:middle line:84%
+One that's outside the
+scope of computer software
+
+43
+00:01:51.390 --> 00:01:54.760 align:middle line:90%
+is water purification systems.
+
+44
+00:01:54.760 --> 00:01:57.060 align:middle line:84%
+So if you ever have
+a water filter,
+
+45
+00:01:57.060 --> 00:02:00.150 align:middle line:84%
+you know that you basically
+have a water source which
+
+46
+00:02:00.150 --> 00:02:01.590 align:middle line:84%
+is probably coming
+into your house
+
+47
+00:02:01.590 --> 00:02:05.290 align:middle line:84%
+from the municipal
+water supply system--
+
+48
+00:02:05.290 --> 00:02:07.060 align:middle line:90%
+the water company, as it were.
+
+49
+00:02:07.060 --> 00:02:10.080 align:middle line:84%
+And then it runs through
+a bunch of cylinders
+
+50
+00:02:10.080 --> 00:02:12.390 align:middle line:84%
+that contain filters
+that try to filter out
+
+51
+00:02:12.390 --> 00:02:15.400 align:middle line:84%
+various kinds of
+impurities in the water.
+
+52
+00:02:15.400 --> 00:02:17.270 align:middle line:84%
+And so you can see
+a picture here.
+
+53
+00:02:17.270 --> 00:02:20.070 align:middle line:84%
+You can read about water
+filters here at the link below.
+
+54
+00:02:20.070 --> 00:02:21.630 align:middle line:84%
+Very common,
+especially if you're
+
+55
+00:02:21.630 --> 00:02:25.410 align:middle line:84%
+in an environment where the
+water you get from the city
+
+56
+00:02:25.410 --> 00:02:26.940 align:middle line:90%
+is not the best water.
+
+57
+00:02:26.940 --> 00:02:30.240 align:middle line:84%
+Or it might come from a well
+for that matter, I suppose.
+
+58
+00:02:30.240 --> 00:02:32.670 align:middle line:84%
+Some other examples that
+you may be familiar with
+
+59
+00:02:32.670 --> 00:02:36.300 align:middle line:84%
+are pipelines in
+the UNIX or even
+
+60
+00:02:36.300 --> 00:02:41.910 align:middle line:84%
+the Windows command-line
+shells, like bash or seashell
+
+61
+00:02:41.910 --> 00:02:44.550 align:middle line:84%
+or the Bourne shell
+or the tcsh shell
+
+62
+00:02:44.550 --> 00:02:46.830 align:middle line:84%
+or whatever shell
+you like to use.
+
+63
+00:02:46.830 --> 00:02:49.920 align:middle line:84%
+So this is a very
+common approach,
+
+64
+00:02:49.920 --> 00:02:53.790 align:middle line:84%
+where you can take the output
+of one program called a utility,
+
+65
+00:02:53.790 --> 00:02:57.360 align:middle line:84%
+typically, and then pipe it into
+the input of another program
+
+66
+00:02:57.360 --> 00:02:58.920 align:middle line:90%
+or utility.
+
+67
+00:02:58.920 --> 00:03:00.960 align:middle line:84%
+The simple example
+I show here starts
+
+68
+00:03:00.960 --> 00:03:07.720 align:middle line:84%
+by producing a list of all the
+files in the usr bin directory.
+
+69
+00:03:07.720 --> 00:03:09.730 align:middle line:84%
+And then we have a
+little regular expression
+
+70
+00:03:09.730 --> 00:03:15.060 align:middle line:84%
+we run through the sed utility
+to strip out the directory
+
+71
+00:03:15.060 --> 00:03:15.600 align:middle line:90%
+part.
+
+72
+00:03:15.600 --> 00:03:18.690 align:middle line:84%
+So now we just end up
+with a list of file names.
+
+73
+00:03:18.690 --> 00:03:24.180 align:middle line:84%
+Then we're going to go ahead and
+select any names in that stream
+
+74
+00:03:24.180 --> 00:03:26.807 align:middle line:90%
+that start with z.
+
+75
+00:03:26.807 --> 00:03:28.890 align:middle line:84%
+We will then take all the
+names that start with z.
+
+76
+00:03:28.890 --> 00:03:31.500 align:middle line:90%
+We will sort those items.
+
+77
+00:03:31.500 --> 00:03:33.780 align:middle line:84%
+And then we will print
+them out as a single line
+
+78
+00:03:33.780 --> 00:03:36.203 align:middle line:90%
+by removing the new line.
+
+79
+00:03:36.203 --> 00:03:37.620 align:middle line:84%
+And so if you were
+to do this, you
+
+80
+00:03:37.620 --> 00:03:39.900 align:middle line:84%
+would get an output something
+along the lines of what
+
+81
+00:03:39.900 --> 00:03:41.700 align:middle line:90%
+I show at the bottom, here--
+
+82
+00:03:41.700 --> 00:03:45.470 align:middle line:84%
+at least on my machine,
+which is a Linux machine.
+
+83
+00:03:45.470 --> 00:03:48.735 align:middle line:84%
+This is obviously a stream,
+much like Java streams.
+
+84
+00:03:48.735 --> 00:03:51.110 align:middle line:84%
+It's obviously an implementation
+of the pipes and filters
+
+85
+00:03:51.110 --> 00:03:52.430 align:middle line:90%
+pattern.
+
+86
+00:03:52.430 --> 00:03:54.860 align:middle line:84%
+The main difference
+between a Java stream
+
+87
+00:03:54.860 --> 00:03:58.000 align:middle line:84%
+and filters in a
+UNIX pipeline is
+
+88
+00:03:58.000 --> 00:04:00.320 align:middle line:84%
+that a filter
+typically processes
+
+89
+00:04:00.320 --> 00:04:03.260 align:middle line:84%
+most or all of the
+content it receives,
+
+90
+00:04:03.260 --> 00:04:05.995 align:middle line:84%
+whereas a Java stream
+can short-circuit things.
+
+91
+00:04:05.995 --> 00:04:07.370 align:middle line:84%
+I guess to be
+fair, I should also
+
+92
+00:04:07.370 --> 00:04:11.600 align:middle line:84%
+mention that there are various
+options and flags you can have
+
+93
+00:04:11.600 --> 00:04:14.300 align:middle line:84%
+and utilities in UNIX
+that will only process
+
+94
+00:04:14.300 --> 00:04:15.780 align:middle line:90%
+a handful of the elements.
+
+95
+00:04:15.780 --> 00:04:19.730 align:middle line:84%
+For example, you can use
+things like head or tail,
+
+96
+00:04:19.730 --> 00:04:22.118 align:middle line:84%
+where you can restrict
+the amount of processing.
+
+97
+00:04:22.118 --> 00:04:24.410 align:middle line:84%
+We'll see this as we get a
+little further into streams.
+
+98
+00:04:24.410 --> 00:04:26.780 align:middle line:84%
+There are things called
+short-circuiting operations,
+
+99
+00:04:26.780 --> 00:04:29.630 align:middle line:84%
+where you can only process a
+certain amount of the elements
+
+100
+00:04:29.630 --> 00:04:32.510 align:middle line:90%
+in the stream before you stop.
+
+101
+00:04:32.510 --> 00:04:36.470 align:middle line:84%
+Yet another example of a
+stream of the pipes and filters
+
+102
+00:04:36.470 --> 00:04:40.940 align:middle line:84%
+pattern is the System
+V STREAMS framework.
+
+103
+00:04:40.940 --> 00:04:44.840 align:middle line:84%
+And System V STREAMS is a
+very interesting framework
+
+104
+00:04:44.840 --> 00:04:50.270 align:middle line:84%
+that's been available for
+decades in UNIX platforms.
+
+105
+00:04:50.270 --> 00:04:52.700 align:middle line:84%
+System V STREAMS was
+originally developed
+
+106
+00:04:52.700 --> 00:04:55.277 align:middle line:84%
+by Dennis Ritchie and his
+colleagues at Bell Labs.
+
+107
+00:04:55.277 --> 00:04:57.110 align:middle line:84%
+You're probably familiar
+with Dennis Ritchie
+
+108
+00:04:57.110 --> 00:05:01.040 align:middle line:84%
+because, of course, he is one of
+the original inventors of both
+
+109
+00:05:01.040 --> 00:05:04.730 align:middle line:84%
+the UNIX operating system and
+the C programming language.
+
+110
+00:05:04.730 --> 00:05:06.440 align:middle line:84%
+And along the way,
+he also came up
+
+111
+00:05:06.440 --> 00:05:10.330 align:middle line:84%
+with this really cool
+concept called STREAMS.
+
+112
+00:05:10.330 --> 00:05:11.660 align:middle line:90%
+He actually called it STREAMS.
+
+113
+00:05:11.660 --> 00:05:15.650 align:middle line:84%
+And it was basically a
+plugable protocol framework
+
+114
+00:05:15.650 --> 00:05:18.560 align:middle line:84%
+for being able to
+compose layered protocol
+
+115
+00:05:18.560 --> 00:05:24.170 align:middle line:84%
+stacks in the UNIX System
+V operating system kernel.
+
+116
+00:05:24.170 --> 00:05:28.880 align:middle line:84%
+And just like with streams
+that we have in Java streams,
+
+117
+00:05:28.880 --> 00:05:30.560 align:middle line:84%
+you could have these
+different layers
+
+118
+00:05:30.560 --> 00:05:33.710 align:middle line:84%
+or basically what we would
+call in Java streams aggregate
+
+119
+00:05:33.710 --> 00:05:35.190 align:middle line:90%
+operations.
+
+120
+00:05:35.190 --> 00:05:37.040 align:middle line:84%
+Dennis Ritchie
+called them modules.
+
+121
+00:05:37.040 --> 00:05:39.170 align:middle line:84%
+And these things could
+be connected together.
+
+122
+00:05:39.170 --> 00:05:41.720 align:middle line:84%
+And then data could
+flow, messages
+
+123
+00:05:41.720 --> 00:05:44.810 align:middle line:84%
+could flow, from the top
+at the user-process level,
+
+124
+00:05:44.810 --> 00:05:48.270 align:middle line:84%
+through the different conversion
+operations in the stream,
+
+125
+00:05:48.270 --> 00:05:50.270 align:middle line:84%
+all the way to the bottom,
+which would typically
+
+126
+00:05:50.270 --> 00:05:52.227 align:middle line:90%
+be some kind of device driver.
+
+127
+00:05:52.227 --> 00:05:54.060 align:middle line:84%
+And of course, it also
+worked the other way.
+
+128
+00:05:54.060 --> 00:05:56.420 align:middle line:84%
+So when data came
+in on the network,
+
+129
+00:05:56.420 --> 00:05:58.160 align:middle line:84%
+it was handled by
+the device driver.
+
+130
+00:05:58.160 --> 00:05:59.630 align:middle line:84%
+And then that
+would have the data
+
+131
+00:05:59.630 --> 00:06:02.060 align:middle line:84%
+processed through the
+different protocols
+
+132
+00:06:02.060 --> 00:06:04.490 align:middle line:84%
+up the protocol stack,
+coming from the bottom,
+
+133
+00:06:04.490 --> 00:06:07.790 align:middle line:84%
+and then being deposited
+eventually into a user process
+
+134
+00:06:07.790 --> 00:06:09.530 align:middle line:90%
+at the top of the stack.
+
+135
+00:06:09.530 --> 00:06:13.790 align:middle line:84%
+And of course, this works really
+nicely for layered protocols,
+
+136
+00:06:13.790 --> 00:06:19.130 align:middle line:84%
+such as the internet protocol
+stack, where you've got TCP.
+
+137
+00:06:19.130 --> 00:06:20.030 align:middle line:90%
+You've got IP.
+
+138
+00:06:20.030 --> 00:06:22.940 align:middle line:84%
+You typically have
+some data link protocol
+
+139
+00:06:22.940 --> 00:06:24.870 align:middle line:90%
+like ethernet and so on.
+
+140
+00:06:24.870 --> 00:06:26.600 align:middle line:84%
+And each of these
+different layers
+
+141
+00:06:26.600 --> 00:06:31.790 align:middle line:84%
+can be represented as connected
+modules in a System V STREAM.
+
+142
+00:06:31.790 --> 00:06:34.390 align:middle line:84%
+So System V STREAMS
+are yet another example
+
+143
+00:06:34.390 --> 00:06:36.110 align:middle line:90%
+of a pipes and filters pattern.
+
+144
+00:06:36.110 --> 00:06:39.560 align:middle line:84%
+What was interesting about
+the System V STREAMS framework
+
+145
+00:06:39.560 --> 00:06:43.610 align:middle line:84%
+is that it was developed
+in C. And it was developed
+
+146
+00:06:43.610 --> 00:06:45.410 align:middle line:90%
+probably 30 years ago or so.
+
+147
+00:06:45.410 --> 00:06:48.590 align:middle line:84%
+I think one of the papers
+that Dennis Ritchie wrote
+
+148
+00:06:48.590 --> 00:06:51.170 align:middle line:90%
+was from the 1980s timeframe--
+
+149
+00:06:51.170 --> 00:06:52.940 align:middle line:90%
+maybe even before that point.
+
+150
+00:06:52.940 --> 00:06:55.070 align:middle line:84%
+And yet this
+particular framework
+
+151
+00:06:55.070 --> 00:06:57.470 align:middle line:84%
+written in C for the
+operating system kernel
+
+152
+00:06:57.470 --> 00:07:01.490 align:middle line:84%
+is absolutely chock-full
+of design patterns.
+
+153
+00:07:01.490 --> 00:07:04.760 align:middle line:84%
+And those patterns have
+persisted long enough
+
+154
+00:07:04.760 --> 00:07:08.690 align:middle line:84%
+to be relevant in the
+context of Java streams.
+
+155
+00:07:08.690 --> 00:07:10.970 align:middle line:84%
+So what's really cool about
+understanding the world
+
+156
+00:07:10.970 --> 00:07:12.740 align:middle line:84%
+through a patterns
+perspective is
+
+157
+00:07:12.740 --> 00:07:15.080 align:middle line:84%
+you can start to
+really appreciate
+
+158
+00:07:15.080 --> 00:07:17.450 align:middle line:84%
+the commonality of
+different technologies
+
+159
+00:07:17.450 --> 00:07:20.880 align:middle line:84%
+that exist in different
+epochs, different languages,
+
+160
+00:07:20.880 --> 00:07:22.730 align:middle line:84%
+different operating
+environments,
+
+161
+00:07:22.730 --> 00:07:26.210 align:middle line:84%
+and yet see how they all
+implement very similar design
+
+162
+00:07:26.210 --> 00:07:28.792 align:middle line:90%
+concepts and design structures.
+
+163
+00:07:28.792 --> 00:07:31.250 align:middle line:84%
+So I hope that ties back to
+some of the earlier discussions
+
+164
+00:07:31.250 --> 00:07:34.430 align:middle line:84%
+that we've had in other courses
+about the value of software
+
+165
+00:07:34.430 --> 00:07:35.450 align:middle line:90%
+patterns--
+
+166
+00:07:35.450 --> 00:07:37.250 align:middle line:84%
+to be able to see
+the commonality
+
+167
+00:07:37.250 --> 00:07:39.560 align:middle line:84%
+and be able to know
+these recurring solutions
+
+168
+00:07:39.560 --> 00:07:43.450 align:middle line:84%
+apply to solve problems that
+exist at many different layers
+
+169
+00:07:43.450 --> 00:07:46.460 align:middle line:90%
+and in many different contexts.
+
+170
+00:07:46.460 --> 00:07:48.350 align:middle line:84%
+Then the last thing
+I want to talk
+
+171
+00:07:48.350 --> 00:07:51.920 align:middle line:84%
+about in this context of other
+implementations of the pipes
+
+172
+00:07:51.920 --> 00:07:55.100 align:middle line:84%
+and filters pattern is
+something that's actually
+
+173
+00:07:55.100 --> 00:07:57.440 align:middle line:90%
+come in later versions of Java.
+
+174
+00:07:57.440 --> 00:08:02.540 align:middle line:84%
+So with the Java 9
+release, which occurred,
+
+175
+00:08:02.540 --> 00:08:06.590 align:middle line:84%
+I think, probably
+2018 or something
+
+176
+00:08:06.590 --> 00:08:11.450 align:middle line:84%
+like that, they added something
+called reactive streams.
+
+177
+00:08:11.450 --> 00:08:16.030 align:middle line:84%
+And reactive streams are a
+very interesting combination
+
+178
+00:08:16.030 --> 00:08:21.410 align:middle line:84%
+of features which also implement
+the pipes and filters pattern.
+
+179
+00:08:21.410 --> 00:08:24.220 align:middle line:84%
+So Java reactive
+streams essentially
+
+180
+00:08:24.220 --> 00:08:26.980 align:middle line:84%
+are a set of interfaces
+that are intended
+
+181
+00:08:26.980 --> 00:08:30.730 align:middle line:84%
+to provide the
+interoperable foundation
+
+182
+00:08:30.730 --> 00:08:33.890 align:middle line:84%
+for so-called reactive
+programming frameworks.
+
+183
+00:08:33.890 --> 00:08:36.220 align:middle line:84%
+So examples of reactive
+programming frameworks
+
+184
+00:08:36.220 --> 00:08:38.289 align:middle line:84%
+you're probably familiar
+with at this point
+
+185
+00:08:38.289 --> 00:08:42.549 align:middle line:84%
+would be things like the
+RxJava framework, which
+
+186
+00:08:42.549 --> 00:08:44.980 align:middle line:84%
+is available on a number
+of different platforms.
+
+187
+00:08:44.980 --> 00:08:47.740 align:middle line:84%
+Actually, the Rx
+extensions are available
+
+188
+00:08:47.740 --> 00:08:49.660 align:middle line:84%
+in multiple languages,
+for that matter.
+
+189
+00:08:49.660 --> 00:08:51.280 align:middle line:84%
+I think there's a
+C sharp version.
+
+190
+00:08:51.280 --> 00:08:52.690 align:middle line:90%
+There's a Java version.
+
+191
+00:08:52.690 --> 00:08:56.530 align:middle line:84%
+This runs in mainstream Java on
+the mainstream Java platform.
+
+192
+00:08:56.530 --> 00:08:58.210 align:middle line:90%
+It runs in Android.
+
+193
+00:08:58.210 --> 00:09:02.050 align:middle line:84%
+There's also implementations of
+reactive programming in the ACA
+
+194
+00:09:02.050 --> 00:09:03.250 align:middle line:90%
+framework.
+
+195
+00:09:03.250 --> 00:09:06.010 align:middle line:84%
+And basically what
+reactive streams does
+
+196
+00:09:06.010 --> 00:09:09.340 align:middle line:90%
+is it combines two patterns.
+
+197
+00:09:09.340 --> 00:09:11.860 align:middle line:84%
+It combines the
+iterator pattern, which
+
+198
+00:09:11.860 --> 00:09:14.380 align:middle line:84%
+allows subscribers to
+say here's how much data
+
+199
+00:09:14.380 --> 00:09:16.080 align:middle line:90%
+I want to receive.
+
+200
+00:09:16.080 --> 00:09:18.580 align:middle line:84%
+And then it also combines
+the observer pattern,
+
+201
+00:09:18.580 --> 00:09:22.780 align:middle line:84%
+which allows subscribers
+to be notified when
+
+202
+00:09:22.780 --> 00:09:25.310 align:middle line:90%
+data is emitted by a publisher.
+
+203
+00:09:25.310 --> 00:09:29.372 align:middle line:84%
+And so you can basically
+think of this as the POSA 1,
+
+204
+00:09:29.372 --> 00:09:31.330 align:middle line:84%
+or Pattern-Oriented
+Software Architecture, vol.
+
+205
+00:09:31.330 --> 00:09:35.290 align:middle line:90%
+1, publisher-subscriber pattern.
+
+206
+00:09:35.290 --> 00:09:38.550 align:middle line:84%
+And what you can do between
+the publisher and subscriber
+
+207
+00:09:38.550 --> 00:09:42.830 align:middle line:84%
+is you can go ahead and
+interpose various operations--
+
+208
+00:09:42.830 --> 00:09:44.330 align:middle line:84%
+intermediate
+operations, as we would
+
+209
+00:09:44.330 --> 00:09:46.740 align:middle line:90%
+refer to them in Java streams.
+
+210
+00:09:46.740 --> 00:09:48.990 align:middle line:84%
+The main difference
+between reactive
+
+211
+00:09:48.990 --> 00:09:52.230 align:middle line:84%
+streams, which came
+in Java 9 and beyond,
+
+212
+00:09:52.230 --> 00:09:55.110 align:middle line:84%
+and the Java streams
+framework we've been talking
+
+213
+00:09:55.110 --> 00:09:57.660 align:middle line:90%
+about from earlier versions--
+
+214
+00:09:57.660 --> 00:09:59.850 align:middle line:90%
+from the Java 8 epoch--
+
+215
+00:09:59.850 --> 00:10:05.460 align:middle line:84%
+is that the Java streams
+model is a lazy model where
+
+216
+00:10:05.460 --> 00:10:10.560 align:middle line:84%
+the terminal operation pulls
+the data from the data source
+
+217
+00:10:10.560 --> 00:10:14.990 align:middle line:84%
+through the various processing
+elements in the stream.
+
+218
+00:10:14.990 --> 00:10:18.260 align:middle line:84%
+Conversely, with Java
+reactive streams,
+
+219
+00:10:18.260 --> 00:10:20.960 align:middle line:84%
+it's a push-based model
+where the publisher
+
+220
+00:10:20.960 --> 00:10:26.480 align:middle line:84%
+goes ahead and pushes out the
+events, or emits the events.
+
+221
+00:10:26.480 --> 00:10:30.170 align:middle line:84%
+And they're pushed out
+through the processing filters
+
+222
+00:10:30.170 --> 00:10:32.340 align:middle line:84%
+or the intermediate
+operations, as it were,
+
+223
+00:10:32.340 --> 00:10:34.053 align:middle line:90%
+to the ultimate subscriber.
+
+224
+00:10:34.053 --> 00:10:35.720 align:middle line:84%
+So you can kind of
+think of these things
+
+225
+00:10:35.720 --> 00:10:40.760 align:middle line:84%
+as almost two sides of the same
+coin, where regular streams is
+
+226
+00:10:40.760 --> 00:10:43.100 align:middle line:84%
+more of a pull-based model,
+whereas reactive streams
+
+227
+00:10:43.100 --> 00:10:45.310 align:middle line:90%
+is more of a push-based model.
+
+228
+00:10:45.310 --> 00:10:47.470 align:middle line:84%
+We will go into
+a bit more detail
+
+229
+00:10:47.470 --> 00:10:51.718 align:middle line:84%
+a little bit later when we talk
+about the CompletableFutures
+
+230
+00:10:51.718 --> 00:10:54.010 align:middle line:84%
+framework because one of the
+things that I'll emphasize
+
+231
+00:10:54.010 --> 00:10:57.280 align:middle line:84%
+at that point is that
+completable futures are
+
+232
+00:10:57.280 --> 00:11:01.570 align:middle line:84%
+another example of what's
+known as reactive programming.
+
+233
+00:11:01.570 --> 00:11:04.900 align:middle line:84%
+Not surprisingly, the Reactive
+Streams model in Java 9
+
+234
+00:11:04.900 --> 00:11:07.330 align:middle line:84%
+is a classic example of
+reactive programming.
+
+235
+00:11:07.330 --> 00:11:09.160 align:middle line:90%
+It's really the essence of it.
+
+236
+00:11:09.160 --> 00:11:11.110 align:middle line:84%
+And as we'll see later,
+reactive programming
+
+237
+00:11:11.110 --> 00:11:13.540 align:middle line:84%
+is a very popular
+programming paradigm that's
+
+238
+00:11:13.540 --> 00:11:15.190 align:middle line:90%
+based on four principles.
+
+239
+00:11:15.190 --> 00:11:21.310 align:middle line:84%
+It's based on the concept of
+being responsive, resilient,
+
+240
+00:11:21.310 --> 00:11:24.730 align:middle line:84%
+elastic, and
+essentially asynchronous
+
+241
+00:11:24.730 --> 00:11:26.530 align:middle line:90%
+or asynchronous messaging.
+
+242
+00:11:26.530 --> 00:11:28.960 align:middle line:84%
+And these principles
+are also what's
+
+243
+00:11:28.960 --> 00:11:31.390 align:middle line:84%
+embodied in the Java
+CompletableFutures
+
+244
+00:11:31.390 --> 00:11:35.020 align:middle line:84%
+framework-- which,
+interestingly enough, isn't
+
+245
+00:11:35.020 --> 00:11:39.140 align:middle line:84%
+the most obvious realization of
+the pipes and filters pattern.
+
+246
+00:11:39.140 --> 00:11:41.530 align:middle line:84%
+But when you look and see
+how you can compose together
+
+247
+00:11:41.530 --> 00:11:45.310 align:middle line:84%
+so-called dependent actions
+with the Java CompletableFutures
+
+248
+00:11:45.310 --> 00:11:47.830 align:middle line:84%
+framework, you'll
+see how that also
+
+249
+00:11:47.830 --> 00:11:52.130 align:middle line:84%
+contains elements of the
+pipes and filters pattern.
+
+250
+00:11:52.130 --> 00:11:55.400 align:middle line:84%
+So hopefully this discussion
+of these different variants
+
+251
+00:11:55.400 --> 00:11:58.440 align:middle line:84%
+of implementations
+of pipes and filters
+
+252
+00:11:58.440 --> 00:12:02.070 align:middle line:84%
+has helped you understand how
+what you find with Java streams
+
+253
+00:12:02.070 --> 00:12:05.900 align:middle line:84%
+is really just a
+recent incarnation
+
+254
+00:12:05.900 --> 00:12:07.650 align:middle line:84%
+of a set of concepts
+that have been around
+
+255
+00:12:07.650 --> 00:12:10.020 align:middle line:90%
+for decades and decades.
+
+256
+00:12:10.020 --> 00:12:13.490 align:middle line:84%
+The UNIX pipeline model
+came out in the early '70s,
+
+257
+00:12:13.490 --> 00:12:15.900 align:middle line:84%
+so it's been
+practically 50 years
+
+258
+00:12:15.900 --> 00:12:17.310 align:middle line:90%
+that this has been around.
+
+259
+00:12:17.310 --> 00:12:21.150 align:middle line:84%
+System V STREAMS has now been
+around for 30 or 40 years.
+
+260
+00:12:21.150 --> 00:12:23.137 align:middle line:84%
+Reactive streams
+is fairly recent.
+
+261
+00:12:23.137 --> 00:12:25.470 align:middle line:84%
+But the point is that these
+concepts are not things that
+
+262
+00:12:25.470 --> 00:12:27.090 align:middle line:90%
+just fell off the turnip truck.
+
+263
+00:12:27.090 --> 00:12:28.930 align:middle line:84%
+They've been around
+for a very long time.
+
+264
+00:12:28.930 --> 00:12:30.388 align:middle line:84%
+And so it helps to
+be able to think
+
+265
+00:12:30.388 --> 00:12:34.940 align:middle line:84%
+about the software in terms
+of these eternal patterns.

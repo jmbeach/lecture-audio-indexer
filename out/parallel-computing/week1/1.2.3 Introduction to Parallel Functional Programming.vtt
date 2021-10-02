@@ -1,0 +1,327 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.730 align:middle line:90%
+
+
+2
+00:00:00.730 --> 00:00:03.868 align:middle line:84%
+Now that we've talked about the
+Java parallelism frameworks,
+
+3
+00:00:03.868 --> 00:00:06.160 align:middle line:84%
+I'm going to give you a quick
+summary of the case study
+
+4
+00:00:06.160 --> 00:00:08.670 align:middle line:84%
+apps we'll be focusing
+on in this course
+
+5
+00:00:08.670 --> 00:00:10.720 align:middle line:84%
+to help make these
+frameworks come to life
+
+6
+00:00:10.720 --> 00:00:12.970 align:middle line:84%
+and give us an opportunity
+to show lots of source code
+
+7
+00:00:12.970 --> 00:00:14.828 align:middle line:90%
+examples.
+
+8
+00:00:14.828 --> 00:00:16.370 align:middle line:84%
+These source code
+examples that we'll
+
+9
+00:00:16.370 --> 00:00:20.000 align:middle line:84%
+be covering as case studies are
+all available in open source
+
+10
+00:00:20.000 --> 00:00:22.430 align:middle line:90%
+form from my GitHub repository.
+
+11
+00:00:22.430 --> 00:00:23.930 align:middle line:84%
+So feel free to
+take a look at that.
+
+12
+00:00:23.930 --> 00:00:25.305 align:middle line:84%
+And you can find
+all the examples
+
+13
+00:00:25.305 --> 00:00:26.270 align:middle line:90%
+we'll be covering here.
+
+14
+00:00:26.270 --> 00:00:30.110 align:middle line:84%
+I'll typically put links
+to the specific repository
+
+15
+00:00:30.110 --> 00:00:33.110 align:middle line:84%
+in question, or being discussed,
+at the bottom of the slides
+
+16
+00:00:33.110 --> 00:00:36.210 align:middle line:90%
+as we go through the examples.
+
+17
+00:00:36.210 --> 00:00:37.800 align:middle line:84%
+So the first example
+we'll look at
+
+18
+00:00:37.800 --> 00:00:41.520 align:middle line:84%
+is something called the
+SimpleSearchStream case study.
+
+19
+00:00:41.520 --> 00:00:43.650 align:middle line:84%
+And this example is here
+really just to demonstrate
+
+20
+00:00:43.650 --> 00:00:46.590 align:middle line:90%
+the use of sequential streams.
+
+21
+00:00:46.590 --> 00:00:51.233 align:middle line:84%
+And what it does is it locates
+words in the lyrics of songs.
+
+22
+00:00:51.233 --> 00:00:53.400 align:middle line:84%
+So we'll talk about this
+example a little bit later.
+
+23
+00:00:53.400 --> 00:00:57.180 align:middle line:84%
+But basically, you
+can look up in a song
+
+24
+00:00:57.180 --> 00:00:58.618 align:middle line:90%
+lyric for various words.
+
+25
+00:00:58.618 --> 00:01:00.660 align:middle line:84%
+And I'll show you some
+funny examples when we get
+
+26
+00:01:00.660 --> 00:01:03.296 align:middle line:90%
+to the case study here shortly.
+
+27
+00:01:03.296 --> 00:01:04.879 align:middle line:84%
+Another case study
+that we'll focus on
+
+28
+00:01:04.879 --> 00:01:08.100 align:middle line:84%
+is called the
+SearchStreamGang case study.
+
+29
+00:01:08.100 --> 00:01:10.910 align:middle line:84%
+And this is a more
+sophisticated example
+
+30
+00:01:10.910 --> 00:01:14.510 align:middle line:84%
+that uses regular
+expressions to locate phrases
+
+31
+00:01:14.510 --> 00:01:17.383 align:middle line:84%
+in the complete
+works of Shakespeare.
+
+32
+00:01:17.383 --> 00:01:18.550 align:middle line:90%
+And it does it various ways.
+
+33
+00:01:18.550 --> 00:01:21.283 align:middle line:84%
+There's a sequential version,
+just to provide a baseline.
+
+34
+00:01:21.283 --> 00:01:23.450 align:middle line:84%
+There's a whole bunch of
+different parallel versions
+
+35
+00:01:23.450 --> 00:01:25.130 align:middle line:84%
+we'll be talking
+about, some of which
+
+36
+00:01:25.130 --> 00:01:29.203 align:middle line:84%
+use parallel streams, some of
+which use completable futures.
+
+37
+00:01:29.203 --> 00:01:30.620 align:middle line:84%
+There's even some
+examples in here
+
+38
+00:01:30.620 --> 00:01:33.440 align:middle line:84%
+that show off
+things like Rx Java
+
+39
+00:01:33.440 --> 00:01:35.950 align:middle line:84%
+and the ForkJoinPool
+framework, and so on.
+
+40
+00:01:35.950 --> 00:01:37.700 align:middle line:84%
+So this is a really
+cool example and it'll
+
+41
+00:01:37.700 --> 00:01:40.190 align:middle line:84%
+give us a chance to compare
+these different parallelism
+
+42
+00:01:40.190 --> 00:01:42.710 align:middle line:84%
+frameworks in an apples
+to apples like way
+
+43
+00:01:42.710 --> 00:01:45.260 align:middle line:90%
+in terms of their performance.
+
+44
+00:01:45.260 --> 00:01:47.150 align:middle line:84%
+Yet another example
+we'll look that will also
+
+45
+00:01:47.150 --> 00:01:49.340 align:middle line:84%
+demonstrate and
+compare and contrast
+
+46
+00:01:49.340 --> 00:01:51.250 align:middle line:84%
+several Java
+parallelism frameworks
+
+47
+00:01:51.250 --> 00:01:54.290 align:middle line:84%
+is called the
+ImageStreamGang case study.
+
+48
+00:01:54.290 --> 00:01:56.240 align:middle line:84%
+And this shows how
+Java's parallel streams
+
+49
+00:01:56.240 --> 00:01:58.250 align:middle line:84%
+and completable
+futures frameworks can
+
+50
+00:01:58.250 --> 00:02:03.230 align:middle line:84%
+be applied to download, filter,
+store, and display images
+
+51
+00:02:03.230 --> 00:02:04.520 align:middle line:90%
+in parallel.
+
+52
+00:02:04.520 --> 00:02:05.470 align:middle line:90%
+And it's really cool.
+
+53
+00:02:05.470 --> 00:02:07.868 align:middle line:84%
+It's got an Android version
+that runs as an app.
+
+54
+00:02:07.868 --> 00:02:09.410 align:middle line:84%
+It's also got a
+command line version.
+
+55
+00:02:09.410 --> 00:02:11.360 align:middle line:84%
+So you can pick and
+choose what makes
+
+56
+00:02:11.360 --> 00:02:16.080 align:middle line:84%
+most sense for your interests
+and your platform of choice.
+
+57
+00:02:16.080 --> 00:02:18.810 align:middle line:84%
+And then the fourth case study
+that we'll be looking at detail
+
+58
+00:02:18.810 --> 00:02:22.240 align:middle line:84%
+is the so-called
+ImageCounter case study.
+
+59
+00:02:22.240 --> 00:02:28.410 align:middle line:84%
+And this is a web crawler which
+will take some starting URL,
+
+60
+00:02:28.410 --> 00:02:31.830 align:middle line:84%
+and it'll recursively
+traverse all the various links
+
+61
+00:02:31.830 --> 00:02:33.420 align:middle line:90%
+reachable from that URL.
+
+62
+00:02:33.420 --> 00:02:36.240 align:middle line:84%
+And it will count the
+number of images reachable
+
+63
+00:02:36.240 --> 00:02:39.480 align:middle line:84%
+in parallel, by using
+asynchronous reactive
+
+64
+00:02:39.480 --> 00:02:42.828 align:middle line:84%
+programming in the Java
+completable futures framework.
+
+65
+00:02:42.828 --> 00:02:44.370 align:middle line:84%
+Once again, each of
+these frameworks,
+
+66
+00:02:44.370 --> 00:02:47.803 align:middle line:84%
+each of these examples, is
+available on my GitHub account.
+
+67
+00:02:47.803 --> 00:02:49.470 align:middle line:84%
+And you can find the
+links at the bottom
+
+68
+00:02:49.470 --> 00:02:51.290 align:middle line:90%
+of each of the slides.

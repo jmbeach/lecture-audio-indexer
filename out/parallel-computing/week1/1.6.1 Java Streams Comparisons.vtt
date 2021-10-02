@@ -1,0 +1,1360 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:01.110 align:middle line:90%
+
+
+2
+00:00:01.110 --> 00:00:04.080 align:middle line:84%
+So now that we've had a
+chance to talk about streams,
+
+3
+00:00:04.080 --> 00:00:07.440 align:middle line:84%
+we've talked about the
+various aggregate operations,
+
+4
+00:00:07.440 --> 00:00:08.490 align:middle line:90%
+data sources.
+
+5
+00:00:08.490 --> 00:00:11.880 align:middle line:84%
+We've talked about sequential
+streams and parallel streams.
+
+6
+00:00:11.880 --> 00:00:14.130 align:middle line:84%
+We visualized some
+of the behaviors.
+
+7
+00:00:14.130 --> 00:00:16.450 align:middle line:84%
+I've given you a
+summary of the benefits.
+
+8
+00:00:16.450 --> 00:00:20.190 align:middle line:84%
+What I'd like to do now
+is talk about Java streams
+
+9
+00:00:20.190 --> 00:00:23.700 align:middle line:84%
+and compare and contrast
+them with other mechanisms
+
+10
+00:00:23.700 --> 00:00:26.220 align:middle line:90%
+that Java provides.
+
+11
+00:00:26.220 --> 00:00:27.840 align:middle line:84%
+In particular,
+we'll talk about how
+
+12
+00:00:27.840 --> 00:00:31.410 align:middle line:84%
+it works relative to
+Java IO streams, as well
+
+13
+00:00:31.410 --> 00:00:35.240 align:middle line:90%
+as Java Collections.
+
+14
+00:00:35.240 --> 00:00:37.790 align:middle line:84%
+So oddly enough, there's
+already something
+
+15
+00:00:37.790 --> 00:00:39.210 align:middle line:90%
+in Java called streams.
+
+16
+00:00:39.210 --> 00:00:40.970 align:middle line:90%
+These are I/O streams.
+
+17
+00:00:40.970 --> 00:00:43.980 align:middle line:84%
+And undoubtedly, if you've
+done much Java programming,
+
+18
+00:00:43.980 --> 00:00:48.200 align:middle line:84%
+I'm sure you're very
+familiar with Java streams.
+
+19
+00:00:48.200 --> 00:00:51.320 align:middle line:84%
+It turns out that
+Java IO streams
+
+20
+00:00:51.320 --> 00:00:53.480 align:middle line:84%
+are quite different
+from Java streams
+
+21
+00:00:53.480 --> 00:00:57.200 align:middle line:84%
+even though they both have
+the word stream in them.
+
+22
+00:00:57.200 --> 00:01:00.920 align:middle line:84%
+In particular, they're used
+for different purposes.
+
+23
+00:01:00.920 --> 00:01:04.340 align:middle line:84%
+Obviously, I/O streams
+are used to get data
+
+24
+00:01:04.340 --> 00:01:08.840 align:middle line:84%
+from files of various types,
+get it into the program,
+
+25
+00:01:08.840 --> 00:01:11.960 align:middle line:84%
+do processing, and then
+potentially take that data
+
+26
+00:01:11.960 --> 00:01:13.740 align:middle line:90%
+and write it back out.
+
+27
+00:01:13.740 --> 00:01:15.470 align:middle line:90%
+So that would be an I/O stream.
+
+28
+00:01:15.470 --> 00:01:17.600 align:middle line:84%
+Whereas in contrast,
+Java streams--
+
+29
+00:01:17.600 --> 00:01:21.080 align:middle line:84%
+as we'll see-- takes the
+data and flows the data
+
+30
+00:01:21.080 --> 00:01:22.337 align:middle line:90%
+wherever it comes from.
+
+31
+00:01:22.337 --> 00:01:23.420 align:middle line:90%
+It could come from a file.
+
+32
+00:01:23.420 --> 00:01:24.712 align:middle line:90%
+It could come from the network.
+
+33
+00:01:24.712 --> 00:01:28.460 align:middle line:84%
+It could come from some
+user input user dialog box
+
+34
+00:01:28.460 --> 00:01:31.440 align:middle line:90%
+or wherever the command line.
+
+35
+00:01:31.440 --> 00:01:36.140 align:middle line:84%
+It flows it through a pipeline
+of aggregate operations.
+
+36
+00:01:36.140 --> 00:01:39.620 align:middle line:84%
+You can use I/O streams
+and Java streams together
+
+37
+00:01:39.620 --> 00:01:40.580 align:middle line:90%
+in the same program.
+
+38
+00:01:40.580 --> 00:01:43.170 align:middle line:90%
+That's not at all uncommon.
+
+39
+00:01:43.170 --> 00:01:45.350 align:middle line:84%
+In fact, as we get a
+little bit further along,
+
+40
+00:01:45.350 --> 00:01:50.600 align:middle line:84%
+you'll see how the I/O
+streams mechanisms in Java--
+
+41
+00:01:50.600 --> 00:01:52.910 align:middle line:84%
+the various classes that
+are part of the I/O streams
+
+42
+00:01:52.910 --> 00:01:58.190 align:middle line:84%
+abstraction-- actually now have
+been enhanced, as of Java 8
+
+43
+00:01:58.190 --> 00:02:04.850 align:middle line:84%
+and later, with methods that
+will turn files into streams.
+
+44
+00:02:04.850 --> 00:02:06.200 align:middle line:90%
+And this is pretty cool.
+
+45
+00:02:06.200 --> 00:02:09.530 align:middle line:84%
+When we talk about the factor
+methods coming up here,
+
+46
+00:02:09.530 --> 00:02:12.290 align:middle line:84%
+you'll see how a
+number of the input
+
+47
+00:02:12.290 --> 00:02:15.080 align:middle line:84%
+classes in the I/O
+streams model of Java
+
+48
+00:02:15.080 --> 00:02:16.650 align:middle line:90%
+work nicely with streams.
+
+49
+00:02:16.650 --> 00:02:19.430 align:middle line:84%
+So they really are very
+synergistic despite having
+
+50
+00:02:19.430 --> 00:02:23.980 align:middle line:84%
+somewhat confusing use
+of the word stream.
+
+51
+00:02:23.980 --> 00:02:25.630 align:middle line:84%
+There's also something
+else that you're
+
+52
+00:02:25.630 --> 00:02:27.010 align:middle line:90%
+familiar with undoubtedly.
+
+53
+00:02:27.010 --> 00:02:28.930 align:middle line:84%
+We've covered it
+in earlier courses.
+
+54
+00:02:28.930 --> 00:02:31.888 align:middle line:84%
+And that's the concept
+of Java collections.
+
+55
+00:02:31.888 --> 00:02:33.430 align:middle line:84%
+So Java collections,
+of course, would
+
+56
+00:02:33.430 --> 00:02:38.320 align:middle line:84%
+include things like LinkedLists,
+and ArrayLists, and HashMaps,
+
+57
+00:02:38.320 --> 00:02:42.520 align:middle line:84%
+and HashSets, and TreeMaps,
+and all those good collections.
+
+58
+00:02:42.520 --> 00:02:45.850 align:middle line:84%
+These are also different
+from Java streams.
+
+59
+00:02:45.850 --> 00:02:48.520 align:middle line:84%
+So you can see here
+on the left-hand side
+
+60
+00:02:48.520 --> 00:02:52.120 align:middle line:84%
+we have a simple example
+of an ArrayList list, which
+
+61
+00:02:52.120 --> 00:02:57.130 align:middle line:84%
+is basically a dynamically
+sizable array whose
+
+62
+00:02:57.130 --> 00:03:00.070 align:middle line:84%
+elements contain
+references to objects
+
+63
+00:03:00.070 --> 00:03:03.880 align:middle line:84%
+that the ArrayList is
+instantiated with using Java's
+
+64
+00:03:03.880 --> 00:03:05.780 align:middle line:90%
+generic programming mechanisms.
+
+65
+00:03:05.780 --> 00:03:07.300 align:middle line:84%
+And on the right-hand
+side again, we
+
+66
+00:03:07.300 --> 00:03:10.150 align:middle line:84%
+see Java streams, which
+are not quite the same
+
+67
+00:03:10.150 --> 00:03:12.360 align:middle line:90%
+as we'll see in the second.
+
+68
+00:03:12.360 --> 00:03:14.270 align:middle line:84%
+So how do these
+different abstractions
+
+69
+00:03:14.270 --> 00:03:15.770 align:middle line:90%
+compare and contrast.
+
+70
+00:03:15.770 --> 00:03:20.720 align:middle line:84%
+Well, a collection is an
+in-memory data structure
+
+71
+00:03:20.720 --> 00:03:24.740 align:middle line:84%
+that can be used to store,
+retrieve, and manipulate
+
+72
+00:03:24.740 --> 00:03:26.450 align:middle line:90%
+groups of elements.
+
+73
+00:03:26.450 --> 00:03:28.840 align:middle line:84%
+So as you can see again
+here, the ArrayList
+
+74
+00:03:28.840 --> 00:03:30.680 align:middle line:84%
+has got this dynamic
+array that can
+
+75
+00:03:30.680 --> 00:03:33.948 align:middle line:90%
+be used to add new elements.
+
+76
+00:03:33.948 --> 00:03:35.990 align:middle line:84%
+In this case, we're going
+to have them be points.
+
+77
+00:03:35.990 --> 00:03:37.948 align:middle line:84%
+But they could be whatever
+since it's obviously
+
+78
+00:03:37.948 --> 00:03:40.400 align:middle line:84%
+a generic collection
+that can be parametrized
+
+79
+00:03:40.400 --> 00:03:43.860 align:middle line:84%
+with all kinds of
+different types.
+
+80
+00:03:43.860 --> 00:03:46.530 align:middle line:84%
+You can sort of
+think of a collection
+
+81
+00:03:46.530 --> 00:03:49.110 align:middle line:90%
+as being like a DVD--
+
+82
+00:03:49.110 --> 00:03:50.640 align:middle line:84%
+if anybody remembers
+what a DVD is
+
+83
+00:03:50.640 --> 00:03:54.480 align:middle line:84%
+these days in this world
+of online streaming.
+
+84
+00:03:54.480 --> 00:04:01.110 align:middle line:84%
+But a DVD, of course, stored all
+the data on the DVD statically.
+
+85
+00:04:01.110 --> 00:04:03.000 align:middle line:84%
+So the way that a
+collection is like a DVD
+
+86
+00:04:03.000 --> 00:04:06.300 align:middle line:84%
+is that all the content
+exists statically.
+
+87
+00:04:06.300 --> 00:04:08.730 align:middle line:84%
+Though unlike a DVD,
+a Java collection
+
+88
+00:04:08.730 --> 00:04:10.590 align:middle line:90%
+is typically stored in memory.
+
+89
+00:04:10.590 --> 00:04:11.880 align:middle line:90%
+So it's not persistent.
+
+90
+00:04:11.880 --> 00:04:13.342 align:middle line:90%
+Whereas a DVD is.
+
+91
+00:04:13.342 --> 00:04:15.300 align:middle line:84%
+But the idea there is
+that all the data already
+
+92
+00:04:15.300 --> 00:04:18.790 align:middle line:90%
+exists ahead of time.
+
+93
+00:04:18.790 --> 00:04:23.680 align:middle line:84%
+In contrast, a stream is a
+fixed data structure that
+
+94
+00:04:23.680 --> 00:04:25.910 align:middle line:90%
+processes elements on demand.
+
+95
+00:04:25.910 --> 00:04:27.460 align:middle line:84%
+And when we say
+fixed data structure
+
+96
+00:04:27.460 --> 00:04:30.370 align:middle line:84%
+we mean that there's
+a predefined number
+
+97
+00:04:30.370 --> 00:04:35.660 align:middle line:84%
+of aggregate operations that
+are used to compose the stream.
+
+98
+00:04:35.660 --> 00:04:38.420 align:middle line:84%
+And the stream can then
+manipulate the elements
+
+99
+00:04:38.420 --> 00:04:42.740 align:middle line:84%
+that it obtains from some data
+source, like a collection,
+
+100
+00:04:42.740 --> 00:04:45.650 align:middle line:84%
+without iterating
+over them explicitly.
+
+101
+00:04:45.650 --> 00:04:48.950 align:middle line:84%
+Whereas with collections, in the
+old school way of doing things,
+
+102
+00:04:48.950 --> 00:04:52.190 align:middle line:84%
+you have to explicitly
+iterate over the collection
+
+103
+00:04:52.190 --> 00:04:56.660 align:middle line:84%
+using a forEach loop or an
+iterator or something else.
+
+104
+00:04:56.660 --> 00:04:59.680 align:middle line:84%
+So in a sense, you can
+think of a Java stream
+
+105
+00:04:59.680 --> 00:05:03.760 align:middle line:84%
+as being somewhat analogous
+to the flow of bytes
+
+106
+00:05:03.760 --> 00:05:06.610 align:middle line:90%
+in a streaming video.
+
+107
+00:05:06.610 --> 00:05:08.100 align:middle line:90%
+Again, this is just an analogy.
+
+108
+00:05:08.100 --> 00:05:11.140 align:middle line:84%
+But the basic point here is
+that like a streaming video,
+
+109
+00:05:11.140 --> 00:05:15.400 align:middle line:84%
+the contents in a Java
+stream are dynamically
+
+110
+00:05:15.400 --> 00:05:17.400 align:middle line:90%
+received and processed.
+
+111
+00:05:17.400 --> 00:05:21.340 align:middle line:84%
+Now, again, just
+like a video stream,
+
+112
+00:05:21.340 --> 00:05:23.200 align:middle line:84%
+unless it's a live
+stream, there's
+
+113
+00:05:23.200 --> 00:05:26.890 align:middle line:84%
+typically a finite duration
+of bytes in a stream.
+
+114
+00:05:26.890 --> 00:05:28.190 align:middle line:90%
+It doesn't go on forever.
+
+115
+00:05:28.190 --> 00:05:31.230 align:middle line:84%
+If it's a movie or a
+song, it has an end.
+
+116
+00:05:31.230 --> 00:05:34.030 align:middle line:84%
+And that's often very
+similar to a Java stream.
+
+117
+00:05:34.030 --> 00:05:38.380 align:middle line:84%
+So Java Streams can receive the
+data dynamically and process it
+
+118
+00:05:38.380 --> 00:05:39.560 align:middle line:90%
+dynamically.
+
+119
+00:05:39.560 --> 00:05:42.590 align:middle line:84%
+But in practice, there's
+typically a bound to it.
+
+120
+00:05:42.590 --> 00:05:45.040 align:middle line:84%
+Although, as we said earlier,
+you can also have unbounded
+
+121
+00:05:45.040 --> 00:05:49.170 align:middle line:90%
+streams if you so desire.
+
+122
+00:05:49.170 --> 00:05:51.630 align:middle line:84%
+There are various
+factory methods
+
+123
+00:05:51.630 --> 00:05:54.720 align:middle line:84%
+that are defined on
+Java collections that
+
+124
+00:05:54.720 --> 00:05:58.723 align:middle line:84%
+can be used to convert the
+collection to a stream.
+
+125
+00:05:58.723 --> 00:06:00.390 align:middle line:84%
+And then there's also
+various operations
+
+126
+00:06:00.390 --> 00:06:04.620 align:middle line:84%
+that are defined on streams that
+can take the result of a stream
+
+127
+00:06:04.620 --> 00:06:07.750 align:middle line:84%
+and turn it back
+to a collection.
+
+128
+00:06:07.750 --> 00:06:09.600 align:middle line:84%
+So this ability to go
+from collections to
+
+129
+00:06:09.600 --> 00:06:14.130 align:middle line:84%
+streams and back is very, very
+common in the Java Streams
+
+130
+00:06:14.130 --> 00:06:16.720 align:middle line:90%
+programming model.
+
+131
+00:06:16.720 --> 00:06:18.280 align:middle line:84%
+We have a whole
+lesson coming up here
+
+132
+00:06:18.280 --> 00:06:22.420 align:middle line:84%
+shortly on stream creation
+operations that demonstrate
+
+133
+00:06:22.420 --> 00:06:24.100 align:middle line:84%
+all kinds of
+factory methods that
+
+134
+00:06:24.100 --> 00:06:28.960 align:middle line:84%
+can be used to take the
+results or take the data--
+
+135
+00:06:28.960 --> 00:06:36.910 align:middle line:84%
+the input-- or take as the
+elements in a Java collection,
+
+136
+00:06:36.910 --> 00:06:39.790 align:middle line:84%
+and then convert
+them into a stream.
+
+137
+00:06:39.790 --> 00:06:42.130 align:middle line:84%
+The two most common
+operations are
+
+138
+00:06:42.130 --> 00:06:45.670 align:middle line:84%
+stream, which creates a
+sequential stream and parallel
+
+139
+00:06:45.670 --> 00:06:47.650 align:middle line:84%
+stream, which, as
+you might expect,
+
+140
+00:06:47.650 --> 00:06:50.020 align:middle line:90%
+creates a parallel stream.
+
+141
+00:06:50.020 --> 00:06:51.730 align:middle line:84%
+And there's some
+other factor methods
+
+142
+00:06:51.730 --> 00:06:53.355 align:middle line:84%
+as well that we'll
+cover, but those are
+
+143
+00:06:53.355 --> 00:06:54.820 align:middle line:90%
+some of the most common ones.
+
+144
+00:06:54.820 --> 00:06:58.600 align:middle line:84%
+Obviously, once you've converted
+a collection into a stream,
+
+145
+00:06:58.600 --> 00:07:02.500 align:middle line:84%
+then it can flow through the
+various aggregate operations
+
+146
+00:07:02.500 --> 00:07:05.280 align:middle line:84%
+that are part of the
+pipeline of that stream.
+
+147
+00:07:05.280 --> 00:07:07.950 align:middle line:84%
+When you hit a
+terminal operation,
+
+148
+00:07:07.950 --> 00:07:10.270 align:middle line:84%
+then there are various
+things you can do.
+
+149
+00:07:10.270 --> 00:07:13.380 align:middle line:84%
+One of which is to apply a
+terminal operation known as
+
+150
+00:07:13.380 --> 00:07:14.910 align:middle line:90%
+collect.
+
+151
+00:07:14.910 --> 00:07:17.430 align:middle line:84%
+And we'll talk about this
+in more detail shortly.
+
+152
+00:07:17.430 --> 00:07:20.400 align:middle line:84%
+But collect is basically
+a terminal operation
+
+153
+00:07:20.400 --> 00:07:22.860 align:middle line:84%
+that takes a stream
+of input elements
+
+154
+00:07:22.860 --> 00:07:26.250 align:middle line:84%
+and then accumulates them
+into something called
+
+155
+00:07:26.250 --> 00:07:29.950 align:middle line:90%
+a mutable result container.
+
+156
+00:07:29.950 --> 00:07:32.470 align:middle line:84%
+And this mutable
+result container
+
+157
+00:07:32.470 --> 00:07:37.100 align:middle line:84%
+can then end up yielding
+as its output a collection.
+
+158
+00:07:37.100 --> 00:07:39.790 align:middle line:84%
+So that's basically how you
+can take a stream, which
+
+159
+00:07:39.790 --> 00:07:42.910 align:middle line:84%
+may have come from a collection,
+do a bunch of filtering
+
+160
+00:07:42.910 --> 00:07:44.980 align:middle line:84%
+and transformation
+operations on it,
+
+161
+00:07:44.980 --> 00:07:48.370 align:middle line:84%
+and then end up yielding
+a collection again.
+
+162
+00:07:48.370 --> 00:07:50.770 align:middle line:84%
+And of course, we'll talk
+at length about collect
+
+163
+00:07:50.770 --> 00:07:53.140 align:middle line:84%
+and another very
+important set of concepts
+
+164
+00:07:53.140 --> 00:07:55.630 align:middle line:84%
+called collectors, which
+are what are actually
+
+165
+00:07:55.630 --> 00:07:59.080 align:middle line:84%
+used to collect together
+the elements in a stream
+
+166
+00:07:59.080 --> 00:08:03.870 align:middle line:84%
+to yield a collection
+when all is said and done.
+
+167
+00:08:03.870 --> 00:08:08.390 align:middle line:84%
+Here's a simple example of
+manipulating a Java collection.
+
+168
+00:08:08.390 --> 00:08:11.512 align:middle line:84%
+And let's take a look at a
+couple of different approaches.
+
+169
+00:08:11.512 --> 00:08:13.220 align:middle line:84%
+The approach we're
+going to look at first
+
+170
+00:08:13.220 --> 00:08:17.990 align:middle line:84%
+is kind of a classic Java 8
+approach that demonstrates
+
+171
+00:08:17.990 --> 00:08:21.020 align:middle line:90%
+so-called external iteration.
+
+172
+00:08:21.020 --> 00:08:23.270 align:middle line:84%
+And then we'll show the
+newer approach, of course,
+
+173
+00:08:23.270 --> 00:08:26.930 align:middle line:84%
+using internal iteration
+in Java Streams.
+
+174
+00:08:26.930 --> 00:08:28.920 align:middle line:84%
+So as you can see in
+this particular example,
+
+175
+00:08:28.920 --> 00:08:33.169 align:middle line:84%
+we have an array of
+strings, which in this case
+
+176
+00:08:33.169 --> 00:08:38.720 align:middle line:84%
+are links to my old
+Washington University website.
+
+177
+00:08:38.720 --> 00:08:41.720 align:middle line:84%
+And I take that array
+of strings and turn it
+
+178
+00:08:41.720 --> 00:08:43.830 align:middle line:90%
+into a list of strings.
+
+179
+00:08:43.830 --> 00:08:45.590 align:middle line:84%
+And then I go ahead
+and I explicitly
+
+180
+00:08:45.590 --> 00:08:50.380 align:middle line:84%
+iterate through this list of
+strings from i equals 0 to i
+
+181
+00:08:50.380 --> 00:08:55.100 align:middle line:84%
+is less than urls.size,
+URLs being the list.
+
+182
+00:08:55.100 --> 00:08:58.760 align:middle line:84%
+And for every element, I
+check to see whether or not
+
+183
+00:08:58.760 --> 00:09:04.070 align:middle line:84%
+the URL contains the
+substring cse.wustl, which
+
+184
+00:09:04.070 --> 00:09:08.478 align:middle line:84%
+is my Washington
+University website address.
+
+185
+00:09:08.478 --> 00:09:10.520 align:middle line:84%
+And if it doesn't contain
+that, I just continue--
+
+186
+00:09:10.520 --> 00:09:11.900 align:middle line:90%
+I just skip over it.
+
+187
+00:09:11.900 --> 00:09:15.170 align:middle line:84%
+If it does contain that
+substring, then I go ahead
+
+188
+00:09:15.170 --> 00:09:19.220 align:middle line:84%
+and I get that
+value and I replace
+
+189
+00:09:19.220 --> 00:09:25.400 align:middle line:84%
+cse.wustl with
+dre.vanderbilt, which
+
+190
+00:09:25.400 --> 00:09:28.080 align:middle line:84%
+is my new Vanderbilt account--
+or newer Vanderbilt account.
+
+191
+00:09:28.080 --> 00:09:29.413 align:middle line:90%
+I've been there almost 20 years.
+
+192
+00:09:29.413 --> 00:09:31.130 align:middle line:90%
+So I guess it isn't new anymore.
+
+193
+00:09:31.130 --> 00:09:33.950 align:middle line:84%
+And in that case, I
+update that substring.
+
+194
+00:09:33.950 --> 00:09:38.510 align:middle line:84%
+And then I set that back
+into the URL's parameters,
+
+195
+00:09:38.510 --> 00:09:40.520 align:middle line:90%
+URL variable.
+
+196
+00:09:40.520 --> 00:09:42.740 align:middle line:84%
+So that's the old school
+way of doing things
+
+197
+00:09:42.740 --> 00:09:44.830 align:middle line:90%
+with Java collections.
+
+198
+00:09:44.830 --> 00:09:47.950 align:middle line:84%
+The use of external
+iteration here,
+
+199
+00:09:47.950 --> 00:09:50.890 align:middle line:84%
+while somewhat clunky and
+cumbersome as we'll see,
+
+200
+00:09:50.890 --> 00:09:53.920 align:middle line:84%
+does enable some fine grained
+control of loop behavior.
+
+201
+00:09:53.920 --> 00:09:57.700 align:middle line:84%
+As you can see here, if we
+don't contain that substring,
+
+202
+00:09:57.700 --> 00:09:58.900 align:middle line:90%
+we continue.
+
+203
+00:09:58.900 --> 00:10:03.290 align:middle line:84%
+So it jumps to the
+next loop iteration.
+
+204
+00:10:03.290 --> 00:10:06.440 align:middle line:84%
+Here in contrast
+is how we would use
+
+205
+00:10:06.440 --> 00:10:10.100 align:middle line:84%
+the equivalent sequential
+streams approach
+
+206
+00:10:10.100 --> 00:10:12.450 align:middle line:90%
+using a fluent interface.
+
+207
+00:10:12.450 --> 00:10:15.200 align:middle line:84%
+So this is a fluid
+interface programming style,
+
+208
+00:10:15.200 --> 00:10:18.920 align:middle line:84%
+internal iteration, and
+chaining of transformations
+
+209
+00:10:18.920 --> 00:10:21.800 align:middle line:84%
+to accomplish the same
+behavior that we just
+
+210
+00:10:21.800 --> 00:10:25.963 align:middle line:84%
+looked at here with the more
+classic way of doing things.
+
+211
+00:10:25.963 --> 00:10:27.380 align:middle line:84%
+So as you can see
+here, what we do
+
+212
+00:10:27.380 --> 00:10:31.760 align:middle line:84%
+is we will start by using the
+of factory method on the stream
+
+213
+00:10:31.760 --> 00:10:37.880 align:middle line:84%
+interface to convert the
+urlArray into a stream.
+
+214
+00:10:37.880 --> 00:10:40.040 align:middle line:84%
+So that will then
+create a stream.
+
+215
+00:10:40.040 --> 00:10:42.590 align:middle line:84%
+And henceforth,
+we will implicitly
+
+216
+00:10:42.590 --> 00:10:45.650 align:middle line:84%
+iterate through that
+stream, which started out
+
+217
+00:10:45.650 --> 00:10:48.860 align:middle line:90%
+with a collection source.
+
+218
+00:10:48.860 --> 00:10:52.620 align:middle line:84%
+And then what we
+do is we only allow
+
+219
+00:10:52.620 --> 00:10:56.500 align:middle line:84%
+elements in that stream to
+continue if they contain
+
+220
+00:10:56.500 --> 00:10:59.470 align:middle line:90%
+the cse.wustl substring.
+
+221
+00:10:59.470 --> 00:11:02.700 align:middle line:84%
+So we filter out anything
+that doesn't contain that.
+
+222
+00:11:02.700 --> 00:11:07.230 align:middle line:84%
+And then we go ahead and
+map the resulting stream.
+
+223
+00:11:07.230 --> 00:11:09.660 align:middle line:84%
+At this point, we only
+have basically strings
+
+224
+00:11:09.660 --> 00:11:13.650 align:middle line:84%
+that contain the
+cse.wustl substring.
+
+225
+00:11:13.650 --> 00:11:17.130 align:middle line:84%
+And we can then go ahead
+and replace cse.wustl
+
+226
+00:11:17.130 --> 00:11:19.680 align:middle line:90%
+with dre.vanderbilt.
+
+227
+00:11:19.680 --> 00:11:20.760 align:middle line:90%
+That's what map does.
+
+228
+00:11:20.760 --> 00:11:23.280 align:middle line:84%
+And map of course then
+generates a stream
+
+229
+00:11:23.280 --> 00:11:28.200 align:middle line:84%
+of modified strings that
+replace the Wash U. address
+
+230
+00:11:28.200 --> 00:11:30.127 align:middle line:90%
+with the Vanderbilt address.
+
+231
+00:11:30.127 --> 00:11:31.710 align:middle line:84%
+And then the final
+piece of the puzzle
+
+232
+00:11:31.710 --> 00:11:33.540 align:middle line:84%
+here is we use a
+terminal operation called
+
+233
+00:11:33.540 --> 00:11:37.680 align:middle line:84%
+collect to take that
+stream of strings
+
+234
+00:11:37.680 --> 00:11:40.530 align:middle line:90%
+and convert it into a list.
+
+235
+00:11:40.530 --> 00:11:42.750 align:middle line:84%
+And that list here is
+implemented as an array list.
+
+236
+00:11:42.750 --> 00:11:46.020 align:middle line:84%
+But the point is we get
+back a list of results.
+
+237
+00:11:46.020 --> 00:11:49.860 align:middle line:84%
+And there's just a whole bunch
+of benefits of doing this.
+
+238
+00:11:49.860 --> 00:11:53.190 align:middle line:84%
+We end up with a list of
+results just like we did before.
+
+239
+00:11:53.190 --> 00:11:54.690 align:middle line:84%
+But the nice thing
+is that we didn't
+
+240
+00:11:54.690 --> 00:11:57.870 align:middle line:84%
+have to worry about all the
+low level details of dealing
+
+241
+00:11:57.870 --> 00:11:59.610 align:middle line:90%
+with the array lists.
+
+242
+00:11:59.610 --> 00:12:02.433 align:middle line:84%
+We don't have to worry about
+having explicit iteration.
+
+243
+00:12:02.433 --> 00:12:03.600 align:middle line:90%
+We don't have to have loops.
+
+244
+00:12:03.600 --> 00:12:05.460 align:middle line:84%
+We don't have to
+have if statements.
+
+245
+00:12:05.460 --> 00:12:08.070 align:middle line:84%
+You can read this
+thing top to bottom
+
+246
+00:12:08.070 --> 00:12:11.730 align:middle line:84%
+in a much more intuitive
+and convenient way,
+
+247
+00:12:11.730 --> 00:12:14.490 align:middle line:90%
+as far as I'm concerned.
+
+248
+00:12:14.490 --> 00:12:17.430 align:middle line:84%
+Interestingly enough,
+like iterators,
+
+249
+00:12:17.430 --> 00:12:20.340 align:middle line:84%
+the elements in a stream
+can only be visited once
+
+250
+00:12:20.340 --> 00:12:21.480 align:middle line:90%
+during its lifetime.
+
+251
+00:12:21.480 --> 00:12:24.000 align:middle line:84%
+If you want to do
+other operations,
+
+252
+00:12:24.000 --> 00:12:26.610 align:middle line:84%
+you have to start over again
+and regenerate the stream
+
+253
+00:12:26.610 --> 00:12:28.292 align:middle line:90%
+from the data source.
+
+254
+00:12:28.292 --> 00:12:30.750 align:middle line:84%
+We'll come back and talk about
+this a little bit later when
+
+255
+00:12:30.750 --> 00:12:32.640 align:middle line:84%
+we discuss some of
+the traps and pitfalls
+
+256
+00:12:32.640 --> 00:12:35.400 align:middle line:84%
+and common mistakes of
+programming with streams.
+
+257
+00:12:35.400 --> 00:12:36.780 align:middle line:84%
+That's certainly
+a mistake I made
+
+258
+00:12:36.780 --> 00:12:40.502 align:middle line:84%
+when I was beginning to program
+with this back in the day.
+
+259
+00:12:40.502 --> 00:12:42.960 align:middle line:84%
+One of the other nice things
+about using Java Streams is it
+
+260
+00:12:42.960 --> 00:12:47.490 align:middle line:84%
+greatly simplifies the
+chaining of transformations.
+
+261
+00:12:47.490 --> 00:12:48.880 align:middle line:84%
+So let's say for
+sake of argument
+
+262
+00:12:48.880 --> 00:12:51.900 align:middle line:84%
+we wanted to move from
+using a list of strings
+
+263
+00:12:51.900 --> 00:12:55.230 align:middle line:90%
+to a list of URLs.
+
+264
+00:12:55.230 --> 00:12:58.110 align:middle line:84%
+All we need to do there,
+in this case, is simply
+
+265
+00:12:58.110 --> 00:13:00.780 align:middle line:84%
+add another map
+operation which will
+
+266
+00:13:00.780 --> 00:13:06.353 align:middle line:84%
+go ahead and apply the
+constructor reference for URL.
+
+267
+00:13:06.353 --> 00:13:07.770 align:middle line:84%
+So what this is
+basically doing is
+
+268
+00:13:07.770 --> 00:13:10.950 align:middle line:84%
+it's taking a stream of
+strings that have been filtered
+
+269
+00:13:10.950 --> 00:13:14.310 align:middle line:84%
+and replaced and converting
+that stream of strings
+
+270
+00:13:14.310 --> 00:13:16.415 align:middle line:90%
+into a stream of URLs.
+
+271
+00:13:16.415 --> 00:13:18.540 align:middle line:84%
+And notice how simple and
+trivial it is to do that.
+
+272
+00:13:18.540 --> 00:13:22.780 align:middle line:84%
+We just add one other map
+operation, and away we go.
+
+273
+00:13:22.780 --> 00:13:24.820 align:middle line:84%
+This particular example
+also illustrates
+
+274
+00:13:24.820 --> 00:13:28.480 align:middle line:84%
+the use of something
+called exception laundering
+
+275
+00:13:28.480 --> 00:13:31.480 align:middle line:84%
+to convert a constructor
+reference that
+
+276
+00:13:31.480 --> 00:13:36.190 align:middle line:84%
+expects to have a checked
+exception in its signature
+
+277
+00:13:36.190 --> 00:13:39.760 align:middle line:84%
+into one that expects to
+have a runtime exception.
+
+278
+00:13:39.760 --> 00:13:42.310 align:middle line:84%
+And this is something
+called rethrowFunction.
+
+279
+00:13:42.310 --> 00:13:45.670 align:middle line:84%
+And you can read more about
+this at the Stack Overflow link
+
+280
+00:13:45.670 --> 00:13:48.410 align:middle line:84%
+at the bottom of the page
+to learn the good, the bad,
+
+281
+00:13:48.410 --> 00:13:51.070 align:middle line:84%
+and the ugly of doing
+exception laundering.
+
+282
+00:13:51.070 --> 00:13:53.740 align:middle line:84%
+I find it's a pretty cool
+technique when using streams
+
+283
+00:13:53.740 --> 00:13:56.410 align:middle line:84%
+because streams are
+really ugly if you
+
+284
+00:13:56.410 --> 00:14:00.420 align:middle line:84%
+start having to try to combine
+exceptions in their processing.

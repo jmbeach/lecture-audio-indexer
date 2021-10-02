@@ -1,0 +1,281 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.500 align:middle line:90%
+
+
+2
+00:00:00.500 --> 00:00:02.960 align:middle line:84%
+Welcome to the first
+week of our course
+
+3
+00:00:02.960 --> 00:00:05.600 align:middle line:84%
+on paralleled functional
+programming with Java.
+
+4
+00:00:05.600 --> 00:00:07.610 align:middle line:84%
+The lessons in this
+week first provide
+
+5
+00:00:07.610 --> 00:00:10.460 align:middle line:84%
+an overview of key
+parallelism concepts,
+
+6
+00:00:10.460 --> 00:00:12.860 align:middle line:84%
+as well as explain how
+these concepts are supported
+
+7
+00:00:12.860 --> 00:00:15.470 align:middle line:84%
+by core Java
+parallelism frameworks,
+
+8
+00:00:15.470 --> 00:00:18.050 align:middle line:84%
+including the fork
+join pool framework,
+
+9
+00:00:18.050 --> 00:00:20.690 align:middle line:84%
+the parallel streams framework,
+and the completable futures
+
+10
+00:00:20.690 --> 00:00:22.100 align:middle line:90%
+framework.
+
+11
+00:00:22.100 --> 00:00:23.750 align:middle line:84%
+We then summarize
+how these frameworks
+
+12
+00:00:23.750 --> 00:00:26.510 align:middle line:84%
+are applied throughout the
+course in several case study
+
+13
+00:00:26.510 --> 00:00:30.440 align:middle line:84%
+apps, which are available at
+open source forum at my GitHub
+
+14
+00:00:30.440 --> 00:00:32.153 align:middle line:90%
+repository.
+
+15
+00:00:32.153 --> 00:00:34.320 align:middle line:84%
+After this first introduction
+to parallel functional
+
+16
+00:00:34.320 --> 00:00:37.620 align:middle line:84%
+programming, we begin our
+coverage of the Java Streams
+
+17
+00:00:37.620 --> 00:00:39.780 align:middle line:84%
+framework, which
+creates pipelines
+
+18
+00:00:39.780 --> 00:00:43.740 align:middle line:84%
+of operations that process
+sequences of data elements.
+
+19
+00:00:43.740 --> 00:00:46.160 align:middle line:84%
+The streams framework
+was introduced in Java 8,
+
+20
+00:00:46.160 --> 00:00:48.140 align:middle line:84%
+and provides several
+benefits to developers
+
+21
+00:00:48.140 --> 00:00:50.480 align:middle line:90%
+of parallel functional programs.
+
+22
+00:00:50.480 --> 00:00:53.290 align:middle line:84%
+First, it's a declarative
+programming paradigm
+
+23
+00:00:53.290 --> 00:00:56.210 align:middle line:84%
+that focuses on what
+behaviors to perform
+
+24
+00:00:56.210 --> 00:00:59.600 align:middle line:84%
+rather than on how to perform
+them, thereby making programs
+
+25
+00:00:59.600 --> 00:01:02.240 align:middle line:90%
+more concise and readable.
+
+26
+00:01:02.240 --> 00:01:04.370 align:middle line:84%
+Second, it connects
+behaviors together
+
+27
+00:01:04.370 --> 00:01:07.700 align:middle line:84%
+automatically into a pipeline,
+thereby making programs
+
+28
+00:01:07.700 --> 00:01:10.280 align:middle line:90%
+more flexible and compostable.
+
+29
+00:01:10.280 --> 00:01:13.280 align:middle line:84%
+And third, streams can be
+paralyzed without the need
+
+30
+00:01:13.280 --> 00:01:16.040 align:middle line:84%
+to write any multi-threaded
+code, which simplifies
+
+31
+00:01:16.040 --> 00:01:19.460 align:middle line:84%
+scalability on modern
+multicore platforms,
+
+32
+00:01:19.460 --> 00:01:21.650 align:middle line:84%
+especially for so-called
+embarrassingly parallel
+
+33
+00:01:21.650 --> 00:01:26.030 align:middle line:84%
+programs whose tasks have no
+dependencies on each other.
+
+34
+00:01:26.030 --> 00:01:28.730 align:middle line:84%
+Streams are an essential part
+of Java's parallel functional
+
+35
+00:01:28.730 --> 00:01:30.590 align:middle line:84%
+programming
+capabilities, which is
+
+36
+00:01:30.590 --> 00:01:34.070 align:middle line:84%
+why we focus so heavily
+on them in this course.
+
+37
+00:01:34.070 --> 00:01:36.700 align:middle line:84%
+This week covers the
+fundamentals of streams,
+
+38
+00:01:36.700 --> 00:01:39.250 align:middle line:84%
+common factor methods
+that create a stream,
+
+39
+00:01:39.250 --> 00:01:41.680 align:middle line:84%
+and common aggregate
+operations that process
+
+40
+00:01:41.680 --> 00:01:44.178 align:middle line:90%
+all data elements in a stream.
+
+41
+00:01:44.178 --> 00:01:45.970 align:middle line:84%
+All these features
+apply to both sequential
+
+42
+00:01:45.970 --> 00:01:47.800 align:middle line:90%
+and parallel streams.
+
+43
+00:01:47.800 --> 00:01:50.410 align:middle line:84%
+We also explain how streams
+compare and contrast
+
+44
+00:01:50.410 --> 00:01:53.980 align:middle line:84%
+with other Java classes, such
+as IO streams and the Java
+
+45
+00:01:53.980 --> 00:01:56.010 align:middle line:90%
+Collection framework.
+
+46
+00:01:56.010 --> 00:01:58.030 align:middle line:84%
+The Java Streams
+framework is an embodiment
+
+47
+00:01:58.030 --> 00:02:01.840 align:middle line:84%
+of a pipes and filters pattern,
+which divides and apps tasks
+
+48
+00:02:01.840 --> 00:02:04.920 align:middle line:84%
+into multiple self-contained
+data processing steps
+
+49
+00:02:04.920 --> 00:02:07.570 align:middle line:84%
+and connects these steps
+together by intermediate data
+
+50
+00:02:07.570 --> 00:02:11.390 align:middle line:84%
+buffers to form a data
+processing pipeline.
+
+51
+00:02:11.390 --> 00:02:13.340 align:middle line:84%
+This pattern first
+appeared in volume one
+
+52
+00:02:13.340 --> 00:02:16.010 align:middle line:84%
+of the Patern-Oriented
+Software Architecture Book,
+
+53
+00:02:16.010 --> 00:02:19.300 align:middle line:84%
+and has since been
+revised in other venues.
+
+54
+00:02:19.300 --> 00:02:21.880 align:middle line:84%
+The final lesson this
+week outlines this pattern
+
+55
+00:02:21.880 --> 00:02:24.880 align:middle line:84%
+and shows how it's been
+applied in other technologies,
+
+56
+00:02:24.880 --> 00:02:28.030 align:middle line:84%
+such as pipelines, in
+Unix command line shells,
+
+57
+00:02:28.030 --> 00:02:31.900 align:middle line:84%
+System V streams, and
+Java reactive streams.
+
+58
+00:02:31.900 --> 00:02:33.960 align:middle line:90%
+So let's get started.

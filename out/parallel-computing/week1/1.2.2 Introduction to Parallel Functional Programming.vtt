@@ -1,0 +1,665 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.450 align:middle line:90%
+
+
+2
+00:00:00.450 --> 00:00:02.867 align:middle line:84%
+Now that I've talked about
+some of the parallel processing
+
+3
+00:00:02.867 --> 00:00:06.900 align:middle line:84%
+concepts, let's dive deeper
+into an overview of Java's
+
+4
+00:00:06.900 --> 00:00:08.687 align:middle line:90%
+parallelism frameworks.
+
+5
+00:00:08.687 --> 00:00:10.770 align:middle line:84%
+And we'll see that there's
+a number of parallelism
+
+6
+00:00:10.770 --> 00:00:12.353 align:middle line:84%
+frameworks that are
+actually supported
+
+7
+00:00:12.353 --> 00:00:14.050 align:middle line:84%
+by Java, whose
+purpose, of course,
+
+8
+00:00:14.050 --> 00:00:16.980 align:middle line:84%
+is to make things run more
+efficiently, more higher
+
+9
+00:00:16.980 --> 00:00:21.330 align:middle line:84%
+throughput, higher
+scalability, and lower latency.
+
+10
+00:00:21.330 --> 00:00:23.070 align:middle line:84%
+One of the [INAUDIBLE]
+type of approaches
+
+11
+00:00:23.070 --> 00:00:26.460 align:middle line:84%
+we're going to talk about here
+is called the fork-join pool,
+
+12
+00:00:26.460 --> 00:00:28.530 align:middle line:84%
+which is an object-oriented
+framework that
+
+13
+00:00:28.530 --> 00:00:30.617 align:middle line:90%
+appeared in Java 7.
+
+14
+00:00:30.617 --> 00:00:32.450 align:middle line:84%
+There are also several
+other frameworks that
+
+15
+00:00:32.450 --> 00:00:34.860 align:middle line:90%
+appeared in Java 8 and beyond.
+
+16
+00:00:34.860 --> 00:00:37.170 align:middle line:84%
+One of which is the
+parallel streams framework,
+
+17
+00:00:37.170 --> 00:00:41.067 align:middle line:84%
+which is a so-called synchronous
+functional framework that
+
+18
+00:00:41.067 --> 00:00:42.650 align:middle line:84%
+basically wraps
+functional programming
+
+19
+00:00:42.650 --> 00:00:45.903 align:middle line:90%
+facade around fork-join pools.
+
+20
+00:00:45.903 --> 00:00:47.570 align:middle line:84%
+And then the third
+parallelism framework
+
+21
+00:00:47.570 --> 00:00:49.220 align:middle line:84%
+we're going to
+discuss in this course
+
+22
+00:00:49.220 --> 00:00:51.660 align:middle line:84%
+is the completable
+futures framework,
+
+23
+00:00:51.660 --> 00:00:54.590 align:middle line:84%
+which is a reactive and
+asynchronous functional
+
+24
+00:00:54.590 --> 00:00:55.840 align:middle line:90%
+programming framework.
+
+25
+00:00:55.840 --> 00:00:58.340 align:middle line:84%
+We're going to talk about all
+three of these frameworks just
+
+26
+00:00:58.340 --> 00:00:59.030 align:middle line:90%
+a bit here.
+
+27
+00:00:59.030 --> 00:01:00.260 align:middle line:84%
+And of course, we'll
+go through them
+
+28
+00:01:00.260 --> 00:01:01.927 align:middle line:84%
+in much more detail
+later in the course.
+
+29
+00:01:01.927 --> 00:01:04.680 align:middle line:90%
+
+
+30
+00:01:04.680 --> 00:01:10.040 align:middle line:84%
+The fork-join pool framework
+was first introduced in Java 7.
+
+31
+00:01:10.040 --> 00:01:14.390 align:middle line:84%
+It provides a high performance,
+fine grained task execution
+
+32
+00:01:14.390 --> 00:01:18.410 align:middle line:84%
+model that emphasizes
+so-called data parallelism.
+
+33
+00:01:18.410 --> 00:01:22.400 align:middle line:84%
+The basic idea there is that
+you have a common task that's
+
+34
+00:01:22.400 --> 00:01:26.630 align:middle line:84%
+performed and that task then
+runs in parallel on the data
+
+35
+00:01:26.630 --> 00:01:29.000 align:middle line:90%
+elements.
+
+36
+00:01:29.000 --> 00:01:32.020 align:middle line:84%
+The fork-join pool model
+supports parallel programming
+
+37
+00:01:32.020 --> 00:01:35.650 align:middle line:84%
+by solving problems using the
+classic divide and conquer
+
+38
+00:01:35.650 --> 00:01:36.830 align:middle line:90%
+model.
+
+39
+00:01:36.830 --> 00:01:39.670 align:middle line:84%
+In this model, the way it works
+is you have an overall problem
+
+40
+00:01:39.670 --> 00:01:40.820 align:middle line:90%
+to solve.
+
+41
+00:01:40.820 --> 00:01:42.340 align:middle line:84%
+And if the problem
+is small enough,
+
+42
+00:01:42.340 --> 00:01:46.840 align:middle line:84%
+you simply directly solve it
+synchronously and sequentially.
+
+43
+00:01:46.840 --> 00:01:48.808 align:middle line:84%
+However, if the
+problem is larger,
+
+44
+00:01:48.808 --> 00:01:51.100 align:middle line:84%
+then the first thing you do
+is you split the problem up
+
+45
+00:01:51.100 --> 00:01:55.810 align:middle line:84%
+into separate independent
+parts, fork new subtasks
+
+46
+00:01:55.810 --> 00:01:58.710 align:middle line:90%
+to solve each part in parallel.
+
+47
+00:01:58.710 --> 00:02:02.820 align:middle line:84%
+As those finish running, you
+join the subtasks together,
+
+48
+00:02:02.820 --> 00:02:05.820 align:middle line:84%
+and compose the results
+from the subtasks
+
+49
+00:02:05.820 --> 00:02:08.620 align:middle line:84%
+to create a single
+reduced result.
+
+50
+00:02:08.620 --> 00:02:10.949 align:middle line:84%
+So that's basically the
+way that the fork-join pool
+
+51
+00:02:10.949 --> 00:02:13.850 align:middle line:90%
+model is designed to work.
+
+52
+00:02:13.850 --> 00:02:16.970 align:middle line:84%
+Under the hood, as we'll talk
+about in much detail later,
+
+53
+00:02:16.970 --> 00:02:19.010 align:middle line:84%
+the fork-join pool
+enables something
+
+54
+00:02:19.010 --> 00:02:21.440 align:middle line:84%
+called work stealing,
+which is designed
+
+55
+00:02:21.440 --> 00:02:24.418 align:middle line:84%
+to optimize multicore
+processor performance.
+
+56
+00:02:24.418 --> 00:02:26.210 align:middle line:84%
+And basically, the
+essence of this approach
+
+57
+00:02:26.210 --> 00:02:30.050 align:middle line:84%
+is to ensure that as long
+as there is work to be done,
+
+58
+00:02:30.050 --> 00:02:32.413 align:middle line:84%
+that work will be done,
+and the threads that
+
+59
+00:02:32.413 --> 00:02:33.830 align:middle line:84%
+are running in the
+pool of threads
+
+60
+00:02:33.830 --> 00:02:40.100 align:middle line:84%
+will not have to block without
+having something to work on.
+
+61
+00:02:40.100 --> 00:02:43.797 align:middle line:84%
+Java 8, then, added to
+new parallelism frameworks
+
+62
+00:02:43.797 --> 00:02:45.880 align:middle line:84%
+that leveraged the functional
+programming features
+
+63
+00:02:45.880 --> 00:02:48.013 align:middle line:90%
+that were added to Java 8.
+
+64
+00:02:48.013 --> 00:02:49.930 align:middle line:84%
+The first framework we're
+going to be covering
+
+65
+00:02:49.930 --> 00:02:52.090 align:middle line:84%
+is the parallel
+streams framework.
+
+66
+00:02:52.090 --> 00:02:56.560 align:middle line:84%
+And this framework takes
+a stream of data elements,
+
+67
+00:02:56.560 --> 00:03:00.650 align:middle line:84%
+and it breaks it up into
+substreams, or chunks.
+
+68
+00:03:00.650 --> 00:03:05.320 align:middle line:84%
+And these substreams or chunks
+can then be run independently,
+
+69
+00:03:05.320 --> 00:03:08.950 align:middle line:84%
+and they'll be processed in
+different processor cores
+
+70
+00:03:08.950 --> 00:03:10.960 align:middle line:84%
+by the fork-join pool,
+and then they'll be
+
+71
+00:03:10.960 --> 00:03:13.278 align:middle line:90%
+combined into a reduced result.
+
+72
+00:03:13.278 --> 00:03:15.070 align:middle line:84%
+And one of the nice
+things about this model
+
+73
+00:03:15.070 --> 00:03:17.710 align:middle line:84%
+is that the chunks of
+data in the substreams
+
+74
+00:03:17.710 --> 00:03:21.053 align:middle line:84%
+are automatically mapped to
+multiple threads and cores
+
+75
+00:03:21.053 --> 00:03:22.720 align:middle line:84%
+without the user
+having to know anything
+
+76
+00:03:22.720 --> 00:03:25.570 align:middle line:84%
+about threading,
+or partitioning,
+
+77
+00:03:25.570 --> 00:03:26.810 align:middle line:90%
+or combining, and so on.
+
+78
+00:03:26.810 --> 00:03:28.600 align:middle line:84%
+So it's all done
+behind the scenes
+
+79
+00:03:28.600 --> 00:03:31.870 align:middle line:84%
+by the parallel
+streams framework.
+
+80
+00:03:31.870 --> 00:03:35.650 align:middle line:84%
+As we mentioned earlier, the
+parallel streams framework
+
+81
+00:03:35.650 --> 00:03:38.810 align:middle line:84%
+leverages the fork-join
+pool framework
+
+82
+00:03:38.810 --> 00:03:40.270 align:middle line:90%
+we talked about before.
+
+83
+00:03:40.270 --> 00:03:42.790 align:middle line:84%
+And in particular, it
+leverages a singleton instance
+
+84
+00:03:42.790 --> 00:03:44.830 align:middle line:84%
+of the fork-join
+pool framework called
+
+85
+00:03:44.830 --> 00:03:46.630 align:middle line:90%
+the common fork-join pool.
+
+86
+00:03:46.630 --> 00:03:48.700 align:middle line:84%
+And we'll talk a lot more
+later about properties
+
+87
+00:03:48.700 --> 00:03:49.930 align:middle line:90%
+of the common fork-join pool.
+
+88
+00:03:49.930 --> 00:03:52.700 align:middle line:90%
+It's really quite fascinating.
+
+89
+00:03:52.700 --> 00:03:54.860 align:middle line:84%
+Parallel streams, therefore,
+provides programmers
+
+90
+00:03:54.860 --> 00:03:59.000 align:middle line:84%
+with a fine grained data
+parallelism approach based
+
+91
+00:03:59.000 --> 00:04:00.200 align:middle line:90%
+on functional programming.
+
+92
+00:04:00.200 --> 00:04:03.140 align:middle line:84%
+So it basically wraps a
+functional programming facade
+
+93
+00:04:03.140 --> 00:04:06.580 align:middle line:90%
+around the fork-join pool.
+
+94
+00:04:06.580 --> 00:04:10.070 align:middle line:84%
+The second model of
+parallelism added in Java 8
+
+95
+00:04:10.070 --> 00:04:13.720 align:middle line:84%
+is something called
+completable futures.
+
+96
+00:04:13.720 --> 00:04:17.620 align:middle line:84%
+The completable futures model
+supports dependent actions
+
+97
+00:04:17.620 --> 00:04:20.890 align:middle line:84%
+that are triggered when
+asynchronous operations
+
+98
+00:04:20.890 --> 00:04:22.040 align:middle line:90%
+complete.
+
+99
+00:04:22.040 --> 00:04:24.550 align:middle line:84%
+So in this model,
+asynchronous operations run.
+
+100
+00:04:24.550 --> 00:04:28.510 align:middle line:84%
+And the operations run in
+parallel in thread pools.
+
+101
+00:04:28.510 --> 00:04:32.890 align:middle line:84%
+And as the operations complete,
+the underlying completable
+
+102
+00:04:32.890 --> 00:04:34.780 align:middle line:84%
+futures framework
+will then arrange
+
+103
+00:04:34.780 --> 00:04:38.260 align:middle line:84%
+to dispatch dependent actions
+known as completion stage
+
+104
+00:04:38.260 --> 00:04:39.170 align:middle line:90%
+methods.
+
+105
+00:04:39.170 --> 00:04:41.530 align:middle line:84%
+And these methods
+then go ahead and do
+
+106
+00:04:41.530 --> 00:04:44.685 align:middle line:84%
+additional work, which itself
+typically runs asynchronously.
+
+107
+00:04:44.685 --> 00:04:46.060 align:middle line:84%
+So in steady state,
+you have lots
+
+108
+00:04:46.060 --> 00:04:50.020 align:middle line:84%
+of asynchronous jobs running
+in the various types of thread
+
+109
+00:04:50.020 --> 00:04:52.060 align:middle line:90%
+pulls.
+
+110
+00:04:52.060 --> 00:04:54.520 align:middle line:84%
+Java completable futures
+and streams can actually
+
+111
+00:04:54.520 --> 00:04:56.230 align:middle line:90%
+be combined to good effects.
+
+112
+00:04:56.230 --> 00:04:58.720 align:middle line:84%
+So a not uncommon
+way of doing things
+
+113
+00:04:58.720 --> 00:05:02.530 align:middle line:84%
+is to take a sequential
+stream and then
+
+114
+00:05:02.530 --> 00:05:04.510 align:middle line:84%
+have it run the
+various behaviors
+
+115
+00:05:04.510 --> 00:05:08.290 align:middle line:84%
+in the stream in
+parallel asynchronously,
+
+116
+00:05:08.290 --> 00:05:09.970 align:middle line:90%
+using Java completable futures.
+
+117
+00:05:09.970 --> 00:05:11.410 align:middle line:84%
+And we'll talk
+about many examples
+
+118
+00:05:11.410 --> 00:05:13.838 align:middle line:90%
+of this later in the course.
+
+119
+00:05:13.838 --> 00:05:16.130 align:middle line:84%
+Some of the great things
+about all these different Java
+
+120
+00:05:16.130 --> 00:05:18.740 align:middle line:84%
+parallelism frameworks is
+that they often eliminate
+
+121
+00:05:18.740 --> 00:05:22.280 align:middle line:84%
+the use of synchronization
+or explicit threading
+
+122
+00:05:22.280 --> 00:05:24.380 align:middle line:90%
+when developing parallel apps.
+
+123
+00:05:24.380 --> 00:05:27.830 align:middle line:84%
+And by doing this, this
+model, this approach
+
+124
+00:05:27.830 --> 00:05:30.560 align:middle line:84%
+alleviates many accidental
+and inherent complexities
+
+125
+00:05:30.560 --> 00:05:31.760 align:middle line:90%
+of parallel programming.
+
+126
+00:05:31.760 --> 00:05:33.830 align:middle line:84%
+Because the frameworks
+are doing these low level
+
+127
+00:05:33.830 --> 00:05:36.680 align:middle line:84%
+details for you, and you can
+focus on the computations
+
+128
+00:05:36.680 --> 00:05:42.260 align:middle line:84%
+you need to do to carry out
+your overall application tasks.
+
+129
+00:05:42.260 --> 00:05:44.690 align:middle line:84%
+As I've mentioned several
+times, both the parallel
+
+130
+00:05:44.690 --> 00:05:47.930 align:middle line:84%
+streams framework and the
+completable futures framework
+
+131
+00:05:47.930 --> 00:05:52.453 align:middle line:84%
+can use the underlying fork-join
+pool framework by default.
+
+132
+00:05:52.453 --> 00:05:53.870 align:middle line:84%
+For parallel
+streams, you're stuck
+
+133
+00:05:53.870 --> 00:05:55.790 align:middle line:90%
+with the common fork-join pool.
+
+134
+00:05:55.790 --> 00:05:57.920 align:middle line:84%
+With completable
+futures, you can
+
+135
+00:05:57.920 --> 00:06:00.080 align:middle line:84%
+select other types
+of thread pools,
+
+136
+00:06:00.080 --> 00:06:02.780 align:middle line:84%
+either predefined thread pools
+like fixed size thread pools,
+
+137
+00:06:02.780 --> 00:06:04.760 align:middle line:84%
+or cached thread
+pools, or thread pools
+
+138
+00:06:04.760 --> 00:06:07.790 align:middle line:84%
+you might define
+yourself using the thread
+
+139
+00:06:07.790 --> 00:06:10.810 align:middle line:84%
+mechanisms available in the
+Java executive framework.

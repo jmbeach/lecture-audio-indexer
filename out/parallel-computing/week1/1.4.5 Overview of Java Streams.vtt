@@ -1,0 +1,477 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.500 align:middle line:90%
+
+
+2
+00:00:00.500 --> 00:00:02.520 align:middle line:84%
+What I'd like to
+do now is outline
+
+3
+00:00:02.520 --> 00:00:06.970 align:middle line:84%
+some of the benefits
+of Java streams.
+
+4
+00:00:06.970 --> 00:00:10.720 align:middle line:84%
+So there's a number of things
+that are really beneficial when
+
+5
+00:00:10.720 --> 00:00:13.950 align:middle line:90%
+you use streams.
+
+6
+00:00:13.950 --> 00:00:17.220 align:middle line:84%
+First and foremost, we're
+going to use a case study
+
+7
+00:00:17.220 --> 00:00:19.800 align:middle line:84%
+example to illustrate
+the benefits here.
+
+8
+00:00:19.800 --> 00:00:22.350 align:middle line:84%
+This is a case study example
+we'll talk about later.
+
+9
+00:00:22.350 --> 00:00:25.020 align:middle line:84%
+This case study
+example downloads,
+
+10
+00:00:25.020 --> 00:00:29.460 align:middle line:84%
+transforms, stores, and
+displays images using a variety
+
+11
+00:00:29.460 --> 00:00:30.510 align:middle line:90%
+of different techniques.
+
+12
+00:00:30.510 --> 00:00:33.450 align:middle line:90%
+It can use sequential streams.
+
+13
+00:00:33.450 --> 00:00:35.490 align:middle line:90%
+It can use parallel streams.
+
+14
+00:00:35.490 --> 00:00:37.650 align:middle line:84%
+It can use completable
+futures in conjunction
+
+15
+00:00:37.650 --> 00:00:40.110 align:middle line:84%
+with sequential streams,
+and so on and so forth.
+
+16
+00:00:40.110 --> 00:00:42.030 align:middle line:84%
+For the moment, we're
+just going to focus
+
+17
+00:00:42.030 --> 00:00:45.702 align:middle line:90%
+on the stream implementation.
+
+18
+00:00:45.702 --> 00:00:47.160 align:middle line:84%
+And as you can see
+here, what we do
+
+19
+00:00:47.160 --> 00:00:52.500 align:middle line:84%
+is we turn the input, which
+is basically a list of URLs,
+
+20
+00:00:52.500 --> 00:00:54.450 align:middle line:90%
+into a stream of URLs.
+
+21
+00:00:54.450 --> 00:00:57.480 align:middle line:84%
+We go ahead and omit
+from that stream of URLs
+
+22
+00:00:57.480 --> 00:01:01.230 align:middle line:84%
+any URL we've already
+downloaded and cached earlier.
+
+23
+00:01:01.230 --> 00:01:04.540 align:middle line:84%
+And then we go ahead and
+take the non-cached URLs,
+
+24
+00:01:04.540 --> 00:01:06.420 align:middle line:90%
+and we download them.
+
+25
+00:01:06.420 --> 00:01:09.720 align:middle line:84%
+And then we go ahead and
+apply various filters
+
+26
+00:01:09.720 --> 00:01:12.060 align:middle line:90%
+that transform the image.
+
+27
+00:01:12.060 --> 00:01:16.860 align:middle line:84%
+You can do things like red eye
+removal or sharpen or emboss
+
+28
+00:01:16.860 --> 00:01:18.540 align:middle line:90%
+or whatever you want to do.
+
+29
+00:01:18.540 --> 00:01:21.120 align:middle line:84%
+And we finally collect all
+the results up into a list.
+
+30
+00:01:21.120 --> 00:01:23.560 align:middle line:84%
+So that's basically
+what the program does.
+
+31
+00:01:23.560 --> 00:01:26.590 align:middle line:84%
+The use of streams for
+this kind of programming
+
+32
+00:01:26.590 --> 00:01:28.790 align:middle line:90%
+leads to a number of benefits.
+
+33
+00:01:28.790 --> 00:01:31.930 align:middle line:84%
+First and foremost, it's
+concise and readable.
+
+34
+00:01:31.930 --> 00:01:34.420 align:middle line:84%
+The streams model,
+as you can see here,
+
+35
+00:01:34.420 --> 00:01:36.790 align:middle line:84%
+is a so-called
+declarative paradigm,
+
+36
+00:01:36.790 --> 00:01:38.300 align:middle line:90%
+because it's functional.
+
+37
+00:01:38.300 --> 00:01:41.860 align:middle line:84%
+So it focuses on what
+functions to perform,
+
+38
+00:01:41.860 --> 00:01:46.100 align:middle line:84%
+such as downloading the image or
+applying the filters and so on,
+
+39
+00:01:46.100 --> 00:01:49.930 align:middle line:84%
+rather than how those
+functions are performed.
+
+40
+00:01:49.930 --> 00:01:51.730 align:middle line:84%
+The how, of course,
+is important.
+
+41
+00:01:51.730 --> 00:01:53.740 align:middle line:84%
+But that's done kind
+of under the hood
+
+42
+00:01:53.740 --> 00:01:56.060 align:middle line:84%
+as part of the behavior
+implementations.
+
+43
+00:01:56.060 --> 00:01:58.510 align:middle line:84%
+So you can read this
+thing top to bottom.
+
+44
+00:01:58.510 --> 00:01:59.260 align:middle line:90%
+It's very concise.
+
+45
+00:01:59.260 --> 00:02:00.790 align:middle line:90%
+It's very readable.
+
+46
+00:02:00.790 --> 00:02:03.100 align:middle line:84%
+One of the things that I
+like about the streams model
+
+47
+00:02:03.100 --> 00:02:07.030 align:middle line:84%
+is it doesn't expose any
+control flow operations.
+
+48
+00:02:07.030 --> 00:02:09.039 align:middle line:90%
+You don't see any loops.
+
+49
+00:02:09.039 --> 00:02:11.990 align:middle line:84%
+You don't see any if statements
+or switch statements.
+
+50
+00:02:11.990 --> 00:02:15.710 align:middle line:84%
+You just see a pipeline of
+behaviors that are applied.
+
+51
+00:02:15.710 --> 00:02:18.320 align:middle line:84%
+And you can read this
+thing from top to bottom.
+
+52
+00:02:18.320 --> 00:02:20.200 align:middle line:84%
+So it really focuses
+on what's important
+
+53
+00:02:20.200 --> 00:02:22.900 align:middle line:84%
+and leaves the
+implementations where they
+
+54
+00:02:22.900 --> 00:02:26.050 align:middle line:90%
+belong in the implementation.
+
+55
+00:02:26.050 --> 00:02:28.780 align:middle line:84%
+Another benefit
+of Java streams is
+
+56
+00:02:28.780 --> 00:02:32.860 align:middle line:84%
+that they are very
+flexible and composable.
+
+57
+00:02:32.860 --> 00:02:36.160 align:middle line:84%
+Functions can be automatically
+connected together
+
+58
+00:02:36.160 --> 00:02:39.220 align:middle line:84%
+by the streams
+programming model.
+
+59
+00:02:39.220 --> 00:02:41.860 align:middle line:84%
+In particular, as you
+see here, the output
+
+60
+00:02:41.860 --> 00:02:44.770 align:middle line:84%
+from the filter
+intermediate operation
+
+61
+00:02:44.770 --> 00:02:48.670 align:middle line:84%
+is then passed as the input to
+the map intermediate operation,
+
+62
+00:02:48.670 --> 00:02:50.860 align:middle line:84%
+which is the next
+element in the stream.
+
+63
+00:02:50.860 --> 00:02:53.440 align:middle line:84%
+And it's very simple to go
+ahead and reconnect the stream
+
+64
+00:02:53.440 --> 00:02:56.577 align:middle line:84%
+if you want in order to be
+able to do different things.
+
+65
+00:02:56.577 --> 00:02:57.910 align:middle line:90%
+You can add different behaviors.
+
+66
+00:02:57.910 --> 00:03:00.350 align:middle line:84%
+You can rearrange the
+ordering if necessary.
+
+67
+00:03:00.350 --> 00:03:05.042 align:middle line:84%
+It's very flexible, very easy to
+change, very easy to recompose.
+
+68
+00:03:05.042 --> 00:03:06.500 align:middle line:84%
+And of course,
+another key benefit,
+
+69
+00:03:06.500 --> 00:03:10.010 align:middle line:84%
+which we started alluding to
+in the previous discussion
+
+70
+00:03:10.010 --> 00:03:14.210 align:middle line:84%
+about parallel streams, is it's
+really straightforward, often,
+
+71
+00:03:14.210 --> 00:03:17.540 align:middle line:90%
+to scale the program.
+
+72
+00:03:17.540 --> 00:03:20.030 align:middle line:84%
+So scalability is
+simplified, because you
+
+73
+00:03:20.030 --> 00:03:23.330 align:middle line:84%
+can paralyze the
+behavior of the stream
+
+74
+00:03:23.330 --> 00:03:26.780 align:middle line:84%
+simply by going from
+stream to parallel stream
+
+75
+00:03:26.780 --> 00:03:28.250 align:middle line:90%
+as the factory method.
+
+76
+00:03:28.250 --> 00:03:31.820 align:middle line:84%
+And there's no need to have to
+write any multi-threaded code
+
+77
+00:03:31.820 --> 00:03:36.910 align:middle line:84%
+at all, which, of course,
+is a huge, huge win.
+
+78
+00:03:36.910 --> 00:03:39.340 align:middle line:84%
+Under the hood, the
+Java ForkJoinPool
+
+79
+00:03:39.340 --> 00:03:41.770 align:middle line:84%
+is used to process all
+the different behaviors
+
+80
+00:03:41.770 --> 00:03:42.940 align:middle line:90%
+and parallelism.
+
+81
+00:03:42.940 --> 00:03:45.940 align:middle line:84%
+That's something that's really
+largely hidden from you.
+
+82
+00:03:45.940 --> 00:03:47.890 align:middle line:84%
+We'll talk about
+this in a little bit
+
+83
+00:03:47.890 --> 00:03:51.220 align:middle line:84%
+when we discuss the way in
+which Java parallel streams
+
+84
+00:03:51.220 --> 00:03:53.690 align:middle line:90%
+internals are structured.
+
+85
+00:03:53.690 --> 00:03:55.690 align:middle line:84%
+But for right now, you
+don't really have to know
+
+86
+00:03:55.690 --> 00:03:56.980 align:middle line:90%
+or care that this is happening.
+
+87
+00:03:56.980 --> 00:03:58.647 align:middle line:84%
+It just kind of happens
+as a side effect
+
+88
+00:03:58.647 --> 00:04:01.280 align:middle line:90%
+of using parallel streams.
+
+89
+00:04:01.280 --> 00:04:04.450 align:middle line:84%
+The parallel streams framework,
+in conjunction, of course,
+
+90
+00:04:04.450 --> 00:04:07.900 align:middle line:84%
+with the ForkJoinPool
+framework, will automatically
+
+91
+00:04:07.900 --> 00:04:11.170 align:middle line:84%
+map the data in
+the stream elements
+
+92
+00:04:11.170 --> 00:04:13.228 align:middle line:84%
+to the underlying
+processor cores.
+
+93
+00:04:13.228 --> 00:04:14.770 align:middle line:84%
+And we'll also see
+later that there's
+
+94
+00:04:14.770 --> 00:04:17.170 align:middle line:84%
+all kinds of clever ways
+that you can get control
+
+95
+00:04:17.170 --> 00:04:19.899 align:middle line:84%
+over the number
+of cores that are
+
+96
+00:04:19.899 --> 00:04:22.540 align:middle line:84%
+available to process
+the data that's
+
+97
+00:04:22.540 --> 00:04:23.827 align:middle line:90%
+flowing through the stream.
+
+98
+00:04:23.827 --> 00:04:26.410 align:middle line:84%
+And we'll talk about that when
+we talk about parallel streams.
+
+99
+00:04:26.410 --> 00:04:28.243 align:middle line:84%
+We'll also talk about
+that when we talk more
+
+100
+00:04:28.243 --> 00:04:30.870 align:middle line:84%
+about the ForkJoinPool
+framework.
