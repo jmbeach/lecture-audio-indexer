@@ -1,0 +1,926 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:01.118 align:middle line:90%
+
+
+2
+00:00:01.118 --> 00:00:03.410 align:middle line:84%
+We're going to continue our
+discussion of Java Stream's
+
+3
+00:00:03.410 --> 00:00:08.240 align:middle line:84%
+internals by discussing
+the construction phase.
+
+4
+00:00:08.240 --> 00:00:11.010 align:middle line:84%
+And this will be a
+good way to get a sense
+
+5
+00:00:11.010 --> 00:00:14.660 align:middle line:84%
+under the hood of what actually
+happens when the Java Streams
+
+6
+00:00:14.660 --> 00:00:16.463 align:middle line:90%
+framework is run.
+
+7
+00:00:16.463 --> 00:00:17.630 align:middle line:90%
+How does it work at runtime?
+
+8
+00:00:17.630 --> 00:00:20.143 align:middle line:84%
+How is a Java Stream
+actually constructed?
+
+9
+00:00:20.143 --> 00:00:21.560 align:middle line:84%
+And it's really
+pretty interesting
+
+10
+00:00:21.560 --> 00:00:22.980 align:middle line:90%
+to see how this works.
+
+11
+00:00:22.980 --> 00:00:24.980 align:middle line:84%
+I think it'll also help
+make some things more
+
+12
+00:00:24.980 --> 00:00:29.390 align:middle line:84%
+clear about the laziness, for
+example, of how Streams work.
+
+13
+00:00:29.390 --> 00:00:33.140 align:middle line:84%
+So recall that intermediate
+operations in a Stream
+
+14
+00:00:33.140 --> 00:00:34.760 align:middle line:90%
+are lazy.
+
+15
+00:00:34.760 --> 00:00:36.380 align:middle line:84%
+And what that means
+is they actually
+
+16
+00:00:36.380 --> 00:00:41.115 align:middle line:84%
+don't start to run until a
+terminal operation is reached.
+
+17
+00:00:41.115 --> 00:00:42.740 align:middle line:84%
+When the terminal
+operation is reached,
+
+18
+00:00:42.740 --> 00:00:47.910 align:middle line:84%
+then the wheels are
+set into motion.
+
+19
+00:00:47.910 --> 00:00:49.910 align:middle line:84%
+Let's take a look
+at a simple example.
+
+20
+00:00:49.910 --> 00:00:53.440 align:middle line:84%
+We've seen this before,
+or some variant of this.
+
+21
+00:00:53.440 --> 00:00:57.920 align:middle line:84%
+This example is going
+to create a Stream
+
+22
+00:00:57.920 --> 00:01:01.220 align:middle line:90%
+from a list of strings.
+
+23
+00:01:01.220 --> 00:01:05.600 align:middle line:84%
+It's going to map each
+string to be uppercase.
+
+24
+00:01:05.600 --> 00:01:08.090 align:middle line:84%
+And then it goes
+ahead and filters out
+
+25
+00:01:08.090 --> 00:01:10.250 align:middle line:84%
+anything that
+doesn't start with A.
+
+26
+00:01:10.250 --> 00:01:12.110 align:middle line:84%
+It sorts everything
+that starts with A,
+
+27
+00:01:12.110 --> 00:01:16.190 align:middle line:84%
+and then it collects
+the results into a list.
+
+28
+00:01:16.190 --> 00:01:21.110 align:middle line:84%
+When this code runs at runtime,
+those intermediate operations--
+
+29
+00:01:21.110 --> 00:01:24.410 align:middle line:84%
+like stream(), map(), filter(),
+and sort(), and so on--
+
+30
+00:01:24.410 --> 00:01:28.580 align:middle line:84%
+actually don't do anything
+until collect() is hit.
+
+31
+00:01:28.580 --> 00:01:32.240 align:middle line:84%
+And instead what happens is,
+as those methods are called,
+
+32
+00:01:32.240 --> 00:01:35.060 align:middle line:84%
+at runtime, the
+Streams framework
+
+33
+00:01:35.060 --> 00:01:38.240 align:middle line:84%
+uses those methods to
+build up a LinkedList
+
+34
+00:01:38.240 --> 00:01:42.020 align:middle line:84%
+of Streams' source and
+intermediate operations
+
+35
+00:01:42.020 --> 00:01:46.880 align:middle line:84%
+into a LinkedList of nodes,
+essentially, or stages.
+
+36
+00:01:46.880 --> 00:01:48.830 align:middle line:84%
+And there's one node
+in the LinkedList
+
+37
+00:01:48.830 --> 00:01:52.010 align:middle line:90%
+for each stage in the pipeline.
+
+38
+00:01:52.010 --> 00:01:54.290 align:middle line:84%
+So you could imagine
+there'd be a LinkedList that
+
+39
+00:01:54.290 --> 00:01:57.440 align:middle line:84%
+would start out saying
+we've got a Stream
+
+40
+00:01:57.440 --> 00:01:58.730 align:middle line:90%
+input from this source.
+
+41
+00:01:58.730 --> 00:02:00.590 align:middle line:84%
+We've got map() with
+this mapper function.
+
+42
+00:02:00.590 --> 00:02:02.600 align:middle line:84%
+We've got filter()
+with this predicate.
+
+43
+00:02:02.600 --> 00:02:05.250 align:middle line:84%
+We have the sorted() method,
+and so on and so forth.
+
+44
+00:02:05.250 --> 00:02:08.190 align:middle line:84%
+And if you read the article
+at the bottom of the page,
+
+45
+00:02:08.190 --> 00:02:12.500 align:middle line:84%
+you'll see an example of
+more description about what
+
+46
+00:02:12.500 --> 00:02:16.070 align:middle line:84%
+happens here at runtime, and
+I'm just basically visualizing
+
+47
+00:02:16.070 --> 00:02:18.650 align:middle line:84%
+some of the text that's
+in that particular link.
+
+48
+00:02:18.650 --> 00:02:21.260 align:middle line:90%
+
+
+49
+00:02:21.260 --> 00:02:24.560 align:middle line:84%
+In the internal data
+structure in that LinkedList,
+
+50
+00:02:24.560 --> 00:02:32.090 align:middle line:84%
+each pipeline stage is described
+by a bitmap of stream flags.
+
+51
+00:02:32.090 --> 00:02:34.970 align:middle line:84%
+So if you think about the
+nodes in the LinkedList,
+
+52
+00:02:34.970 --> 00:02:36.710 align:middle line:84%
+each node would
+correspond to a stage,
+
+53
+00:02:36.710 --> 00:02:39.440 align:middle line:84%
+and there's certain
+metadata that's associated
+
+54
+00:02:39.440 --> 00:02:41.540 align:middle line:90%
+with each of the nodes.
+
+55
+00:02:41.540 --> 00:02:45.980 align:middle line:84%
+And this is described by
+a bitmap of stream flags.
+
+56
+00:02:45.980 --> 00:02:49.160 align:middle line:84%
+And here are some of the
+flags that can be set.
+
+57
+00:02:49.160 --> 00:02:54.140 align:middle line:84%
+You can say that something is
+going to have a sized flag,
+
+58
+00:02:54.140 --> 00:02:57.163 align:middle line:84%
+and sized means that we
+know the size of the Stream.
+
+59
+00:02:57.163 --> 00:02:58.580 align:middle line:84%
+So for example,
+if something comes
+
+60
+00:02:58.580 --> 00:03:02.240 align:middle line:84%
+from a collection like a
+list, we know how big it is.
+
+61
+00:03:02.240 --> 00:03:05.123 align:middle line:84%
+In contrast, if it comes
+from the iterate method,
+
+62
+00:03:05.123 --> 00:03:06.540 align:middle line:84%
+we don't necessarily
+know the size
+
+63
+00:03:06.540 --> 00:03:10.070 align:middle line:84%
+because iterate could run
+indefinitely and be unbounded.
+
+64
+00:03:10.070 --> 00:03:14.240 align:middle line:84%
+Another flag might or might not
+be set is the distinct flag.
+
+65
+00:03:14.240 --> 00:03:16.760 align:middle line:84%
+That says that the
+elements in the Stream
+
+66
+00:03:16.760 --> 00:03:18.290 align:middle line:90%
+are expected to be distinct.
+
+67
+00:03:18.290 --> 00:03:21.230 align:middle line:84%
+For example, if you have
+a set, then those elements
+
+68
+00:03:21.230 --> 00:03:23.630 align:middle line:84%
+are distinct, whereas if
+we have an array list,
+
+69
+00:03:23.630 --> 00:03:26.120 align:middle line:84%
+there's no reason that
+they would be distinct.
+
+70
+00:03:26.120 --> 00:03:31.250 align:middle line:84%
+Another property is whether or
+not the elements in the Stream
+
+71
+00:03:31.250 --> 00:03:33.560 align:middle line:84%
+are sorted, whether
+we expect them
+
+72
+00:03:33.560 --> 00:03:37.790 align:middle line:84%
+to be sorted in some order,
+either ascending or descending.
+
+73
+00:03:37.790 --> 00:03:40.880 align:middle line:84%
+And yet another flag is whether
+or not Stream is ordered.
+
+74
+00:03:40.880 --> 00:03:42.380 align:middle line:84%
+Ordered is not the
+same as sorted.
+
+75
+00:03:42.380 --> 00:03:44.650 align:middle line:84%
+Sorted really means
+are they sort in some,
+
+76
+00:03:44.650 --> 00:03:46.980 align:middle line:84%
+say, lexicographic
+or numerical order.
+
+77
+00:03:46.980 --> 00:03:48.890 align:middle line:84%
+Ordered simply means,
+do the elements
+
+78
+00:03:48.890 --> 00:03:51.740 align:middle line:84%
+appear in a meaningful
+encounter order?
+
+79
+00:03:51.740 --> 00:03:53.690 align:middle line:84%
+And encounter order
+means just the order
+
+80
+00:03:53.690 --> 00:03:55.790 align:middle line:84%
+that they show up in
+the data structure.
+
+81
+00:03:55.790 --> 00:04:00.710 align:middle line:84%
+So for example, a list
+has an ordered property
+
+82
+00:04:00.710 --> 00:04:03.680 align:middle line:84%
+because it's location 0,
+location 1, location 2,
+
+83
+00:04:03.680 --> 00:04:06.530 align:middle line:84%
+location 3, and so on, whereas
+a hash map doesn't really
+
+84
+00:04:06.530 --> 00:04:09.300 align:middle line:90%
+have any particular order.
+
+85
+00:04:09.300 --> 00:04:13.740 align:middle line:84%
+These flags, by the way-- sized,
+distinct, sorted, and ordered--
+
+86
+00:04:13.740 --> 00:04:15.810 align:middle line:84%
+are essentially a subset
+of the flags that can
+
+87
+00:04:15.810 --> 00:04:18.899 align:middle line:90%
+be defined by a spliterator.
+
+88
+00:04:18.899 --> 00:04:21.810 align:middle line:84%
+And if you take a look at the
+spliterator implementations
+
+89
+00:04:21.810 --> 00:04:24.180 align:middle line:84%
+in the Java Collections
+framework, for example
+
+90
+00:04:24.180 --> 00:04:26.880 align:middle line:84%
+you see that each data
+structure, each collection,
+
+91
+00:04:26.880 --> 00:04:30.810 align:middle line:84%
+that has a spliterator sets
+certain flags that indicate
+
+92
+00:04:30.810 --> 00:04:32.730 align:middle line:90%
+the same sorts of properties.
+
+93
+00:04:32.730 --> 00:04:35.280 align:middle line:90%
+Is the collection ordered?
+
+94
+00:04:35.280 --> 00:04:36.360 align:middle line:90%
+Is the collection sorted?
+
+95
+00:04:36.360 --> 00:04:37.380 align:middle line:90%
+Is the collection distinct?
+
+96
+00:04:37.380 --> 00:04:38.380 align:middle line:90%
+Is the collection sized?
+
+97
+00:04:38.380 --> 00:04:39.150 align:middle line:90%
+And so on.
+
+98
+00:04:39.150 --> 00:04:41.730 align:middle line:84%
+So these flags are very
+similar to what you
+
+99
+00:04:41.730 --> 00:04:44.550 align:middle line:90%
+would see with a spliterator.
+
+100
+00:04:44.550 --> 00:04:48.900 align:middle line:84%
+Here are some examples of
+characteristics of collections,
+
+101
+00:04:48.900 --> 00:04:51.960 align:middle line:84%
+mapping them to
+these various flags.
+
+102
+00:04:51.960 --> 00:04:54.750 align:middle line:84%
+So for example, an
+ArrayList is sized,
+
+103
+00:04:54.750 --> 00:04:57.210 align:middle line:84%
+because we know how big
+it is, and an ArrayList
+
+104
+00:04:57.210 --> 00:05:01.350 align:middle line:84%
+is ordered, because it
+has location 0, location
+
+105
+00:05:01.350 --> 00:05:02.850 align:middle line:90%
+1, location 2, and so on.
+
+106
+00:05:02.850 --> 00:05:05.610 align:middle line:84%
+But an ArrayList isn't
+necessarily sorted
+
+107
+00:05:05.610 --> 00:05:08.490 align:middle line:84%
+and an ArrayList isn't
+necessarily distinct.
+
+108
+00:05:08.490 --> 00:05:12.070 align:middle line:84%
+You could have duplicates
+and they might not be sorted.
+
+109
+00:05:12.070 --> 00:05:18.310 align:middle line:84%
+Conversely, a HashSet is
+sized and it's also distinct,
+
+110
+00:05:18.310 --> 00:05:24.730 align:middle line:84%
+because you can't have
+duplicates in a set.
+
+111
+00:05:24.730 --> 00:05:27.460 align:middle line:84%
+But it might not be ordered
+because it's a HashSet,
+
+112
+00:05:27.460 --> 00:05:31.520 align:middle line:84%
+and it might not be sorted
+because it's a HashSet.
+
+113
+00:05:31.520 --> 00:05:35.900 align:middle line:84%
+Finally, TreeSet is sized,
+ordered, sorted, and distinct.
+
+114
+00:05:35.900 --> 00:05:37.400 align:middle line:90%
+It has a size.
+
+115
+00:05:37.400 --> 00:05:39.380 align:middle line:90%
+It has to have unique elements.
+
+116
+00:05:39.380 --> 00:05:42.140 align:middle line:84%
+Since it's represented as
+an ordered binary tree,
+
+117
+00:05:42.140 --> 00:05:44.300 align:middle line:84%
+it's ordered-- or
+sorry, sorted--
+
+118
+00:05:44.300 --> 00:05:47.040 align:middle line:90%
+and it's also ordered, as well.
+
+119
+00:05:47.040 --> 00:05:51.740 align:middle line:84%
+So that's one that has all the
+kit and caboodles in there.
+
+120
+00:05:51.740 --> 00:05:55.340 align:middle line:84%
+As I mentioned before, there
+are some methods, like iterate
+
+121
+00:05:55.340 --> 00:05:57.740 align:middle line:84%
+and generate, that are defined
+on the Stream interface
+
+122
+00:05:57.740 --> 00:05:59.060 align:middle line:90%
+that are not sized.
+
+123
+00:05:59.060 --> 00:06:02.440 align:middle line:90%
+
+
+124
+00:06:02.440 --> 00:06:05.760 align:middle line:84%
+Each intermediate
+operation in the Stream
+
+125
+00:06:05.760 --> 00:06:11.860 align:middle line:84%
+may affect the flags that are
+being defined at that stage.
+
+126
+00:06:11.860 --> 00:06:15.400 align:middle line:84%
+So let's take a look
+at some examples.
+
+127
+00:06:15.400 --> 00:06:17.230 align:middle line:84%
+When the map()
+operation is used,
+
+128
+00:06:17.230 --> 00:06:22.000 align:middle line:84%
+that will clear the sorted and
+distinct flags but it will keep
+
+129
+00:06:22.000 --> 00:06:22.767 align:middle line:90%
+sized.
+
+130
+00:06:22.767 --> 00:06:24.100 align:middle line:90%
+Remember, we talked about map().
+
+131
+00:06:24.100 --> 00:06:26.767 align:middle line:84%
+We talked about how map() always
+has the same number of elements
+
+132
+00:06:26.767 --> 00:06:29.350 align:middle line:84%
+in the input Stream
+as the output Stream?
+
+133
+00:06:29.350 --> 00:06:31.980 align:middle line:90%
+And so it's sized.
+
+134
+00:06:31.980 --> 00:06:35.010 align:middle line:84%
+But we don't really know
+what map() is going to do.
+
+135
+00:06:35.010 --> 00:06:37.890 align:middle line:84%
+The map() method doesn't know
+what the behavior will do.
+
+136
+00:06:37.890 --> 00:06:40.140 align:middle line:90%
+It might turn everything to 0.
+
+137
+00:06:40.140 --> 00:06:42.490 align:middle line:84%
+It might turn them
+to random numbers.
+
+138
+00:06:42.490 --> 00:06:44.280 align:middle line:84%
+So we don't know
+whether the result will
+
+139
+00:06:44.280 --> 00:06:47.610 align:middle line:84%
+be sorted and distinct once
+map is done with its behavior
+
+140
+00:06:47.610 --> 00:06:49.670 align:middle line:90%
+processing.
+
+141
+00:06:49.670 --> 00:06:55.790 align:middle line:84%
+Likewise, filter() will keep
+sorted and keep distinct
+
+142
+00:06:55.790 --> 00:06:58.403 align:middle line:84%
+because it doesn't
+actually change the values.
+
+143
+00:06:58.403 --> 00:07:00.820 align:middle line:84%
+So if they come in sorted,
+they're going to go out sorted.
+
+144
+00:07:00.820 --> 00:07:01.820 align:middle line:84%
+If they come in
+distinct, they're
+
+145
+00:07:01.820 --> 00:07:03.170 align:middle line:90%
+going to go out distinct.
+
+146
+00:07:03.170 --> 00:07:06.950 align:middle line:84%
+However, it clears the sized
+flag because of course,
+
+147
+00:07:06.950 --> 00:07:10.430 align:middle line:84%
+the predicate may dictate you
+end up with smaller number
+
+148
+00:07:10.430 --> 00:07:13.220 align:middle line:84%
+of elements coming out
+of filter() then went
+
+149
+00:07:13.220 --> 00:07:15.870 align:middle line:90%
+into filter().
+
+150
+00:07:15.870 --> 00:07:20.790 align:middle line:84%
+The sorted() method keeps sized
+and distinct because as long
+
+151
+00:07:20.790 --> 00:07:23.290 align:middle line:84%
+as sort's working correctly,
+you're not going to end up with
+
+152
+00:07:23.290 --> 00:07:24.160 align:middle line:90%
+more elements.
+
+153
+00:07:24.160 --> 00:07:26.830 align:middle line:84%
+You're not going to end up
+with changes in their values.
+
+154
+00:07:26.830 --> 00:07:29.350 align:middle line:84%
+And it adds the sorted
+flag, because again,
+
+155
+00:07:29.350 --> 00:07:32.080 align:middle line:84%
+if sorted() works properly,
+which it darn well better,
+
+156
+00:07:32.080 --> 00:07:35.800 align:middle line:84%
+then we'll end up with sorted()
+returning a sorted Stream,
+
+157
+00:07:35.800 --> 00:07:38.960 align:middle line:90%
+so that flag will be set.
+
+158
+00:07:38.960 --> 00:07:42.380 align:middle line:84%
+The flags at each stage
+are updated as the pipeline
+
+159
+00:07:42.380 --> 00:07:43.640 align:middle line:90%
+is being constructed.
+
+160
+00:07:43.640 --> 00:07:45.440 align:middle line:84%
+So as the pipeline
+of these things
+
+161
+00:07:45.440 --> 00:07:48.120 align:middle line:84%
+is being constructed by the
+runtime system at runtime,
+
+162
+00:07:48.120 --> 00:07:53.450 align:middle line:84%
+as the code is executing,
+these flags are being set.
+
+163
+00:07:53.450 --> 00:07:56.570 align:middle line:84%
+And flags for a
+previous stage can
+
+164
+00:07:56.570 --> 00:07:59.510 align:middle line:84%
+be combined with the
+current stage's behavior
+
+165
+00:07:59.510 --> 00:08:02.210 align:middle line:84%
+to derive a new set of
+flags for that stage.
+
+166
+00:08:02.210 --> 00:08:05.250 align:middle line:84%
+And these flags can be
+useful for various things.
+
+167
+00:08:05.250 --> 00:08:07.340 align:middle line:84%
+Here's an example of
+one way that the flags
+
+168
+00:08:07.340 --> 00:08:11.300 align:middle line:84%
+can be used to optimize the
+behavior of the program.
+
+169
+00:08:11.300 --> 00:08:13.250 align:middle line:84%
+Let's assume, for
+sake of argument,
+
+170
+00:08:13.250 --> 00:08:16.880 align:middle line:84%
+that we create
+ourselves a set that
+
+171
+00:08:16.880 --> 00:08:18.500 align:middle line:90%
+is implemented as a TreeSet.
+
+172
+00:08:18.500 --> 00:08:20.937 align:middle line:84%
+So we know that it's
+sorted to start with.
+
+173
+00:08:20.937 --> 00:08:22.520 align:middle line:84%
+And then let's assume
+that we go ahead
+
+174
+00:08:22.520 --> 00:08:25.730 align:middle line:84%
+and convert that
+TreeSet into a Stream.
+
+175
+00:08:25.730 --> 00:08:30.770 align:middle line:84%
+So now we have a Stream of
+the elements in the TreeSet.
+
+176
+00:08:30.770 --> 00:08:34.250 align:middle line:84%
+And then let's say we go ahead
+and filter so that we only end
+
+177
+00:08:34.250 --> 00:08:37.280 align:middle line:84%
+up with elements that
+start with A. Well,
+
+178
+00:08:37.280 --> 00:08:40.490 align:middle line:84%
+because of the fact that
+the filter() operation
+
+179
+00:08:40.490 --> 00:08:45.350 align:middle line:84%
+doesn't change the sorted flag,
+we know it's still sorted.
+
+180
+00:08:45.350 --> 00:08:48.250 align:middle line:84%
+So if somebody were to call the
+sorted() method after calling
+
+181
+00:08:48.250 --> 00:08:51.080 align:middle line:84%
+the filter() method
+on a TreeSet,
+
+182
+00:08:51.080 --> 00:08:53.420 align:middle line:84%
+the Streams framework
+would realize,
+
+183
+00:08:53.420 --> 00:08:54.720 align:middle line:90%
+sorted() is unnecessary.
+
+184
+00:08:54.720 --> 00:08:56.990 align:middle line:84%
+There's no need
+to use this thing.
+
+185
+00:08:56.990 --> 00:08:59.340 align:middle line:90%
+This is already sorted.
+
+186
+00:08:59.340 --> 00:09:02.480 align:middle line:84%
+And so as a result, it could
+just eliminate that operation
+
+187
+00:09:02.480 --> 00:09:03.680 align:middle line:90%
+altogether.
+
+188
+00:09:03.680 --> 00:09:06.652 align:middle line:84%
+This is a little bit
+akin to query optimizers
+
+189
+00:09:06.652 --> 00:09:08.360 align:middle line:84%
+that you might be
+familiar with if you've
+
+190
+00:09:08.360 --> 00:09:11.960 align:middle line:84%
+done much database programming,
+so same kind of thing.
+
+191
+00:09:11.960 --> 00:09:14.930 align:middle line:84%
+The Streams framework
+can use the semantics
+
+192
+00:09:14.930 --> 00:09:18.050 align:middle line:84%
+of the different phases and
+flags to do the processing
+
+193
+00:09:18.050 --> 00:09:21.010 align:middle line:84%
+and optimize the
+behavior of the program.

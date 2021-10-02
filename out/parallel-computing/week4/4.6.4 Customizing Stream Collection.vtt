@@ -1,0 +1,867 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.390 align:middle line:90%
+
+
+2
+00:00:00.390 --> 00:00:01.890 align:middle line:84%
+So what we're going
+to do now is I'm
+
+3
+00:00:01.890 --> 00:00:04.320 align:middle line:84%
+going to show you
+a bunch of examples
+
+4
+00:00:04.320 --> 00:00:09.480 align:middle line:84%
+of how to implement custom
+nonconcurrent collectors.
+
+5
+00:00:09.480 --> 00:00:11.520 align:middle line:84%
+So if you recall
+before, I showed you
+
+6
+00:00:11.520 --> 00:00:15.090 align:middle line:84%
+how there were predefined
+nonconcurrent collectors that
+
+7
+00:00:15.090 --> 00:00:20.892 align:middle line:84%
+came out of the box with the
+Java class library, the JDK.
+
+8
+00:00:20.892 --> 00:00:22.350 align:middle line:84%
+And now we're going
+to show you how
+
+9
+00:00:22.350 --> 00:00:24.475 align:middle line:84%
+to use some of the mechanisms
+that are provided out
+
+10
+00:00:24.475 --> 00:00:29.160 align:middle line:84%
+of the box to implement an
+open-ended number of custom,
+
+11
+00:00:29.160 --> 00:00:32.090 align:middle line:90%
+nonconcurrent collectors.
+
+12
+00:00:32.090 --> 00:00:34.940 align:middle line:84%
+And we're going to do
+this in the context
+
+13
+00:00:34.940 --> 00:00:37.280 align:middle line:84%
+of several
+nonconcurrent collectors
+
+14
+00:00:37.280 --> 00:00:41.360 align:middle line:84%
+that we use in our
+SimpleSearchStream program.
+
+15
+00:00:41.360 --> 00:00:44.800 align:middle line:90%
+
+
+16
+00:00:44.800 --> 00:00:46.710 align:middle line:84%
+So let's start by
+taking a look at how
+
+17
+00:00:46.710 --> 00:00:50.520 align:middle line:84%
+we could use the Collector.of
+factory method to implement
+
+18
+00:00:50.520 --> 00:00:53.070 align:middle line:84%
+custom collectors that
+have very simple, very
+
+19
+00:00:53.070 --> 00:00:56.400 align:middle line:84%
+pithy lambda expression
+implementations.
+
+20
+00:00:56.400 --> 00:00:59.850 align:middle line:84%
+These are the kinds of things
+where Collector.of really
+
+21
+00:00:59.850 --> 00:01:00.420 align:middle line:90%
+excels.
+
+22
+00:01:00.420 --> 00:01:03.090 align:middle line:84%
+It's very-- very
+concise, very simple.
+
+23
+00:01:03.090 --> 00:01:06.570 align:middle line:84%
+As we'll see, as you get
+more complicated collectors,
+
+24
+00:01:06.570 --> 00:01:09.800 align:middle line:84%
+we don't want to glom them
+all into the of interface.
+
+25
+00:01:09.800 --> 00:01:12.640 align:middle line:84%
+It's a little too
+simple for its own good.
+
+26
+00:01:12.640 --> 00:01:15.000 align:middle line:84%
+So as you'll see here,
+this is actually used
+
+27
+00:01:15.000 --> 00:01:20.370 align:middle line:84%
+by the toString method in
+the search results class,
+
+28
+00:01:20.370 --> 00:01:24.210 align:middle line:84%
+in order to be able to create
+the formatted output that we're
+
+29
+00:01:24.210 --> 00:01:27.220 align:middle line:90%
+seeing displayed here.
+
+30
+00:01:27.220 --> 00:01:30.330 align:middle line:84%
+So the search results
+toString method
+
+31
+00:01:30.330 --> 00:01:33.810 align:middle line:84%
+will end up using
+this custom collector
+
+32
+00:01:33.810 --> 00:01:38.820 align:middle line:84%
+to format the output to put
+a vertical bar between each
+
+33
+00:01:38.820 --> 00:01:39.820 align:middle line:90%
+of the indices.
+
+34
+00:01:39.820 --> 00:01:42.380 align:middle line:84%
+So you can sort of tell
+them apart from each other,
+
+35
+00:01:42.380 --> 00:01:45.693 align:middle line:84%
+make it a little easier to read
+what the output looks like.
+
+36
+00:01:45.693 --> 00:01:48.360 align:middle line:84%
+So let's take a look and see how
+this is actually going to work.
+
+37
+00:01:48.360 --> 00:01:51.090 align:middle line:84%
+This is also another
+interesting example
+
+38
+00:01:51.090 --> 00:01:53.970 align:middle line:84%
+of a stream that
+has a factory method
+
+39
+00:01:53.970 --> 00:01:56.970 align:middle line:84%
+to create the stream, no
+intermediate operations,
+
+40
+00:01:56.970 --> 00:02:00.240 align:middle line:84%
+followed by the collect
+terminal operation.
+
+41
+00:02:00.240 --> 00:02:03.360 align:middle line:84%
+As you can see here,
+we take the list
+
+42
+00:02:03.360 --> 00:02:11.640 align:middle line:84%
+of elements that corresponded
+to the result list.
+
+43
+00:02:11.640 --> 00:02:13.530 align:middle line:84%
+This is basically
+the list of things
+
+44
+00:02:13.530 --> 00:02:19.710 align:middle line:84%
+that had the appropriate
+elements that corresponded
+
+45
+00:02:19.710 --> 00:02:24.238 align:middle line:84%
+to where we found the
+words in the input
+
+46
+00:02:24.238 --> 00:02:26.030 align:middle line:84%
+that we're researching
+in the input string,
+
+47
+00:02:26.030 --> 00:02:28.860 align:middle line:84%
+in the lyrics for Do-Re-Mi
+song, for example.
+
+48
+00:02:28.860 --> 00:02:30.340 align:middle line:90%
+We turn that into a stream.
+
+49
+00:02:30.340 --> 00:02:32.970 align:middle line:84%
+And then we collect it,
+and we use Collector.of
+
+50
+00:02:32.970 --> 00:02:35.290 align:middle line:90%
+to define the collector to use.
+
+51
+00:02:35.290 --> 00:02:40.090 align:middle line:84%
+And this is going to use the
+five parameter of version,
+
+52
+00:02:40.090 --> 00:02:43.600 align:middle line:84%
+although as we'll see, one of
+the parameters is optional.
+
+53
+00:02:43.600 --> 00:02:46.600 align:middle line:90%
+So we don't pass it in.
+
+54
+00:02:46.600 --> 00:02:48.178 align:middle line:90%
+Here's the lambda supplier.
+
+55
+00:02:48.178 --> 00:02:50.470 align:middle line:84%
+What we're going to do is
+we're going to make ourselves
+
+56
+00:02:50.470 --> 00:02:55.240 align:middle line:84%
+a new StringJoiner, which
+will be our mutable result
+
+57
+00:02:55.240 --> 00:02:56.050 align:middle line:90%
+container.
+
+58
+00:02:56.050 --> 00:02:57.670 align:middle line:84%
+And as you can see,
+StringJoiner is
+
+59
+00:02:57.670 --> 00:03:01.270 align:middle line:84%
+going to be given a parameter,
+which is the vertical bar.
+
+60
+00:03:01.270 --> 00:03:04.420 align:middle line:84%
+And that indicates what
+to put between each string
+
+61
+00:03:04.420 --> 00:03:06.083 align:middle line:90%
+in the StringJoiner.
+
+62
+00:03:06.083 --> 00:03:08.500 align:middle line:84%
+That's how we're going to end
+up with our nicely formatted
+
+63
+00:03:08.500 --> 00:03:10.510 align:middle line:90%
+output.
+
+64
+00:03:10.510 --> 00:03:12.110 align:middle line:90%
+Here's the accumulator.
+
+65
+00:03:12.110 --> 00:03:15.700 align:middle line:84%
+The accumulator is a biconsumer
+that adds a new string
+
+66
+00:03:15.700 --> 00:03:16.540 align:middle line:90%
+to the Joiner.
+
+67
+00:03:16.540 --> 00:03:20.050 align:middle line:84%
+So we take the Joiner, and
+we take the new result,
+
+68
+00:03:20.050 --> 00:03:24.190 align:middle line:84%
+and we say Joiner.add, and we
+convert the result to a string.
+
+69
+00:03:24.190 --> 00:03:26.410 align:middle line:84%
+So that'll turn into
+the appropriate string,
+
+70
+00:03:26.410 --> 00:03:30.690 align:middle line:84%
+which is, as you can see
+there, what will be displayed.
+
+71
+00:03:30.690 --> 00:03:32.990 align:middle line:90%
+So that's the accumulator.
+
+72
+00:03:32.990 --> 00:03:36.040 align:middle line:84%
+And of course the add method
+will put the vertical bar
+
+73
+00:03:36.040 --> 00:03:38.950 align:middle line:84%
+in the right place
+in the string.
+
+74
+00:03:38.950 --> 00:03:41.680 align:middle line:84%
+We then have the
+StringJoiner merge method
+
+75
+00:03:41.680 --> 00:03:42.970 align:middle line:90%
+passed as the combiner.
+
+76
+00:03:42.970 --> 00:03:47.050 align:middle line:84%
+That, of course, can be used to
+combine StringJoiners together.
+
+77
+00:03:47.050 --> 00:03:48.470 align:middle line:84%
+As I mentioned a
+number of times,
+
+78
+00:03:48.470 --> 00:03:50.410 align:middle line:84%
+this is only ever used
+for parallel streams,
+
+79
+00:03:50.410 --> 00:03:52.523 align:middle line:90%
+not for sequential streams.
+
+80
+00:03:52.523 --> 00:03:53.690 align:middle line:90%
+And then we have a finisher.
+
+81
+00:03:53.690 --> 00:03:56.490 align:middle line:84%
+And the finisher we have
+takes the StringJoiner
+
+82
+00:03:56.490 --> 00:03:59.040 align:middle line:84%
+and converts it
+back into a string.
+
+83
+00:03:59.040 --> 00:04:01.680 align:middle line:84%
+So what we'll end up with
+when all is said and done
+
+84
+00:04:01.680 --> 00:04:03.690 align:middle line:84%
+from a call to the
+toString method,
+
+85
+00:04:03.690 --> 00:04:08.370 align:middle line:84%
+is a new string that has all
+the results, which are integers
+
+86
+00:04:08.370 --> 00:04:09.772 align:middle line:90%
+separated by vertical bars.
+
+87
+00:04:09.772 --> 00:04:10.980 align:middle line:90%
+So that's what it looks like.
+
+88
+00:04:10.980 --> 00:04:13.580 align:middle line:90%
+
+
+89
+00:04:13.580 --> 00:04:15.890 align:middle line:84%
+Notice that even though
+this was the five parameter
+
+90
+00:04:15.890 --> 00:04:18.079 align:middle line:84%
+version of of, we only had
+to pass four parameters,
+
+91
+00:04:18.079 --> 00:04:20.870 align:middle line:84%
+since the characteristics,
+dot, dot, dot,
+
+92
+00:04:20.870 --> 00:04:22.000 align:middle line:90%
+is an optional parameter.
+
+93
+00:04:22.000 --> 00:04:23.270 align:middle line:84%
+And we didn't want to
+pass anything there,
+
+94
+00:04:23.270 --> 00:04:24.478 align:middle line:90%
+so we didn't have to pass it.
+
+95
+00:04:24.478 --> 00:04:26.503 align:middle line:90%
+
+
+96
+00:04:26.503 --> 00:04:27.920 align:middle line:84%
+Let's now go ahead
+and take a look
+
+97
+00:04:27.920 --> 00:04:32.900 align:middle line:84%
+at how to implement
+another example
+
+98
+00:04:32.900 --> 00:04:34.880 align:middle line:90%
+of a nonconcurrent collector.
+
+99
+00:04:34.880 --> 00:04:38.330 align:middle line:84%
+This one comes from
+the WordSearcher class
+
+100
+00:04:38.330 --> 00:04:43.310 align:middle line:84%
+that we talked about from the
+SimpleSearchStream program.
+
+101
+00:04:43.310 --> 00:04:47.850 align:middle line:84%
+And this is its
+toDownstreamCollector method.
+
+102
+00:04:47.850 --> 00:04:50.070 align:middle line:84%
+And if you go back
+and watch that video,
+
+103
+00:04:50.070 --> 00:04:51.740 align:middle line:90%
+you'll see how that gets used.
+
+104
+00:04:51.740 --> 00:04:55.100 align:middle line:84%
+That was in discussion about
+visualizing the WordSearcher
+
+105
+00:04:55.100 --> 00:04:58.840 align:middle line:90%
+[? printSuffixSlice ?] method.
+
+106
+00:04:58.840 --> 00:05:02.190 align:middle line:84%
+So to.DownstreamCollector
+is a factory method.
+
+107
+00:05:02.190 --> 00:05:03.570 align:middle line:84%
+It creates a
+downstream collector
+
+108
+00:05:03.570 --> 00:05:06.750 align:middle line:84%
+that merges result
+lists together
+
+109
+00:05:06.750 --> 00:05:09.070 align:middle line:84%
+to make things a little
+bit more concise and easier
+
+110
+00:05:09.070 --> 00:05:11.910 align:middle line:90%
+to deal with.
+
+111
+00:05:11.910 --> 00:05:15.030 align:middle line:84%
+As you can see
+here, what we do is
+
+112
+00:05:15.030 --> 00:05:17.430 align:middle line:84%
+we create a collector that's
+going to take in a search
+
+113
+00:05:17.430 --> 00:05:19.880 align:middle line:90%
+results object--
+
+114
+00:05:19.880 --> 00:05:20.880 align:middle line:90%
+a search result type.
+
+115
+00:05:20.880 --> 00:05:23.220 align:middle line:84%
+We're going to have a
+stream of search results.
+
+116
+00:05:23.220 --> 00:05:25.170 align:middle line:84%
+We're going to create
+an accumulator that
+
+117
+00:05:25.170 --> 00:05:30.270 align:middle line:84%
+will accumulate things into
+a list of SearchResult result
+
+118
+00:05:30.270 --> 00:05:31.410 align:middle line:90%
+objects.
+
+119
+00:05:31.410 --> 00:05:34.020 align:middle line:84%
+And that's what's going to
+be returned as the return
+
+120
+00:05:34.020 --> 00:05:35.700 align:middle line:90%
+value of this collector.
+
+121
+00:05:35.700 --> 00:05:38.265 align:middle line:84%
+So that's basically what
+the generic parameters
+
+122
+00:05:38.265 --> 00:05:41.130 align:middle line:84%
+are to the collector
+that we show above that's
+
+123
+00:05:41.130 --> 00:05:44.250 align:middle line:90%
+called toDownstreamCollector.
+
+124
+00:05:44.250 --> 00:05:46.800 align:middle line:84%
+Internally, we use the
+Collector.of factory method
+
+125
+00:05:46.800 --> 00:05:47.880 align:middle line:90%
+to make a new collector.
+
+126
+00:05:47.880 --> 00:05:50.608 align:middle line:84%
+This one uses the
+four-parameter version of of.
+
+127
+00:05:50.608 --> 00:05:52.650 align:middle line:84%
+And again, we only have
+to pass three parameters,
+
+128
+00:05:52.650 --> 00:05:55.260 align:middle line:84%
+because characteristics
+is basically
+
+129
+00:05:55.260 --> 00:05:58.420 align:middle line:84%
+an optional parameter, and
+we don't need to use it.
+
+130
+00:05:58.420 --> 00:05:59.170 align:middle line:90%
+Here's what we do.
+
+131
+00:05:59.170 --> 00:06:01.780 align:middle line:84%
+We create a mutable
+result container,
+
+132
+00:06:01.780 --> 00:06:04.240 align:middle line:84%
+which is implemented,
+as is often the case,
+
+133
+00:06:04.240 --> 00:06:07.660 align:middle line:84%
+with an array list, because
+that works quite well.
+
+134
+00:06:07.660 --> 00:06:09.460 align:middle line:84%
+That's what the
+supplier-- that's
+
+135
+00:06:09.460 --> 00:06:13.510 align:middle line:84%
+the supplier lambda or supplier
+method that's passed in here.
+
+136
+00:06:13.510 --> 00:06:17.290 align:middle line:84%
+Down here you can see how we
+define a lambda expression that
+
+137
+00:06:17.290 --> 00:06:22.600 align:middle line:84%
+will accumulate the result
+objects from a given
+
+138
+00:06:22.600 --> 00:06:28.570 align:middle line:84%
+SearchResult results object into
+the results list accumulator.
+
+139
+00:06:28.570 --> 00:06:31.420 align:middle line:84%
+So all we do there is we simply
+say, result list-- that's RL--
+
+140
+00:06:31.420 --> 00:06:34.150 align:middle line:90%
+dot addAll.
+
+141
+00:06:34.150 --> 00:06:37.720 align:middle line:84%
+And we take the results list
+from the current search result,
+
+142
+00:06:37.720 --> 00:06:41.830 align:middle line:84%
+and we simply append it to
+the end of the results list.
+
+143
+00:06:41.830 --> 00:06:45.040 align:middle line:84%
+So that's what the accumulator
+lambda expression does.
+
+144
+00:06:45.040 --> 00:06:48.790 align:middle line:84%
+And then the third and
+final parameter we passed of
+
+145
+00:06:48.790 --> 00:06:50.500 align:middle line:90%
+is just a combiner.
+
+146
+00:06:50.500 --> 00:06:52.690 align:middle line:84%
+We wouldn't use this unless
+we use parallel streams.
+
+147
+00:06:52.690 --> 00:06:57.220 align:middle line:84%
+And as always, we use this to
+merge the results list into--
+
+148
+00:06:57.220 --> 00:07:00.780 align:middle line:84%
+two results list into
+a single results list.
+
+149
+00:07:00.780 --> 00:07:04.290 align:middle line:84%
+So that's basically how
+the implementation works.
+
+150
+00:07:04.290 --> 00:07:08.280 align:middle line:84%
+Again, you can see that we
+only had to provide the three
+
+151
+00:07:08.280 --> 00:07:09.960 align:middle line:84%
+parameters here,
+because characteristics
+
+152
+00:07:09.960 --> 00:07:11.418 align:middle line:84%
+is an optional
+parameter and can be
+
+153
+00:07:11.418 --> 00:07:14.560 align:middle line:90%
+admitted without any problem.
+
+154
+00:07:14.560 --> 00:07:18.270 align:middle line:84%
+Now, if you're doing simple
+implementations, like I just
+
+155
+00:07:18.270 --> 00:07:20.940 align:middle line:84%
+showed you, for
+DownstreamCollector
+
+156
+00:07:20.940 --> 00:07:23.670 align:middle line:84%
+and the toString method
+for SearchResults,
+
+157
+00:07:23.670 --> 00:07:26.130 align:middle line:84%
+what I showed you here
+works perfectly fine.
+
+158
+00:07:26.130 --> 00:07:29.010 align:middle line:84%
+If you're doing more
+complicated collectors,
+
+159
+00:07:29.010 --> 00:07:30.510 align:middle line:84%
+as we will do when
+we get further
+
+160
+00:07:30.510 --> 00:07:35.280 align:middle line:84%
+along into our FuturesCollector,
+when we talk about Java
+
+161
+00:07:35.280 --> 00:07:38.190 align:middle line:84%
+Completable.Futures,
+futures, then you probably
+
+162
+00:07:38.190 --> 00:07:40.890 align:middle line:84%
+need to implement the
+collector interface directly,
+
+163
+00:07:40.890 --> 00:07:44.640 align:middle line:84%
+rather than trying to come
+up with a wacky set of lambda
+
+164
+00:07:44.640 --> 00:07:49.110 align:middle line:84%
+expressions to pass into the
+Collector.of factory method.
+
+165
+00:07:49.110 --> 00:07:51.520 align:middle line:84%
+You could do it, but
+it would be ugly.
+
+166
+00:07:51.520 --> 00:07:53.670 align:middle line:84%
+So when we get to that
+part of the course later,
+
+167
+00:07:53.670 --> 00:07:56.530 align:middle line:90%
+you'll see how that all works.
+
+168
+00:07:56.530 --> 00:07:59.290 align:middle line:84%
+There's lots of other good
+information about custom
+
+169
+00:07:59.290 --> 00:08:01.420 align:middle line:90%
+collectors available online.
+
+170
+00:08:01.420 --> 00:08:03.850 align:middle line:84%
+My friend and colleague,
+Angelika Langer,
+
+171
+00:08:03.850 --> 00:08:05.560 align:middle line:84%
+has a nice video
+that you can watch
+
+172
+00:08:05.560 --> 00:08:10.510 align:middle line:84%
+at this link that talks about
+the differences between reduce
+
+173
+00:08:10.510 --> 00:08:11.200 align:middle line:90%
+and collect.
+
+174
+00:08:11.200 --> 00:08:13.860 align:middle line:84%
+And it goes through great
+detail and talks about collect.
+
+175
+00:08:13.860 --> 00:08:16.682 align:middle line:90%
+It's several hours long.
+
+176
+00:08:16.682 --> 00:08:18.640 align:middle line:84%
+I will cover a lot of
+the material in her video
+
+177
+00:08:18.640 --> 00:08:21.700 align:middle line:84%
+later when we talk
+about parallel streams.
+
+178
+00:08:21.700 --> 00:08:24.160 align:middle line:84%
+But it's worth a
+listen, if you're really
+
+179
+00:08:24.160 --> 00:08:26.020 align:middle line:84%
+interested in
+learning a lot more
+
+180
+00:08:26.020 --> 00:08:29.770 align:middle line:84%
+about these fascinating features
+in the Java Streams framework
+
+181
+00:08:29.770 --> 00:08:33.039 align:middle line:84%
+for combining results
+together, in this case,
+
+182
+00:08:33.039 --> 00:08:36.240 align:middle line:90%
+for nonconcurrent collection.

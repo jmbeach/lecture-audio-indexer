@@ -1,0 +1,290 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.810 align:middle line:90%
+
+
+2
+00:00:00.810 --> 00:00:03.030 align:middle line:84%
+Welcome to the next
+week of our course
+
+3
+00:00:03.030 --> 00:00:05.990 align:middle line:84%
+on parallel functional
+programming with Java.
+
+4
+00:00:05.990 --> 00:00:08.810 align:middle line:84%
+Previous weeks have focused
+on the three phases in a Java
+
+5
+00:00:08.810 --> 00:00:12.590 align:middle line:84%
+stream, including splitting,
+which converts a data
+
+6
+00:00:12.590 --> 00:00:16.129 align:middle line:84%
+source into a stream,
+applying, which processes
+
+7
+00:00:16.129 --> 00:00:19.070 align:middle line:84%
+the elements in the stream
+via intermediate operations,
+
+8
+00:00:19.070 --> 00:00:21.740 align:middle line:84%
+and combining, which triggers
+intermediate operation
+
+9
+00:00:21.740 --> 00:00:26.290 align:middle line:84%
+processing and creates
+a single reduced result.
+
+10
+00:00:26.290 --> 00:00:28.330 align:middle line:84%
+These three phases
+have default behaviors
+
+11
+00:00:28.330 --> 00:00:31.490 align:middle line:84%
+that apply to many Java
+collections and use cases.
+
+12
+00:00:31.490 --> 00:00:33.340 align:middle line:84%
+However, there are
+situations where
+
+13
+00:00:33.340 --> 00:00:36.820 align:middle line:84%
+it's essential to customize
+aspects of these phases,
+
+14
+00:00:36.820 --> 00:00:40.030 align:middle line:84%
+either to improve performance
+or to support user-defined data
+
+15
+00:00:40.030 --> 00:00:41.600 align:middle line:90%
+sources.
+
+16
+00:00:41.600 --> 00:00:44.880 align:middle line:84%
+We therefore start this week
+by examining the inner workings
+
+17
+00:00:44.880 --> 00:00:47.550 align:middle line:84%
+of the Java streams framework
+to demonstrate which
+
+18
+00:00:47.550 --> 00:00:50.730 align:middle line:84%
+of its splitting, applying,
+and combining phases
+
+19
+00:00:50.730 --> 00:00:53.010 align:middle line:84%
+can be customized,
+as well as showing
+
+20
+00:00:53.010 --> 00:00:55.500 align:middle line:90%
+how and when to customize them.
+
+21
+00:00:55.500 --> 00:00:58.340 align:middle line:84%
+We first explain how the Java
+streams framework constructs
+
+22
+00:00:58.340 --> 00:01:01.070 align:middle line:84%
+a stream pipeline at
+runtime via a linked
+
+23
+00:01:01.070 --> 00:01:04.250 align:middle line:84%
+list of stream source and
+intermediate operations,
+
+24
+00:01:04.250 --> 00:01:05.780 align:middle line:84%
+where each node in
+this linked list
+
+25
+00:01:05.780 --> 00:01:09.230 align:middle line:84%
+comprises a stage in
+the stream pipeline.
+
+26
+00:01:09.230 --> 00:01:11.480 align:middle line:84%
+We then describe how the
+stream's framework executes
+
+27
+00:01:11.480 --> 00:01:14.570 align:middle line:84%
+stages in this linked list,
+based on stream source
+
+28
+00:01:14.570 --> 00:01:16.610 align:middle line:84%
+and operation
+properties, such as
+
+29
+00:01:16.610 --> 00:01:18.890 align:middle line:84%
+whether the intermediate
+operations have stateless
+
+30
+00:01:18.890 --> 00:01:22.930 align:middle line:84%
+versus stateful semantics and
+whether the terminal operation
+
+31
+00:01:22.930 --> 00:01:26.866 align:middle line:84%
+has a run to completion versus
+short-circuiting semantics.
+
+32
+00:01:26.866 --> 00:01:30.040 align:middle line:84%
+We next explore how to
+customize stream creation
+
+33
+00:01:30.040 --> 00:01:33.880 align:middle line:84%
+by examining the structure and
+functionality of spliterators,
+
+34
+00:01:33.880 --> 00:01:37.270 align:middle line:84%
+which are splittable iterators
+used by the streams framework
+
+35
+00:01:37.270 --> 00:01:41.500 align:middle line:84%
+to partition and traverse all
+elements of a data source.
+
+36
+00:01:41.500 --> 00:01:44.110 align:middle line:84%
+We analyze a sequential
+spliterator implementation
+
+37
+00:01:44.110 --> 00:01:46.300 align:middle line:84%
+for the simple search
+stream program,
+
+38
+00:01:46.300 --> 00:01:48.910 align:middle line:84%
+which uses Java regular
+expressions to create streams
+
+39
+00:01:48.910 --> 00:01:51.250 align:middle line:84%
+of objects that
+indicate locations
+
+40
+00:01:51.250 --> 00:01:54.840 align:middle line:84%
+where a search word
+appears in an input string.
+
+41
+00:01:54.840 --> 00:01:56.840 align:middle line:84%
+The final topic this week
+[? shows ?] [? us a ?]
+
+42
+00:01:56.840 --> 00:01:59.870 align:middle line:84%
+customized sequential
+stream collection phase
+
+43
+00:01:59.870 --> 00:02:02.410 align:middle line:90%
+by non-concurrent collectors.
+
+44
+00:02:02.410 --> 00:02:05.170 align:middle line:84%
+A collector is the
+inverse of a spliterator
+
+45
+00:02:05.170 --> 00:02:07.400 align:middle line:84%
+in that a spliterator
+partitions a single data
+
+46
+00:02:07.400 --> 00:02:09.470 align:middle line:84%
+source into a
+stream of elements,
+
+47
+00:02:09.470 --> 00:02:12.380 align:middle line:84%
+whereas the collector combines
+a stream of elements back
+
+48
+00:02:12.380 --> 00:02:15.880 align:middle line:84%
+into a single result. The
+collect terminal operation
+
+49
+00:02:15.880 --> 00:02:18.430 align:middle line:84%
+uses a collector to
+accumulate stream elements
+
+50
+00:02:18.430 --> 00:02:21.430 align:middle line:84%
+into a so-called mutable
+result container.
+
+51
+00:02:21.430 --> 00:02:24.070 align:middle line:84%
+We analyze examples of
+predefined non-concurrent
+
+52
+00:02:24.070 --> 00:02:27.130 align:middle line:84%
+collectors provided by the
+Java streams framework,
+
+53
+00:02:27.130 --> 00:02:29.050 align:middle line:84%
+as well as several
+custom implementations
+
+54
+00:02:29.050 --> 00:02:31.600 align:middle line:84%
+of non-concurrent collectors
+from the simple search stream
+
+55
+00:02:31.600 --> 00:02:32.830 align:middle line:90%
+program.
+
+56
+00:02:32.830 --> 00:02:35.100 align:middle line:84%
+In upcoming lessons
+in later weeks,
+
+57
+00:02:35.100 --> 00:02:37.050 align:middle line:84%
+we'll expand our
+coverage of collectors
+
+58
+00:02:37.050 --> 00:02:40.860 align:middle line:84%
+to include both non-concurrent
+and concurrent collectors
+
+59
+00:02:40.860 --> 00:02:43.160 align:middle line:90%
+for Java parallel streams.

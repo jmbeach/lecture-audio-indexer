@@ -1,0 +1,478 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.840 align:middle line:90%
+
+
+2
+00:00:00.840 --> 00:00:03.870 align:middle line:84%
+We'll continue our discussion
+of Java Streams Internals
+
+3
+00:00:03.870 --> 00:00:08.039 align:middle line:84%
+by describing the
+execution of streams.
+
+4
+00:00:08.039 --> 00:00:10.710 align:middle line:84%
+And we have to be aware here of
+how a Java stream is actually
+
+5
+00:00:10.710 --> 00:00:13.800 align:middle line:84%
+executed after that linked
+list is built up at runtime.
+
+6
+00:00:13.800 --> 00:00:16.720 align:middle line:84%
+What happens when things
+actually start to run?
+
+7
+00:00:16.720 --> 00:00:21.460 align:middle line:84%
+So when the terminal
+operation finally runs,
+
+8
+00:00:21.460 --> 00:00:27.310 align:middle line:84%
+then the streams framework picks
+a so-called execution plan.
+
+9
+00:00:27.310 --> 00:00:29.680 align:middle line:84%
+And the execution plan
+that will be selected
+
+10
+00:00:29.680 --> 00:00:32.380 align:middle line:84%
+by the streams
+framework is obviously
+
+11
+00:00:32.380 --> 00:00:36.460 align:middle line:84%
+going to be based on
+properties of the source
+
+12
+00:00:36.460 --> 00:00:38.200 align:middle line:90%
+and aggregate operations.
+
+13
+00:00:38.200 --> 00:00:40.480 align:middle line:84%
+So all those flags that
+we just talked about,
+
+14
+00:00:40.480 --> 00:00:42.550 align:middle line:84%
+and the accumulation
+of the flags
+
+15
+00:00:42.550 --> 00:00:46.030 align:middle line:84%
+to create derive flags at
+each of the different stages
+
+16
+00:00:46.030 --> 00:00:48.580 align:middle line:90%
+in the stream pipeline.
+
+17
+00:00:48.580 --> 00:00:51.580 align:middle line:84%
+Now, it turns out that the
+intermediate and terminal
+
+18
+00:00:51.580 --> 00:00:54.040 align:middle line:84%
+operations are actually split
+up into different categories,
+
+19
+00:00:54.040 --> 00:00:56.670 align:middle line:90%
+depending on their properties.
+
+20
+00:00:56.670 --> 00:01:00.540 align:middle line:84%
+We'll start by talking about the
+intermediate operations first.
+
+21
+00:01:00.540 --> 00:01:04.019 align:middle line:84%
+Intermediate operations are
+divided up into two categories,
+
+22
+00:01:04.019 --> 00:01:08.580 align:middle line:84%
+based on whether they're
+stateless or stateful.
+
+23
+00:01:08.580 --> 00:01:10.740 align:middle line:84%
+If you recall, we kind
+of described these things
+
+24
+00:01:10.740 --> 00:01:13.680 align:middle line:90%
+earlier in the weeks.
+
+25
+00:01:13.680 --> 00:01:16.620 align:middle line:84%
+So stateless operations,
+which would include things
+
+26
+00:01:16.620 --> 00:01:20.690 align:middle line:84%
+like filter, map, and
+flat map and so on,
+
+27
+00:01:20.690 --> 00:01:23.810 align:middle line:90%
+those will be able to be run--
+
+28
+00:01:23.810 --> 00:01:27.470 align:middle line:84%
+if we only have intermediate
+operations that are stateless,
+
+29
+00:01:27.470 --> 00:01:29.240 align:middle line:84%
+then all of a
+stateless operations
+
+30
+00:01:29.240 --> 00:01:33.440 align:middle line:84%
+can be run in a single pass,
+starting from when the terminal
+
+31
+00:01:33.440 --> 00:01:34.520 align:middle line:90%
+operation is hit.
+
+32
+00:01:34.520 --> 00:01:37.490 align:middle line:84%
+And it'll just pull the data
+from the source, all the way
+
+33
+00:01:37.490 --> 00:01:39.103 align:middle line:90%
+through all those operations.
+
+34
+00:01:39.103 --> 00:01:40.520 align:middle line:84%
+And then it's done,
+it'll go ahead
+
+35
+00:01:40.520 --> 00:01:44.150 align:middle line:84%
+and accumulate it into whatever
+the terminal operation needs
+
+36
+00:01:44.150 --> 00:01:46.500 align:middle line:90%
+to do to get its job done.
+
+37
+00:01:46.500 --> 00:01:51.810 align:middle line:84%
+So this works, this one
+passed behavior is in effect
+
+38
+00:01:51.810 --> 00:01:54.060 align:middle line:90%
+even if the stream is parallel.
+
+39
+00:01:54.060 --> 00:01:56.250 align:middle line:84%
+So that allows very
+high performance
+
+40
+00:01:56.250 --> 00:02:00.090 align:middle line:84%
+of a parallel stream because
+all these operations are ideally
+
+41
+00:02:00.090 --> 00:02:01.685 align:middle line:84%
+stateless, an
+embarrassingly parallel,
+
+42
+00:02:01.685 --> 00:02:03.810 align:middle line:84%
+and they don't have any
+dependencies on each other,
+
+43
+00:02:03.810 --> 00:02:07.030 align:middle line:84%
+and they don't acquire locks,
+and so on and so forth.
+
+44
+00:02:07.030 --> 00:02:10.600 align:middle line:84%
+And as a result, things
+will be very efficient.
+
+45
+00:02:10.600 --> 00:02:14.620 align:middle line:84%
+In contrast, if there
+are stateful operations
+
+46
+00:02:14.620 --> 00:02:20.980 align:middle line:84%
+in a stream, such as sorted,
+limit, distinct, dropWhile,
+
+47
+00:02:20.980 --> 00:02:24.580 align:middle line:84%
+and so on, then that
+requires the stream
+
+48
+00:02:24.580 --> 00:02:28.330 align:middle line:84%
+to be divided up into sections
+and run in multiple passes.
+
+49
+00:02:28.330 --> 00:02:30.560 align:middle line:84%
+Just to think about
+a simple example,
+
+50
+00:02:30.560 --> 00:02:35.200 align:middle line:84%
+if you want to sort the contents
+of a stream you can't do that
+
+51
+00:02:35.200 --> 00:02:38.950 align:middle line:84%
+in one pass by pulling the data
+element from the data source
+
+52
+00:02:38.950 --> 00:02:41.140 align:middle line:84%
+all the way through to
+the terminal operation
+
+53
+00:02:41.140 --> 00:02:44.350 align:middle line:84%
+because you've got to
+store all of the elements
+
+54
+00:02:44.350 --> 00:02:47.200 align:middle line:84%
+in some intermediate buffer,
+the stream framework, rather,
+
+55
+00:02:47.200 --> 00:02:51.010 align:middle line:84%
+has to store all the elements
+in some intermediate buffer,
+
+56
+00:02:51.010 --> 00:02:54.340 align:middle line:84%
+and then only run the
+sort on it after it's
+
+57
+00:02:54.340 --> 00:02:56.350 align:middle line:84%
+accumulated all of them,
+because otherwise you
+
+58
+00:02:56.350 --> 00:02:58.340 align:middle line:90%
+would get some bizarre output.
+
+59
+00:02:58.340 --> 00:02:59.890 align:middle line:84%
+So if they're
+stateful operations,
+
+60
+00:02:59.890 --> 00:03:02.820 align:middle line:84%
+that requires a
+different execution plan,
+
+61
+00:03:02.820 --> 00:03:05.265 align:middle line:84%
+and that goes back to
+what I said earlier
+
+62
+00:03:05.265 --> 00:03:07.390 align:middle line:84%
+where I noted that if you
+have stateful operations,
+
+63
+00:03:07.390 --> 00:03:09.580 align:middle line:84%
+chances are you'll take
+more time and space
+
+64
+00:03:09.580 --> 00:03:12.760 align:middle line:90%
+overhead to do the processing.
+
+65
+00:03:12.760 --> 00:03:16.000 align:middle line:84%
+Likewise, terminal
+operations are also
+
+66
+00:03:16.000 --> 00:03:19.640 align:middle line:90%
+divided into two categories.
+
+67
+00:03:19.640 --> 00:03:22.670 align:middle line:84%
+We have run to
+completion operations,
+
+68
+00:03:22.670 --> 00:03:27.030 align:middle line:84%
+and we also have the
+short circuit operations.
+
+69
+00:03:27.030 --> 00:03:29.330 align:middle line:84%
+So the run to
+completion operations
+
+70
+00:03:29.330 --> 00:03:32.190 align:middle line:84%
+includes sort of that, the
+classic terminal operations,
+
+71
+00:03:32.190 --> 00:03:36.350 align:middle line:84%
+things like reduce, things like
+collect, things like for each,
+
+72
+00:03:36.350 --> 00:03:37.650 align:middle line:90%
+and so on.
+
+73
+00:03:37.650 --> 00:03:41.990 align:middle line:84%
+And these terminal operations
+process the data efficiently
+
+74
+00:03:41.990 --> 00:03:45.740 align:middle line:84%
+in bulk using a split
+trader method called
+
+75
+00:03:45.740 --> 00:03:47.750 align:middle line:84%
+for each remaining,
+which goes ahead
+
+76
+00:03:47.750 --> 00:03:50.180 align:middle line:84%
+and applies an action
+to every element
+
+77
+00:03:50.180 --> 00:03:56.570 align:middle line:84%
+that's in the spliterator
+at that point.
+
+78
+00:03:56.570 --> 00:04:00.150 align:middle line:84%
+Conversely, there is also short
+circuiting terminal operations,
+
+79
+00:04:00.150 --> 00:04:05.520 align:middle line:84%
+things like anyMatch,
+findFirst noneMatch, and so on.
+
+80
+00:04:05.520 --> 00:04:09.170 align:middle line:84%
+And these stop as soon as
+the condition that they're
+
+81
+00:04:09.170 --> 00:04:11.870 align:middle line:84%
+trying to satisfy is
+either met or not met,
+
+82
+00:04:11.870 --> 00:04:15.250 align:middle line:84%
+depending on which way
+they're trying to go.
+
+83
+00:04:15.250 --> 00:04:17.079 align:middle line:84%
+These terminal
+operations process
+
+84
+00:04:17.079 --> 00:04:21.730 align:middle line:84%
+data one element at a time,
+using the tri advanced method
+
+85
+00:04:21.730 --> 00:04:22.888 align:middle line:90%
+of spliterator.
+
+86
+00:04:22.888 --> 00:04:24.430 align:middle line:84%
+So of course, every
+time you call it,
+
+87
+00:04:24.430 --> 00:04:26.830 align:middle line:84%
+it's going to tell you
+whether you should keep going.
+
+88
+00:04:26.830 --> 00:04:29.028 align:middle line:84%
+And when you're done,
+then you stop right away.
+
+89
+00:04:29.028 --> 00:04:30.070 align:middle line:90%
+So they're short circuit.
+
+90
+00:04:30.070 --> 00:04:35.010 align:middle line:84%
+They don't run in bulk or in
+mass using for each remaining
+
+91
+00:04:35.010 --> 00:04:37.450 align:middle line:84%
+spliterator method, but
+instead, they execute one
+
+92
+00:04:37.450 --> 00:04:40.450 align:middle line:90%
+at a time using try advance.
+
+93
+00:04:40.450 --> 00:04:41.890 align:middle line:84%
+So those are the
+main differences
+
+94
+00:04:41.890 --> 00:04:48.880 align:middle line:84%
+between the characteristics of
+both the data source and then
+
+95
+00:04:48.880 --> 00:04:50.492 align:middle line:84%
+the various
+intermediate operations,
+
+96
+00:04:50.492 --> 00:04:52.950 align:middle line:84%
+and how they're divided up into
+these different categories.
+
+97
+00:04:52.950 --> 00:04:55.750 align:middle line:84%
+Stateful and stateless for
+intermediate operations,
+
+98
+00:04:55.750 --> 00:05:00.070 align:middle line:84%
+and run to completion and short
+circuiting for the terminal
+
+99
+00:05:00.070 --> 00:05:02.220 align:middle line:90%
+operations.

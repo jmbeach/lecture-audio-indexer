@@ -1,0 +1,948 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.660 align:middle line:90%
+
+
+2
+00:00:00.660 --> 00:00:03.330 align:middle line:84%
+So that I've talked about
+the concept of spliterators,
+
+3
+00:00:03.330 --> 00:00:07.110 align:middle line:84%
+and we've talked about basically
+the overall concept of how
+
+4
+00:00:07.110 --> 00:00:10.500 align:middle line:84%
+things get split up, and
+we talked about splitting,
+
+5
+00:00:10.500 --> 00:00:12.300 align:middle line:84%
+and we talked about
+iterating, and so on,
+
+6
+00:00:12.300 --> 00:00:13.675 align:middle line:84%
+we're now going
+to talk about how
+
+7
+00:00:13.675 --> 00:00:17.370 align:middle line:84%
+to apply a subset of the
+spliterator capability.
+
+8
+00:00:17.370 --> 00:00:19.860 align:middle line:84%
+And in this case,
+we're going to define
+
+9
+00:00:19.860 --> 00:00:25.460 align:middle line:84%
+a spliterator for the
+SimpleSearchStream program.
+
+10
+00:00:25.460 --> 00:00:27.800 align:middle line:84%
+So the SimpleSearchStream
+program
+
+11
+00:00:27.800 --> 00:00:30.470 align:middle line:84%
+uses a sequential
+spliterator, which
+
+12
+00:00:30.470 --> 00:00:33.380 align:middle line:90%
+only has one thread involved.
+
+13
+00:00:33.380 --> 00:00:36.050 align:middle line:84%
+And basically, what
+we're going to do
+
+14
+00:00:36.050 --> 00:00:39.440 align:middle line:84%
+is use this spliterator
+in our implementation
+
+15
+00:00:39.440 --> 00:00:41.390 align:middle line:90%
+of the searchForWord method.
+
+16
+00:00:41.390 --> 00:00:43.760 align:middle line:84%
+We talked about
+searchForWord before.
+
+17
+00:00:43.760 --> 00:00:45.950 align:middle line:84%
+I showed you how
+searchForWord is
+
+18
+00:00:45.950 --> 00:00:48.110 align:middle line:84%
+going to be used to take
+a word, and then it's
+
+19
+00:00:48.110 --> 00:00:50.480 align:middle line:84%
+going to go ahead
+and look up and find
+
+20
+00:00:50.480 --> 00:00:54.020 align:middle line:84%
+all the places where that word
+occurs and an input stream.
+
+21
+00:00:54.020 --> 00:00:56.360 align:middle line:84%
+So that's what
+searchForWord does.
+
+22
+00:00:56.360 --> 00:00:59.090 align:middle line:84%
+And the way it works is it uses
+a spliterator, which we define
+
+23
+00:00:59.090 --> 00:01:01.070 align:middle line:84%
+and will show, to
+find all the instances
+
+24
+00:01:01.070 --> 00:01:07.370 align:middle line:84%
+of a word in the input string,
+and it returns a SearchResults
+
+25
+00:01:07.370 --> 00:01:07.940 align:middle line:90%
+object.
+
+26
+00:01:07.940 --> 00:01:12.030 align:middle line:84%
+So it'll be a list
+of all the results.
+
+27
+00:01:12.030 --> 00:01:13.940 align:middle line:90%
+So here's the way this works.
+
+28
+00:01:13.940 --> 00:01:15.440 align:middle line:84%
+If you take a
+close look at this,
+
+29
+00:01:15.440 --> 00:01:18.680 align:middle line:84%
+the search for word method
+creates a new SearchResults
+
+30
+00:01:18.680 --> 00:01:20.150 align:middle line:90%
+object.
+
+31
+00:01:20.150 --> 00:01:23.630 align:middle line:84%
+And one of the parameters
+that's passed to this
+
+32
+00:01:23.630 --> 00:01:26.180 align:middle line:84%
+is going to be a list
+of search results.
+
+33
+00:01:26.180 --> 00:01:27.890 align:middle line:84%
+And we get this list
+of search results
+
+34
+00:01:27.890 --> 00:01:31.130 align:middle line:84%
+by first calling
+StreamSupport.stream, which
+
+35
+00:01:31.130 --> 00:01:33.400 align:middle line:84%
+we just looked at,
+and we're going
+
+36
+00:01:33.400 --> 00:01:35.960 align:middle line:90%
+to pass in our own spliterator.
+
+37
+00:01:35.960 --> 00:01:38.300 align:middle line:84%
+And our own spliterator
+is going to be
+
+38
+00:01:38.300 --> 00:01:41.460 align:middle line:90%
+this WordMatchSpliterator.
+
+39
+00:01:41.460 --> 00:01:43.920 align:middle line:84%
+And this
+WordMatchSpliterator is going
+
+40
+00:01:43.920 --> 00:01:47.220 align:middle line:84%
+to be given the input
+string we're searching,
+
+41
+00:01:47.220 --> 00:01:50.370 align:middle line:84%
+which is the lyrics for the
+"Do Re Mi" song, and a given
+
+42
+00:01:50.370 --> 00:01:55.320 align:middle line:84%
+word, like "mi" or "fa"
+or "ti" or whatnot.
+
+43
+00:01:55.320 --> 00:01:59.130 align:middle line:84%
+And we also are going to
+pass in the value false.
+
+44
+00:01:59.130 --> 00:02:01.470 align:middle line:84%
+And by passing in the
+value false, that means,
+
+45
+00:02:01.470 --> 00:02:04.490 align:middle line:84%
+just make me a sequential
+stream, please.
+
+46
+00:02:04.490 --> 00:02:06.340 align:middle line:84%
+So we now take that
+sequential stream,
+
+47
+00:02:06.340 --> 00:02:08.650 align:middle line:84%
+and this is one of those
+examples where we don't have
+
+48
+00:02:08.650 --> 00:02:10.419 align:middle line:90%
+any intermediate operations.
+
+49
+00:02:10.419 --> 00:02:14.230 align:middle line:84%
+We immediately call a
+collect terminal operation
+
+50
+00:02:14.230 --> 00:02:19.920 align:middle line:84%
+to collect the stream
+of matching results
+
+51
+00:02:19.920 --> 00:02:26.560 align:middle line:84%
+into a list of
+SearchResults.result objects.
+
+52
+00:02:26.560 --> 00:02:29.530 align:middle line:84%
+So this list of
+SearchResults.result
+
+53
+00:02:29.530 --> 00:02:31.780 align:middle line:84%
+will then be passed
+as the final parameter
+
+54
+00:02:31.780 --> 00:02:34.653 align:middle line:84%
+to the SearchResults
+constructor,
+
+55
+00:02:34.653 --> 00:02:36.070 align:middle line:84%
+and then that will
+have kept track
+
+56
+00:02:36.070 --> 00:02:38.620 align:middle line:84%
+of where all the
+indices matched when
+
+57
+00:02:38.620 --> 00:02:44.560 align:middle line:84%
+we did our search to look for
+the word in the input string.
+
+58
+00:02:44.560 --> 00:02:47.520 align:middle line:84%
+So that is the
+context of everything
+
+59
+00:02:47.520 --> 00:02:52.590 align:middle line:84%
+let's now turn our attention
+to the WordMatchSpliterator
+
+60
+00:02:52.590 --> 00:02:54.190 align:middle line:90%
+implementation.
+
+61
+00:02:54.190 --> 00:02:57.510 align:middle line:84%
+So the WordMatchSpliterator
+is a class
+
+62
+00:02:57.510 --> 00:03:00.360 align:middle line:84%
+that uses Java
+regular expressions
+
+63
+00:03:00.360 --> 00:03:03.960 align:middle line:84%
+to create a stream of
+SearchResults.result objects
+
+64
+00:03:03.960 --> 00:03:07.470 align:middle line:84%
+that match the number of times
+a word appears in an input
+
+65
+00:03:07.470 --> 00:03:08.520 align:middle line:90%
+string.
+
+66
+00:03:08.520 --> 00:03:10.800 align:middle line:84%
+So you can see, here's
+WordMatchSpliterator.
+
+67
+00:03:10.800 --> 00:03:13.830 align:middle line:84%
+You can go look at its
+implementation in my Github
+
+68
+00:03:13.830 --> 00:03:15.300 align:middle line:90%
+repository.
+
+69
+00:03:15.300 --> 00:03:18.690 align:middle line:84%
+This WordMatchSpliterator
+extends
+
+70
+00:03:18.690 --> 00:03:22.360 align:middle line:84%
+the
+Spliterators.AbstractSpliterator
+
+71
+00:03:22.360 --> 00:03:27.380 align:middle line:84%
+helper class, which in turn
+implements Spliterator,
+
+72
+00:03:27.380 --> 00:03:29.440 align:middle line:90%
+the spliterator interface.
+
+73
+00:03:29.440 --> 00:03:32.150 align:middle line:84%
+And the nice thing about using
+the AbstractSpliterator class
+
+74
+00:03:32.150 --> 00:03:32.650 align:middle line:90%
+is, You?
+
+75
+00:03:32.650 --> 00:03:35.750 align:middle line:84%
+Only have to implement
+the tryAdvance method.
+
+76
+00:03:35.750 --> 00:03:37.690 align:middle line:84%
+You'll notice that the
+AbstractSpliterator is
+
+77
+00:03:37.690 --> 00:03:41.260 align:middle line:84%
+a generic class that's
+parameterized with result.
+
+78
+00:03:41.260 --> 00:03:44.470 align:middle line:84%
+And result, in this
+case, is basically
+
+79
+00:03:44.470 --> 00:03:46.570 align:middle line:84%
+an object that keeps
+track of the indices where
+
+80
+00:03:46.570 --> 00:03:51.540 align:middle line:84%
+a search was located,
+where a word was located.
+
+81
+00:03:51.540 --> 00:03:55.890 align:middle line:84%
+We then go ahead and define a
+field here called mWordMatcher.
+
+82
+00:03:55.890 --> 00:04:00.300 align:middle line:84%
+And mWordMatcher is part of
+the Java regular expression
+
+83
+00:04:00.300 --> 00:04:04.170 align:middle line:84%
+package, and it defines a
+regular-expression-matching
+
+84
+00:04:04.170 --> 00:04:09.960 align:middle line:84%
+engine that will be
+used to match words,
+
+85
+00:04:09.960 --> 00:04:15.470 align:middle line:84%
+or regular expressions, in this
+case, that appear in the input.
+
+86
+00:04:15.470 --> 00:04:17.300 align:middle line:90%
+The constructor will be passed--
+
+87
+00:04:17.300 --> 00:04:19.310 align:middle line:84%
+the constructor for
+WordMatchSpliterator
+
+88
+00:04:19.310 --> 00:04:22.370 align:middle line:84%
+is passed the input
+string we're searching
+
+89
+00:04:22.370 --> 00:04:27.890 align:middle line:84%
+and a word that we want to
+search for in that string.
+
+90
+00:04:27.890 --> 00:04:29.930 align:middle line:84%
+We take that word,
+and we convert it
+
+91
+00:04:29.930 --> 00:04:32.600 align:middle line:90%
+into a regular expression.
+
+92
+00:04:32.600 --> 00:04:34.513 align:middle line:84%
+And the regular expression
+we're going to do
+
+93
+00:04:34.513 --> 00:04:35.930 align:middle line:84%
+is, first we're
+going to strip off
+
+94
+00:04:35.930 --> 00:04:39.650 align:middle line:84%
+any trailing spaces
+for the word.
+
+95
+00:04:39.650 --> 00:04:42.910 align:middle line:84%
+That's probably overkill,
+but we strip it down
+
+96
+00:04:42.910 --> 00:04:44.630 align:middle line:90%
+so it's just the word.
+
+97
+00:04:44.630 --> 00:04:47.000 align:middle line:84%
+And then we go ahead
+and we can concatenate,
+
+98
+00:04:47.000 --> 00:04:50.750 align:middle line:84%
+we append and prepend the
+regular expressions syntax
+
+99
+00:04:50.750 --> 00:04:55.393 align:middle line:84%
+to indicate we only want to
+match words, not substrings.
+
+100
+00:04:55.393 --> 00:04:56.810 align:middle line:84%
+So we only want
+to match something
+
+101
+00:04:56.810 --> 00:04:58.727 align:middle line:84%
+if it's, in fact, a word,
+not something that's
+
+102
+00:04:58.727 --> 00:05:01.410 align:middle line:90%
+a substring of a larger word.
+
+103
+00:05:01.410 --> 00:05:05.430 align:middle line:84%
+And that ends up with a new
+string we call regexWord.
+
+104
+00:05:05.430 --> 00:05:08.160 align:middle line:84%
+And then we take that
+regexWord string,
+
+105
+00:05:08.160 --> 00:05:11.400 align:middle line:84%
+and we pass it to the
+compile method of the pattern
+
+106
+00:05:11.400 --> 00:05:14.070 align:middle line:84%
+class, which is something
+that's defined in Java's
+
+107
+00:05:14.070 --> 00:05:16.110 align:middle line:90%
+regular expression package.
+
+108
+00:05:16.110 --> 00:05:19.080 align:middle line:84%
+And this goes ahead and
+compiles the regular expression
+
+109
+00:05:19.080 --> 00:05:22.327 align:middle line:84%
+and creates a matcher
+for the input string.
+
+110
+00:05:22.327 --> 00:05:23.910 align:middle line:84%
+And so what we do
+is, we first compile
+
+111
+00:05:23.910 --> 00:05:26.730 align:middle line:84%
+the regular expression
+saying, hey, here's
+
+112
+00:05:26.730 --> 00:05:28.330 align:middle line:90%
+the regular expression.
+
+113
+00:05:28.330 --> 00:05:30.400 align:middle line:84%
+We want this thing to
+be case insensitive.
+
+114
+00:05:30.400 --> 00:05:33.720 align:middle line:84%
+So uppercase, lowercase
+doesn't matter.
+
+115
+00:05:33.720 --> 00:05:36.090 align:middle line:84%
+And then we take back
+the compiled pattern,
+
+116
+00:05:36.090 --> 00:05:40.320 align:middle line:84%
+and then we create a matcher
+by associating that pattern
+
+117
+00:05:40.320 --> 00:05:41.880 align:middle line:90%
+with the input string.
+
+118
+00:05:41.880 --> 00:05:45.400 align:middle line:90%
+
+
+119
+00:05:45.400 --> 00:05:50.320 align:middle line:84%
+So at this point, we can
+show the implementation
+
+120
+00:05:50.320 --> 00:05:52.780 align:middle line:90%
+of the tryAdvance method.
+
+121
+00:05:52.780 --> 00:05:57.070 align:middle line:84%
+And this is called by the
+Java Streams framework, which
+
+122
+00:05:57.070 --> 00:06:01.210 align:middle line:84%
+is going to try to advance the
+spliterator by one word match,
+
+123
+00:06:01.210 --> 00:06:02.230 align:middle line:90%
+if there is a match.
+
+124
+00:06:02.230 --> 00:06:05.960 align:middle line:84%
+If there's no match, we'll
+see what happens in a second.
+
+125
+00:06:05.960 --> 00:06:11.970 align:middle line:84%
+Note that this method is
+passed a Consumer action.
+
+126
+00:06:11.970 --> 00:06:17.580 align:middle line:84%
+And this is used to pass
+back any results by reference
+
+127
+00:06:17.580 --> 00:06:20.850 align:middle line:84%
+to the Streams framework if
+we find a regular expression
+
+128
+00:06:20.850 --> 00:06:22.247 align:middle line:90%
+match.
+
+129
+00:06:22.247 --> 00:06:23.330 align:middle line:90%
+So let's see what happens.
+
+130
+00:06:23.330 --> 00:06:24.997 align:middle line:84%
+The first thing we're
+going to try to do
+
+131
+00:06:24.997 --> 00:06:29.690 align:middle line:84%
+is, we're going to try to
+find that regular expression
+
+132
+00:06:29.690 --> 00:06:30.330 align:middle line:90%
+in the string.
+
+133
+00:06:30.330 --> 00:06:32.720 align:middle line:84%
+We're going to try to
+find the next occurrence
+
+134
+00:06:32.720 --> 00:06:34.760 align:middle line:84%
+of the regular
+expression in the string.
+
+135
+00:06:34.760 --> 00:06:37.100 align:middle line:84%
+And the find method is
+the method that's defined
+
+136
+00:06:37.100 --> 00:06:39.380 align:middle line:90%
+on the regular expression.
+
+137
+00:06:39.380 --> 00:06:42.500 align:middle line:84%
+And what it does
+is, it goes ahead
+
+138
+00:06:42.500 --> 00:06:44.810 align:middle line:84%
+and ks to see if
+there's a match.
+
+139
+00:06:44.810 --> 00:06:48.450 align:middle line:84%
+And it finds the first match,
+looking from left to right,
+
+140
+00:06:48.450 --> 00:06:50.120 align:middle line:90%
+if you will.
+
+141
+00:06:50.120 --> 00:06:52.550 align:middle line:84%
+If there is no match,
+or no more matches
+
+142
+00:06:52.550 --> 00:06:54.830 align:middle line:84%
+in that string, if
+we found them all,
+
+143
+00:06:54.830 --> 00:06:57.180 align:middle line:84%
+or if there never were
+any in the first place,
+
+144
+00:06:57.180 --> 00:07:00.350 align:middle line:84%
+then tryAdvance
+will return false.
+
+145
+00:07:00.350 --> 00:07:03.800 align:middle line:84%
+And that's an indication
+to the Streams framework
+
+146
+00:07:03.800 --> 00:07:08.242 align:middle line:90%
+to stop calling tryAdvance.
+
+147
+00:07:08.242 --> 00:07:09.200 align:middle line:90%
+So it says, we're done.
+
+148
+00:07:09.200 --> 00:07:11.000 align:middle line:90%
+We didn't find any match.
+
+149
+00:07:11.000 --> 00:07:12.630 align:middle line:90%
+There's nothing more to find.
+
+150
+00:07:12.630 --> 00:07:14.360 align:middle line:84%
+Now, as we'll see,
+this might not
+
+151
+00:07:14.360 --> 00:07:16.820 align:middle line:84%
+have been the first time
+that tryAdvance was called,
+
+152
+00:07:16.820 --> 00:07:18.680 align:middle line:84%
+so we may have found
+matches earlier.
+
+153
+00:07:18.680 --> 00:07:21.320 align:middle line:84%
+But if this call doesn't
+find a match, we're done.
+
+154
+00:07:21.320 --> 00:07:24.190 align:middle line:90%
+
+
+155
+00:07:24.190 --> 00:07:27.010 align:middle line:84%
+If we do find a match,
+then what we're going to do
+
+156
+00:07:27.010 --> 00:07:29.140 align:middle line:84%
+is, we're going to go
+ahead and figure out
+
+157
+00:07:29.140 --> 00:07:30.340 align:middle line:90%
+where that match occurred.
+
+158
+00:07:30.340 --> 00:07:34.060 align:middle line:84%
+And we do that by saying,
+mWordMatcher.start.
+
+159
+00:07:34.060 --> 00:07:37.900 align:middle line:84%
+And that returns the
+index into the string
+
+160
+00:07:37.900 --> 00:07:39.640 align:middle line:90%
+where the match occurred.
+
+161
+00:07:39.640 --> 00:07:40.720 align:middle line:90%
+And we're going to map--
+
+162
+00:07:40.720 --> 00:07:45.410 align:middle line:84%
+we're going to wrap that index
+into a new result object.
+
+163
+00:07:45.410 --> 00:07:47.410 align:middle line:84%
+And then we're going to
+take that result object,
+
+164
+00:07:47.410 --> 00:07:50.520 align:middle line:84%
+and we're going to accept
+it into the Consumer action.
+
+165
+00:07:50.520 --> 00:07:54.720 align:middle line:84%
+And that consumer action
+is then going to basically
+
+166
+00:07:54.720 --> 00:07:57.370 align:middle line:84%
+pass that result back
+by value, If you will,
+
+167
+00:07:57.370 --> 00:07:59.730 align:middle line:84%
+because obviously it's
+passed by reference--
+
+168
+00:07:59.730 --> 00:08:02.010 align:middle line:84%
+sorry, it's going to pass
+it back by reference.
+
+169
+00:08:02.010 --> 00:08:05.700 align:middle line:84%
+The action state internal
+details will have been updated.
+
+170
+00:08:05.700 --> 00:08:09.070 align:middle line:90%
+And we go ahead and return true.
+
+171
+00:08:09.070 --> 00:08:12.450 align:middle line:84%
+So this informs the stream
+framework, hey, we got a match.
+
+172
+00:08:12.450 --> 00:08:13.680 align:middle line:90%
+Here it is.
+
+173
+00:08:13.680 --> 00:08:17.340 align:middle line:84%
+And there might be
+more things, so please
+
+174
+00:08:17.340 --> 00:08:19.268 align:middle line:90%
+continue to call tryAdvance.
+
+175
+00:08:19.268 --> 00:08:21.310 align:middle line:84%
+So of course, the next
+time tryAdvance is called,
+
+176
+00:08:21.310 --> 00:08:26.460 align:middle line:84%
+it'll start by going back to the
+mWordMatcher.find expression.
+
+177
+00:08:26.460 --> 00:08:28.920 align:middle line:84%
+And if that succeeds,
+it'll keep going.
+
+178
+00:08:28.920 --> 00:08:30.720 align:middle line:90%
+If it fails, we'll return false.
+
+179
+00:08:30.720 --> 00:08:33.150 align:middle line:84%
+And so this will keep going
+as long as we find matches.
+
+180
+00:08:33.150 --> 00:08:36.600 align:middle line:84%
+And when we finally don't find
+a match, false is returned,
+
+181
+00:08:36.600 --> 00:08:38.950 align:middle line:84%
+and the Streams framework
+says, OK, we're done.
+
+182
+00:08:38.950 --> 00:08:41.669 align:middle line:84%
+And then it will go ahead and
+finish creating the stream
+
+183
+00:08:41.669 --> 00:08:45.060 align:middle line:84%
+from all the pieces that we've
+passed back in our consumer
+
+184
+00:08:45.060 --> 00:08:48.620 align:middle line:90%
+action parameter.
+
+185
+00:08:48.620 --> 00:08:51.310 align:middle line:84%
+So as you can see, this
+just puts it all in context.
+
+186
+00:08:51.310 --> 00:08:54.220 align:middle line:84%
+We make ourselves a new
+WordMatchSpliterator,
+
+187
+00:08:54.220 --> 00:08:57.700 align:middle line:84%
+connecting the string
+input and the word.
+
+188
+00:08:57.700 --> 00:09:00.400 align:middle line:84%
+And we pass that to
+StreamSupport.stream,
+
+189
+00:09:00.400 --> 00:09:03.730 align:middle line:84%
+passing in the false
+value to say this is going
+
+190
+00:09:03.730 --> 00:09:05.680 align:middle line:90%
+to be a sequential stream.
+
+191
+00:09:05.680 --> 00:09:07.560 align:middle line:84%
+So this is a nice
+example, hopefully
+
+192
+00:09:07.560 --> 00:09:11.620 align:middle line:84%
+a pretty comprehensive example,
+of applying a Java spliterator
+
+193
+00:09:11.620 --> 00:09:14.830 align:middle line:84%
+for our SimpleSearchStream
+program.
+
+194
+00:09:14.830 --> 00:09:17.050 align:middle line:84%
+We will talk in
+more detail later
+
+195
+00:09:17.050 --> 00:09:21.198 align:middle line:84%
+about how to do this for
+more powerful examples.
+
+196
+00:09:21.198 --> 00:09:23.240 align:middle line:84%
+This, again, just shows
+you the big-picture view.
+
+197
+00:09:23.240 --> 00:09:27.170 align:middle line:84%
+We use this in order to
+transform the stream of strings
+
+198
+00:09:27.170 --> 00:09:30.160 align:middle line:84%
+into a stream of
+search result objects.

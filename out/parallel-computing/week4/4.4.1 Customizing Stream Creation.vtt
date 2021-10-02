@@ -1,0 +1,1037 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.840 align:middle line:90%
+
+
+2
+00:00:00.840 --> 00:00:03.950 align:middle line:84%
+Now that we've given an overview
+of the internals of streams,
+
+3
+00:00:03.950 --> 00:00:05.700 align:middle line:84%
+we're going to start
+going a little deeper
+
+4
+00:00:05.700 --> 00:00:09.300 align:middle line:84%
+into the Spliterators
+capabilities,
+
+5
+00:00:09.300 --> 00:00:11.580 align:middle line:84%
+and what we'll do here is
+talk about the structure
+
+6
+00:00:11.580 --> 00:00:14.500 align:middle line:84%
+and the functionality of these
+Spliterators, which is just
+
+7
+00:00:14.500 --> 00:00:18.390 align:middle line:84%
+some sort of a funny combination
+of the phrase splittable
+
+8
+00:00:18.390 --> 00:00:20.720 align:middle line:90%
+iterators.
+
+9
+00:00:20.720 --> 00:00:23.350 align:middle line:84%
+So a Spliterator, or
+splittable iterator,
+
+10
+00:00:23.350 --> 00:00:25.060 align:middle line:84%
+was a new type
+that was initially
+
+11
+00:00:25.060 --> 00:00:27.640 align:middle line:84%
+introduced into Java
+8, and, of course,
+
+12
+00:00:27.640 --> 00:00:30.170 align:middle line:90%
+it's been there ever since.
+
+13
+00:00:30.170 --> 00:00:33.680 align:middle line:84%
+It combines two different
+capabilities, iterating,
+
+14
+00:00:33.680 --> 00:00:37.590 align:middle line:84%
+on one hand, and
+splitting on the other.
+
+15
+00:00:37.590 --> 00:00:40.400 align:middle line:84%
+So for iterating, you
+can use a Spliterator
+
+16
+00:00:40.400 --> 00:00:42.680 align:middle line:84%
+to traverse the elements
+of a source, where
+
+17
+00:00:42.680 --> 00:00:46.130 align:middle line:84%
+the source could be a
+collection, an array, and so
+
+18
+00:00:46.130 --> 00:00:46.847 align:middle line:90%
+on.
+
+19
+00:00:46.847 --> 00:00:48.680 align:middle line:84%
+And this example we're
+going to look at here
+
+20
+00:00:48.680 --> 00:00:53.990 align:middle line:84%
+is in my ex13 folder in
+my GitHub repository.
+
+21
+00:00:53.990 --> 00:00:56.300 align:middle line:84%
+In this particular
+case, the source
+
+22
+00:00:56.300 --> 00:01:01.110 align:middle line:84%
+is an array which converts
+into a list of strings
+
+23
+00:01:01.110 --> 00:01:04.170 align:middle line:90%
+with a famous Shakespeare quote.
+
+24
+00:01:04.170 --> 00:01:08.950 align:middle line:84%
+What we do is we take
+the quote object, which
+
+25
+00:01:08.950 --> 00:01:10.420 align:middle line:84%
+is a list of
+strings, and we say,
+
+26
+00:01:10.420 --> 00:01:14.500 align:middle line:84%
+hey, quote, spliterate yourself,
+so we say quote.spliterator,
+
+27
+00:01:14.500 --> 00:01:19.150 align:middle line:84%
+and that returns a Spliterator
+of type string, which we name s
+
+28
+00:01:19.150 --> 00:01:21.490 align:middle line:90%
+for this example.
+
+29
+00:01:21.490 --> 00:01:25.920 align:middle line:84%
+So now what we're going to do
+is now that we've got ourselves
+
+30
+00:01:25.920 --> 00:01:29.910 align:middle line:84%
+a Spliterator, we're going to
+call the tryAdvance method,
+
+31
+00:01:29.910 --> 00:01:33.030 align:middle line:84%
+and tryAdvance is a method
+that basically combines
+
+32
+00:01:33.030 --> 00:01:37.150 align:middle line:84%
+the hasNext() and next()
+methods of iterator.
+
+33
+00:01:37.150 --> 00:01:40.800 align:middle line:84%
+But unlike iterator, where
+you have to call two methods,
+
+34
+00:01:40.800 --> 00:01:43.660 align:middle line:84%
+the Spliterator tryAdvance
+only requires one method,
+
+35
+00:01:43.660 --> 00:01:46.165 align:middle line:84%
+and the reason for
+that is that you
+
+36
+00:01:46.165 --> 00:01:48.540 align:middle line:84%
+are going to be able to get
+a return value that indicates
+
+37
+00:01:48.540 --> 00:01:50.990 align:middle line:90%
+whether to keep going or not.
+
+38
+00:01:50.990 --> 00:01:55.130 align:middle line:84%
+Here is essentially what
+tryAdvance looks like.
+
+39
+00:01:55.130 --> 00:02:02.570 align:middle line:84%
+In this case, this is the
+tryAdvance method for the array
+
+40
+00:02:02.570 --> 00:02:04.350 align:middle line:90%
+list implementation.
+
+41
+00:02:04.350 --> 00:02:10.130 align:middle line:84%
+So if there are no more elements
+remaining, then we're done.
+
+42
+00:02:10.130 --> 00:02:13.970 align:middle line:84%
+Otherwise, we're going to
+accept this action, which
+
+43
+00:02:13.970 --> 00:02:16.400 align:middle line:84%
+is passed in as a
+parameter, tryAdvance,
+
+44
+00:02:16.400 --> 00:02:20.985 align:middle line:84%
+on the next element
+in the array list.
+
+45
+00:02:20.985 --> 00:02:23.110 align:middle line:84%
+The action that we're going
+to pass in in this case
+
+46
+00:02:23.110 --> 00:02:26.110 align:middle line:84%
+is going to be a method
+reference to the print
+
+47
+00:02:26.110 --> 00:02:28.792 align:middle line:84%
+method defined on the
+System.out object,
+
+48
+00:02:28.792 --> 00:02:30.250 align:middle line:84%
+and that's going
+to print the value
+
+49
+00:02:30.250 --> 00:02:31.880 align:middle line:90%
+of each string in the quotes.
+
+50
+00:02:31.880 --> 00:02:36.380 align:middle line:84%
+We'll print out all the
+values of the quote.
+
+51
+00:02:36.380 --> 00:02:38.960 align:middle line:90%
+So that's iteration.
+
+52
+00:02:38.960 --> 00:02:43.460 align:middle line:84%
+It's basically a little
+bit spiffier iterator,
+
+53
+00:02:43.460 --> 00:02:45.993 align:middle line:84%
+without two methods
+but one, so it's
+
+54
+00:02:45.993 --> 00:02:47.660 align:middle line:84%
+arguably a little bit
+better, but that's
+
+55
+00:02:47.660 --> 00:02:50.240 align:middle line:84%
+not why we have
+Spliterators, quite frankly.
+
+56
+00:02:50.240 --> 00:02:52.070 align:middle line:84%
+The real benefit
+of Spliterators is
+
+57
+00:02:52.070 --> 00:02:55.040 align:middle line:84%
+to be used to partition
+the elements of a source
+
+58
+00:02:55.040 --> 00:02:56.818 align:middle line:90%
+by splitting them.
+
+59
+00:02:56.818 --> 00:02:58.610 align:middle line:84%
+Now, I'm going to show
+you a simple example
+
+60
+00:02:58.610 --> 00:03:00.680 align:middle line:84%
+here just to
+illustrate the concept,
+
+61
+00:03:00.680 --> 00:03:03.440 align:middle line:84%
+but please be aware that this
+gets a lot more interesting
+
+62
+00:03:03.440 --> 00:03:05.300 align:middle line:90%
+when we have parallel streams.
+
+63
+00:03:05.300 --> 00:03:07.730 align:middle line:84%
+So just to show the concept,
+let's say we start out
+
+64
+00:03:07.730 --> 00:03:13.250 align:middle line:84%
+with our original quote object,
+and we say, quote.spliterator,
+
+65
+00:03:13.250 --> 00:03:17.030 align:middle line:84%
+and that's going to return to
+us a Spliterator that initially
+
+66
+00:03:17.030 --> 00:03:19.820 align:middle line:90%
+splits the entire array list.
+
+67
+00:03:19.820 --> 00:03:22.920 align:middle line:84%
+It covers the entire array
+list, and we store that
+
+68
+00:03:22.920 --> 00:03:27.030 align:middle line:84%
+into an object, into a
+variable, called secondHalf,
+
+69
+00:03:27.030 --> 00:03:29.400 align:middle line:84%
+for reasons that'll
+become clear, hopefully,
+
+70
+00:03:29.400 --> 00:03:31.360 align:middle line:90%
+in just a moment.
+
+71
+00:03:31.360 --> 00:03:33.450 align:middle line:84%
+And then we say,
+hey, secondHalf,
+
+72
+00:03:33.450 --> 00:03:35.520 align:middle line:90%
+try to split yourself, please.
+
+73
+00:03:35.520 --> 00:03:40.020 align:middle line:84%
+And what trySplit does is it
+returns a new Spliterator that
+
+74
+00:03:40.020 --> 00:03:45.000 align:middle line:84%
+covers the elements in the
+original Spliterator that
+
+75
+00:03:45.000 --> 00:03:47.497 align:middle line:90%
+will no longer be covered.
+
+76
+00:03:47.497 --> 00:03:49.080 align:middle line:84%
+Now again, that
+sounds a little weird,
+
+77
+00:03:49.080 --> 00:03:51.870 align:middle line:84%
+but what that means is is
+we're going to basically split
+
+78
+00:03:51.870 --> 00:03:56.980 align:middle line:84%
+the original Spliterator, the
+one called secondHalf, in half,
+
+79
+00:03:56.980 --> 00:04:00.450 align:middle line:84%
+and the secondHalf Spliterator,
+as the name implies,
+
+80
+00:04:00.450 --> 00:04:01.950 align:middle line:84%
+will now cover the
+elements that are
+
+81
+00:04:01.950 --> 00:04:06.060 align:middle line:84%
+from the middle to the
+end of the original list.
+
+82
+00:04:06.060 --> 00:04:10.360 align:middle line:84%
+And the result, the Spliterator
+return from triSplit,
+
+83
+00:04:10.360 --> 00:04:12.540 align:middle line:84%
+will be the
+firstHalf, which will
+
+84
+00:04:12.540 --> 00:04:15.150 align:middle line:84%
+be from the beginning of
+the list up to the point
+
+85
+00:04:15.150 --> 00:04:17.430 align:middle line:90%
+where we split it in half.
+
+86
+00:04:17.430 --> 00:04:21.820 align:middle line:84%
+So now we have two Spliterators,
+firstHalf and secondHalf,
+
+87
+00:04:21.820 --> 00:04:23.910 align:middle line:84%
+and if you take a
+look here at trySplit,
+
+88
+00:04:23.910 --> 00:04:25.560 align:middle line:90%
+you can see what it does.
+
+89
+00:04:25.560 --> 00:04:28.410 align:middle line:84%
+It basically checks
+to see if the input is
+
+90
+00:04:28.410 --> 00:04:29.820 align:middle line:90%
+smaller than some minimum.
+
+91
+00:04:29.820 --> 00:04:31.590 align:middle line:90%
+If so, we return null.
+
+92
+00:04:31.590 --> 00:04:33.240 align:middle line:90%
+We don't split at all.
+
+93
+00:04:33.240 --> 00:04:37.820 align:middle line:84%
+And if the Spliterator is
+not below a minimum size
+
+94
+00:04:37.820 --> 00:04:39.950 align:middle line:84%
+or equal to a minimum
+size, we split the input up
+
+95
+00:04:39.950 --> 00:04:41.600 align:middle line:90%
+into two chunks.
+
+96
+00:04:41.600 --> 00:04:45.020 align:middle line:84%
+We update the right-hand
+chunk to be us,
+
+97
+00:04:45.020 --> 00:04:48.560 align:middle line:84%
+so we're going to cover
+the right-hand chunk,
+
+98
+00:04:48.560 --> 00:04:50.060 align:middle line:84%
+and then we create
+a new Spliterator
+
+99
+00:04:50.060 --> 00:04:53.060 align:middle line:84%
+to cover the left-hand chunk,
+so that's basically what
+
+100
+00:04:53.060 --> 00:04:56.590 align:middle line:90%
+trySplit does in this case.
+
+101
+00:04:56.590 --> 00:04:59.630 align:middle line:84%
+And the way that this works with
+parallel streams, of course,
+
+102
+00:04:59.630 --> 00:05:03.670 align:middle line:84%
+is that we recursively or
+we-- the stream's framework
+
+103
+00:05:03.670 --> 00:05:07.810 align:middle line:84%
+recursively calls trySplit
+until the chunks are less than
+
+104
+00:05:07.810 --> 00:05:10.270 align:middle line:84%
+or equal to the minimum
+size, so it basically creates
+
+105
+00:05:10.270 --> 00:05:13.090 align:middle line:90%
+a tree of recursive calls.
+
+106
+00:05:13.090 --> 00:05:16.450 align:middle line:84%
+And all of these things that are
+split up for parallel streams
+
+107
+00:05:16.450 --> 00:05:19.660 align:middle line:84%
+will end up being placed
+into the common fork
+
+108
+00:05:19.660 --> 00:05:22.360 align:middle line:84%
+join pool to be
+executed in parallel,
+
+109
+00:05:22.360 --> 00:05:25.530 align:middle line:90%
+but we'll come to that later
+
+110
+00:05:25.530 --> 00:05:29.490 align:middle line:84%
+Ideally, a Spliterator should
+split the original input source
+
+111
+00:05:29.490 --> 00:05:31.890 align:middle line:84%
+evenly in half, so we'd
+like it to split it
+
+112
+00:05:31.890 --> 00:05:34.050 align:middle line:84%
+like taking a candy bar
+and breaking it in half
+
+113
+00:05:34.050 --> 00:05:35.880 align:middle line:84%
+and giving one-half
+to your friend
+
+114
+00:05:35.880 --> 00:05:38.530 align:middle line:84%
+and then keeping the
+equal-sized part for yourself,
+
+115
+00:05:38.530 --> 00:05:41.500 align:middle line:90%
+so we can split things in half.
+
+116
+00:05:41.500 --> 00:05:43.210 align:middle line:84%
+The right chunk,
+as you can see, is
+
+117
+00:05:43.210 --> 00:05:47.590 align:middle line:84%
+defined by simply updating
+the state of this Spliterator
+
+118
+00:05:47.590 --> 00:05:49.240 align:middle line:90%
+object.
+
+119
+00:05:49.240 --> 00:05:52.000 align:middle line:84%
+The left-hand chunk is
+identified or defined
+
+120
+00:05:52.000 --> 00:05:55.150 align:middle line:84%
+by creating and returning a
+new Spliterator object that
+
+121
+00:05:55.150 --> 00:05:57.070 align:middle line:90%
+covers the left-hand part.
+
+122
+00:05:57.070 --> 00:05:58.600 align:middle line:84%
+So after trySplit
+is called, we now
+
+123
+00:05:58.600 --> 00:06:02.863 align:middle line:84%
+have two Spliterators that are
+hopefully about the same size.
+
+124
+00:06:02.863 --> 00:06:04.780 align:middle line:84%
+And for certain data
+structures, as we'll see,
+
+125
+00:06:04.780 --> 00:06:07.090 align:middle line:84%
+we also want to be
+able to split things up
+
+126
+00:06:07.090 --> 00:06:09.497 align:middle line:84%
+very efficiently
+and very quickly,
+
+127
+00:06:09.497 --> 00:06:11.830 align:middle line:84%
+and I'll talk about that a
+little bit later when we talk
+
+128
+00:06:11.830 --> 00:06:14.680 align:middle line:84%
+about the overhead of
+different Spliterators
+
+129
+00:06:14.680 --> 00:06:16.690 align:middle line:84%
+as it pertains to
+parallel streams,
+
+130
+00:06:16.690 --> 00:06:19.740 align:middle line:84%
+and this will come
+up in later weeks.
+
+131
+00:06:19.740 --> 00:06:22.440 align:middle line:84%
+So that we've got ourselves with
+two Spliterators, a firstHalf
+
+132
+00:06:22.440 --> 00:06:25.110 align:middle line:84%
+and a secondHalf, we
+can perform the action
+
+133
+00:06:25.110 --> 00:06:28.320 align:middle line:84%
+for each element
+in the Spliterator.
+
+134
+00:06:28.320 --> 00:06:32.100 align:middle line:84%
+So the forEachRemaining
+method will take an action,
+
+135
+00:06:32.100 --> 00:06:34.770 align:middle line:84%
+and for every element
+that's in the Spliterator,
+
+136
+00:06:34.770 --> 00:06:37.563 align:middle line:84%
+it will apply that action to
+the element in that Spliterator.
+
+137
+00:06:37.563 --> 00:06:39.480 align:middle line:84%
+So as you can see here,
+what we're going to do
+
+138
+00:06:39.480 --> 00:06:44.520 align:middle line:84%
+is we're going to print out all
+the strings in the firstHalf,
+
+139
+00:06:44.520 --> 00:06:47.985 align:middle line:84%
+the ones that say this
+above all thine, probably,
+
+140
+00:06:47.985 --> 00:06:49.860 align:middle line:84%
+depedning on where it's
+split, and then we're
+
+141
+00:06:49.860 --> 00:06:52.470 align:middle line:84%
+going to go ahead and call
+secondHalf.forEachRemaining,
+
+142
+00:06:52.470 --> 00:06:56.190 align:middle line:84%
+passing in the print method
+reference, and that would say,
+
+143
+00:06:56.190 --> 00:06:58.860 align:middle line:84%
+own self be true,
+new line, assuming
+
+144
+00:06:58.860 --> 00:07:00.132 align:middle line:90%
+that that's how it split.
+
+145
+00:07:00.132 --> 00:07:01.590 align:middle line:84%
+So as you can see
+here, we're going
+
+146
+00:07:01.590 --> 00:07:05.370 align:middle line:84%
+to use this Spliterator in
+a somewhat contrived manner
+
+147
+00:07:05.370 --> 00:07:09.592 align:middle line:84%
+in order to break the input
+quote up into two chunks
+
+148
+00:07:09.592 --> 00:07:11.550 align:middle line:84%
+and then do something
+with them-- in this case,
+
+149
+00:07:11.550 --> 00:07:13.350 align:middle line:90%
+print them.
+
+150
+00:07:13.350 --> 00:07:18.240 align:middle line:84%
+Now as I mentioned before,
+this is really not that useful,
+
+151
+00:07:18.240 --> 00:07:19.950 align:middle line:84%
+the splitting is
+not that useful,
+
+152
+00:07:19.950 --> 00:07:22.530 align:middle line:84%
+until you use Java
+parallel streams, which
+
+153
+00:07:22.530 --> 00:07:23.892 align:middle line:90%
+came along in Java 8.
+
+154
+00:07:23.892 --> 00:07:25.350 align:middle line:84%
+And then it gets
+really interesting
+
+155
+00:07:25.350 --> 00:07:28.920 align:middle line:84%
+because that's exactly
+how parallel streams works
+
+156
+00:07:28.920 --> 00:07:32.250 align:middle line:84%
+to decompose the
+original input source up
+
+157
+00:07:32.250 --> 00:07:35.940 align:middle line:84%
+into these sub-sources
+or sub-chunks,
+
+158
+00:07:35.940 --> 00:07:39.082 align:middle line:84%
+and then it goes ahead and
+runs those things in parallel
+
+159
+00:07:39.082 --> 00:07:40.790 align:middle line:84%
+and then joins the
+results back together,
+
+160
+00:07:40.790 --> 00:07:45.300 align:middle line:84%
+so then it becomes extremely
+useful and extremely powerful.
+
+161
+00:07:45.300 --> 00:07:49.590 align:middle line:84%
+For right now, for this part
+of the lesson, for this week,
+
+162
+00:07:49.590 --> 00:07:54.000 align:middle line:84%
+we're just going to focus
+on the traversal phase using
+
+163
+00:07:54.000 --> 00:07:56.250 align:middle line:84%
+the iteration part,
+and we'll talk later
+
+164
+00:07:56.250 --> 00:08:00.300 align:middle line:84%
+about partitioning
+when we cover parallel
+
+165
+00:08:00.300 --> 00:08:02.490 align:middle line:90%
+streams in a lot more detail.
+
+166
+00:08:02.490 --> 00:08:04.170 align:middle line:84%
+And you'll get a
+chance to see how
+
+167
+00:08:04.170 --> 00:08:09.670 align:middle line:84%
+to write a parallel Spliterator
+using the trySplit method,
+
+168
+00:08:09.670 --> 00:08:12.630 align:middle line:84%
+and this is a really cool,
+really sophisticated example
+
+169
+00:08:12.630 --> 00:08:15.990 align:middle line:84%
+I think you'll have a lot
+of fun learning about.
+
+170
+00:08:15.990 --> 00:08:19.530 align:middle line:84%
+Now, just to kind of wrap up
+this discussion of Spliterator,
+
+171
+00:08:19.530 --> 00:08:22.500 align:middle line:84%
+it's important to
+understand the capabilities
+
+172
+00:08:22.500 --> 00:08:26.280 align:middle line:84%
+of the StreamSupport.stream
+factory method,
+
+173
+00:08:26.280 --> 00:08:30.940 align:middle line:84%
+and this is used to create
+a new stream, either
+
+174
+00:08:30.940 --> 00:08:33.850 align:middle line:84%
+a sequential stream
+or a parallel stream,
+
+175
+00:08:33.850 --> 00:08:38.710 align:middle line:84%
+from a Spliterator, and
+here's basically how it works.
+
+176
+00:08:38.710 --> 00:08:42.880 align:middle line:84%
+The collection interface defines
+a couple of default methods.
+
+177
+00:08:42.880 --> 00:08:45.100 align:middle line:84%
+Hopefully, you remember
+that with Java 8
+
+178
+00:08:45.100 --> 00:08:47.980 align:middle line:84%
+and beyond, an interface can
+now have default methods.
+
+179
+00:08:47.980 --> 00:08:51.160 align:middle line:84%
+Before, you couldn't have
+any methods in interface
+
+180
+00:08:51.160 --> 00:08:52.387 align:middle line:90%
+that were--
+
+181
+00:08:52.387 --> 00:08:53.470 align:middle line:90%
+you couldn't have methods.
+
+182
+00:08:53.470 --> 00:08:55.360 align:middle line:84%
+You could just have
+method signatures but not
+
+183
+00:08:55.360 --> 00:08:56.860 align:middle line:90%
+method implementations.
+
+184
+00:08:56.860 --> 00:08:59.290 align:middle line:84%
+With Java 8 and beyond,
+you can have default method
+
+185
+00:08:59.290 --> 00:09:00.372 align:middle line:90%
+implementations.
+
+186
+00:09:00.372 --> 00:09:02.080 align:middle line:84%
+So we have default
+method implementations
+
+187
+00:09:02.080 --> 00:09:05.350 align:middle line:84%
+for stream and
+parallel stream, which
+
+188
+00:09:05.350 --> 00:09:08.470 align:middle line:84%
+get inherited by all the
+different collections
+
+189
+00:09:08.470 --> 00:09:10.143 align:middle line:84%
+in the Java
+Collections framework.
+
+190
+00:09:10.143 --> 00:09:12.310 align:middle line:84%
+And if you look carefully,
+you can see what they do.
+
+191
+00:09:12.310 --> 00:09:16.060 align:middle line:84%
+Under the hood, they use the
+StreamSupport.stream helper
+
+192
+00:09:16.060 --> 00:09:21.130 align:middle line:84%
+method, which is a factory
+method, to do two things,
+
+193
+00:09:21.130 --> 00:09:23.410 align:middle line:84%
+depending on whether you're
+stream or parallel stream.
+
+194
+00:09:23.410 --> 00:09:26.920 align:middle line:84%
+If you're stream, then
+the Spliterator method
+
+195
+00:09:26.920 --> 00:09:30.580 align:middle line:84%
+is called, which is also, of
+course, defined in Collection
+
+196
+00:09:30.580 --> 00:09:33.310 align:middle line:84%
+and could be customized
+by implementations
+
+197
+00:09:33.310 --> 00:09:36.380 align:middle line:84%
+of the Collection interface,
+like ArrayList or HashMap
+
+198
+00:09:36.380 --> 00:09:37.990 align:middle line:90%
+and whatnot.
+
+199
+00:09:37.990 --> 00:09:41.800 align:middle line:84%
+And likewise, in addition
+to calling the Spliterator
+
+200
+00:09:41.800 --> 00:09:45.070 align:middle line:84%
+method to get a Spliterator,
+we passed the false flag
+
+201
+00:09:45.070 --> 00:09:47.830 align:middle line:84%
+to StreamSupport.stream,
+and what that does
+
+202
+00:09:47.830 --> 00:09:49.900 align:middle line:84%
+is that instructs
+StreamSupport.stream
+
+203
+00:09:49.900 --> 00:09:53.000 align:middle line:90%
+to create a sequential stream.
+
+204
+00:09:53.000 --> 00:09:57.020 align:middle line:84%
+Conversely, for parallel
+stream, mostly the same,
+
+205
+00:09:57.020 --> 00:10:00.650 align:middle line:84%
+except in this case, we say
+StreamSupport.stream passing
+
+206
+00:10:00.650 --> 00:10:03.800 align:middle line:84%
+in the Spliterator, the
+result of the Spliterator,
+
+207
+00:10:03.800 --> 00:10:06.320 align:middle line:84%
+and we pass true in this
+case, and what true says
+
+208
+00:10:06.320 --> 00:10:09.490 align:middle line:84%
+is, please go ahead and
+meet me a parallel stream.
+
+209
+00:10:09.490 --> 00:10:10.990 align:middle line:84%
+So hopefully, this
+gives you a sense
+
+210
+00:10:10.990 --> 00:10:15.790 align:middle line:84%
+of how Spliterators relate
+to creating streams.
+
+211
+00:10:15.790 --> 00:10:17.290 align:middle line:84%
+You need Spliterators
+in order to be
+
+212
+00:10:17.290 --> 00:10:20.950 align:middle line:84%
+able to tell the Spliterator
+framework in the Java Streams
+
+213
+00:10:20.950 --> 00:10:24.070 align:middle line:84%
+framework how to split
+things up into the chunks
+
+214
+00:10:24.070 --> 00:10:26.530 align:middle line:84%
+and whether to create a
+stream that runs in parallel
+
+215
+00:10:26.530 --> 00:10:29.110 align:middle line:90%
+or runs sequentially.

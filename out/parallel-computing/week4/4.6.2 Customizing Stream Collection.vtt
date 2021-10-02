@@ -1,0 +1,958 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.390 align:middle line:90%
+
+
+2
+00:00:00.390 --> 00:00:02.190 align:middle line:84%
+Now that I've given
+you an overview of what
+
+3
+00:00:02.190 --> 00:00:04.950 align:middle line:84%
+the non-concurrent
+collector behavior is,
+
+4
+00:00:04.950 --> 00:00:07.180 align:middle line:84%
+and kind of how it's
+used at a high level,
+
+5
+00:00:07.180 --> 00:00:09.090 align:middle line:84%
+let's spend some
+time looking in more
+
+6
+00:00:09.090 --> 00:00:13.260 align:middle line:84%
+detail into its Application
+Programming Interface, or API.
+
+7
+00:00:13.260 --> 00:00:16.530 align:middle line:84%
+And as you can see, it's
+a fairly simple interface,
+
+8
+00:00:16.530 --> 00:00:18.960 align:middle line:84%
+but what each of
+these phases does,
+
+9
+00:00:18.960 --> 00:00:23.010 align:middle line:84%
+take some understanding to see
+how everything fits together.
+
+10
+00:00:23.010 --> 00:00:25.800 align:middle line:84%
+The collector interface
+is a generic interface,
+
+11
+00:00:25.800 --> 00:00:32.170 align:middle line:84%
+and it is parameterized
+by three generic types.
+
+12
+00:00:32.170 --> 00:00:36.430 align:middle line:84%
+The first type, which is given
+the very cryptic and concise
+
+13
+00:00:36.430 --> 00:00:40.260 align:middle line:84%
+letter name key, is
+basically the type of element
+
+14
+00:00:40.260 --> 00:00:42.090 align:middle line:84%
+that's available in
+the stream, which
+
+15
+00:00:42.090 --> 00:00:48.180 align:middle line:84%
+could be long string,
+search results, or whatever.
+
+16
+00:00:48.180 --> 00:00:53.040 align:middle line:84%
+A is the type of mutable
+accumulator object
+
+17
+00:00:53.040 --> 00:00:56.040 align:middle line:84%
+that the streams
+framework will use
+
+18
+00:00:56.040 --> 00:00:59.790 align:middle line:84%
+to collect the elements
+that are coming
+
+19
+00:00:59.790 --> 00:01:03.830 align:middle line:84%
+in from the stream that's
+feeding into the collector.
+
+20
+00:01:03.830 --> 00:01:07.430 align:middle line:84%
+And this could be List
+of T, which could be
+
+21
+00:01:07.430 --> 00:01:08.660 align:middle line:90%
+an ArrayList, the LinkedList.
+
+22
+00:01:08.660 --> 00:01:10.340 align:middle line:90%
+It could be various other types.
+
+23
+00:01:10.340 --> 00:01:13.940 align:middle line:84%
+It's usually something
+like a list of something.
+
+24
+00:01:13.940 --> 00:01:16.970 align:middle line:84%
+And then the final
+generic type, which
+
+25
+00:01:16.970 --> 00:01:20.210 align:middle line:84%
+is also given the very
+useful mnemonic R,
+
+26
+00:01:20.210 --> 00:01:25.140 align:middle line:84%
+is the type of the final result,
+which could be List of T. Often
+
+27
+00:01:25.140 --> 00:01:27.097 align:middle line:84%
+the accumulator type
+and the result type
+
+28
+00:01:27.097 --> 00:01:28.680 align:middle line:84%
+are the same, but
+not always, as we'll
+
+29
+00:01:28.680 --> 00:01:32.940 align:middle line:84%
+see when we get further into the
+course and we talk about some
+
+30
+00:01:32.940 --> 00:01:36.570 align:middle line:84%
+of the cool uses of
+collectors for the Java
+
+31
+00:01:36.570 --> 00:01:41.200 align:middle line:84%
+CompletableFuture's framework,
+where there are very different.
+
+32
+00:01:41.200 --> 00:01:44.040 align:middle line:84%
+So that's basically
+the generic types.
+
+33
+00:01:44.040 --> 00:01:46.920 align:middle line:84%
+Then there's also
+five methods that
+
+34
+00:01:46.920 --> 00:01:48.900 align:middle line:84%
+are defined in the
+collector interface.
+
+35
+00:01:48.900 --> 00:01:50.430 align:middle line:84%
+And some of these
+are overloaded,
+
+36
+00:01:50.430 --> 00:01:53.380 align:middle line:84%
+but they're basically five
+of them that really matter.
+
+37
+00:01:53.380 --> 00:01:55.860 align:middle line:84%
+So in this particular
+case, we assume
+
+38
+00:01:55.860 --> 00:01:59.100 align:middle line:84%
+we're implementing a
+non-concurrent collector.
+
+39
+00:01:59.100 --> 00:02:02.040 align:middle line:84%
+One of the methods is
+called characteristics,
+
+40
+00:02:02.040 --> 00:02:05.880 align:middle line:84%
+and this is used to provide
+metadata, which is basically
+
+41
+00:02:05.880 --> 00:02:09.690 align:middle line:84%
+additional information about
+the collector that can be used
+
+42
+00:02:09.690 --> 00:02:12.705 align:middle line:90%
+for internal optimizations.
+
+43
+00:02:12.705 --> 00:02:14.580 align:middle line:84%
+Here's some of the
+different characteristics.
+
+44
+00:02:14.580 --> 00:02:15.780 align:middle line:84%
+Here are all the
+characters exactly.
+
+45
+00:02:15.780 --> 00:02:17.200 align:middle line:90%
+There are just three of them.
+
+46
+00:02:17.200 --> 00:02:21.640 align:middle line:84%
+One characteristic is, is the
+collector ordered or unordered?
+
+47
+00:02:21.640 --> 00:02:23.500 align:middle line:84%
+And all that means
+is, if you set
+
+48
+00:02:23.500 --> 00:02:26.860 align:middle line:84%
+the unordered characteristic,
+that means the collector need
+
+49
+00:02:26.860 --> 00:02:28.750 align:middle line:90%
+not preserve encounter order.
+
+50
+00:02:28.750 --> 00:02:31.620 align:middle line:90%
+
+
+51
+00:02:31.620 --> 00:02:33.660 align:middle line:84%
+Interestingly
+enough, a collector
+
+52
+00:02:33.660 --> 00:02:35.978 align:middle line:84%
+is free to preserve
+encounter order
+
+53
+00:02:35.978 --> 00:02:37.770 align:middle line:84%
+if there's no additional
+overhead to do so.
+
+54
+00:02:37.770 --> 00:02:39.810 align:middle line:84%
+And that's often the case,
+because oftentimes we--
+
+55
+00:02:39.810 --> 00:02:40.890 align:middle line:84%
+especially for
+sequential strains--
+
+56
+00:02:40.890 --> 00:02:43.170 align:middle line:84%
+we just store these
+things into an array list.
+
+57
+00:02:43.170 --> 00:02:47.590 align:middle line:84%
+So encounter order is sort
+of trivially preserved.
+
+58
+00:02:47.590 --> 00:02:50.800 align:middle line:84%
+Another characteristic
+is whether the collector
+
+59
+00:02:50.800 --> 00:02:54.088 align:middle line:84%
+has so-called identity
+finish or not.
+
+60
+00:02:54.088 --> 00:02:56.380 align:middle line:84%
+And what this means is, if
+you set this characteristic,
+
+61
+00:02:56.380 --> 00:02:58.755 align:middle line:84%
+it means that the finisher
+method, which we'll talk about
+
+62
+00:02:58.755 --> 00:03:01.930 align:middle line:84%
+in a minute, is
+essentially a no-op,
+
+63
+00:03:01.930 --> 00:03:05.290 align:middle line:84%
+so it doesn't need to be
+called because whatever is done
+
+64
+00:03:05.290 --> 00:03:07.390 align:middle line:84%
+after we finish
+accumulating everything,
+
+65
+00:03:07.390 --> 00:03:09.730 align:middle line:84%
+we stored in the beautiful
+result container,
+
+66
+00:03:09.730 --> 00:03:11.230 align:middle line:84%
+which can just be
+returned directly
+
+67
+00:03:11.230 --> 00:03:14.460 align:middle line:84%
+without having to go
+through the finisher method.
+
+68
+00:03:14.460 --> 00:03:18.900 align:middle line:84%
+And the third and final
+characteristic is concurrent.
+
+69
+00:03:18.900 --> 00:03:21.000 align:middle line:84%
+And this is, of
+course, the one that
+
+70
+00:03:21.000 --> 00:03:24.690 align:middle line:84%
+differentiates from a concurrent
+and a non-concurrent collector.
+
+71
+00:03:24.690 --> 00:03:27.790 align:middle line:84%
+And this is going to
+indicate whether or not
+
+72
+00:03:27.790 --> 00:03:31.480 align:middle line:84%
+the accumulator method
+is called concurrently
+
+73
+00:03:31.480 --> 00:03:33.460 align:middle line:90%
+on the mutable result container.
+
+74
+00:03:33.460 --> 00:03:36.460 align:middle line:84%
+If concurrent is set, if the
+concurrent characteristic
+
+75
+00:03:36.460 --> 00:03:38.500 align:middle line:84%
+is set, then the
+accumulator method
+
+76
+00:03:38.500 --> 00:03:40.660 align:middle line:84%
+can be called concurrently
+on the result container
+
+77
+00:03:40.660 --> 00:03:44.470 align:middle line:84%
+by more than one thread
+in the thread pool.
+
+78
+00:03:44.470 --> 00:03:47.680 align:middle line:84%
+Which, of course, means that
+the mutable result container
+
+79
+00:03:47.680 --> 00:03:51.520 align:middle line:84%
+must be synchronized somehow,
+either by using explicit locks
+
+80
+00:03:51.520 --> 00:03:53.410 align:middle line:84%
+or by using some
+Java collection,
+
+81
+00:03:53.410 --> 00:03:55.330 align:middle line:84%
+like a concurrent hash
+map, that comes out
+
+82
+00:03:55.330 --> 00:04:00.160 align:middle line:84%
+of the box with proper
+synchronization.
+
+83
+00:04:00.160 --> 00:04:03.040 align:middle line:84%
+In our example here, we're
+going to focus solely
+
+84
+00:04:03.040 --> 00:04:04.330 align:middle line:90%
+on non-concurrent collectors.
+
+85
+00:04:04.330 --> 00:04:06.550 align:middle line:90%
+So concurrent is not set.
+
+86
+00:04:06.550 --> 00:04:11.040 align:middle line:84%
+We'll talk about concurrent
+collectors later.
+
+87
+00:04:11.040 --> 00:04:14.520 align:middle line:84%
+Then there's the
+characteristics method,
+
+88
+00:04:14.520 --> 00:04:17.149 align:middle line:84%
+which is one of the
+methods you have to define,
+
+89
+00:04:17.149 --> 00:04:19.579 align:middle line:84%
+needs to return the
+appropriate characteristics.
+
+90
+00:04:19.579 --> 00:04:20.963 align:middle line:90%
+You could just return--
+
+91
+00:04:20.963 --> 00:04:22.130 align:middle line:90%
+you could just have nothing.
+
+92
+00:04:22.130 --> 00:04:23.240 align:middle line:90%
+You could just be empty.
+
+93
+00:04:23.240 --> 00:04:25.710 align:middle line:84%
+You could have no
+characteristics at all.
+
+94
+00:04:25.710 --> 00:04:27.380 align:middle line:84%
+Here's an example
+of how to define
+
+95
+00:04:27.380 --> 00:04:28.640 align:middle line:90%
+the characteristics you want.
+
+96
+00:04:28.640 --> 00:04:30.890 align:middle line:84%
+So in this case, we're going
+to create characteristics
+
+97
+00:04:30.890 --> 00:04:35.110 align:middle line:84%
+that have concurrent, unordered,
+and identity finish all set,
+
+98
+00:04:35.110 --> 00:04:38.810 align:middle line:84%
+and we do that by using the
+EnumSet.of factory method
+
+99
+00:04:38.810 --> 00:04:40.910 align:middle line:84%
+and passing in the
+appropriate EnumSet
+
+100
+00:04:40.910 --> 00:04:45.080 align:middle line:84%
+we want to turn into
+an unmodifiable set.
+
+101
+00:04:45.080 --> 00:04:47.132 align:middle line:84%
+So you can mix and
+match these things.
+
+102
+00:04:47.132 --> 00:04:49.090 align:middle line:84%
+But be aware you don't
+have to set any of these
+
+103
+00:04:49.090 --> 00:04:51.700 align:middle line:90%
+if you don't want to.
+
+104
+00:04:51.700 --> 00:04:54.125 align:middle line:84%
+Let's now talk about the
+really interesting methods.
+
+105
+00:04:54.125 --> 00:04:55.750 align:middle line:84%
+There's a bunch of
+factory methods here
+
+106
+00:04:55.750 --> 00:04:58.590 align:middle line:84%
+that are used by the
+streams framework.
+
+107
+00:04:58.590 --> 00:05:01.830 align:middle line:84%
+The first factory method
+is called supplier.
+
+108
+00:05:01.830 --> 00:05:03.510 align:middle line:84%
+And this is a
+factory method that
+
+109
+00:05:03.510 --> 00:05:06.840 align:middle line:84%
+returns the supplier
+that acts as a factory
+
+110
+00:05:06.840 --> 00:05:10.062 align:middle line:84%
+to generate an empty
+result container,
+
+111
+00:05:10.062 --> 00:05:11.520 align:middle line:84%
+the empty mutable
+result container,
+
+112
+00:05:11.520 --> 00:05:13.710 align:middle line:84%
+the one that's going to
+be used to accumulate
+
+113
+00:05:13.710 --> 00:05:17.530 align:middle line:84%
+all the elements into in
+the stream by the collector.
+
+114
+00:05:17.530 --> 00:05:20.900 align:middle line:84%
+Here is a pretty common example
+of a supplier implementation.
+
+115
+00:05:20.900 --> 00:05:23.980 align:middle line:84%
+As you can see here, we simply
+have this factory method
+
+116
+00:05:23.980 --> 00:05:28.780 align:middle line:84%
+return a constructor
+reference to an array list.
+
+117
+00:05:28.780 --> 00:05:30.970 align:middle line:84%
+So we say array list
+colon colon new.
+
+118
+00:05:30.970 --> 00:05:34.510 align:middle line:84%
+That gets returned as
+the result of supplier.
+
+119
+00:05:34.510 --> 00:05:36.490 align:middle line:84%
+And what that means is
+the streams framework
+
+120
+00:05:36.490 --> 00:05:39.040 align:middle line:84%
+will then use that
+constructor reference
+
+121
+00:05:39.040 --> 00:05:42.280 align:middle line:84%
+in order to get
+the mutable result
+
+122
+00:05:42.280 --> 00:05:46.733 align:middle line:84%
+container, which will be,
+in this case, an array list.
+
+123
+00:05:46.733 --> 00:05:48.400 align:middle line:84%
+The next method that
+you have to fill in
+
+124
+00:05:48.400 --> 00:05:52.720 align:middle line:84%
+is another factor method that
+returns a by consumer that
+
+125
+00:05:52.720 --> 00:05:55.300 align:middle line:84%
+adds a new element
+to an existing result
+
+126
+00:05:55.300 --> 00:05:57.550 align:middle line:84%
+container, which, of course,
+would have been returned
+
+127
+00:05:57.550 --> 00:06:00.490 align:middle line:90%
+previously by supplier.
+
+128
+00:06:00.490 --> 00:06:03.060 align:middle line:84%
+So, in this particular
+case, all accumulator
+
+129
+00:06:03.060 --> 00:06:04.620 align:middle line:84%
+is going to need
+to do is it's going
+
+130
+00:06:04.620 --> 00:06:10.230 align:middle line:84%
+to need to return the add
+method that's defined on list.
+
+131
+00:06:10.230 --> 00:06:12.790 align:middle line:84%
+So the list interface
+defines an add method.
+
+132
+00:06:12.790 --> 00:06:14.490 align:middle line:84%
+And, as you can
+imagine, what that does
+
+133
+00:06:14.490 --> 00:06:16.950 align:middle line:84%
+is that goes ahead
+and adds an element--
+
+134
+00:06:16.950 --> 00:06:18.810 align:middle line:90%
+in this case, of type integer--
+
+135
+00:06:18.810 --> 00:06:20.353 align:middle line:90%
+to the list.
+
+136
+00:06:20.353 --> 00:06:21.520 align:middle line:90%
+So that's all we need to do.
+
+137
+00:06:21.520 --> 00:06:25.130 align:middle line:84%
+That's what the bi-consumer
+is going to store.
+
+138
+00:06:25.130 --> 00:06:27.470 align:middle line:84%
+Recall that
+non-concurrent collectors
+
+139
+00:06:27.470 --> 00:06:28.520 align:middle line:90%
+need no synchronization.
+
+140
+00:06:28.520 --> 00:06:30.170 align:middle line:84%
+So we can just use
+list colon colon
+
+141
+00:06:30.170 --> 00:06:32.690 align:middle line:84%
+add, which is not in
+any way, shape or form
+
+142
+00:06:32.690 --> 00:06:33.650 align:middle line:90%
+a synchronized method.
+
+143
+00:06:33.650 --> 00:06:36.553 align:middle line:84%
+It's just a plain,
+old, non-thread-safe,
+
+144
+00:06:36.553 --> 00:06:37.970 align:middle line:84%
+nonsynchronized
+method, and that's
+
+145
+00:06:37.970 --> 00:06:41.970 align:middle line:84%
+all we need in this
+particular case.
+
+146
+00:06:41.970 --> 00:06:45.540 align:middle line:84%
+The next method is a factory
+method called combiner.
+
+147
+00:06:45.540 --> 00:06:48.410 align:middle line:84%
+And this returns a
+binary operator that
+
+148
+00:06:48.410 --> 00:06:53.540 align:middle line:84%
+is used for parallel
+streams to merge two result
+
+149
+00:06:53.540 --> 00:06:55.340 align:middle line:90%
+containers together.
+
+150
+00:06:55.340 --> 00:06:57.320 align:middle line:84%
+And you'll see why
+we need to do that,
+
+151
+00:06:57.320 --> 00:06:59.230 align:middle line:84%
+because for a non-concurrent
+collector used
+
+152
+00:06:59.230 --> 00:07:01.100 align:middle line:84%
+in a parallel stream,
+it needs to be
+
+153
+00:07:01.100 --> 00:07:06.590 align:middle line:84%
+able to take the results from
+two sub results that are done
+
+154
+00:07:06.590 --> 00:07:08.870 align:middle line:84%
+in different threads,
+and in a single thread,
+
+155
+00:07:08.870 --> 00:07:11.510 align:middle line:84%
+merge their results together
+to create a combined
+
+156
+00:07:11.510 --> 00:07:13.703 align:middle line:90%
+result or merged result.
+
+157
+00:07:13.703 --> 00:07:15.370 align:middle line:84%
+This particular
+example, as you can see,
+
+158
+00:07:15.370 --> 00:07:19.270 align:middle line:84%
+takes two lists,
+one and another,
+
+159
+00:07:19.270 --> 00:07:22.630 align:middle line:84%
+and it adds another to the
+end of one and returns one,
+
+160
+00:07:22.630 --> 00:07:26.390 align:middle line:84%
+so that basically just
+concatenates the list together.
+
+161
+00:07:26.390 --> 00:07:28.100 align:middle line:84%
+I showed this year
+for completeness.
+
+162
+00:07:28.100 --> 00:07:30.890 align:middle line:84%
+Be aware that combiner is never
+called for sequential stream,
+
+163
+00:07:30.890 --> 00:07:32.300 align:middle line:84%
+because we're not ever
+combining anything
+
+164
+00:07:32.300 --> 00:07:34.675 align:middle line:84%
+because we don't have to worry
+about that because there's
+
+165
+00:07:34.675 --> 00:07:36.320 align:middle line:90%
+only one thread.
+
+166
+00:07:36.320 --> 00:07:40.460 align:middle line:84%
+And then the fifth and final
+method is the finisher method.
+
+167
+00:07:40.460 --> 00:07:44.690 align:middle line:84%
+And this returns a function that
+converts the result container
+
+168
+00:07:44.690 --> 00:07:47.670 align:middle line:90%
+into the final result type.
+
+169
+00:07:47.670 --> 00:07:51.450 align:middle line:84%
+Now, for lots of collectors,
+you can either just
+
+170
+00:07:51.450 --> 00:07:53.400 align:middle line:84%
+return the identity
+function which
+
+171
+00:07:53.400 --> 00:07:55.933 align:middle line:84%
+it says return whatever the
+mutable result container is.
+
+172
+00:07:55.933 --> 00:07:57.600 align:middle line:84%
+Whatever that happened
+to be by the time
+
+173
+00:07:57.600 --> 00:07:59.460 align:middle line:84%
+you're done accumulating
+everything, that's
+
+174
+00:07:59.460 --> 00:08:01.410 align:middle line:90%
+what finish your returns.
+
+175
+00:08:01.410 --> 00:08:06.330 align:middle line:84%
+Or you can set the identity
+finish characteristic
+
+176
+00:08:06.330 --> 00:08:08.645 align:middle line:84%
+and just return null
+because, in that case,
+
+177
+00:08:08.645 --> 00:08:10.020 align:middle line:84%
+the finisher method
+will never be
+
+178
+00:08:10.020 --> 00:08:12.340 align:middle line:84%
+called because the framework
+knows it doesn't do anything.
+
+179
+00:08:12.340 --> 00:08:13.090 align:middle line:90%
+It's just a no-op.
+
+180
+00:08:13.090 --> 00:08:15.410 align:middle line:90%
+
+
+181
+00:08:15.410 --> 00:08:19.180 align:middle line:84%
+Now, for lots of examples,
+a lot of the simple examples
+
+182
+00:08:19.180 --> 00:08:21.970 align:middle line:84%
+that we're looking at,
+finisher is in fact a no-op,
+
+183
+00:08:21.970 --> 00:08:25.580 align:middle line:84%
+and the identity finish
+characteristic is, in fact,
+
+184
+00:08:25.580 --> 00:08:29.350 align:middle line:84%
+set when the collector
+is built. However,
+
+185
+00:08:29.350 --> 00:08:33.370 align:middle line:84%
+you could have much much more
+interesting finisher methods.
+
+186
+00:08:33.370 --> 00:08:36.940 align:middle line:84%
+And when we talk about
+the futures collector
+
+187
+00:08:36.940 --> 00:08:41.650 align:middle line:84%
+implementation and we talk
+about Java completable futures
+
+188
+00:08:41.650 --> 00:08:43.690 align:middle line:84%
+in the future, in
+future weeks, you'll
+
+189
+00:08:43.690 --> 00:08:46.300 align:middle line:84%
+see how this finisher is a lot
+more interesting because what
+
+190
+00:08:46.300 --> 00:08:49.630 align:middle line:84%
+it does is it actually
+returns a single completable
+
+191
+00:08:49.630 --> 00:08:52.570 align:middle line:84%
+future to either a
+LinkedList or an ArrayList,
+
+192
+00:08:52.570 --> 00:08:55.810 align:middle line:84%
+or a stream of
+completable futures
+
+193
+00:08:55.810 --> 00:09:00.650 align:middle line:84%
+which are off processing in
+the background in parallel.
+
+194
+00:09:00.650 --> 00:09:03.220 align:middle line:84%
+So that's a lot, lot,
+lot more interesting
+
+195
+00:09:03.220 --> 00:09:05.730 align:middle line:84%
+than the simple examples
+we've looked at so far.
+
+196
+00:09:05.730 --> 00:09:07.720 align:middle line:84%
+But for right now, we
+don't need to go there
+
+197
+00:09:07.720 --> 00:09:10.230 align:middle line:84%
+because what we're doing
+is fairly straightforward.

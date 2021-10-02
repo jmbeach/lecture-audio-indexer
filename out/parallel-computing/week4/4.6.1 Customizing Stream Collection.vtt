@@ -1,0 +1,316 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.790 align:middle line:90%
+
+
+2
+00:00:00.790 --> 00:00:04.390 align:middle line:84%
+So now that we've talked in
+detail about the splitting
+
+3
+00:00:04.390 --> 00:00:08.200 align:middle line:84%
+phase, using spliterators,
+let's turn our attention
+
+4
+00:00:08.200 --> 00:00:10.360 align:middle line:84%
+to the other end of
+the stream and talk
+
+5
+00:00:10.360 --> 00:00:12.340 align:middle line:90%
+about the combining phase.
+
+6
+00:00:12.340 --> 00:00:14.980 align:middle line:84%
+And what we're going to do
+here is begin our discussions
+
+7
+00:00:14.980 --> 00:00:19.240 align:middle line:84%
+by describing the concept
+of collectors in general,
+
+8
+00:00:19.240 --> 00:00:21.310 align:middle line:84%
+and then focusing
+our attention here
+
+9
+00:00:21.310 --> 00:00:24.007 align:middle line:84%
+on so-called
+non-concurrent collectors.
+
+10
+00:00:24.007 --> 00:00:26.590 align:middle line:84%
+So we're going to talk about how
+non-concurrent collectors are
+
+11
+00:00:26.590 --> 00:00:28.840 align:middle line:90%
+used in Java.
+
+12
+00:00:28.840 --> 00:00:31.450 align:middle line:84%
+And again, we're going to
+limit our discussion right now
+
+13
+00:00:31.450 --> 00:00:32.855 align:middle line:90%
+for sequential streams.
+
+14
+00:00:32.855 --> 00:00:35.230 align:middle line:84%
+We'll come back later when we
+talk about parallel streams
+
+15
+00:00:35.230 --> 00:00:40.130 align:middle line:84%
+and talk about the concept
+of a concurrent collector.
+
+16
+00:00:40.130 --> 00:00:44.660 align:middle line:84%
+So as you probably recall the
+collect() terminal operation
+
+17
+00:00:44.660 --> 00:00:49.790 align:middle line:84%
+uses a collector to accumulate
+stream elements into mutable
+
+18
+00:00:49.790 --> 00:00:52.460 align:middle line:90%
+result containers.
+
+19
+00:00:52.460 --> 00:00:54.800 align:middle line:84%
+So as you can see here-- this
+is some stuff we've looked
+
+20
+00:00:54.800 --> 00:00:56.760 align:middle line:90%
+at earlier--
+
+21
+00:00:56.760 --> 00:01:01.250 align:middle line:84%
+we end up collecting the results
+of processing the characters
+
+22
+00:01:01.250 --> 00:01:05.060 align:middle line:84%
+in Hamlet, and filtering them,
+and sorting them, and so on--
+
+23
+00:01:05.060 --> 00:01:07.160 align:middle line:84%
+we collect them
+into an ArrayList.
+
+24
+00:01:07.160 --> 00:01:09.320 align:middle line:84%
+That's just one of many
+things we could do.
+
+25
+00:01:09.320 --> 00:01:11.120 align:middle line:90%
+So that's what collect() does.
+
+26
+00:01:11.120 --> 00:01:13.520 align:middle line:84%
+It triggers the
+intermediate operations
+
+27
+00:01:13.520 --> 00:01:18.550 align:middle line:84%
+and it uses a collector to
+create a single reduced result.
+
+28
+00:01:18.550 --> 00:01:22.860 align:middle line:84%
+The collector itself is
+defined by a generic interface.
+
+29
+00:01:22.860 --> 00:01:26.220 align:middle line:84%
+And it's actually a really
+interesting interface.
+
+30
+00:01:26.220 --> 00:01:28.320 align:middle line:84%
+There are also various
+characteristics
+
+31
+00:01:28.320 --> 00:01:30.180 align:middle line:84%
+that can be associated
+with a collector.
+
+32
+00:01:30.180 --> 00:01:33.350 align:middle line:84%
+And these characteristics-- you
+can think of them, effectively,
+
+33
+00:01:33.350 --> 00:01:39.210 align:middle line:84%
+as metadata that dictate
+properties of the collector.
+
+34
+00:01:39.210 --> 00:01:42.690 align:middle line:84%
+And what makes something
+a non-concurrent collector
+
+35
+00:01:42.690 --> 00:01:47.960 align:middle line:84%
+versus a concurrent collector
+is the characteristics.
+
+36
+00:01:47.960 --> 00:01:50.860 align:middle line:84%
+This distinction between
+concurrent and non-concurrent
+
+37
+00:01:50.860 --> 00:01:54.130 align:middle line:84%
+collectors really is only
+relevant for parallel streams.
+
+38
+00:01:54.130 --> 00:01:56.290 align:middle line:84%
+For sequential
+streams, you would
+
+39
+00:01:56.290 --> 00:02:00.040 align:middle line:84%
+use a non-concurrent collector
+because there's no parallelism.
+
+40
+00:02:00.040 --> 00:02:01.840 align:middle line:84%
+For parallel streams,
+oddly enough,
+
+41
+00:02:01.840 --> 00:02:03.610 align:middle line:84%
+you could actually use
+either a concurrent
+
+42
+00:02:03.610 --> 00:02:06.820 align:middle line:90%
+or a non-concurrent collector.
+
+43
+00:02:06.820 --> 00:02:09.070 align:middle line:84%
+We're just going to focus
+on non-concurrent collectors
+
+44
+00:02:09.070 --> 00:02:10.810 align:middle line:90%
+here for sequential streams.
+
+45
+00:02:10.810 --> 00:02:13.240 align:middle line:84%
+And non-concurrent and
+concurrent collectors
+
+46
+00:02:13.240 --> 00:02:16.060 align:middle line:84%
+for parallel streams
+we'll cover in later weeks
+
+47
+00:02:16.060 --> 00:02:18.590 align:middle line:84%
+when we talk about
+parallel streams.
+
+48
+00:02:18.590 --> 00:02:21.640 align:middle line:84%
+This sometimes throws people
+a bit of a curve ball,
+
+49
+00:02:21.640 --> 00:02:24.400 align:middle line:84%
+however, because it might
+look at first glance
+
+50
+00:02:24.400 --> 00:02:26.350 align:middle line:84%
+like a non-concurrent
+collector is
+
+51
+00:02:26.350 --> 00:02:29.000 align:middle line:84%
+only relevant for
+sequential streams.
+
+52
+00:02:29.000 --> 00:02:30.970 align:middle line:84%
+But it turns out that
+parallel streams can also
+
+53
+00:02:30.970 --> 00:02:32.650 align:middle line:90%
+use non-concurrent collectors.
+
+54
+00:02:32.650 --> 00:02:34.690 align:middle line:84%
+They just behave in a
+slightly different way
+
+55
+00:02:34.690 --> 00:02:37.730 align:middle line:90%
+than a concurrent collector.
+
+56
+00:02:37.730 --> 00:02:40.610 align:middle line:84%
+So you can think of a
+non-concurrent collector
+
+57
+00:02:40.610 --> 00:02:43.760 align:middle line:84%
+for a sequential stream
+as just an object that
+
+58
+00:02:43.760 --> 00:02:48.680 align:middle line:84%
+accumulates elements into
+a so-called mutable result
+
+59
+00:02:48.680 --> 00:02:53.760 align:middle line:84%
+container, like dropping
+coins into a piggy bank.
+
+60
+00:02:53.760 --> 00:02:55.500 align:middle line:90%
+In a sense, a collector--
+
+61
+00:02:55.500 --> 00:02:58.110 align:middle line:84%
+be it non-concurrent
+or concurrent--
+
+62
+00:02:58.110 --> 00:03:01.310 align:middle line:90%
+is the inverse of a spliterator.
+
+63
+00:03:01.310 --> 00:03:04.330 align:middle line:84%
+The spliterator
+partitions an input source
+
+64
+00:03:04.330 --> 00:03:06.490 align:middle line:90%
+into a stream of elements.
+
+65
+00:03:06.490 --> 00:03:08.800 align:middle line:84%
+A collector combines
+a stream of elements
+
+66
+00:03:08.800 --> 00:03:11.250 align:middle line:90%
+back into a single result.
