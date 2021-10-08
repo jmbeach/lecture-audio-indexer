@@ -1,0 +1,648 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.510 align:middle line:90%
+
+
+2
+00:00:00.510 --> 00:00:03.630 align:middle line:84%
+So now that we've talked
+about the fork-join pool,
+
+3
+00:00:03.630 --> 00:00:05.910 align:middle line:84%
+we've talked a bit about
+the common fork-join pool,
+
+4
+00:00:05.910 --> 00:00:08.730 align:middle line:84%
+and I described just a bit
+about how the parallel streams
+
+5
+00:00:08.730 --> 00:00:12.690 align:middle line:84%
+framework can be used
+in order to-- or rather,
+
+6
+00:00:12.690 --> 00:00:14.760 align:middle line:84%
+how the parallel
+streams framework uses
+
+7
+00:00:14.760 --> 00:00:18.900 align:middle line:84%
+the common fork-join pool in
+order to schedule and execute
+
+8
+00:00:18.900 --> 00:00:21.630 align:middle line:90%
+tasks to perform its work.
+
+9
+00:00:21.630 --> 00:00:24.150 align:middle line:84%
+Let's now go ahead and
+talk about how to configure
+
+10
+00:00:24.150 --> 00:00:25.692 align:middle line:90%
+the common fork-join pool.
+
+11
+00:00:25.692 --> 00:00:27.900 align:middle line:84%
+And as you'll see, there's
+a couple of different ways
+
+12
+00:00:27.900 --> 00:00:29.160 align:middle line:90%
+to do it.
+
+13
+00:00:29.160 --> 00:00:30.760 align:middle line:84%
+Before we talk
+about that, though,
+
+14
+00:00:30.760 --> 00:00:33.790 align:middle line:84%
+let's talk about what
+you get out of the box.
+
+15
+00:00:33.790 --> 00:00:35.970 align:middle line:84%
+So by default, the
+common fork-join pool
+
+16
+00:00:35.970 --> 00:00:40.680 align:middle line:84%
+has one less thread than
+the total number of cores.
+
+17
+00:00:40.680 --> 00:00:43.180 align:middle line:84%
+So if, let's say,
+for sake of argument,
+
+18
+00:00:43.180 --> 00:00:45.990 align:middle line:84%
+we have a quad-core processor
+that's not hyperthreaded--
+
+19
+00:00:45.990 --> 00:00:47.460 align:middle line:90%
+just to make it simple--
+
+20
+00:00:47.460 --> 00:00:50.340 align:middle line:84%
+then the size of the
+common fork-join pool
+
+21
+00:00:50.340 --> 00:00:56.145 align:middle line:84%
+will be 3 because it's
+number of cores minus 1.
+
+22
+00:00:56.145 --> 00:01:00.218 align:middle line:84%
+So we'd have three cores
+for a quad-core processor.
+
+23
+00:01:00.218 --> 00:01:02.010 align:middle line:84%
+You might go, well,
+that's kind of strange.
+
+24
+00:01:02.010 --> 00:01:03.210 align:middle line:90%
+Why do we only have three?
+
+25
+00:01:03.210 --> 00:01:05.370 align:middle line:90%
+I'll explain why in a second.
+
+26
+00:01:05.370 --> 00:01:07.260 align:middle line:84%
+The reason why
+this is the case is
+
+27
+00:01:07.260 --> 00:01:11.143 align:middle line:84%
+because the calling thread, for
+example, for parallel streams--
+
+28
+00:01:11.143 --> 00:01:13.560 align:middle line:84%
+the thread that sets the stream
+in motion, the thread that
+
+29
+00:01:13.560 --> 00:01:16.080 align:middle line:90%
+calls its terminal operation--
+
+30
+00:01:16.080 --> 00:01:19.980 align:middle line:84%
+is actually borrowed
+and used along
+
+31
+00:01:19.980 --> 00:01:23.770 align:middle line:84%
+with the other worker threads
+in the common fork-join pool.
+
+32
+00:01:23.770 --> 00:01:27.150 align:middle line:84%
+So you'll actually end up
+with using as many threads
+
+33
+00:01:27.150 --> 00:01:32.460 align:middle line:84%
+to process the behavior as
+there are cores on the machine.
+
+34
+00:01:32.460 --> 00:01:34.830 align:middle line:84%
+It's just that the calling
+thread is also temporarily
+
+35
+00:01:34.830 --> 00:01:37.233 align:middle line:90%
+included as part of that pool.
+
+36
+00:01:37.233 --> 00:01:38.650 align:middle line:84%
+And that could be
+the main thread.
+
+37
+00:01:38.650 --> 00:01:40.983 align:middle line:84%
+It could be whatever thread
+ends up running the terminal
+
+38
+00:01:40.983 --> 00:01:44.222 align:middle line:90%
+operation on a parallel stream.
+
+39
+00:01:44.222 --> 00:01:45.680 align:middle line:84%
+However, there are
+situations where
+
+40
+00:01:45.680 --> 00:01:50.570 align:middle line:84%
+this default number of fork-join
+pool threads may be inadequate.
+
+41
+00:01:50.570 --> 00:01:54.500 align:middle line:84%
+May not want to just limit
+ourselves to, say, four threads
+
+42
+00:01:54.500 --> 00:01:56.570 align:middle line:90%
+overall.
+
+43
+00:01:56.570 --> 00:01:57.870 align:middle line:90%
+Why could that be the case?
+
+44
+00:01:57.870 --> 00:02:04.910 align:middle line:84%
+Well, consider a parallel image
+downloading and processing app.
+
+45
+00:02:04.910 --> 00:02:07.220 align:middle line:84%
+For example, we'll talk
+later about the image stream
+
+46
+00:02:07.220 --> 00:02:10.580 align:middle line:84%
+gang, which is a case study
+we mentioned earlier which
+
+47
+00:02:10.580 --> 00:02:16.250 align:middle line:84%
+downloads images from remote
+web servers and processes them
+
+48
+00:02:16.250 --> 00:02:18.045 align:middle line:90%
+and stores them in parallel.
+
+49
+00:02:18.045 --> 00:02:19.670 align:middle line:84%
+Well, in such a case,
+we might actually
+
+50
+00:02:19.670 --> 00:02:22.740 align:middle line:84%
+end up having lots of
+images we want to download.
+
+51
+00:02:22.740 --> 00:02:25.460 align:middle line:84%
+We may have way more
+images to download than we
+
+52
+00:02:25.460 --> 00:02:28.940 align:middle line:90%
+have cores on a machine.
+
+53
+00:02:28.940 --> 00:02:29.910 align:middle line:90%
+Why does that matter?
+
+54
+00:02:29.910 --> 00:02:35.060 align:middle line:84%
+Well, for image downloading
+and then storing--
+
+55
+00:02:35.060 --> 00:02:36.800 align:middle line:90%
+anything that involves I/O--
+
+56
+00:02:36.800 --> 00:02:38.420 align:middle line:84%
+there will be
+periods of time when
+
+57
+00:02:38.420 --> 00:02:42.020 align:middle line:84%
+worker threads are blocked
+waiting for the I/O operations
+
+58
+00:02:42.020 --> 00:02:43.470 align:middle line:90%
+to complete.
+
+59
+00:02:43.470 --> 00:02:45.530 align:middle line:84%
+And if we're not
+careful, we'll have
+
+60
+00:02:45.530 --> 00:02:50.030 align:middle line:84%
+a problem when we try to
+download more images at a given
+
+61
+00:02:50.030 --> 00:02:52.910 align:middle line:84%
+point than there are
+numbers of cores.
+
+62
+00:02:52.910 --> 00:02:54.470 align:middle line:84%
+And these problems
+could either range
+
+63
+00:02:54.470 --> 00:02:57.470 align:middle line:84%
+from not utilizing all
+the effective parallelism
+
+64
+00:02:57.470 --> 00:03:02.132 align:middle line:84%
+in the process and the processor
+to deadlock in some cases.
+
+65
+00:03:02.132 --> 00:03:03.590 align:middle line:84%
+And the reason why
+this is an issue
+
+66
+00:03:03.590 --> 00:03:07.010 align:middle line:84%
+is if a threat is
+blocked on I/O,
+
+67
+00:03:07.010 --> 00:03:09.660 align:middle line:84%
+it will go to sleep
+until that I/O is done.
+
+68
+00:03:09.660 --> 00:03:13.230 align:middle line:84%
+If there are only as many
+threads as there are cores,
+
+69
+00:03:13.230 --> 00:03:16.990 align:middle line:84%
+but there's lots more
+images to be downloaded,
+
+70
+00:03:16.990 --> 00:03:19.790 align:middle line:84%
+we'll end up underutilizing
+the processor cores.
+
+71
+00:03:19.790 --> 00:03:22.220 align:middle line:84%
+Because while those
+threads are blocked,
+
+72
+00:03:22.220 --> 00:03:26.570 align:middle line:84%
+we could have other threads
+downloading other images that
+
+73
+00:03:26.570 --> 00:03:28.280 align:middle line:90%
+would continue to run.
+
+74
+00:03:28.280 --> 00:03:31.460 align:middle line:84%
+And so, as a result, we will
+underutilize the processing
+
+75
+00:03:31.460 --> 00:03:32.150 align:middle line:90%
+capabilities.
+
+76
+00:03:32.150 --> 00:03:34.940 align:middle line:84%
+And I've actually got a demo
+I'll show you here shortly that
+
+77
+00:03:34.940 --> 00:03:38.750 align:middle line:84%
+illustrates this performance
+degradation that occurs when
+
+78
+00:03:38.750 --> 00:03:42.200 align:middle line:84%
+you have too few threads
+relative to the number of cores
+
+79
+00:03:42.200 --> 00:03:45.460 align:middle line:84%
+that you've got and the number
+of images that download.
+
+80
+00:03:45.460 --> 00:03:47.530 align:middle line:84%
+So there's a couple
+of ways to control
+
+81
+00:03:47.530 --> 00:03:51.940 align:middle line:84%
+the common fork-join
+pool programmatically.
+
+82
+00:03:51.940 --> 00:03:55.660 align:middle line:84%
+One of the ways of doing this
+is by setting a property.
+
+83
+00:03:55.660 --> 00:03:58.570 align:middle line:84%
+You can set this
+property that's called
+
+84
+00:03:58.570 --> 00:04:01.350 align:middle line:84%
+java.util.concurrent
+ForkJoinPool.common
+
+85
+00:04:01.350 --> 00:04:03.100 align:middle line:84%
+parallelism, which is
+a bit of a mouthful,
+
+86
+00:04:03.100 --> 00:04:05.560 align:middle line:84%
+and such a mouthful I
+actually broke the string up
+
+87
+00:04:05.560 --> 00:04:09.200 align:middle line:84%
+into little chunks
+in order to do this.
+
+88
+00:04:09.200 --> 00:04:12.380 align:middle line:84%
+Setting this property,
+however, affects all parallel
+
+89
+00:04:12.380 --> 00:04:14.180 align:middle line:90%
+streams in a process.
+
+90
+00:04:14.180 --> 00:04:15.980 align:middle line:84%
+And it's often
+somewhat difficult
+
+91
+00:04:15.980 --> 00:04:18.760 align:middle line:84%
+to estimate how many
+threads we need.
+
+92
+00:04:18.760 --> 00:04:20.245 align:middle line:90%
+What should the right number be?
+
+93
+00:04:20.245 --> 00:04:21.620 align:middle line:84%
+And whatever number
+we pick might
+
+94
+00:04:21.620 --> 00:04:23.967 align:middle line:90%
+be wrong for some use case.
+
+95
+00:04:23.967 --> 00:04:26.300 align:middle line:84%
+Another thing that's a little
+bit complicated about this
+
+96
+00:04:26.300 --> 00:04:30.440 align:middle line:84%
+is that this
+property can only be
+
+97
+00:04:30.440 --> 00:04:34.753 align:middle line:84%
+changed before the common
+fork-join pool is initialized.
+
+98
+00:04:34.753 --> 00:04:36.920 align:middle line:84%
+The moment the common
+fork-join pool is initialized,
+
+99
+00:04:36.920 --> 00:04:39.110 align:middle line:84%
+you can no longer
+set this property.
+
+100
+00:04:39.110 --> 00:04:41.100 align:middle line:90%
+It has no effect.
+
+101
+00:04:41.100 --> 00:04:44.150 align:middle line:84%
+So basically, what happens
+is that the common fork-join
+
+102
+00:04:44.150 --> 00:04:46.820 align:middle line:84%
+join pool, which is basically
+a static resource-- it's kind
+
+103
+00:04:46.820 --> 00:04:48.320 align:middle line:90%
+of a singleton, if you will.
+
+104
+00:04:48.320 --> 00:04:51.320 align:middle line:84%
+It's initialized on demand
+the first time it's used,
+
+105
+00:04:51.320 --> 00:04:55.530 align:middle line:84%
+and you'd better well set that
+property before that point.
+
+106
+00:04:55.530 --> 00:04:58.630 align:middle line:84%
+Otherwise, it'll
+just be ignored.
+
+107
+00:04:58.630 --> 00:05:01.210 align:middle line:84%
+Another way to do things,
+which is more flexible and not
+
+108
+00:05:01.210 --> 00:05:04.420 align:middle line:84%
+as limited, is to use something
+called the ManagedBlocker
+
+109
+00:05:04.420 --> 00:05:05.240 align:middle line:90%
+interface.
+
+110
+00:05:05.240 --> 00:05:10.660 align:middle line:84%
+And this can be a way to
+tell the fork-join framework
+
+111
+00:05:10.660 --> 00:05:13.630 align:middle line:84%
+to dynamically
+add worker threads
+
+112
+00:05:13.630 --> 00:05:17.260 align:middle line:84%
+to the common fork-join
+pool temporarily when
+
+113
+00:05:17.260 --> 00:05:19.670 align:middle line:90%
+blocking operations occur.
+
+114
+00:05:19.670 --> 00:05:22.330 align:middle line:84%
+And we're going to end up
+talking in great detail
+
+115
+00:05:22.330 --> 00:05:25.150 align:middle line:84%
+about this when we talk
+about the fork-join pool
+
+116
+00:05:25.150 --> 00:05:28.190 align:middle line:84%
+and the common fork-join pool
+in later weeks of the course.
+
+117
+00:05:28.190 --> 00:05:30.687 align:middle line:84%
+So I won't try to go into
+much detail here now.
+
+118
+00:05:30.687 --> 00:05:32.770 align:middle line:84%
+Just letting you know it's
+available as a resource
+
+119
+00:05:32.770 --> 00:05:35.660 align:middle line:84%
+that a parallel
+stream can also use.
+
+120
+00:05:35.660 --> 00:05:39.140 align:middle line:84%
+This ability to temporarily add
+new worker threads dynamically
+
+121
+00:05:39.140 --> 00:05:41.810 align:middle line:84%
+to the common fork-join
+join pool is perfectly
+
+122
+00:05:41.810 --> 00:05:44.120 align:middle line:84%
+suited for behaviors
+that block out I/O,
+
+123
+00:05:44.120 --> 00:05:47.480 align:middle line:84%
+like our image download
+and processing and storage
+
+124
+00:05:47.480 --> 00:05:49.233 align:middle line:90%
+app we discussed.
+
+125
+00:05:49.233 --> 00:05:51.650 align:middle line:84%
+And it's also useful if you
+have to block unsynchronizers,
+
+126
+00:05:51.650 --> 00:05:53.720 align:middle line:84%
+or blocking queues,
+or things like that.
+
+127
+00:05:53.720 --> 00:05:56.030 align:middle line:84%
+So anytime you
+have to block, then
+
+128
+00:05:56.030 --> 00:05:59.490 align:middle line:84%
+you probably want to be using
+the ManagedBlocker interface.
+
+129
+00:05:59.490 --> 00:06:01.580 align:middle line:84%
+And as we'll see
+later on, as we talk
+
+130
+00:06:01.580 --> 00:06:04.340 align:middle line:84%
+about this in more detail
+later in the course,
+
+131
+00:06:04.340 --> 00:06:08.060 align:middle line:84%
+this interface can only be used
+with a common fork-join pool.
+
+132
+00:06:08.060 --> 00:06:11.120 align:middle line:84%
+Other fork-join pool that you
+make in a more specialized way
+
+133
+00:06:11.120 --> 00:06:14.150 align:middle line:84%
+cannot dynamically increase the
+way that the common fork-join
+
+134
+00:06:14.150 --> 00:06:16.490 align:middle line:84%
+pool can because they don't
+support the ManagedBlocker
+
+135
+00:06:16.490 --> 00:06:17.740 align:middle line:90%
+interface.

@@ -1,0 +1,901 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.620 align:middle line:90%
+
+
+2
+00:00:00.620 --> 00:00:04.270 align:middle line:84%
+We'll continue our coverage of
+Java Parallel Streams Internals
+
+3
+00:00:04.270 --> 00:00:08.300 align:middle line:84%
+by turning our attention to
+partitioning, which, of course,
+
+4
+00:00:08.300 --> 00:00:11.540 align:middle line:90%
+is part of the splitting phase.
+
+5
+00:00:11.540 --> 00:00:13.490 align:middle line:84%
+In this discussion,
+I'll explain how
+
+6
+00:00:13.490 --> 00:00:19.780 align:middle line:84%
+Java parallel streams partitions
+a data source into chunks.
+
+7
+00:00:19.780 --> 00:00:22.390 align:middle line:84%
+If you recall our
+earlier discussion when
+
+8
+00:00:22.390 --> 00:00:24.790 align:middle line:84%
+we were talking about
+sequential streams,
+
+9
+00:00:24.790 --> 00:00:27.430 align:middle line:84%
+I mentioned the concept
+of a splitable iterator,
+
+10
+00:00:27.430 --> 00:00:29.920 align:middle line:84%
+or spliterator,
+which we'll now talk
+
+11
+00:00:29.920 --> 00:00:32.920 align:middle line:84%
+about applying to partition
+the Java parallel stream
+
+12
+00:00:32.920 --> 00:00:34.900 align:middle line:90%
+into chunks.
+
+13
+00:00:34.900 --> 00:00:36.640 align:middle line:84%
+Earlier, we showed
+how the spliterator
+
+14
+00:00:36.640 --> 00:00:40.018 align:middle line:84%
+could be used to traverse
+elements in the source.
+
+15
+00:00:40.018 --> 00:00:41.560 align:middle line:84%
+For example, if you
+go back and watch
+
+16
+00:00:41.560 --> 00:00:46.460 align:middle line:84%
+the Overview of Spliterators
+lesson from previous weeks,
+
+17
+00:00:46.460 --> 00:00:48.760 align:middle line:84%
+you'll see how we
+used a spliterator
+
+18
+00:00:48.760 --> 00:00:53.490 align:middle line:84%
+to take a quote, which
+was a list of strings,
+
+19
+00:00:53.490 --> 00:00:57.300 align:middle line:84%
+convert that quote
+into a spliterator
+
+20
+00:00:57.300 --> 00:00:59.860 align:middle line:84%
+by using the spliterator
+factory method--
+
+21
+00:00:59.860 --> 00:01:01.980 align:middle line:84%
+which is part of the
+list interface, which
+
+22
+00:01:01.980 --> 00:01:04.319 align:middle line:90%
+it inherits from collection--
+
+23
+00:01:04.319 --> 00:01:06.450 align:middle line:84%
+and then we can use
+the tryAdvance method
+
+24
+00:01:06.450 --> 00:01:09.930 align:middle line:84%
+on the spliterator to
+traverse through every element
+
+25
+00:01:09.930 --> 00:01:13.350 align:middle line:84%
+in that list and do something
+with it, like print it out,
+
+26
+00:01:13.350 --> 00:01:15.022 align:middle line:90%
+for example.
+
+27
+00:01:15.022 --> 00:01:16.480 align:middle line:84%
+What we're now
+going to do is we're
+
+28
+00:01:16.480 --> 00:01:19.690 align:middle line:84%
+going to talk about how a
+parallel spliterator can
+
+29
+00:01:19.690 --> 00:01:23.270 align:middle line:84%
+be used to partition all
+the elements in a source.
+
+30
+00:01:23.270 --> 00:01:25.060 align:middle line:84%
+So this is different
+from traversing.
+
+31
+00:01:25.060 --> 00:01:29.520 align:middle line:84%
+This is about splitting things
+up and breaking things up.
+
+32
+00:01:29.520 --> 00:01:33.180 align:middle line:84%
+The way this works is by
+using the trySplit method
+
+33
+00:01:33.180 --> 00:01:34.770 align:middle line:90%
+on the spliterator.
+
+34
+00:01:34.770 --> 00:01:37.140 align:middle line:84%
+And this method--
+the trySplit method--
+
+35
+00:01:37.140 --> 00:01:41.040 align:middle line:84%
+is conventionally called
+by the streams framework,
+
+36
+00:01:41.040 --> 00:01:42.792 align:middle line:90%
+not by a user application.
+
+37
+00:01:42.792 --> 00:01:45.000 align:middle line:84%
+Of course, you could write
+an application to do this,
+
+38
+00:01:45.000 --> 00:01:48.480 align:middle line:84%
+but it would be very
+uncharacteristic and unusual.
+
+39
+00:01:48.480 --> 00:01:50.940 align:middle line:84%
+So trySplit is what
+the streams framework
+
+40
+00:01:50.940 --> 00:01:55.470 align:middle line:84%
+uses to recursively partition
+a data source up into chunks.
+
+41
+00:01:55.470 --> 00:01:57.390 align:middle line:84%
+In this particular
+case, we use a list,
+
+42
+00:01:57.390 --> 00:02:02.960 align:middle line:84%
+but of course, it could be other
+types of collections as well.
+
+43
+00:02:02.960 --> 00:02:06.320 align:middle line:84%
+The way to implement tri
+split most effectively
+
+44
+00:02:06.320 --> 00:02:10.520 align:middle line:84%
+is to split the input
+evenly, as long as it's not
+
+45
+00:02:10.520 --> 00:02:13.070 align:middle line:90%
+less than some minimum size.
+
+46
+00:02:13.070 --> 00:02:15.947 align:middle line:84%
+Obviously, if you're trying
+to split up an array list,
+
+47
+00:02:15.947 --> 00:02:17.780 align:middle line:84%
+you don't want to split
+anything once you've
+
+48
+00:02:17.780 --> 00:02:21.290 align:middle line:84%
+got an element with just
+one single value in it.
+
+49
+00:02:21.290 --> 00:02:24.920 align:middle line:84%
+You can't split now an
+array element of size 1
+
+50
+00:02:24.920 --> 00:02:26.600 align:middle line:90%
+into anything more fine-grain.
+
+51
+00:02:26.600 --> 00:02:31.860 align:middle line:84%
+That's the atomic range of
+an element in an array list.
+
+52
+00:02:31.860 --> 00:02:34.813 align:middle line:84%
+So if you're not
+the minimum size,
+
+53
+00:02:34.813 --> 00:02:36.480 align:middle line:84%
+if you're greater
+than the minimum size,
+
+54
+00:02:36.480 --> 00:02:39.300 align:middle line:84%
+then you try to split the
+input up into two chunks--
+
+55
+00:02:39.300 --> 00:02:41.388 align:middle line:90%
+ideally, even-sized chunks.
+
+56
+00:02:41.388 --> 00:02:42.930 align:middle line:84%
+And then, as we'll
+see, you will want
+
+57
+00:02:42.930 --> 00:02:45.660 align:middle line:84%
+to return a spliterator
+for the left chunk
+
+58
+00:02:45.660 --> 00:02:51.710 align:middle line:84%
+and update the object itself
+to hold the right chunk.
+
+59
+00:02:51.710 --> 00:02:56.210 align:middle line:84%
+Spliterators very rarely, if
+ever, need any synchronization,
+
+60
+00:02:56.210 --> 00:02:57.980 align:middle line:84%
+nor does it even
+need a join phase.
+
+61
+00:02:57.980 --> 00:03:01.100 align:middle line:84%
+Synchronization is not
+needed because splitting
+
+62
+00:03:01.100 --> 00:03:05.330 align:middle line:84%
+is done in one thread,
+not multiple threads.
+
+63
+00:03:05.330 --> 00:03:07.310 align:middle line:84%
+And there's no need
+for a join phase
+
+64
+00:03:07.310 --> 00:03:11.420 align:middle line:84%
+because joining is done by later
+parts of the streams framework,
+
+65
+00:03:11.420 --> 00:03:14.690 align:middle line:84%
+in particular, typically
+by some kind of collector
+
+66
+00:03:14.690 --> 00:03:19.260 align:middle line:90%
+in the combine phase.
+
+67
+00:03:19.260 --> 00:03:22.860 align:middle line:84%
+TrySplit is called
+recursively until the chunks
+
+68
+00:03:22.860 --> 00:03:25.740 align:middle line:84%
+are less than or
+equal to whatever
+
+69
+00:03:25.740 --> 00:03:28.920 align:middle line:90%
+the designated minimum size is.
+
+70
+00:03:28.920 --> 00:03:33.060 align:middle line:84%
+When the size is less than
+or equal to minimum size,
+
+71
+00:03:33.060 --> 00:03:36.360 align:middle line:84%
+then a spliterator is
+obliged to return null.
+
+72
+00:03:36.360 --> 00:03:40.130 align:middle line:90%
+
+
+73
+00:03:40.130 --> 00:03:43.200 align:middle line:84%
+When a null is
+returned, that indicates
+
+74
+00:03:43.200 --> 00:03:44.700 align:middle line:84%
+that we've reached
+the minimum size,
+
+75
+00:03:44.700 --> 00:03:46.980 align:middle line:84%
+and that's an indication
+to the framework
+
+76
+00:03:46.980 --> 00:03:48.960 align:middle line:84%
+that it should do
+something else.
+
+77
+00:03:48.960 --> 00:03:52.830 align:middle line:84%
+In particular, what typically
+happens when a trySplit
+
+78
+00:03:52.830 --> 00:03:56.880 align:middle line:84%
+method returns null, that's a
+sign to the streams framework
+
+79
+00:03:56.880 --> 00:04:01.570 align:middle line:84%
+to process the chunk that you've
+got sequentially at that point,
+
+80
+00:04:01.570 --> 00:04:05.030 align:middle line:84%
+typically by calling its
+tryAdvance method on it.
+
+81
+00:04:05.030 --> 00:04:08.410 align:middle line:84%
+So trySplit is basically
+used to break things up
+
+82
+00:04:08.410 --> 00:04:10.300 align:middle line:84%
+until you get to
+minimum sized chunks,
+
+83
+00:04:10.300 --> 00:04:14.470 align:middle line:84%
+and then streams framework
+turns control over
+
+84
+00:04:14.470 --> 00:04:17.200 align:middle line:90%
+to the tryAdvance method.
+
+85
+00:04:17.200 --> 00:04:21.060 align:middle line:84%
+Let's take a look
+at a Java collection
+
+86
+00:04:21.060 --> 00:04:25.060 align:middle line:84%
+that splits evenly
+and efficiently,
+
+87
+00:04:25.060 --> 00:04:27.768 align:middle line:84%
+and that's the
+ArrayList collection.
+
+88
+00:04:27.768 --> 00:04:30.060 align:middle line:84%
+If you take a look at the
+link the bottom of the slide,
+
+89
+00:04:30.060 --> 00:04:35.940 align:middle line:84%
+it's actually the source code
+for the Java 8 ArrayList class.
+
+90
+00:04:35.940 --> 00:04:38.100 align:middle line:84%
+And we're going to
+zoom in on two methods
+
+91
+00:04:38.100 --> 00:04:42.130 align:middle line:84%
+here, the trySplit method
+and the tryAdvance method.
+
+92
+00:04:42.130 --> 00:04:45.840 align:middle line:84%
+And as you can see here
+by my use of an icon that
+
+93
+00:04:45.840 --> 00:04:50.100 align:middle line:84%
+indicates a balance scale,
+this particular collection
+
+94
+00:04:50.100 --> 00:04:52.320 align:middle line:90%
+splits evenly.
+
+95
+00:04:52.320 --> 00:04:55.800 align:middle line:84%
+So trySplit is what does
+the heavy lifting here.
+
+96
+00:04:55.800 --> 00:04:57.930 align:middle line:84%
+As you can see,
+what trySplit does
+
+97
+00:04:57.930 --> 00:05:03.690 align:middle line:84%
+is it goes ahead and
+computes the current index
+
+98
+00:05:03.690 --> 00:05:07.320 align:middle line:84%
+and it computes the high range,
+which is called getFence.
+
+99
+00:05:07.320 --> 00:05:10.680 align:middle line:84%
+Think of that as the end of
+the region, end of the range,
+
+100
+00:05:10.680 --> 00:05:12.450 align:middle line:90%
+or 1 past the end of the range.
+
+101
+00:05:12.450 --> 00:05:15.420 align:middle line:84%
+And then it goes ahead and
+it adds the current index
+
+102
+00:05:15.420 --> 00:05:18.570 align:middle line:84%
+to the high value
+and right shifts
+
+103
+00:05:18.570 --> 00:05:20.850 align:middle line:84%
+by 1, which is the
+same as dividing by 2.
+
+104
+00:05:20.850 --> 00:05:22.350 align:middle line:84%
+Not sure why they
+don't divide by 2.
+
+105
+00:05:22.350 --> 00:05:25.410 align:middle line:84%
+I'm sure modern Java compiler
+can optimize division
+
+106
+00:05:25.410 --> 00:05:27.490 align:middle line:90%
+by 2 quite nicely.
+
+107
+00:05:27.490 --> 00:05:29.010 align:middle line:84%
+So that ends up
+with the midpoint.
+
+108
+00:05:29.010 --> 00:05:31.650 align:middle line:84%
+And you can see here,
+if low is greater
+
+109
+00:05:31.650 --> 00:05:34.920 align:middle line:84%
+than or equal to the mid,
+that means we're done.
+
+110
+00:05:34.920 --> 00:05:39.420 align:middle line:84%
+We've reached the end of
+this recursive decomposition,
+
+111
+00:05:39.420 --> 00:05:41.580 align:middle line:84%
+in which case, we
+just return null.
+
+112
+00:05:41.580 --> 00:05:46.510 align:middle line:84%
+Otherwise, we create a
+new ArrayList spliterator,
+
+113
+00:05:46.510 --> 00:05:51.790 align:middle line:84%
+passing in the list,
+passing in the low value,
+
+114
+00:05:51.790 --> 00:05:54.170 align:middle line:84%
+and then passing
+in the mid value.
+
+115
+00:05:54.170 --> 00:05:56.560 align:middle line:84%
+So that's going to
+become the new range
+
+116
+00:05:56.560 --> 00:05:58.600 align:middle line:84%
+for the left-hand
+side of the split.
+
+117
+00:05:58.600 --> 00:06:00.910 align:middle line:90%
+So that will be low to mid.
+
+118
+00:06:00.910 --> 00:06:04.570 align:middle line:84%
+And you'll also notice that
+we set index to be mid.
+
+119
+00:06:04.570 --> 00:06:09.340 align:middle line:84%
+So that updates this
+spliterator so it
+
+120
+00:06:09.340 --> 00:06:15.700 align:middle line:84%
+will now only have the right
+hand portion from mid to high.
+
+121
+00:06:15.700 --> 00:06:18.550 align:middle line:84%
+So that's how the trySplit
+method works for ArrayList.
+
+122
+00:06:18.550 --> 00:06:22.322 align:middle line:84%
+As you can see, it splits
+evenly and there's nothing left
+
+123
+00:06:22.322 --> 00:06:24.280 align:middle line:84%
+to split-- until there's
+nothing left to split,
+
+124
+00:06:24.280 --> 00:06:27.050 align:middle line:90%
+and it doesn't do any copying.
+
+125
+00:06:27.050 --> 00:06:28.520 align:middle line:90%
+Here's the tryAdvance method.
+
+126
+00:06:28.520 --> 00:06:31.460 align:middle line:84%
+This consumes a single
+element on each call.
+
+127
+00:06:31.460 --> 00:06:33.980 align:middle line:84%
+And as you can see here, if
+we haven't reached the end,
+
+128
+00:06:33.980 --> 00:06:37.790 align:middle line:84%
+we go ahead and we
+accept the element data
+
+129
+00:06:37.790 --> 00:06:41.010 align:middle line:90%
+at index i in the list.
+
+130
+00:06:41.010 --> 00:06:43.700 align:middle line:84%
+So that basically goes ahead
+and just kind of copies
+
+131
+00:06:43.700 --> 00:06:49.740 align:middle line:84%
+by reference the contents
+of the list at that element,
+
+132
+00:06:49.740 --> 00:06:52.610 align:middle line:84%
+and then returns
+that as the quote,
+
+133
+00:06:52.610 --> 00:06:55.680 align:middle line:84%
+"out parameter," if you will,
+to the tryAdvance method,
+
+134
+00:06:55.680 --> 00:06:59.640 align:middle line:84%
+which then returns true if
+we successfully got an item.
+
+135
+00:06:59.640 --> 00:07:02.700 align:middle line:84%
+Otherwise, it returns false,
+meaning that we're done.
+
+136
+00:07:02.700 --> 00:07:04.640 align:middle line:90%
+So that's how ArrayList works.
+
+137
+00:07:04.640 --> 00:07:07.280 align:middle line:84%
+And I think you'll agree
+that it's very efficient,
+
+138
+00:07:07.280 --> 00:07:12.890 align:middle line:84%
+and it's also going
+to be extremely even--
+
+139
+00:07:12.890 --> 00:07:15.750 align:middle line:84%
+splits everything up
+in a nice, even way.
+
+140
+00:07:15.750 --> 00:07:18.030 align:middle line:84%
+In contrast, other
+Java collections
+
+141
+00:07:18.030 --> 00:07:20.200 align:middle line:84%
+don't split evenly
+and efficiently.
+
+142
+00:07:20.200 --> 00:07:22.110 align:middle line:84%
+The best example that
+I'm showing here--
+
+143
+00:07:22.110 --> 00:07:26.200 align:middle line:84%
+because it's a sibling to
+ArrayList is LinkedList.
+
+144
+00:07:26.200 --> 00:07:28.410 align:middle line:84%
+So as you see, again,
+with the unbalanced scale,
+
+145
+00:07:28.410 --> 00:07:30.900 align:middle line:84%
+this does not split
+evenly, and it turns out
+
+146
+00:07:30.900 --> 00:07:33.420 align:middle line:84%
+it doesn't split
+efficiently either.
+
+147
+00:07:33.420 --> 00:07:35.160 align:middle line:90%
+So here's what trySplit does.
+
+148
+00:07:35.160 --> 00:07:39.150 align:middle line:84%
+TrySplit splits the
+list up into batches
+
+149
+00:07:39.150 --> 00:07:42.450 align:middle line:84%
+rather than attempting
+to split it evenly.
+
+150
+00:07:42.450 --> 00:07:45.570 align:middle line:84%
+And in fact, if you take a
+close look at the code here,
+
+151
+00:07:45.570 --> 00:07:47.470 align:middle line:84%
+it's quite muddled
+and complicated,
+
+152
+00:07:47.470 --> 00:07:49.290 align:middle line:84%
+but what it's
+basically doing is it's
+
+153
+00:07:49.290 --> 00:07:55.140 align:middle line:84%
+copying a chunk of the list into
+an array, which is a batch unit
+
+154
+00:07:55.140 --> 00:07:58.530 align:middle line:84%
+size, and it then
+goes ahead and copies
+
+155
+00:07:58.530 --> 00:08:00.420 align:middle line:84%
+the contents of the
+list into that array,
+
+156
+00:08:00.420 --> 00:08:03.000 align:middle line:84%
+and then calls a spliterator
+helper method to create
+
+157
+00:08:03.000 --> 00:08:04.440 align:middle line:90%
+a spliterator for that.
+
+158
+00:08:04.440 --> 00:08:06.510 align:middle line:84%
+And this will have to
+take place multiple times
+
+159
+00:08:06.510 --> 00:08:08.020 align:middle line:90%
+as it moves through the list.
+
+160
+00:08:08.020 --> 00:08:09.840 align:middle line:84%
+So this is not going
+to split evenly,
+
+161
+00:08:09.840 --> 00:08:12.340 align:middle line:84%
+and it's also not going to split
+efficiently because we have
+
+162
+00:08:12.340 --> 00:08:15.352 align:middle line:90%
+to iterate and we have to copy.
+
+163
+00:08:15.352 --> 00:08:16.560 align:middle line:90%
+Here's the tryAdvance method.
+
+164
+00:08:16.560 --> 00:08:18.390 align:middle line:90%
+This actually isn't too slow.
+
+165
+00:08:18.390 --> 00:08:20.910 align:middle line:84%
+It basically does
+some sanity checking,
+
+166
+00:08:20.910 --> 00:08:25.680 align:middle line:84%
+and then goes ahead and accepts
+the current element in the list
+
+167
+00:08:25.680 --> 00:08:30.150 align:middle line:84%
+into the action that's passed
+as a consumer parameter,
+
+168
+00:08:30.150 --> 00:08:32.460 align:middle line:84%
+and then goes ahead and
+updates the current element
+
+169
+00:08:32.460 --> 00:08:35.020 align:middle line:84%
+to point to the next
+element in the list.
+
+170
+00:08:35.020 --> 00:08:37.500 align:middle line:84%
+So this, again, returns
+true if we're successfully
+
+171
+00:08:37.500 --> 00:08:39.970 align:middle line:84%
+able to advance
+and get an element.
+
+172
+00:08:39.970 --> 00:08:42.100 align:middle line:84%
+Otherwise, it returns
+false if we're done.
+
+173
+00:08:42.100 --> 00:08:44.490 align:middle line:84%
+So I think you'll agree
+that LinkedList does not
+
+174
+00:08:44.490 --> 00:08:46.560 align:middle line:84%
+split evenly, does
+not split efficiently
+
+175
+00:08:46.560 --> 00:08:48.252 align:middle line:90%
+relative to ArrayList.
+
+176
+00:08:48.252 --> 00:08:49.710 align:middle line:84%
+And that will make
+a big difference
+
+177
+00:08:49.710 --> 00:08:52.110 align:middle line:84%
+for parallel
+streams performance,
+
+178
+00:08:52.110 --> 00:08:55.230 align:middle line:90%
+as we will see somewhat later.
+
+179
+00:08:55.230 --> 00:08:57.720 align:middle line:84%
+We're going to talk
+about more implementation
+
+180
+00:08:57.720 --> 00:09:00.870 align:middle line:84%
+details for parallel
+spliterator in upcoming lessons.
+
+181
+00:09:00.870 --> 00:09:03.720 align:middle line:84%
+In particular, there's
+a lesson on the search
+
+182
+00:09:03.720 --> 00:09:06.390 align:middle line:84%
+with parallel
+spliterator example
+
+183
+00:09:06.390 --> 00:09:09.760 align:middle line:84%
+and the trySplit method
+that is embodied in that.
+
+184
+00:09:09.760 --> 00:09:12.270 align:middle line:84%
+And I think you'll see that
+you can do really cool things
+
+185
+00:09:12.270 --> 00:09:15.690 align:middle line:84%
+if you have the need to make
+super optimized parallel
+
+186
+00:09:15.690 --> 00:09:19.700 align:middle line:84%
+spliterator using trySplit
+for complex data structures.

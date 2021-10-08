@@ -1,0 +1,269 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.500 align:middle line:90%
+
+
+2
+00:00:00.500 --> 00:00:02.380 align:middle line:84%
+Welcome to the next
+week of our course
+
+3
+00:00:02.380 --> 00:00:05.330 align:middle line:84%
+on parallel functional
+programming with Java.
+
+4
+00:00:05.330 --> 00:00:06.710 align:middle line:84%
+This week's lessons
+pick up where
+
+5
+00:00:06.710 --> 00:00:09.560 align:middle line:84%
+we left off in our coverage
+of parallel stream internals
+
+6
+00:00:09.560 --> 00:00:11.400 align:middle line:90%
+last week.
+
+7
+00:00:11.400 --> 00:00:14.760 align:middle line:84%
+We start by delving deeper
+into the splitting phase where
+
+8
+00:00:14.760 --> 00:00:16.860 align:middle line:84%
+a Spliterator is used
+to partition a data
+
+9
+00:00:16.860 --> 00:00:20.580 align:middle line:84%
+source into chunks that are
+then processed in parallel
+
+10
+00:00:20.580 --> 00:00:22.970 align:middle line:90%
+by the applying phase.
+
+11
+00:00:22.970 --> 00:00:26.660 align:middle line:84%
+Some data sources, such as
+the Java ArrayList collection,
+
+12
+00:00:26.660 --> 00:00:30.800 align:middle line:84%
+split evenly and efficiently,
+whereas other data sources,
+
+13
+00:00:30.800 --> 00:00:32.990 align:middle line:84%
+such as the Java
+LinkedList collection,
+
+14
+00:00:32.990 --> 00:00:35.770 align:middle line:84%
+do not split evenly
+and efficiently.
+
+15
+00:00:35.770 --> 00:00:37.500 align:middle line:84%
+To demonstrate
+these differences,
+
+16
+00:00:37.500 --> 00:00:40.290 align:middle line:84%
+we analyze a program that
+quantifies the performance
+
+17
+00:00:40.290 --> 00:00:44.190 align:middle line:84%
+of parallel Spliterators for
+the ArrayList and LinkedList
+
+18
+00:00:44.190 --> 00:00:47.820 align:middle line:84%
+when processing the complete
+works of Shakespeare.
+
+19
+00:00:47.820 --> 00:00:50.190 align:middle line:84%
+These test results show how
+differences in Spliterator
+
+20
+00:00:50.190 --> 00:00:52.830 align:middle line:84%
+implementations become
+more significant
+
+21
+00:00:52.830 --> 00:00:56.330 align:middle line:84%
+as the size of the
+data source grows.
+
+22
+00:00:56.330 --> 00:00:59.170 align:middle line:84%
+We next turn our attention
+to the applying phase
+
+23
+00:00:59.170 --> 00:01:01.390 align:middle line:84%
+where the chunks created
+by a Spliterator run
+
+24
+00:01:01.390 --> 00:01:03.890 align:middle line:84%
+in the common Java
+ForkJoinPool, which
+
+25
+00:01:03.890 --> 00:01:07.640 align:middle line:84%
+provides a high performance
+and fine-grained parallel task
+
+26
+00:01:07.640 --> 00:01:09.960 align:middle line:90%
+execution engine.
+
+27
+00:01:09.960 --> 00:01:12.750 align:middle line:84%
+All Java parallel streams
+within a process share
+
+28
+00:01:12.750 --> 00:01:17.730 align:middle line:84%
+a common ForkJoinPool, which
+maximizes processor utilization
+
+29
+00:01:17.730 --> 00:01:20.130 align:middle line:84%
+since this pool controls
+how cores are used globally
+
+30
+00:01:20.130 --> 00:01:22.290 align:middle line:90%
+within the process.
+
+31
+00:01:22.290 --> 00:01:23.970 align:middle line:84%
+Although the default
+number of threads
+
+32
+00:01:23.970 --> 00:01:27.630 align:middle line:84%
+in the common ForkJoinPool is
+one less than the total number
+
+33
+00:01:27.630 --> 00:01:31.790 align:middle line:84%
+of processor cores known to
+the Java execution environment,
+
+34
+00:01:31.790 --> 00:01:34.790 align:middle line:84%
+a parallel stream can
+use all available cores
+
+35
+00:01:34.790 --> 00:01:38.000 align:middle line:84%
+since the calling thread is
+borrowed and used temporarily
+
+36
+00:01:38.000 --> 00:01:40.200 align:middle line:90%
+as part of the pool.
+
+37
+00:01:40.200 --> 00:01:42.680 align:middle line:84%
+However, this default
+number of threads
+
+38
+00:01:42.680 --> 00:01:44.990 align:middle line:84%
+may be inadequate
+for some programs,
+
+39
+00:01:44.990 --> 00:01:48.380 align:middle line:84%
+such as I/O bound apps that
+download and process content
+
+40
+00:01:48.380 --> 00:01:50.510 align:middle line:90%
+from the web.
+
+41
+00:01:50.510 --> 00:01:52.670 align:middle line:84%
+Java therefore enables
+programmatic control
+
+42
+00:01:52.670 --> 00:01:55.190 align:middle line:84%
+of the size of the
+common ForkJoinPool
+
+43
+00:01:55.190 --> 00:01:59.100 align:middle line:84%
+by various means we outline
+in this week's lessons.
+
+44
+00:01:59.100 --> 00:02:02.400 align:middle line:84%
+We also briefly summarize the
+structure and functionality
+
+45
+00:02:02.400 --> 00:02:04.830 align:middle line:84%
+of Java's Fork/Join
+framework, which
+
+46
+00:02:04.830 --> 00:02:09.580 align:middle line:84%
+is covered in much greater
+detail later in this course.
+
+47
+00:02:09.580 --> 00:02:11.130 align:middle line:84%
+The final group of
+lessons this week
+
+48
+00:02:11.130 --> 00:02:14.760 align:middle line:84%
+begin exploring the combining
+phase where the Java stream's
+
+49
+00:02:14.760 --> 00:02:18.120 align:middle line:84%
+framework employs a terminal
+operation, such as Collect
+
+50
+00:02:18.120 --> 00:02:21.150 align:middle line:84%
+or Reduce, to join the
+partial results produced
+
+51
+00:02:21.150 --> 00:02:25.545 align:middle line:84%
+in the common ForkJoinPool
+into a final reduced result.
+
+52
+00:02:25.545 --> 00:02:27.920 align:middle line:84%
+There are subtleties with
+programming terminal operations
+
+53
+00:02:27.920 --> 00:02:31.010 align:middle line:84%
+properly, so we examine
+solutions to common traps
+
+54
+00:02:31.010 --> 00:02:33.830 align:middle line:84%
+and pitfalls of programming
+these operations to help
+
+55
+00:02:33.830 --> 00:02:37.090 align:middle line:84%
+ensure your code is
+correct and efficient.

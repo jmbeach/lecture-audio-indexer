@@ -1,0 +1,828 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.428 align:middle line:90%
+
+
+2
+00:00:00.428 --> 00:00:02.970 align:middle line:84%
+We're now going to focus on the
+second half of our discussion
+
+3
+00:00:02.970 --> 00:00:05.550 align:middle line:90%
+of combining results.
+
+4
+00:00:05.550 --> 00:00:07.140 align:middle line:84%
+In the previous
+part of the lesson,
+
+5
+00:00:07.140 --> 00:00:10.950 align:middle line:84%
+I described the differences
+between collect and reduce
+
+6
+00:00:10.950 --> 00:00:13.050 align:middle line:84%
+with respect to
+combining partial results
+
+7
+00:00:13.050 --> 00:00:15.780 align:middle line:84%
+into a single result
+in the context
+
+8
+00:00:15.780 --> 00:00:17.385 align:middle line:90%
+of non-concurrent collectors.
+
+9
+00:00:17.385 --> 00:00:19.110 align:middle line:84%
+What we're going
+to do now is talk
+
+10
+00:00:19.110 --> 00:00:21.600 align:middle line:84%
+about some of the common
+traps and pitfalls
+
+11
+00:00:21.600 --> 00:00:26.112 align:middle line:84%
+of doing these types of
+things with parallel streams.
+
+12
+00:00:26.112 --> 00:00:28.570 align:middle line:84%
+The key point of this is to
+realize that collect and reduce
+
+13
+00:00:28.570 --> 00:00:30.610 align:middle line:84%
+are different in
+terms of what they
+
+14
+00:00:30.610 --> 00:00:34.190 align:middle line:84%
+expect in the context
+of a parallel stream.
+
+15
+00:00:34.190 --> 00:00:36.410 align:middle line:84%
+Understanding these
+semantic differences
+
+16
+00:00:36.410 --> 00:00:38.510 align:middle line:84%
+is particularly
+important if you start
+
+17
+00:00:38.510 --> 00:00:41.210 align:middle line:84%
+writing complex code
+and attempt to use
+
+18
+00:00:41.210 --> 00:00:44.280 align:middle line:90%
+the reduce terminal operation.
+
+19
+00:00:44.280 --> 00:00:47.070 align:middle line:84%
+As a consequence, it's
+usually a good idea
+
+20
+00:00:47.070 --> 00:00:50.190 align:middle line:84%
+if you use reduce to
+test your solution
+
+21
+00:00:50.190 --> 00:00:52.800 align:middle line:84%
+with a parallel stream,
+even if you're not
+
+22
+00:00:52.800 --> 00:00:54.840 align:middle line:84%
+planning to use a
+parallel stream,
+
+23
+00:00:54.840 --> 00:00:57.240 align:middle line:84%
+in order to detect
+mistakes with respect
+
+24
+00:00:57.240 --> 00:01:02.220 align:middle line:84%
+to differences between mutable
+and immutable reductions.
+
+25
+00:01:02.220 --> 00:01:06.120 align:middle line:84%
+So this example here, which
+is from my ex17 folder
+
+26
+00:01:06.120 --> 00:01:08.580 align:middle line:84%
+on my GitHub repository,
+illustrates the point
+
+27
+00:01:08.580 --> 00:01:09.690 align:middle line:90%
+quite nicely.
+
+28
+00:01:09.690 --> 00:01:12.480 align:middle line:84%
+This example is called
+buggyStreamReduce3.
+
+29
+00:01:12.480 --> 00:01:16.200 align:middle line:84%
+And you'll see how it
+works and how it goes awry.
+
+30
+00:01:16.200 --> 00:01:19.590 align:middle line:84%
+What we do is we go ahead
+and take a list of words.
+
+31
+00:01:19.590 --> 00:01:22.140 align:middle line:84%
+These could be all the words
+of Shakespeare, for example.
+
+32
+00:01:22.140 --> 00:01:26.450 align:middle line:84%
+And we store these
+things into a stream.
+
+33
+00:01:26.450 --> 00:01:29.640 align:middle line:84%
+Now, notice that this particular
+call, allWords.stream,
+
+34
+00:01:29.640 --> 00:01:32.120 align:middle line:84%
+doesn't do anything
+because streams are lazy.
+
+35
+00:01:32.120 --> 00:01:35.040 align:middle line:84%
+And so nothing's going to happen
+until the terminal operation is
+
+36
+00:01:35.040 --> 00:01:39.010 align:middle line:84%
+reached a few lines
+down in the code.
+
+37
+00:01:39.010 --> 00:01:42.060 align:middle line:84%
+We then do some clever
+conditional checking.
+
+38
+00:01:42.060 --> 00:01:45.960 align:middle line:84%
+And if the parallel Boolean
+flag is set to true,
+
+39
+00:01:45.960 --> 00:01:49.590 align:middle line:84%
+we will enable parallelism
+for this stream.
+
+40
+00:01:49.590 --> 00:01:52.410 align:middle line:84%
+Conversely if the parallelism--
+the parallel flag is false,
+
+41
+00:01:52.410 --> 00:01:55.980 align:middle line:90%
+we will not enable parallelism.
+
+42
+00:01:55.980 --> 00:01:58.440 align:middle line:84%
+It turns out that you can
+actually have multiple calls
+
+43
+00:01:58.440 --> 00:01:59.550 align:middle line:90%
+to parallelism--
+
+44
+00:01:59.550 --> 00:02:02.220 align:middle line:84%
+to parallel or
+sequential like this.
+
+45
+00:02:02.220 --> 00:02:04.320 align:middle line:84%
+And whichever one
+occurs last is the one
+
+46
+00:02:04.320 --> 00:02:07.695 align:middle line:84%
+that dictates the behavior and
+the semantics of the stream.
+
+47
+00:02:07.695 --> 00:02:09.570 align:middle line:84%
+It would be rather odd
+to keep changing them.
+
+48
+00:02:09.570 --> 00:02:10.770 align:middle line:90%
+But I guess it's possible.
+
+49
+00:02:10.770 --> 00:02:12.437 align:middle line:84%
+So you just have to
+be aware of the fact
+
+50
+00:02:12.437 --> 00:02:15.970 align:middle line:84%
+that the last one called
+is the one that wins.
+
+51
+00:02:15.970 --> 00:02:21.920 align:middle line:84%
+When this code is called
+with parallel set to false,
+
+52
+00:02:21.920 --> 00:02:24.430 align:middle line:84%
+everything is fine,
+because the StringBuilder
+
+53
+00:02:24.430 --> 00:02:27.250 align:middle line:84%
+that we're going to be using
+here as the initial seed
+
+54
+00:02:27.250 --> 00:02:32.710 align:middle line:84%
+value for reduce works fine
+when called in a single thread.
+
+55
+00:02:32.710 --> 00:02:36.400 align:middle line:84%
+However, if we turn
+parallel to true,
+
+56
+00:02:36.400 --> 00:02:39.160 align:middle line:84%
+then chaos and
+insanity will result
+
+57
+00:02:39.160 --> 00:02:43.205 align:middle line:84%
+since reduce expects to be
+doing an immutable reduction.
+
+58
+00:02:43.205 --> 00:02:44.830 align:middle line:84%
+And what we're doing
+here unfortunately
+
+59
+00:02:44.830 --> 00:02:47.470 align:middle line:84%
+is we're passing
+in a StringBuilder.
+
+60
+00:02:47.470 --> 00:02:50.360 align:middle line:84%
+And StringBuilder, as
+you may or may not know,
+
+61
+00:02:50.360 --> 00:02:53.235 align:middle line:84%
+is actually not a
+thread-safe class.
+
+62
+00:02:53.235 --> 00:02:54.610 align:middle line:84%
+So if you create
+a StringBuilder,
+
+63
+00:02:54.610 --> 00:02:57.760 align:middle line:84%
+it's expected to only be
+called in a single thread
+
+64
+00:02:57.760 --> 00:03:00.640 align:middle line:84%
+or called with some other
+external lock held to protect
+
+65
+00:03:00.640 --> 00:03:02.135 align:middle line:90%
+access to the StringBuilder.
+
+66
+00:03:02.135 --> 00:03:05.350 align:middle line:84%
+And that's because it's got
+shared mutable state inside it.
+
+67
+00:03:05.350 --> 00:03:07.952 align:middle line:84%
+Well, reduce is not
+expecting its objects
+
+68
+00:03:07.952 --> 00:03:09.160 align:middle line:90%
+to have shared mutable state.
+
+69
+00:03:09.160 --> 00:03:11.470 align:middle line:84%
+It's expecting them
+to be immutable.
+
+70
+00:03:11.470 --> 00:03:14.140 align:middle line:84%
+So if we use this
+particular code here,
+
+71
+00:03:14.140 --> 00:03:17.050 align:middle line:84%
+bad things will happen, because
+when different threads that
+
+72
+00:03:17.050 --> 00:03:22.090 align:middle line:84%
+are running in the parallel
+stream's thread pool
+
+73
+00:03:22.090 --> 00:03:25.420 align:middle line:84%
+try to append into
+the StringBuilder,
+
+74
+00:03:25.420 --> 00:03:28.300 align:middle line:84%
+they will end up corrupting
+the state of the StringBuilder.
+
+75
+00:03:28.300 --> 00:03:30.020 align:middle line:84%
+And really bad
+things will occur.
+
+76
+00:03:30.020 --> 00:03:31.720 align:middle line:84%
+So this is a good
+example of code
+
+77
+00:03:31.720 --> 00:03:35.260 align:middle line:84%
+that succeeds
+accidentally when it
+
+78
+00:03:35.260 --> 00:03:38.770 align:middle line:84%
+works with a sequential stream
+but fails horribly when you
+
+79
+00:03:38.770 --> 00:03:41.417 align:middle line:90%
+run it with a parallel stream.
+
+80
+00:03:41.417 --> 00:03:43.750 align:middle line:84%
+There are a number of different
+ways you could fix this.
+
+81
+00:03:43.750 --> 00:03:46.450 align:middle line:84%
+One way to fix this is
+shown in this example
+
+82
+00:03:46.450 --> 00:03:50.710 align:middle line:84%
+called streamReduceConcat, which
+is also from my ex17 folder.
+
+83
+00:03:50.710 --> 00:03:56.530 align:middle line:84%
+And this uses reduce with
+built-in string concatenation.
+
+84
+00:03:56.530 --> 00:03:58.510 align:middle line:84%
+So you can see what we
+do here is we go ahead
+
+85
+00:03:58.510 --> 00:04:02.380 align:middle line:84%
+and create a new string,
+which, by its very nature,
+
+86
+00:04:02.380 --> 00:04:03.160 align:middle line:90%
+is immutable.
+
+87
+00:04:03.160 --> 00:04:05.050 align:middle line:90%
+Strings are immutable in Java.
+
+88
+00:04:05.050 --> 00:04:08.020 align:middle line:84%
+And then when we go ahead
+and do the actual accumulator
+
+89
+00:04:08.020 --> 00:04:10.780 align:middle line:84%
+operation there,
+we take one string.
+
+90
+00:04:10.780 --> 00:04:13.870 align:middle line:84%
+And we add it to another string
+using the plus sign, which
+
+91
+00:04:13.870 --> 00:04:15.980 align:middle line:90%
+is string concatenation.
+
+92
+00:04:15.980 --> 00:04:17.420 align:middle line:84%
+This approach will
+work correctly,
+
+93
+00:04:17.420 --> 00:04:20.329 align:middle line:84%
+because it obeys the
+semantics that reduce expects
+
+94
+00:04:20.329 --> 00:04:24.230 align:middle line:84%
+with respect to immutability
+of its operations.
+
+95
+00:04:24.230 --> 00:04:27.020 align:middle line:84%
+However, it's going to be very
+inefficient, because you have
+
+96
+00:04:27.020 --> 00:04:28.310 align:middle line:90%
+to do string concatenation.
+
+97
+00:04:28.310 --> 00:04:31.425 align:middle line:84%
+And that ends up
+making lots of copies.
+
+98
+00:04:31.425 --> 00:04:32.800 align:middle line:84%
+Yet another way
+to do this, which
+
+99
+00:04:32.800 --> 00:04:35.080 align:middle line:84%
+is arguably the
+best way to do it,
+
+100
+00:04:35.080 --> 00:04:38.110 align:middle line:84%
+is to get rid of
+using reduce at all.
+
+101
+00:04:38.110 --> 00:04:41.355 align:middle line:84%
+And this example is shown
+in streamCollectJoining.
+
+102
+00:04:41.355 --> 00:04:43.480 align:middle line:84%
+And you'll see why it's
+called streamCollectJoining
+
+103
+00:04:43.480 --> 00:04:46.930 align:middle line:84%
+in a second, because we
+replaced the use of reduce
+
+104
+00:04:46.930 --> 00:04:53.430 align:middle line:84%
+with collect along with the
+so-called joining collector.
+
+105
+00:04:53.430 --> 00:04:55.360 align:middle line:84%
+And what happens here
+is we collect things
+
+106
+00:04:55.360 --> 00:04:58.720 align:middle line:84%
+and we use the joining collector
+and the joining method call,
+
+107
+00:04:58.720 --> 00:05:02.560 align:middle line:84%
+which is part of the collector's
+utility class in the Java
+
+108
+00:05:02.560 --> 00:05:03.830 align:middle line:90%
+streams framework.
+
+109
+00:05:03.830 --> 00:05:05.800 align:middle line:84%
+We'll go ahead and
+create a collector that
+
+110
+00:05:05.800 --> 00:05:09.820 align:middle line:84%
+will correctly and
+efficiently join together
+
+111
+00:05:09.820 --> 00:05:12.040 align:middle line:84%
+the elements in
+a parallel stream
+
+112
+00:05:12.040 --> 00:05:14.260 align:middle line:84%
+by using a
+non-concurrent collector.
+
+113
+00:05:14.260 --> 00:05:17.320 align:middle line:84%
+So it turns out this is
+actually a much better solution
+
+114
+00:05:17.320 --> 00:05:20.170 align:middle line:84%
+than trying to use
+reduce with strings
+
+115
+00:05:20.170 --> 00:05:23.650 align:middle line:84%
+or obviously using reduce
+with string builders, which
+
+116
+00:05:23.650 --> 00:05:24.830 align:middle line:90%
+is a disaster.
+
+117
+00:05:24.830 --> 00:05:26.775 align:middle line:90%
+So this is a disaster.
+
+118
+00:05:26.775 --> 00:05:28.900 align:middle line:84%
+This is going to work, but
+we'll have more overhead
+
+119
+00:05:28.900 --> 00:05:29.980 align:middle line:90%
+than we want.
+
+120
+00:05:29.980 --> 00:05:32.650 align:middle line:84%
+This approach is really
+the best way to go.
+
+121
+00:05:32.650 --> 00:05:34.090 align:middle line:84%
+So the point here
+is you just have
+
+122
+00:05:34.090 --> 00:05:37.593 align:middle line:84%
+to be careful with using
+collect and reduce.
+
+123
+00:05:37.593 --> 00:05:39.260 align:middle line:84%
+You also have to be
+careful with respect
+
+124
+00:05:39.260 --> 00:05:42.800 align:middle line:84%
+to issues related to
+associativity and identity
+
+125
+00:05:42.800 --> 00:05:43.790 align:middle line:90%
+with reduce.
+
+126
+00:05:43.790 --> 00:05:45.170 align:middle line:84%
+And these examples
+are once again
+
+127
+00:05:45.170 --> 00:05:50.240 align:middle line:84%
+shown by a couple of test
+programs in the ex17 example
+
+128
+00:05:50.240 --> 00:05:51.810 align:middle line:90%
+folder.
+
+129
+00:05:51.810 --> 00:05:53.550 align:middle line:84%
+The first example
+illustrates the fact
+
+130
+00:05:53.550 --> 00:05:58.410 align:middle line:84%
+that you can only use reduce
+on associative operations
+
+131
+00:05:58.410 --> 00:06:00.420 align:middle line:90%
+for parallel streams.
+
+132
+00:06:00.420 --> 00:06:01.980 align:middle line:84%
+This code would
+work fine if we were
+
+133
+00:06:01.980 --> 00:06:03.720 align:middle line:84%
+doing addition,
+which is associative,
+
+134
+00:06:03.720 --> 00:06:06.030 align:middle line:84%
+or multiplication,
+which is associative.
+
+135
+00:06:06.030 --> 00:06:08.830 align:middle line:84%
+But if we try to use it in
+parallel for subtraction,
+
+136
+00:06:08.830 --> 00:06:11.350 align:middle line:84%
+it will fail because
+subtraction is not associative.
+
+137
+00:06:11.350 --> 00:06:14.670 align:middle line:84%
+So it'll end up getting
+very strange results.
+
+138
+00:06:14.670 --> 00:06:17.940 align:middle line:84%
+There's another subtle issue
+having to do with identity.
+
+139
+00:06:17.940 --> 00:06:20.820 align:middle line:84%
+And the code that we
+see here will work fine
+
+140
+00:06:20.820 --> 00:06:25.980 align:middle line:84%
+as long as the identity
+parameter is going to be 0.
+
+141
+00:06:25.980 --> 00:06:28.590 align:middle line:84%
+And that's, of course,
+because 0 is the identity
+
+142
+00:06:28.590 --> 00:06:30.420 align:middle line:90%
+operation of addition.
+
+143
+00:06:30.420 --> 00:06:32.640 align:middle line:84%
+Identity of an
+operation, like addition,
+
+144
+00:06:32.640 --> 00:06:36.210 align:middle line:84%
+is defined as the
+identity value given
+
+145
+00:06:36.210 --> 00:06:40.660 align:middle line:84%
+the operation and some
+value will yield the value.
+
+146
+00:06:40.660 --> 00:06:43.980 align:middle line:84%
+So obviously, 0 plus some
+number yields the number.
+
+147
+00:06:43.980 --> 00:06:46.570 align:middle line:84%
+Or some number plus
+0 yields the number.
+
+148
+00:06:46.570 --> 00:06:48.780 align:middle line:84%
+So if you give a value
+here that's not 0,
+
+149
+00:06:48.780 --> 00:06:51.960 align:middle line:90%
+this code will fail.
+
+150
+00:06:51.960 --> 00:06:54.240 align:middle line:84%
+Here's another example
+where we're showing
+
+151
+00:06:54.240 --> 00:06:56.070 align:middle line:90%
+identity for multiplication.
+
+152
+00:06:56.070 --> 00:06:58.050 align:middle line:84%
+In this particular case,
+we have to make sure
+
+153
+00:06:58.050 --> 00:07:01.320 align:middle line:84%
+that the identity value
+is 1, because, of course,
+
+154
+00:07:01.320 --> 00:07:03.420 align:middle line:84%
+the identity of
+multiplication is 1.
+
+155
+00:07:03.420 --> 00:07:06.150 align:middle line:84%
+1 times any number
+yields that number.
+
+156
+00:07:06.150 --> 00:07:08.760 align:middle line:84%
+Any number times 1
+yields that number.
+
+157
+00:07:08.760 --> 00:07:11.610 align:middle line:84%
+If you try to pass in a 0 here
+as the identity value-- which
+
+158
+00:07:11.610 --> 00:07:14.560 align:middle line:84%
+works fine for,
+well, for addition--
+
+159
+00:07:14.560 --> 00:07:17.490 align:middle line:84%
+it'll obviously fail horribly,
+because 0 times any number
+
+160
+00:07:17.490 --> 00:07:18.840 align:middle line:90%
+equals 0.
+
+161
+00:07:18.840 --> 00:07:20.310 align:middle line:84%
+So these are rather
+subtle points.
+
+162
+00:07:20.310 --> 00:07:24.602 align:middle line:84%
+But it's important to understand
+the limitations of reduce.
+
+163
+00:07:24.602 --> 00:07:26.310 align:middle line:84%
+If you'd like more
+discussion about this,
+
+164
+00:07:26.310 --> 00:07:28.830 align:middle line:84%
+there's an excellent
+online tutorial
+
+165
+00:07:28.830 --> 00:07:32.280 align:middle line:84%
+you can find by my friend and
+colleague, Angelika Langer.
+
+166
+00:07:32.280 --> 00:07:34.800 align:middle line:84%
+And she talks about
+reduce versus collect
+
+167
+00:07:34.800 --> 00:07:36.420 align:middle line:84%
+and goes into lots
+more detail about
+
+168
+00:07:36.420 --> 00:07:40.500 align:middle line:84%
+many other interesting
+aspects of these two terminal
+
+169
+00:07:40.500 --> 00:07:41.100 align:middle line:90%
+operations.
+
+170
+00:07:41.100 --> 00:07:42.933 align:middle line:84%
+So I recommend you take
+a look at that video
+
+171
+00:07:42.933 --> 00:07:44.780 align:middle line:90%
+if you have some time.

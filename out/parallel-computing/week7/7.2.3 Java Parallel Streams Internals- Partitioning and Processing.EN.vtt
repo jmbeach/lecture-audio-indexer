@@ -1,0 +1,1232 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.770 align:middle line:90%
+
+
+2
+00:00:00.770 --> 00:00:04.340 align:middle line:84%
+So now that we've finished
+covering partitioning
+
+3
+00:00:04.340 --> 00:00:06.320 align:middle line:84%
+as part of Java
+streams internals,
+
+4
+00:00:06.320 --> 00:00:08.975 align:middle line:84%
+let's turn our attention
+to the apply phase.
+
+5
+00:00:08.975 --> 00:00:11.360 align:middle line:84%
+So remember, partitioning's
+part of the split phase.
+
+6
+00:00:11.360 --> 00:00:13.430 align:middle line:84%
+Now we're going to talk
+about the apply phase.
+
+7
+00:00:13.430 --> 00:00:14.210 align:middle line:84%
+And we're going
+to talk about how
+
+8
+00:00:14.210 --> 00:00:17.000 align:middle line:84%
+to do the parallel processing or
+how the parallel processing is
+
+9
+00:00:17.000 --> 00:00:20.950 align:middle line:84%
+done via the common
+ForkJoinPool.
+
+10
+00:00:20.950 --> 00:00:24.610 align:middle line:84%
+And we'll see that the Java's
+parallel streams framework
+
+11
+00:00:24.610 --> 00:00:30.730 align:middle line:84%
+processes chunks in parallel
+using this common ForkJoinPool.
+
+12
+00:00:30.730 --> 00:00:33.490 align:middle line:84%
+So we've talked briefly about
+the common ForkJoinPool.
+
+13
+00:00:33.490 --> 00:00:36.190 align:middle line:84%
+I'll give you a bit more
+discussion of it here.
+
+14
+00:00:36.190 --> 00:00:39.400 align:middle line:84%
+The real discussion on common
+ForkJoinPool and ForkJoinPool
+
+15
+00:00:39.400 --> 00:00:43.030 align:middle line:84%
+will take place in the
+fork/join framework
+
+16
+00:00:43.030 --> 00:00:44.673 align:middle line:90%
+lessons in subsequent weeks.
+
+17
+00:00:44.673 --> 00:00:46.840 align:middle line:84%
+But I'm going to give you
+a teaser here because it's
+
+18
+00:00:46.840 --> 00:00:50.110 align:middle line:84%
+important to understand how
+all these different pieces work
+
+19
+00:00:50.110 --> 00:00:52.630 align:middle line:84%
+in order to make sense out
+of how the parallel streams
+
+20
+00:00:52.630 --> 00:00:55.180 align:middle line:90%
+framework behaves.
+
+21
+00:00:55.180 --> 00:01:00.190 align:middle line:84%
+Real quickly, a ForkJoinPool
+provides a high performance,
+
+22
+00:01:00.190 --> 00:01:04.000 align:middle line:84%
+fine-grained task
+execution framework
+
+23
+00:01:04.000 --> 00:01:05.950 align:middle line:90%
+for Java data parallelism.
+
+24
+00:01:05.950 --> 00:01:11.170 align:middle line:84%
+And I should also hasten to add
+that the Java ForkJoinPool is
+
+25
+00:01:11.170 --> 00:01:13.540 align:middle line:84%
+an object-oriented framework
+rather than a functional
+
+26
+00:01:13.540 --> 00:01:15.910 align:middle line:90%
+framework.
+
+27
+00:01:15.910 --> 00:01:19.440 align:middle line:84%
+However, despite the fact
+it's not purely functional,
+
+28
+00:01:19.440 --> 00:01:21.780 align:middle line:84%
+it's actually used extensively
+as the parallel computing
+
+29
+00:01:21.780 --> 00:01:24.930 align:middle line:84%
+engine for many
+higher-level frameworks--
+
+30
+00:01:24.930 --> 00:01:27.480 align:middle line:84%
+parallel streams,
+CompletableFutures, as well as
+
+31
+00:01:27.480 --> 00:01:30.120 align:middle line:84%
+other frameworks that you
+might find in other languages
+
+32
+00:01:30.120 --> 00:01:34.240 align:middle line:84%
+that are based on Java and
+the Java virtual machine.
+
+33
+00:01:34.240 --> 00:01:36.800 align:middle line:84%
+The ForkJoinPool
+itself is a class
+
+34
+00:01:36.800 --> 00:01:39.350 align:middle line:84%
+that implements the
+ExecutorService interface
+
+35
+00:01:39.350 --> 00:01:40.238 align:middle line:90%
+indirectly.
+
+36
+00:01:40.238 --> 00:01:42.030 align:middle line:84%
+If you take a look at
+this class hierarchy,
+
+37
+00:01:42.030 --> 00:01:44.930 align:middle line:84%
+you can see that the
+ExecutorService is an interface
+
+38
+00:01:44.930 --> 00:01:46.850 align:middle line:90%
+that implements Executor.
+
+39
+00:01:46.850 --> 00:01:48.440 align:middle line:84%
+And then there's a
+Java Class, which
+
+40
+00:01:48.440 --> 00:01:52.040 align:middle line:84%
+is an abstract class called the
+AbstractExecutorService that
+
+41
+00:01:52.040 --> 00:01:54.890 align:middle line:84%
+implements ExecutorService
+and provides
+
+42
+00:01:54.890 --> 00:01:57.500 align:middle line:84%
+a bunch of implementations
+of common methods
+
+43
+00:01:57.500 --> 00:02:01.010 align:middle line:84%
+that are shared by various
+concrete classes that
+
+44
+00:02:01.010 --> 00:02:03.830 align:middle line:90%
+extend AbstractExecutorService.
+
+45
+00:02:03.830 --> 00:02:06.650 align:middle line:84%
+ThreadPoolExecutor is
+one class that extends
+
+46
+00:02:06.650 --> 00:02:08.400 align:middle line:90%
+the AbstractExecutorService.
+
+47
+00:02:08.400 --> 00:02:11.360 align:middle line:84%
+ThreadPoolExecutor's covered
+in detail in my other course
+
+48
+00:02:11.360 --> 00:02:14.300 align:middle line:84%
+on concurrent
+object-oriented programming,
+
+49
+00:02:14.300 --> 00:02:16.820 align:middle line:84%
+as is
+ScheduledThreadPoolExecutor.
+
+50
+00:02:16.820 --> 00:02:19.590 align:middle line:84%
+But now we're going to focus
+on ForkJoinPool, which,
+
+51
+00:02:19.590 --> 00:02:22.400 align:middle line:84%
+as you can see, extends
+AbstractExecutorService, which
+
+52
+00:02:22.400 --> 00:02:25.180 align:middle line:90%
+implements ExecutorService.
+
+53
+00:02:25.180 --> 00:02:28.692 align:middle line:84%
+So a ForkJoinPool
+can do many things.
+
+54
+00:02:28.692 --> 00:02:30.150 align:middle line:84%
+It can obviously
+do things that you
+
+55
+00:02:30.150 --> 00:02:32.610 align:middle line:84%
+get with the
+ExecutorService interface.
+
+56
+00:02:32.610 --> 00:02:37.080 align:middle line:84%
+But its real purpose in life is
+to execute so-called fork/join
+
+57
+00:02:37.080 --> 00:02:38.430 align:middle line:90%
+tasks.
+
+58
+00:02:38.430 --> 00:02:41.850 align:middle line:84%
+And a fork/join task
+is another class
+
+59
+00:02:41.850 --> 00:02:46.140 align:middle line:84%
+that associates a chunk of
+data along with a computation
+
+60
+00:02:46.140 --> 00:02:49.710 align:middle line:84%
+on that data in order to enable
+this fine-grained parallelism
+
+61
+00:02:49.710 --> 00:02:53.570 align:middle line:84%
+that's so important in
+modern multiprocessor,
+
+62
+00:02:53.570 --> 00:02:55.950 align:middle line:90%
+multicore systems.
+
+63
+00:02:55.950 --> 00:03:00.450 align:middle line:84%
+A fork/join task is
+something like a Java thread,
+
+64
+00:03:00.450 --> 00:03:02.400 align:middle line:90%
+but it's much lighter weight.
+
+65
+00:03:02.400 --> 00:03:04.470 align:middle line:84%
+In particular,
+the fork/join task
+
+66
+00:03:04.470 --> 00:03:07.030 align:middle line:84%
+does not have its
+own run-time stack,
+
+67
+00:03:07.030 --> 00:03:08.730 align:middle line:90%
+does not have its own registers.
+
+68
+00:03:08.730 --> 00:03:10.910 align:middle line:84%
+It does not have its own
+thread-local storage.
+
+69
+00:03:10.910 --> 00:03:13.200 align:middle line:84%
+It doesn't have all
+the other mechanisms
+
+70
+00:03:13.200 --> 00:03:16.260 align:middle line:84%
+that a regular Java thread has
+down into the operating system
+
+71
+00:03:16.260 --> 00:03:18.670 align:middle line:90%
+kernel, and so on.
+
+72
+00:03:18.670 --> 00:03:21.210 align:middle line:84%
+One of the nice things about
+the fact it's lighter weight
+
+73
+00:03:21.210 --> 00:03:24.490 align:middle line:84%
+is you can actually have a
+very large number of fork/join
+
+74
+00:03:24.490 --> 00:03:27.022 align:middle line:84%
+tasks, thousands, or
+tens of thousands,
+
+75
+00:03:27.022 --> 00:03:28.480 align:middle line:84%
+or hundreds of
+thousands, depending
+
+76
+00:03:28.480 --> 00:03:32.280 align:middle line:84%
+on how big your computer is,
+that can then be multiplexed
+
+77
+00:03:32.280 --> 00:03:36.640 align:middle line:84%
+and run atop a much smaller
+number of Java worker
+
+78
+00:03:36.640 --> 00:03:39.862 align:middle line:90%
+threads in a ForkJoinPool.
+
+79
+00:03:39.862 --> 00:03:41.320 align:middle line:84%
+And in this case,
+the worker thread
+
+80
+00:03:41.320 --> 00:03:43.300 align:middle line:84%
+would, in fact,
+be a Java thread.
+
+81
+00:03:43.300 --> 00:03:45.400 align:middle line:84%
+And typically as
+we'll see, by default
+
+82
+00:03:45.400 --> 00:03:50.930 align:middle line:84%
+the number of threads in a
+fork/join worker thread pool
+
+83
+00:03:50.930 --> 00:03:54.310 align:middle line:84%
+are roughly around the
+number of processor cores
+
+84
+00:03:54.310 --> 00:03:58.820 align:middle line:84%
+that the Java execution
+environment knows about.
+
+85
+00:03:58.820 --> 00:04:01.220 align:middle line:84%
+So you can basically
+think of parallel streams
+
+86
+00:04:01.220 --> 00:04:05.720 align:middle line:84%
+as being a user friendly
+functional programming
+
+87
+00:04:05.720 --> 00:04:11.270 align:middle line:84%
+facade for the object-oriented
+ForkJoinPool class
+
+88
+00:04:11.270 --> 00:04:13.777 align:middle line:90%
+and the fork/join framework.
+
+89
+00:04:13.777 --> 00:04:15.860 align:middle line:84%
+And so rather than having
+to do all the mechanisms
+
+90
+00:04:15.860 --> 00:04:17.360 align:middle line:84%
+we're going to talk
+about later when
+
+91
+00:04:17.360 --> 00:04:23.360 align:middle line:84%
+we go into detail about how the
+ForkJoinPool framework behaves,
+
+92
+00:04:23.360 --> 00:04:24.890 align:middle line:84%
+parallel streams
+just wrap things up
+
+93
+00:04:24.890 --> 00:04:27.890 align:middle line:84%
+with this nice functional
+veneer with the streams
+
+94
+00:04:27.890 --> 00:04:31.210 align:middle line:84%
+and the composition and
+all the other good things.
+
+95
+00:04:31.210 --> 00:04:34.660 align:middle line:84%
+Of course, it's always
+possible to choose to program
+
+96
+00:04:34.660 --> 00:04:39.230 align:middle line:84%
+to the ForkJoinPool API
+directly if you so choose.
+
+97
+00:04:39.230 --> 00:04:40.522 align:middle line:90%
+But it can be somewhat painful.
+
+98
+00:04:40.522 --> 00:04:41.980 align:middle line:84%
+Of course, we will
+go through this.
+
+99
+00:04:41.980 --> 00:04:44.740 align:middle line:84%
+And you will learn how to do it,
+because there's some times when
+
+100
+00:04:44.740 --> 00:04:46.323 align:middle line:90%
+you need to do it.
+
+101
+00:04:46.323 --> 00:04:47.740 align:middle line:84%
+And we'll talk
+about why you might
+
+102
+00:04:47.740 --> 00:04:48.890 align:middle line:90%
+need to do it in a minute.
+
+103
+00:04:48.890 --> 00:04:51.370 align:middle line:84%
+But just be aware that
+it's a bit more painful.
+
+104
+00:04:51.370 --> 00:04:52.960 align:middle line:90%
+I'm a big Lord of the Rings fan.
+
+105
+00:04:52.960 --> 00:04:55.148 align:middle line:84%
+So I took the
+liberty of lampooning
+
+106
+00:04:55.148 --> 00:04:57.190 align:middle line:84%
+one of the famous scenes
+of The Lord of the Rings
+
+107
+00:04:57.190 --> 00:05:02.710 align:middle line:84%
+where Saruman tells Gandalf,
+I gave you the chance
+
+108
+00:05:02.710 --> 00:05:04.930 align:middle line:90%
+of programming Java streams.
+
+109
+00:05:04.930 --> 00:05:06.700 align:middle line:84%
+But you have elected
+the way of pain
+
+110
+00:05:06.700 --> 00:05:09.310 align:middle line:84%
+and programmed with
+the ForkJoinPool.
+
+111
+00:05:09.310 --> 00:05:12.220 align:middle line:84%
+If you'd like to see how to
+program with the ForkJoinPool,
+
+112
+00:05:12.220 --> 00:05:15.790 align:middle line:84%
+there's some interesting
+examples in the fork--
+
+113
+00:05:15.790 --> 00:05:21.670 align:middle line:84%
+in the Search with Fork/Join
+class in the SearchStreamGang
+
+114
+00:05:21.670 --> 00:05:23.950 align:middle line:90%
+framework case study.
+
+115
+00:05:23.950 --> 00:05:25.870 align:middle line:84%
+And this uses the
+common ForkJoinPool
+
+116
+00:05:25.870 --> 00:05:28.210 align:middle line:84%
+to search input strings
+for phrases that match.
+
+117
+00:05:28.210 --> 00:05:30.490 align:middle line:84%
+It's more interesting
+and complicated
+
+118
+00:05:30.490 --> 00:05:33.670 align:middle line:84%
+than some of the other stuff,
+but it's cool to look at.
+
+119
+00:05:33.670 --> 00:05:36.100 align:middle line:84%
+The main reason you would
+ever use the ForkJoinPool
+
+120
+00:05:36.100 --> 00:05:38.740 align:middle line:84%
+directly is if the
+programming model
+
+121
+00:05:38.740 --> 00:05:43.240 align:middle line:84%
+that you are trying to
+implement doesn't really
+
+122
+00:05:43.240 --> 00:05:47.110 align:middle line:84%
+match well with what
+parallel streams provides.
+
+123
+00:05:47.110 --> 00:05:50.530 align:middle line:84%
+And the parallel stream model
+is this very rigid divide
+
+124
+00:05:50.530 --> 00:05:51.820 align:middle line:90%
+and conquer style approach.
+
+125
+00:05:51.820 --> 00:05:55.060 align:middle line:84%
+And if your tasks don't
+quite fit with that,
+
+126
+00:05:55.060 --> 00:05:59.300 align:middle line:84%
+maybe you're better off using
+the ForkJoinPool directly.
+
+127
+00:05:59.300 --> 00:06:01.540 align:middle line:84%
+So here's an example
+that you could actually
+
+128
+00:06:01.540 --> 00:06:05.410 align:middle line:84%
+find on the web that
+counts the occurrence
+
+129
+00:06:05.410 --> 00:06:08.683 align:middle line:90%
+of a word in document folders.
+
+130
+00:06:08.683 --> 00:06:10.600 align:middle line:84%
+And here's just a little
+snippet of that code.
+
+131
+00:06:10.600 --> 00:06:13.120 align:middle line:84%
+This is the compute
+method from that example.
+
+132
+00:06:13.120 --> 00:06:15.393 align:middle line:84%
+This is showing
+the ForkJoinPool.
+
+133
+00:06:15.393 --> 00:06:16.810 align:middle line:84%
+And what we do
+here is we go ahead
+
+134
+00:06:16.810 --> 00:06:22.770 align:middle line:84%
+and we create a LinkedList
+of recursive tasks.
+
+135
+00:06:22.770 --> 00:06:25.240 align:middle line:84%
+I'll talk more about what
+recursive tasks are later.
+
+136
+00:06:25.240 --> 00:06:28.420 align:middle line:84%
+But we have this LinkedList
+of recursive tasks.
+
+137
+00:06:28.420 --> 00:06:34.560 align:middle line:84%
+And then we go ahead and we go
+through all the subdirectories
+
+138
+00:06:34.560 --> 00:06:36.400 align:middle line:90%
+in a given folder.
+
+139
+00:06:36.400 --> 00:06:38.760 align:middle line:84%
+And for each of these
+subdirectories in a given
+
+140
+00:06:38.760 --> 00:06:41.610 align:middle line:84%
+folder, we go ahead
+and create a new object
+
+141
+00:06:41.610 --> 00:06:44.730 align:middle line:84%
+that will search for
+the word in that folder.
+
+142
+00:06:44.730 --> 00:06:48.270 align:middle line:84%
+And we create this as a
+so-called FolderSearchTask,
+
+143
+00:06:48.270 --> 00:06:50.100 align:middle line:90%
+which is a recursive task.
+
+144
+00:06:50.100 --> 00:06:54.090 align:middle line:84%
+And then we go ahead and add
+that task to our forks list.
+
+145
+00:06:54.090 --> 00:06:55.290 align:middle line:90%
+And then we fork it.
+
+146
+00:06:55.290 --> 00:06:57.570 align:middle line:84%
+So that goes out
+and says, arrange
+
+147
+00:06:57.570 --> 00:07:01.110 align:middle line:84%
+to run this task in one
+of the worker threads
+
+148
+00:07:01.110 --> 00:07:03.910 align:middle line:90%
+in the ForkJoinPool thread pull.
+
+149
+00:07:03.910 --> 00:07:06.910 align:middle line:84%
+And then we go through the
+documents in a given folder.
+
+150
+00:07:06.910 --> 00:07:09.430 align:middle line:84%
+And we make a
+document search task,
+
+151
+00:07:09.430 --> 00:07:12.070 align:middle line:84%
+which will search for the
+word in that document.
+
+152
+00:07:12.070 --> 00:07:15.160 align:middle line:84%
+And then we go ahead and
+add that task to our forks
+
+153
+00:07:15.160 --> 00:07:18.100 align:middle line:84%
+list and fork that task,
+which again arranges
+
+154
+00:07:18.100 --> 00:07:21.570 align:middle line:84%
+to have this task
+running in some worker
+
+155
+00:07:21.570 --> 00:07:23.920 align:middle line:90%
+thread in the ForkJoinPool.
+
+156
+00:07:23.920 --> 00:07:25.860 align:middle line:84%
+So all those things will
+now be forked and off
+
+157
+00:07:25.860 --> 00:07:28.600 align:middle line:84%
+and running and doing their
+thing and whatever they
+
+158
+00:07:28.600 --> 00:07:30.790 align:middle line:90%
+need to do to do the searching.
+
+159
+00:07:30.790 --> 00:07:32.230 align:middle line:84%
+And then the last
+thing we do here
+
+160
+00:07:32.230 --> 00:07:36.130 align:middle line:84%
+is we go through a loop that's
+going to essentially iterate
+
+161
+00:07:36.130 --> 00:07:42.190 align:middle line:84%
+through the forks list and
+join each of those tasks
+
+162
+00:07:42.190 --> 00:07:47.230 align:middle line:84%
+and join basically blocks until
+the task has got its result.
+
+163
+00:07:47.230 --> 00:07:49.870 align:middle line:84%
+It logically blocks for
+reasons we'll talk about later.
+
+164
+00:07:49.870 --> 00:07:51.550 align:middle line:84%
+It actually pitches
+in to do some
+
+165
+00:07:51.550 --> 00:07:54.160 align:middle line:84%
+of the processing using
+the thread of the caller
+
+166
+00:07:54.160 --> 00:07:55.630 align:middle line:90%
+to do some work.
+
+167
+00:07:55.630 --> 00:07:59.230 align:middle line:84%
+And when that task is complete,
+when the fork is finished
+
+168
+00:07:59.230 --> 00:08:01.480 align:middle line:84%
+with its compute,
+then we get the number
+
+169
+00:08:01.480 --> 00:08:05.950 align:middle line:84%
+of counts of the word back and
+increment the count variable.
+
+170
+00:08:05.950 --> 00:08:08.960 align:middle line:84%
+And when the loop is finished,
+all of the background tasks
+
+171
+00:08:08.960 --> 00:08:10.930 align:middle line:84%
+have finished, and
+we get the count back
+
+172
+00:08:10.930 --> 00:08:12.790 align:middle line:90%
+from the whole operation.
+
+173
+00:08:12.790 --> 00:08:15.620 align:middle line:84%
+So that's the final
+count that we get here.
+
+174
+00:08:15.620 --> 00:08:17.260 align:middle line:84%
+Now again, I think
+you'll probably
+
+175
+00:08:17.260 --> 00:08:20.500 align:middle line:84%
+agree that this code
+doesn't look anything
+
+176
+00:08:20.500 --> 00:08:21.670 align:middle line:90%
+like parallel streams.
+
+177
+00:08:21.670 --> 00:08:23.740 align:middle line:84%
+It looks like
+object-oriented programming.
+
+178
+00:08:23.740 --> 00:08:26.620 align:middle line:84%
+And it doesn't look
+like the classic divide
+
+179
+00:08:26.620 --> 00:08:28.160 align:middle line:90%
+and conquer style approach.
+
+180
+00:08:28.160 --> 00:08:30.920 align:middle line:84%
+It's more about
+recursive decomposition.
+
+181
+00:08:30.920 --> 00:08:33.080 align:middle line:84%
+And so as a result, it's
+a little more complicated
+
+182
+00:08:33.080 --> 00:08:33.580 align:middle line:90%
+to program.
+
+183
+00:08:33.580 --> 00:08:36.490 align:middle line:84%
+But it very well may run
+faster than trying to use
+
+184
+00:08:36.490 --> 00:08:38.080 align:middle line:90%
+parallel streams for this.
+
+185
+00:08:38.080 --> 00:08:41.002 align:middle line:84%
+And later on when we talk
+about the ForkJoinPool,
+
+186
+00:08:41.002 --> 00:08:42.669 align:middle line:84%
+I'll show you some
+examples that compare
+
+187
+00:08:42.669 --> 00:08:45.610 align:middle line:84%
+and contrast different
+styles of programming
+
+188
+00:08:45.610 --> 00:08:48.100 align:middle line:84%
+with the fork/join
+framework as well as
+
+189
+00:08:48.100 --> 00:08:51.430 align:middle line:84%
+comparing and contrasting how
+to program the same code using
+
+190
+00:08:51.430 --> 00:08:52.390 align:middle line:90%
+parallel streams.
+
+191
+00:08:52.390 --> 00:08:54.140 align:middle line:84%
+And this will really
+give us a good chance
+
+192
+00:08:54.140 --> 00:08:56.860 align:middle line:84%
+to do an apples-to-apples
+comparison of the performance
+
+193
+00:08:56.860 --> 00:08:59.220 align:middle line:90%
+results.
+
+194
+00:08:59.220 --> 00:09:01.710 align:middle line:84%
+All parallel streams
+in a process share
+
+195
+00:09:01.710 --> 00:09:05.520 align:middle line:90%
+the same common ForkJoinPool.
+
+196
+00:09:05.520 --> 00:09:07.810 align:middle line:84%
+There could only be
+one of these things.
+
+197
+00:09:07.810 --> 00:09:11.100 align:middle line:84%
+And the reason for this is
+to help optimize resource
+
+198
+00:09:11.100 --> 00:09:14.760 align:middle line:84%
+utilization by allowing
+that common ForkJoinPool
+
+199
+00:09:14.760 --> 00:09:18.600 align:middle line:84%
+to know what cores are
+actually being used globally
+
+200
+00:09:18.600 --> 00:09:19.890 align:middle line:90%
+within a process.
+
+201
+00:09:19.890 --> 00:09:22.410 align:middle line:84%
+So you can think
+of it like Cerebro
+
+202
+00:09:22.410 --> 00:09:26.970 align:middle line:84%
+from the X-Men where Professor
+X can get a global view of all
+
+203
+00:09:26.970 --> 00:09:31.260 align:middle line:84%
+the things that are taking
+place within his mind's purview.
+
+204
+00:09:31.260 --> 00:09:34.790 align:middle line:84%
+And so this allows better
+resource utilization.
+
+205
+00:09:34.790 --> 00:09:37.720 align:middle line:84%
+This type of global versus local
+resource management trade-off
+
+206
+00:09:37.720 --> 00:09:40.870 align:middle line:84%
+is very common in
+other computing
+
+207
+00:09:40.870 --> 00:09:43.960 align:middle line:84%
+examples, other
+computing usages,
+
+208
+00:09:43.960 --> 00:09:45.550 align:middle line:90%
+as well as other domains.
+
+209
+00:09:45.550 --> 00:09:49.330 align:middle line:84%
+So for example, if you take
+a look at the Java free store
+
+210
+00:09:49.330 --> 00:09:51.430 align:middle line:84%
+management with
+the Java Heap where
+
+211
+00:09:51.430 --> 00:09:54.100 align:middle line:84%
+you try to have a global
+heap to manage memory,
+
+212
+00:09:54.100 --> 00:09:56.170 align:middle line:84%
+which can be garbage
+collected, rather
+
+213
+00:09:56.170 --> 00:10:00.250 align:middle line:84%
+than having a bunch of
+private heaps or private lists
+
+214
+00:10:00.250 --> 00:10:02.650 align:middle line:84%
+to manage pools of
+data independently
+
+215
+00:10:02.650 --> 00:10:04.990 align:middle line:90%
+of one global heap.
+
+216
+00:10:04.990 --> 00:10:07.960 align:middle line:84%
+That's another good example of
+going for this global resource
+
+217
+00:10:07.960 --> 00:10:10.210 align:middle line:84%
+management approach versus
+a local resource management
+
+218
+00:10:10.210 --> 00:10:10.710 align:middle line:90%
+approach.
+
+219
+00:10:10.710 --> 00:10:12.918 align:middle line:84%
+And there's lots of other
+examples too, some of which
+
+220
+00:10:12.918 --> 00:10:15.520 align:middle line:84%
+are described in the link at
+the bottom of the page, which
+
+221
+00:10:15.520 --> 00:10:19.250 align:middle line:90%
+talks about business models.
+
+222
+00:10:19.250 --> 00:10:21.680 align:middle line:84%
+Ironically, there
+are very few knobs
+
+223
+00:10:21.680 --> 00:10:24.890 align:middle line:84%
+to control the common
+ForkJoinPool, or really
+
+224
+00:10:24.890 --> 00:10:26.640 align:middle line:84%
+any ForkJoinPool
+for that matter.
+
+225
+00:10:26.640 --> 00:10:30.530 align:middle line:84%
+They're really all done
+in very much one size fits
+
+226
+00:10:30.530 --> 00:10:32.060 align:middle line:90%
+all like approach.
+
+227
+00:10:32.060 --> 00:10:35.880 align:middle line:84%
+And the simplicity
+is intentional.
+
+228
+00:10:35.880 --> 00:10:38.660 align:middle line:84%
+If you watch this excellent
+video by my good friend
+
+229
+00:10:38.660 --> 00:10:41.270 align:middle line:84%
+and colleague, Doug
+Lea, who actually
+
+230
+00:10:41.270 --> 00:10:46.340 align:middle line:84%
+wrote the bulk of the
+java.util.concurrent package
+
+231
+00:10:46.340 --> 00:10:48.950 align:middle line:84%
+and also wrote the bulk
+of the ForkJoinPool
+
+232
+00:10:48.950 --> 00:10:51.810 align:middle line:84%
+and a lot of the stream stuff
+and various synchronizers
+
+233
+00:10:51.810 --> 00:10:55.310 align:middle line:84%
+and so on, you'll find that they
+designed this for a purpose.
+
+234
+00:10:55.310 --> 00:10:57.320 align:middle line:84%
+And the whole idea was
+to let the framework do
+
+235
+00:10:57.320 --> 00:11:00.470 align:middle line:84%
+the heavy lifting rather than
+providing all kinds of knobs
+
+236
+00:11:00.470 --> 00:11:03.680 align:middle line:84%
+that would confuse developers
+and often make things worse,
+
+237
+00:11:03.680 --> 00:11:05.510 align:middle line:90%
+quite frankly.
+
+238
+00:11:05.510 --> 00:11:08.450 align:middle line:84%
+We should contrast the
+simplicity of ForkJoinPool
+
+239
+00:11:08.450 --> 00:11:12.890 align:middle line:84%
+with the elaborate API
+nature of ThreadPoolExecutor,
+
+240
+00:11:12.890 --> 00:11:15.950 align:middle line:84%
+which has lots and
+lots and lots of knobs
+
+241
+00:11:15.950 --> 00:11:17.390 align:middle line:84%
+that can be turned
+and controlled
+
+242
+00:11:17.390 --> 00:11:19.050 align:middle line:90%
+in all kinds of ways.
+
+243
+00:11:19.050 --> 00:11:21.920 align:middle line:84%
+If you take my concurrent
+object-oriented programming
+
+244
+00:11:21.920 --> 00:11:25.460 align:middle line:84%
+class, you should watch the
+video on ThreadPoolExecutor
+
+245
+00:11:25.460 --> 00:11:28.290 align:middle line:84%
+carefully and learn about
+all the different policies
+
+246
+00:11:28.290 --> 00:11:31.450 align:middle line:84%
+and so on that can
+be set to use this.
+
+247
+00:11:31.450 --> 00:11:33.850 align:middle line:84%
+One thing that can be
+configured, however,
+
+248
+00:11:33.850 --> 00:11:37.660 align:middle line:84%
+with the ForkJoinPool
+is its size.
+
+249
+00:11:37.660 --> 00:11:39.770 align:middle line:84%
+And there's a couple of
+different ways to do this.
+
+250
+00:11:39.770 --> 00:11:41.800 align:middle line:84%
+I won't really talk
+about them at the moment.
+
+251
+00:11:41.800 --> 00:11:44.380 align:middle line:84%
+We're going to talk about
+them more in the next upcoming
+
+252
+00:11:44.380 --> 00:11:45.280 align:middle line:90%
+lesson.
+
+253
+00:11:45.280 --> 00:11:49.450 align:middle line:84%
+But basically you can either
+set the number of threads
+
+254
+00:11:49.450 --> 00:11:52.847 align:middle line:84%
+globally once before the
+program really starts to run,
+
+255
+00:11:52.847 --> 00:11:55.180 align:middle line:84%
+or you can use something
+called a managed blocker, which
+
+256
+00:11:55.180 --> 00:11:58.590 align:middle line:84%
+is a more dynamic way
+of setting these values.

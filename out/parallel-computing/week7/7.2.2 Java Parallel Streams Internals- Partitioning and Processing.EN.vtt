@@ -1,0 +1,802 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.722 align:middle line:90%
+
+
+2
+00:00:00.722 --> 00:00:02.180 align:middle line:84%
+What we're going
+to do now is we're
+
+3
+00:00:02.180 --> 00:00:05.150 align:middle line:84%
+going to actually
+demonstrate the performance
+
+4
+00:00:05.150 --> 00:00:08.690 align:middle line:84%
+of a spliterator so you
+can see the differences
+
+5
+00:00:08.690 --> 00:00:11.600 align:middle line:84%
+between different
+types of collections.
+
+6
+00:00:11.600 --> 00:00:13.880 align:middle line:84%
+In particular, I'm going
+to show the performance
+
+7
+00:00:13.880 --> 00:00:16.760 align:middle line:84%
+impact of different
+Java collections
+
+8
+00:00:16.760 --> 00:00:19.610 align:middle line:84%
+on the performance
+of their spliterators
+
+9
+00:00:19.610 --> 00:00:22.837 align:middle line:84%
+as they're applied
+in parallel streams.
+
+10
+00:00:22.837 --> 00:00:24.920 align:middle line:84%
+So before I actually walk
+through the code, which,
+
+11
+00:00:24.920 --> 00:00:30.185 align:middle line:84%
+by the way, is in this ex14
+folder in my GitHub repository,
+
+12
+00:00:30.185 --> 00:00:32.060 align:middle line:84%
+I'll first give you a
+little overview of what
+
+13
+00:00:32.060 --> 00:00:34.350 align:middle line:90%
+we're going to be seeing.
+
+14
+00:00:34.350 --> 00:00:38.190 align:middle line:84%
+So as we saw in our previous
+discussion, spliterators
+
+15
+00:00:38.190 --> 00:00:42.180 align:middle line:84%
+for ArrayList and spliterators
+for LinkedList partition data
+
+16
+00:00:42.180 --> 00:00:43.930 align:middle line:90%
+quite differently.
+
+17
+00:00:43.930 --> 00:00:47.430 align:middle line:84%
+So it's apples to
+oranges, if you will.
+
+18
+00:00:47.430 --> 00:00:51.170 align:middle line:84%
+As we just saw, the trySplit
+method for ArrayList
+
+19
+00:00:51.170 --> 00:00:53.120 align:middle line:84%
+splits very evenly
+and very efficiently.
+
+20
+00:00:53.120 --> 00:00:54.590 align:middle line:90%
+It doesn't copy any data.
+
+21
+00:00:54.590 --> 00:00:57.350 align:middle line:90%
+It does no unnecessary work.
+
+22
+00:00:57.350 --> 00:01:00.770 align:middle line:84%
+Whereas in contrast,
+LinkedList's spliterator
+
+23
+00:01:00.770 --> 00:01:03.890 align:middle line:84%
+doesn't split evenly,
+doesn't split efficiently,
+
+24
+00:01:03.890 --> 00:01:06.330 align:middle line:90%
+and has to copy a bunch of data.
+
+25
+00:01:06.330 --> 00:01:08.570 align:middle line:84%
+So it just doesn't give
+you the same benefits
+
+26
+00:01:08.570 --> 00:01:12.440 align:middle line:90%
+that the ArrayList does.
+
+27
+00:01:12.440 --> 00:01:17.480 align:middle line:84%
+I wrote a program that
+times the differences
+
+28
+00:01:17.480 --> 00:01:20.810 align:middle line:84%
+of these different spliterators
+for ArrayList and LinkedList
+
+29
+00:01:20.810 --> 00:01:23.750 align:middle line:84%
+when used with parallel
+streams and when
+
+30
+00:01:23.750 --> 00:01:28.040 align:middle line:84%
+applied to process the
+complete works of Shakespeare.
+
+31
+00:01:28.040 --> 00:01:30.320 align:middle line:84%
+And so the actual
+method is called
+
+32
+00:01:30.320 --> 00:01:32.990 align:middle line:90%
+timeParallelStreamUppercase.
+
+33
+00:01:32.990 --> 00:01:35.930 align:middle line:84%
+We'll look at this method
+in more detail in a moment.
+
+34
+00:01:35.930 --> 00:01:42.980 align:middle line:84%
+And basically it's
+passed a list of words,
+
+35
+00:01:42.980 --> 00:01:45.230 align:middle line:84%
+which could either
+be an ArrayList
+
+36
+00:01:45.230 --> 00:01:47.090 align:middle line:90%
+or could be a LinkedList.
+
+37
+00:01:47.090 --> 00:01:48.590 align:middle line:84%
+And it's also
+passed the test name
+
+38
+00:01:48.590 --> 00:01:51.650 align:middle line:84%
+so we can indicate
+what test was wrong.
+
+39
+00:01:51.650 --> 00:01:56.150 align:middle line:84%
+And then what we do here is we
+repeatedly split and uppercase
+
+40
+00:01:56.150 --> 00:01:58.187 align:middle line:84%
+the word list using a
+parallel spliterator.
+
+41
+00:01:58.187 --> 00:02:00.770 align:middle line:84%
+So I'll talk through this more
+when we look at the actual code
+
+42
+00:02:00.770 --> 00:02:01.478 align:middle line:90%
+here in a second.
+
+43
+00:02:01.478 --> 00:02:04.340 align:middle line:84%
+But basically we're just
+doing a bunch of busy work
+
+44
+00:02:04.340 --> 00:02:08.419 align:middle line:84%
+and seeing the effect that
+a different spliterator has
+
+45
+00:02:08.419 --> 00:02:12.670 align:middle line:84%
+on the overall performance
+of the program.
+
+46
+00:02:12.670 --> 00:02:16.580 align:middle line:84%
+Here is just a synopsis
+of the results.
+
+47
+00:02:16.580 --> 00:02:18.260 align:middle line:84%
+And I'll go through
+them briefly here.
+
+48
+00:02:18.260 --> 00:02:19.760 align:middle line:84%
+And then we can
+talk more about them
+
+49
+00:02:19.760 --> 00:02:22.310 align:middle line:84%
+when we run the
+program in a minute.
+
+50
+00:02:22.310 --> 00:02:26.210 align:middle line:84%
+These results demonstrate
+that as the size of the input
+
+51
+00:02:26.210 --> 00:02:30.020 align:middle line:84%
+grows, as we have larger
+and larger amounts of words
+
+52
+00:02:30.020 --> 00:02:33.290 align:middle line:84%
+to split and to
+process, the differences
+
+53
+00:02:33.290 --> 00:02:35.840 align:middle line:84%
+between the ArrayList
+and the LinkedList become
+
+54
+00:02:35.840 --> 00:02:37.290 align:middle line:90%
+more pronounced.
+
+55
+00:02:37.290 --> 00:02:39.320 align:middle line:84%
+So when we only have
+a thousand words
+
+56
+00:02:39.320 --> 00:02:42.500 align:middle line:84%
+from the works of Shakespeare,
+LinkedList and ArrayList
+
+57
+00:02:42.500 --> 00:02:44.240 align:middle line:90%
+perform about the same.
+
+58
+00:02:44.240 --> 00:02:48.500 align:middle line:84%
+As we have 10,000 words, they
+still perform about the same.
+
+59
+00:02:48.500 --> 00:02:51.590 align:middle line:84%
+As we get 100,000
+words, all of a sudden,
+
+60
+00:02:51.590 --> 00:02:54.260 align:middle line:84%
+LinkedList is getting
+slower than ArrayList.
+
+61
+00:02:54.260 --> 00:02:55.970 align:middle line:84%
+And when we have
+the complete works
+
+62
+00:02:55.970 --> 00:03:00.170 align:middle line:84%
+of Shakespeare words, which
+is something like 883,000,
+
+63
+00:03:00.170 --> 00:03:04.335 align:middle line:84%
+then all of a sudden, ArrayList
+is much faster than LinkedList.
+
+64
+00:03:04.335 --> 00:03:05.960 align:middle line:84%
+And the reason for
+that is just the way
+
+65
+00:03:05.960 --> 00:03:08.510 align:middle line:84%
+in which LinkedList's
+spliterator
+
+66
+00:03:08.510 --> 00:03:11.560 align:middle line:84%
+doesn't split evenly and
+doesn't split efficiently.
+
+67
+00:03:11.560 --> 00:03:13.070 align:middle line:84%
+And we'll talk more
+about this when
+
+68
+00:03:13.070 --> 00:03:16.430 align:middle line:84%
+we talk about other
+aspects of when
+
+69
+00:03:16.430 --> 00:03:21.420 align:middle line:84%
+not to use parallel
+streams in upcoming weeks.
+
+70
+00:03:21.420 --> 00:03:23.870 align:middle line:84%
+So here we actually
+have the program.
+
+71
+00:03:23.870 --> 00:03:25.037 align:middle line:90%
+And it's in the ex14 folder.
+
+72
+00:03:25.037 --> 00:03:26.453 align:middle line:84%
+And I'm going to
+go ahead and walk
+
+73
+00:03:26.453 --> 00:03:29.060 align:middle line:84%
+through the code at this point
+and show you how it works
+
+74
+00:03:29.060 --> 00:03:31.070 align:middle line:84%
+and why it works
+the way it does.
+
+75
+00:03:31.070 --> 00:03:34.130 align:middle line:84%
+Now that I've given you an
+overview of the test that
+
+76
+00:03:34.130 --> 00:03:36.787 align:middle line:84%
+evaluates the performance
+of different spliterators
+
+77
+00:03:36.787 --> 00:03:38.870 align:middle line:84%
+for different types of
+collections, let's go ahead
+
+78
+00:03:38.870 --> 00:03:40.078 align:middle line:90%
+and look at the code.
+
+79
+00:03:40.078 --> 00:03:42.620 align:middle line:84%
+Before we look at the code, I'll
+just start running the test.
+
+80
+00:03:42.620 --> 00:03:44.870 align:middle line:84%
+And this will go ahead and
+execute in the background.
+
+81
+00:03:44.870 --> 00:03:46.113 align:middle line:90%
+We'll close this down.
+
+82
+00:03:46.113 --> 00:03:47.030 align:middle line:90%
+I'll look at the code.
+
+83
+00:03:47.030 --> 00:03:50.390 align:middle line:84%
+By the time we're done, the
+test should be finished.
+
+84
+00:03:50.390 --> 00:03:52.400 align:middle line:90%
+So this is the ex14 program.
+
+85
+00:03:52.400 --> 00:03:54.840 align:middle line:84%
+And it illustrates a
+bunch of different things.
+
+86
+00:03:54.840 --> 00:03:56.420 align:middle line:84%
+In particular,
+it's going to show
+
+87
+00:03:56.420 --> 00:04:00.080 align:middle line:84%
+the difference in performance
+by using parallel spliterators
+
+88
+00:04:00.080 --> 00:04:03.830 align:middle line:84%
+to split a Java LinkedList
+versus a Java ArrayList
+
+89
+00:04:03.830 --> 00:04:05.270 align:middle line:90%
+into chunks.
+
+90
+00:04:05.270 --> 00:04:07.790 align:middle line:84%
+As you can see, we're going
+to run a number of iterations
+
+91
+00:04:07.790 --> 00:04:08.787 align:middle line:90%
+of the test.
+
+92
+00:04:08.787 --> 00:04:11.120 align:middle line:84%
+We're going to give it the
+complete works of Shakespeare
+
+93
+00:04:11.120 --> 00:04:12.698 align:middle line:90%
+as the input file.
+
+94
+00:04:12.698 --> 00:04:14.990 align:middle line:84%
+And there's a number of other
+tests here, some of which
+
+95
+00:04:14.990 --> 00:04:15.750 align:middle line:90%
+we'll look at later.
+
+96
+00:04:15.750 --> 00:04:17.417 align:middle line:84%
+But right now, we're
+just going to focus
+
+97
+00:04:17.417 --> 00:04:20.630 align:middle line:90%
+on runSpliteratorTests.
+
+98
+00:04:20.630 --> 00:04:24.630 align:middle line:84%
+So we can go over here and
+find runSpliteratorTests.
+
+99
+00:04:24.630 --> 00:04:26.260 align:middle line:90%
+Here's runSpliteratorTests.
+
+100
+00:04:26.260 --> 00:04:28.010 align:middle line:84%
+As you can see, what
+we do is we start out
+
+101
+00:04:28.010 --> 00:04:34.320 align:middle line:84%
+by making an ArrayList
+of test sizes.
+
+102
+00:04:34.320 --> 00:04:38.185 align:middle line:84%
+So we have 1,000, 10,000,
+100,000, and up to a million.
+
+103
+00:04:38.185 --> 00:04:39.560 align:middle line:84%
+We won't actually
+do the million,
+
+104
+00:04:39.560 --> 00:04:41.270 align:middle line:84%
+because there are
+not a million words
+
+105
+00:04:41.270 --> 00:04:42.980 align:middle line:90%
+in the works of Shakespeare.
+
+106
+00:04:42.980 --> 00:04:45.240 align:middle line:84%
+Down here we have
+a forEach loop.
+
+107
+00:04:45.240 --> 00:04:49.580 align:middle line:84%
+So for each time through one of
+these test numbers, we come in
+
+108
+00:04:49.580 --> 00:04:52.550 align:middle line:84%
+and we open up the complete
+works of Shakespeare,
+
+109
+00:04:52.550 --> 00:04:56.660 align:middle line:84%
+getting the limit in as how
+many words we want for this run.
+
+110
+00:04:56.660 --> 00:04:59.930 align:middle line:84%
+As you can see, we start out
+with an ArrayList of words,
+
+111
+00:04:59.930 --> 00:05:02.550 align:middle line:84%
+because that's what gets
+returned by getInput.
+
+112
+00:05:02.550 --> 00:05:04.670 align:middle line:84%
+We then turn around and
+convert that ArrayList
+
+113
+00:05:04.670 --> 00:05:06.163 align:middle line:90%
+into a LinkedList.
+
+114
+00:05:06.163 --> 00:05:08.330 align:middle line:84%
+So now we have an ArrayList
+version and a LinkedList
+
+115
+00:05:08.330 --> 00:05:09.620 align:middle line:90%
+version.
+
+116
+00:05:09.620 --> 00:05:10.880 align:middle line:90%
+Then we start the tests.
+
+117
+00:05:10.880 --> 00:05:12.350 align:middle line:84%
+And the tests are
+basically going
+
+118
+00:05:12.350 --> 00:05:17.300 align:middle line:84%
+to run this function called
+timeParallelStreamUppercase,
+
+119
+00:05:17.300 --> 00:05:22.760 align:middle line:84%
+passing it in the arrayWords and
+passing it in the LinkedWords.
+
+120
+00:05:22.760 --> 00:05:26.000 align:middle line:84%
+So now that we've done that,
+we can go ahead and search down
+
+121
+00:05:26.000 --> 00:05:29.275 align:middle line:84%
+to find
+timeParallelStreamUppercase.
+
+122
+00:05:29.275 --> 00:05:30.650 align:middle line:84%
+As you can see,
+this method takes
+
+123
+00:05:30.650 --> 00:05:33.080 align:middle line:84%
+the name of the test
+and a list, which
+
+124
+00:05:33.080 --> 00:05:35.150 align:middle line:84%
+will either be the
+ArrayList or it'll
+
+125
+00:05:35.150 --> 00:05:38.740 align:middle line:90%
+be the list of linkedWords.
+
+126
+00:05:38.740 --> 00:05:41.570 align:middle line:84%
+Down in here we come and we
+have a really cool little helper
+
+127
+00:05:41.570 --> 00:05:43.760 align:middle line:84%
+program, helper
+function, called timeRun
+
+128
+00:05:43.760 --> 00:05:45.800 align:middle line:90%
+that will time all these runs.
+
+129
+00:05:45.800 --> 00:05:47.730 align:middle line:90%
+We run this particular test.
+
+130
+00:05:47.730 --> 00:05:50.390 align:middle line:84%
+We create an ArrayList
+just to store the results.
+
+131
+00:05:50.390 --> 00:05:52.820 align:middle line:84%
+And then for the number
+of iterations in the test,
+
+132
+00:05:52.820 --> 00:05:55.610 align:middle line:84%
+we're going to go ahead
+and turn the words
+
+133
+00:05:55.610 --> 00:05:58.820 align:middle line:84%
+list into a parallelStream,
+which, of course, will either
+
+134
+00:05:58.820 --> 00:06:01.580 align:middle line:84%
+use the ArrayList's
+spliterator or the LinkedList's
+
+135
+00:06:01.580 --> 00:06:02.630 align:middle line:90%
+spliterator.
+
+136
+00:06:02.630 --> 00:06:04.410 align:middle line:84%
+And once we have a
+stream, we're going
+
+137
+00:06:04.410 --> 00:06:07.850 align:middle line:84%
+to go ahead and convert each
+of the elements in the stream
+
+138
+00:06:07.850 --> 00:06:11.780 align:middle line:84%
+from a character sequence to a
+string and then uppercase it.
+
+139
+00:06:11.780 --> 00:06:14.010 align:middle line:84%
+And that's just to do
+something interesting to make
+
+140
+00:06:14.010 --> 00:06:15.380 align:middle line:90%
+that could take some time.
+
+141
+00:06:15.380 --> 00:06:18.530 align:middle line:84%
+And then we go ahead and
+convert that into a list
+
+142
+00:06:18.530 --> 00:06:21.720 align:middle line:84%
+and store it at the
+end of this ArrayList.
+
+143
+00:06:21.720 --> 00:06:23.760 align:middle line:84%
+And we just do that
+multiple times.
+
+144
+00:06:23.760 --> 00:06:25.100 align:middle line:90%
+So that's how the test works.
+
+145
+00:06:25.100 --> 00:06:26.120 align:middle line:90%
+Let's now go and see--
+
+146
+00:06:26.120 --> 00:06:28.220 align:middle line:84%
+I'm pretty sure by this
+point that the test
+
+147
+00:06:28.220 --> 00:06:29.570 align:middle line:90%
+is finished running.
+
+148
+00:06:29.570 --> 00:06:33.380 align:middle line:84%
+And you can see for the
+spliterator versions, which
+
+149
+00:06:33.380 --> 00:06:35.570 align:middle line:84%
+is up here a little
+bit earlier, you
+
+150
+00:06:35.570 --> 00:06:40.500 align:middle line:84%
+can see that for a spliterator
+test for a thousand words,
+
+151
+00:06:40.500 --> 00:06:41.920 align:middle line:90%
+they basically ran identically.
+
+152
+00:06:41.920 --> 00:06:43.780 align:middle line:84%
+It didn't take very
+long to run at all.
+
+153
+00:06:43.780 --> 00:06:47.995 align:middle line:84%
+For 10,000 words, we can see
+that the ArrayList pulls ahead.
+
+154
+00:06:47.995 --> 00:06:48.870 align:middle line:90%
+It's a little faster.
+
+155
+00:06:48.870 --> 00:06:51.330 align:middle line:84%
+In fact, the funny part is,
+for just a thousand words,
+
+156
+00:06:51.330 --> 00:06:54.570 align:middle line:84%
+LinkedList actually ran faster,
+which is a little surprising.
+
+157
+00:06:54.570 --> 00:06:57.090 align:middle line:84%
+But then as we get
+larger amounts of words,
+
+158
+00:06:57.090 --> 00:06:59.280 align:middle line:84%
+as we have 100,000
+words, ArrayList
+
+159
+00:06:59.280 --> 00:07:00.980 align:middle line:90%
+is definitely pulling ahead.
+
+160
+00:07:00.980 --> 00:07:03.790 align:middle line:84%
+And by the time we get up to the
+number of words in Shakespeare,
+
+161
+00:07:03.790 --> 00:07:09.660 align:middle line:84%
+which is as you can see
+here, 883,311, at this point
+
+162
+00:07:09.660 --> 00:07:11.950 align:middle line:84%
+the ArrayList version
+is way faster.
+
+163
+00:07:11.950 --> 00:07:14.160 align:middle line:84%
+So that's just illustrating
+how we get a better
+
+164
+00:07:14.160 --> 00:07:18.300 align:middle line:84%
+result for using parallel
+streams with ArrayLists
+
+165
+00:07:18.300 --> 00:07:21.330 align:middle line:84%
+because they split evenly,
+they split efficiently,
+
+166
+00:07:21.330 --> 00:07:23.700 align:middle line:84%
+they don't copy data,
+than for LinkedList,
+
+167
+00:07:23.700 --> 00:07:26.760 align:middle line:84%
+which doesn't split evenly,
+doesn't split efficiently,
+
+168
+00:07:26.760 --> 00:07:29.150 align:middle line:90%
+and does copy data.

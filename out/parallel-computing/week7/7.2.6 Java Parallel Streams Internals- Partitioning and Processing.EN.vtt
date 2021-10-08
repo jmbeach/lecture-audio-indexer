@@ -1,0 +1,1056 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.823 align:middle line:90%
+
+
+2
+00:00:00.823 --> 00:00:02.240 align:middle line:84%
+So now that we've
+talked about how
+
+3
+00:00:02.240 --> 00:00:05.300 align:middle line:84%
+to configure the common
+fork-join pool, let's go ahead
+
+4
+00:00:05.300 --> 00:00:08.725 align:middle line:84%
+and demonstrate how you can
+configure this pool in practice
+
+5
+00:00:08.725 --> 00:00:10.100 align:middle line:84%
+and see what some
+of the benefits
+
+6
+00:00:10.100 --> 00:00:13.255 align:middle line:84%
+are of actually doing
+that configuration.
+
+7
+00:00:13.255 --> 00:00:14.630 align:middle line:84%
+So in this particular
+case, we're
+
+8
+00:00:14.630 --> 00:00:18.560 align:middle line:84%
+going to run several different
+examples to illustrate
+
+9
+00:00:18.560 --> 00:00:21.830 align:middle line:84%
+how you can either not
+or you can configure
+
+10
+00:00:21.830 --> 00:00:24.200 align:middle line:84%
+the size of the
+common fork-join pool,
+
+11
+00:00:24.200 --> 00:00:26.840 align:middle line:84%
+and then we'll see the
+implications on performance
+
+12
+00:00:26.840 --> 00:00:30.420 align:middle line:84%
+as a result of those
+various configurations.
+
+13
+00:00:30.420 --> 00:00:34.800 align:middle line:84%
+This example is available in
+my EX 20 folder in my GitHub
+
+14
+00:00:34.800 --> 00:00:36.570 align:middle line:84%
+repository, so I
+strongly recommend
+
+15
+00:00:36.570 --> 00:00:40.400 align:middle line:84%
+you take a look at
+that and follow along.
+
+16
+00:00:40.400 --> 00:00:43.030 align:middle line:84%
+So as we mentioned before,
+the common fork-join pool size
+
+17
+00:00:43.030 --> 00:00:46.940 align:middle line:84%
+can in fact be controlled
+programmatically.
+
+18
+00:00:46.940 --> 00:00:50.830 align:middle line:84%
+This particular demo
+applies managed blocker
+
+19
+00:00:50.830 --> 00:00:54.280 align:middle line:84%
+in a couple of different ways
+to add new worker threads
+
+20
+00:00:54.280 --> 00:00:56.730 align:middle line:84%
+to the common fork-join
+pool, and you'll
+
+21
+00:00:56.730 --> 00:00:58.480 align:middle line:84%
+see that there's a
+bunch of different ways
+
+22
+00:00:58.480 --> 00:00:59.600 align:middle line:90%
+in which this works.
+
+23
+00:00:59.600 --> 00:01:02.110 align:middle line:84%
+One way is the
+rather verbose way
+
+24
+00:01:02.110 --> 00:01:03.640 align:middle line:84%
+of doing it that
+I show you here.
+
+25
+00:01:03.640 --> 00:01:05.890 align:middle line:84%
+There's a cooler way of doing
+it using a little helper
+
+26
+00:01:05.890 --> 00:01:08.560 align:middle line:84%
+class called a blocking
+task, and we'll
+
+27
+00:01:08.560 --> 00:01:10.810 align:middle line:84%
+talk about both of those
+when we walk through the code
+
+28
+00:01:10.810 --> 00:01:13.280 align:middle line:90%
+here in just a minute.
+
+29
+00:01:13.280 --> 00:01:16.780 align:middle line:84%
+The behavior of this program
+is measured and quantified
+
+30
+00:01:16.780 --> 00:01:21.700 align:middle line:84%
+using a function that's
+called test download behavior.
+
+31
+00:01:21.700 --> 00:01:25.600 align:middle line:84%
+And this function demonstrates
+the performance differences
+
+32
+00:01:25.600 --> 00:01:28.660 align:middle line:84%
+of using managed blocker
+versus not using the managed
+
+33
+00:01:28.660 --> 00:01:30.760 align:middle line:84%
+blocker for an
+I/O intensive app,
+
+34
+00:01:30.760 --> 00:01:35.010 align:middle line:84%
+basically an app that
+downloads images from websites.
+
+35
+00:01:35.010 --> 00:01:38.760 align:middle line:84%
+As you can see here, this
+test download behavior method
+
+36
+00:01:38.760 --> 00:01:42.000 align:middle line:84%
+is passed a parameter
+that's a function,
+
+37
+00:01:42.000 --> 00:01:46.650 align:middle line:84%
+and this function
+maps URLs to files.
+
+38
+00:01:46.650 --> 00:01:50.610 align:middle line:84%
+And we use this thing to
+pass in different strategies
+
+39
+00:01:50.610 --> 00:01:55.170 align:middle line:84%
+for downloading and storing
+images from remote websites.
+
+40
+00:01:55.170 --> 00:01:57.780 align:middle line:84%
+And so this is basically the
+good old strategy pattern
+
+41
+00:01:57.780 --> 00:01:59.850 align:middle line:84%
+from the Gang of Four
+book, and we'll take a look
+
+42
+00:01:59.850 --> 00:02:00.780 align:middle line:90%
+at three strategies.
+
+43
+00:02:00.780 --> 00:02:02.155 align:middle line:84%
+We'll take a look
+at one strategy
+
+44
+00:02:02.155 --> 00:02:05.550 align:middle line:84%
+that just download and stores
+as images without using any
+
+45
+00:02:05.550 --> 00:02:07.690 align:middle line:84%
+managed blocker
+mechanisms whatsoever,
+
+46
+00:02:07.690 --> 00:02:10.800 align:middle line:84%
+so it'll be limited to
+the number of threads
+
+47
+00:02:10.800 --> 00:02:14.810 align:middle line:84%
+and the default coming
+fork-join pool size.
+
+48
+00:02:14.810 --> 00:02:16.880 align:middle line:84%
+And then we'll also
+show a strategy
+
+49
+00:02:16.880 --> 00:02:19.970 align:middle line:84%
+that downloads and stores
+images using a managed
+
+50
+00:02:19.970 --> 00:02:23.090 align:middle line:84%
+blocker directly, and
+then finally we'll
+
+51
+00:02:23.090 --> 00:02:26.750 align:middle line:84%
+show an example that uses
+the manage blocker wrapped up
+
+52
+00:02:26.750 --> 00:02:28.850 align:middle line:84%
+in a helper class
+called a blocking task,
+
+53
+00:02:28.850 --> 00:02:32.230 align:middle line:84%
+which is really cool
+and very reusable.
+
+54
+00:02:32.230 --> 00:02:34.060 align:middle line:90%
+When we run the demo--
+
+55
+00:02:34.060 --> 00:02:37.960 align:middle line:84%
+I'll show this to you as we do
+it, but here's a little preview
+
+56
+00:02:37.960 --> 00:02:39.460 align:middle line:90%
+of coming attractions.
+
+57
+00:02:39.460 --> 00:02:43.510 align:middle line:84%
+The results show that increasing
+the number of worker threads
+
+58
+00:02:43.510 --> 00:02:46.550 align:middle line:84%
+via the manage blocker
+mechanism, of course,
+
+59
+00:02:46.550 --> 00:02:48.710 align:middle line:90%
+improves the performance.
+
+60
+00:02:48.710 --> 00:02:51.370 align:middle line:84%
+So this particular example is
+going to download and store
+
+61
+00:02:51.370 --> 00:02:54.010 align:middle line:90%
+42 images from my website.
+
+62
+00:02:54.010 --> 00:02:56.260 align:middle line:84%
+And as you can
+see, when we do it
+
+63
+00:02:56.260 --> 00:03:00.100 align:middle line:84%
+with 12 threads, which is
+the default number of threads
+
+64
+00:03:00.100 --> 00:03:04.670 align:middle line:84%
+on my six core
+hyper-threaded laptop,
+
+65
+00:03:04.670 --> 00:03:09.160 align:middle line:84%
+you'll see that the performance
+of that is slower than the
+
+66
+00:03:09.160 --> 00:03:12.760 align:middle line:84%
+Other approaches that use either
+the managed blocker directly
+
+67
+00:03:12.760 --> 00:03:15.520 align:middle line:90%
+or the blocking task wrapper.
+
+68
+00:03:15.520 --> 00:03:18.550 align:middle line:84%
+And so this just demonstrates
+you do get a benefit.
+
+69
+00:03:18.550 --> 00:03:20.963 align:middle line:84%
+Now, of course, your
+mileage will always vary,
+
+70
+00:03:20.963 --> 00:03:22.630 align:middle line:84%
+but I think it
+demonstrates conclusively
+
+71
+00:03:22.630 --> 00:03:26.080 align:middle line:84%
+that adding threads
+can make a difference.
+
+72
+00:03:26.080 --> 00:03:30.070 align:middle line:84%
+And the manage blocker mechanism
+can make things run faster.
+
+73
+00:03:30.070 --> 00:03:33.180 align:middle line:84%
+So let's go ahead now and
+take a look at the source code
+
+74
+00:03:33.180 --> 00:03:36.090 align:middle line:84%
+and I'll run the example and
+we'll see how it all works.
+
+75
+00:03:36.090 --> 00:03:39.240 align:middle line:84%
+We're now going to walk through
+an example that illustrates how
+
+76
+00:03:39.240 --> 00:03:42.370 align:middle line:84%
+to combine the Java
+parallel streams framework
+
+77
+00:03:42.370 --> 00:03:44.790 align:middle line:84%
+with and without the
+fork-join managed blocker
+
+78
+00:03:44.790 --> 00:03:46.830 align:middle line:84%
+interface in order
+to demonstrate
+
+79
+00:03:46.830 --> 00:03:48.960 align:middle line:84%
+the impact of
+having more threads
+
+80
+00:03:48.960 --> 00:03:52.560 align:middle line:84%
+in the common fork-join
+pool on overall performance.
+
+81
+00:03:52.560 --> 00:03:54.410 align:middle line:84%
+This test actually
+takes a while to run,
+
+82
+00:03:54.410 --> 00:03:55.827 align:middle line:84%
+so I'm going to
+go ahead and start
+
+83
+00:03:55.827 --> 00:03:57.310 align:middle line:90%
+running this in the background.
+
+84
+00:03:57.310 --> 00:03:59.220 align:middle line:84%
+By the time we're done,
+we should hopefully
+
+85
+00:03:59.220 --> 00:04:01.810 align:middle line:84%
+get the results back,
+and we can present them.
+
+86
+00:04:01.810 --> 00:04:03.770 align:middle line:90%
+So here's the EX 20 class.
+
+87
+00:04:03.770 --> 00:04:05.790 align:middle line:84%
+As you can see,
+all it does is it
+
+88
+00:04:05.790 --> 00:04:08.250 align:middle line:84%
+goes ahead and creates
+an instance of itself
+
+89
+00:04:08.250 --> 00:04:10.320 align:middle line:90%
+and runs the test.
+
+90
+00:04:10.320 --> 00:04:13.500 align:middle line:84%
+This starts out by printing the
+number of available processors
+
+91
+00:04:13.500 --> 00:04:16.470 align:middle line:84%
+that the Java execution
+environment thinks it has.
+
+92
+00:04:16.470 --> 00:04:20.190 align:middle line:84%
+In my case, as you'll see,
+if you peek back over here,
+
+93
+00:04:20.190 --> 00:04:22.230 align:middle line:84%
+we end up starting
+out with 12 cores
+
+94
+00:04:22.230 --> 00:04:25.470 align:middle line:84%
+because this is running
+on a six-core machine.
+
+95
+00:04:25.470 --> 00:04:27.120 align:middle line:90%
+Come back to that later.
+
+96
+00:04:27.120 --> 00:04:28.560 align:middle line:84%
+We warm up the
+thread pool to make
+
+97
+00:04:28.560 --> 00:04:30.480 align:middle line:84%
+sure everything's ready
+to go, and then we
+
+98
+00:04:30.480 --> 00:04:33.810 align:middle line:84%
+run three different tests
+or three different versions
+
+99
+00:04:33.810 --> 00:04:35.250 align:middle line:90%
+of the same test.
+
+100
+00:04:35.250 --> 00:04:37.740 align:middle line:84%
+There's a run test method
+we'll look at in a second,
+
+101
+00:04:37.740 --> 00:04:40.230 align:middle line:84%
+and we pass different
+functions into this.
+
+102
+00:04:40.230 --> 00:04:43.020 align:middle line:84%
+The first one will just
+download and store images
+
+103
+00:04:43.020 --> 00:04:47.220 align:middle line:84%
+using the default behavior of
+Java's fork-join framework,
+
+104
+00:04:47.220 --> 00:04:50.300 align:middle line:84%
+which does not add new
+worker threads to the pool.
+
+105
+00:04:50.300 --> 00:04:53.070 align:middle line:84%
+Then we'll store-- use a
+different implementation that
+
+106
+00:04:53.070 --> 00:04:56.340 align:middle line:84%
+will download and store images
+using the managed blocker
+
+107
+00:04:56.340 --> 00:04:59.630 align:middle line:84%
+mechanism directly, which
+does add new worker threads
+
+108
+00:04:59.630 --> 00:05:02.010 align:middle line:84%
+to the pool adaptively
+and dynamically
+
+109
+00:05:02.010 --> 00:05:03.550 align:middle line:90%
+when blocking occurs.
+
+110
+00:05:03.550 --> 00:05:06.270 align:middle line:84%
+And finally we'll run the test
+passing in download and store
+
+111
+00:05:06.270 --> 00:05:09.030 align:middle line:84%
+image BT, which is
+the blocking task
+
+112
+00:05:09.030 --> 00:05:13.058 align:middle line:84%
+wrapper for the manage
+blocker mechanism.
+
+113
+00:05:13.058 --> 00:05:14.350 align:middle line:90%
+So that's the big picture view.
+
+114
+00:05:14.350 --> 00:05:16.020 align:middle line:84%
+And, of course,
+each time we pass
+
+115
+00:05:16.020 --> 00:05:19.740 align:middle line:84%
+in which test version is running
+so we can see what happens.
+
+116
+00:05:19.740 --> 00:05:20.930 align:middle line:90%
+Here's the Run Test method.
+
+117
+00:05:20.930 --> 00:05:24.360 align:middle line:84%
+It takes this function as
+input in the name of the test.
+
+118
+00:05:24.360 --> 00:05:26.360 align:middle line:84%
+First thing it does is
+run the garbage collector
+
+119
+00:05:26.360 --> 00:05:28.620 align:middle line:90%
+to give more accurate timings.
+
+120
+00:05:28.620 --> 00:05:31.970 align:middle line:84%
+And then we go ahead and run
+the test download behavior
+
+121
+00:05:31.970 --> 00:05:34.280 align:middle line:84%
+function, which is
+a helper function,
+
+122
+00:05:34.280 --> 00:05:36.950 align:middle line:84%
+passing in the download
+and store image
+
+123
+00:05:36.950 --> 00:05:38.430 align:middle line:90%
+function and the test name.
+
+124
+00:05:38.430 --> 00:05:40.940 align:middle line:84%
+And this is just so we can
+consolidate all the timing
+
+125
+00:05:40.940 --> 00:05:42.710 align:middle line:90%
+in one place.
+
+126
+00:05:42.710 --> 00:05:46.520 align:middle line:84%
+Here is download-- here's
+test download behavior.
+
+127
+00:05:46.520 --> 00:05:49.190 align:middle line:84%
+This is really the heavy
+worker for all these things.
+
+128
+00:05:49.190 --> 00:05:50.840 align:middle line:84%
+As you can see, it
+takes this function
+
+129
+00:05:50.840 --> 00:05:52.460 align:middle line:84%
+to download and
+store images, which
+
+130
+00:05:52.460 --> 00:05:55.040 align:middle line:84%
+could be one of any three
+different implementations.
+
+131
+00:05:55.040 --> 00:05:59.780 align:middle line:84%
+And what we do as we go ahead
+and we get a list of URLs,
+
+132
+00:05:59.780 --> 00:06:04.340 align:middle line:84%
+and those URLs are actually
+links to my website.
+
+133
+00:06:04.340 --> 00:06:07.880 align:middle line:84%
+We then convert those URLs
+into a parallel stream.
+
+134
+00:06:07.880 --> 00:06:10.820 align:middle line:84%
+We call map passing in the
+appropriate function that
+
+135
+00:06:10.820 --> 00:06:13.520 align:middle line:84%
+was passed in to download
+and store the image.
+
+136
+00:06:13.520 --> 00:06:15.500 align:middle line:84%
+And then we go ahead
+and terminate the stream
+
+137
+00:06:15.500 --> 00:06:18.020 align:middle line:84%
+and collect the results
+into a list of images.
+
+138
+00:06:18.020 --> 00:06:19.123 align:middle line:90%
+So far so good.
+
+139
+00:06:19.123 --> 00:06:21.290 align:middle line:84%
+And when we're all done,
+we print out the statistics
+
+140
+00:06:21.290 --> 00:06:23.410 align:middle line:90%
+for this particular test run.
+
+141
+00:06:23.410 --> 00:06:28.060 align:middle line:84%
+Here is the based default
+version of download and store
+
+142
+00:06:28.060 --> 00:06:28.900 align:middle line:90%
+image.
+
+143
+00:06:28.900 --> 00:06:31.370 align:middle line:84%
+This downloads and stores
+an image from a year
+
+144
+00:06:31.370 --> 00:06:35.830 align:middle line:84%
+URL without using the adaptive
+mechanisms in the Java
+
+145
+00:06:35.830 --> 00:06:39.400 align:middle line:84%
+fork-join's pool frameworks
+managed blocker mechanism.
+
+146
+00:06:39.400 --> 00:06:42.190 align:middle line:84%
+So this will not expand
+the pool of worker threads,
+
+147
+00:06:42.190 --> 00:06:45.040 align:middle line:84%
+and all we do is we simply
+download the image and store
+
+148
+00:06:45.040 --> 00:06:45.580 align:middle line:90%
+it.
+
+149
+00:06:45.580 --> 00:06:47.538 align:middle line:84%
+And we'll take a look at
+download images later,
+
+150
+00:06:47.538 --> 00:06:49.650 align:middle line:90%
+but it just downloads the image.
+
+151
+00:06:49.650 --> 00:06:53.070 align:middle line:84%
+Here is the download and
+store image MB version.
+
+152
+00:06:53.070 --> 00:06:56.040 align:middle line:84%
+This uses the fork-join
+frameworks manage
+
+153
+00:06:56.040 --> 00:06:58.080 align:middle line:90%
+blocker mechanism explicitly.
+
+154
+00:06:58.080 --> 00:07:00.720 align:middle line:84%
+And I had to do a
+little sleazy trick
+
+155
+00:07:00.720 --> 00:07:02.490 align:middle line:84%
+to make this work
+because of the fact
+
+156
+00:07:02.490 --> 00:07:05.370 align:middle line:84%
+that this is not really
+lambda expressions
+
+157
+00:07:05.370 --> 00:07:06.520 align:middle line:90%
+and cool Java 8 stuff.
+
+158
+00:07:06.520 --> 00:07:08.645 align:middle line:84%
+This is Java 7 stuff, so
+what we have to do here
+
+159
+00:07:08.645 --> 00:07:10.020 align:middle line:84%
+is we have to go
+ahead and create
+
+160
+00:07:10.020 --> 00:07:14.220 align:middle line:84%
+ourselves an anonymous inner
+class of an instance of managed
+
+161
+00:07:14.220 --> 00:07:15.510 align:middle line:90%
+blocker.
+
+162
+00:07:15.510 --> 00:07:17.640 align:middle line:84%
+That class we'll
+look at the second.
+
+163
+00:07:17.640 --> 00:07:20.580 align:middle line:84%
+That will be passed
+to the managed block
+
+164
+00:07:20.580 --> 00:07:24.360 align:middle line:84%
+method, which is a static method
+defined on fork-join pool.
+
+165
+00:07:24.360 --> 00:07:27.422 align:middle line:84%
+And the key method here that
+matters is the block method.
+
+166
+00:07:27.422 --> 00:07:29.130 align:middle line:84%
+And you can see that
+one block is called,
+
+167
+00:07:29.130 --> 00:07:31.440 align:middle line:84%
+it will turn around
+and download the image,
+
+168
+00:07:31.440 --> 00:07:35.070 align:middle line:84%
+store the result into
+a one element array.
+
+169
+00:07:35.070 --> 00:07:38.910 align:middle line:84%
+This is a sleazy trick here,
+but it works for our purposes.
+
+170
+00:07:38.910 --> 00:07:41.130 align:middle line:90%
+And we get the image download.
+
+171
+00:07:41.130 --> 00:07:42.900 align:middle line:84%
+This will block,
+but this will also
+
+172
+00:07:42.900 --> 00:07:46.080 align:middle line:84%
+cause the fork-join pool--
+the common fork-join pool
+
+173
+00:07:46.080 --> 00:07:49.690 align:middle line:84%
+to expand the number of
+threads whenever we block.
+
+174
+00:07:49.690 --> 00:07:54.360 align:middle line:84%
+And when we're done, we go ahead
+and store the image and return.
+
+175
+00:07:54.360 --> 00:07:56.760 align:middle line:84%
+The third and final
+implementation
+
+176
+00:07:56.760 --> 00:07:59.760 align:middle line:90%
+is download and store image BT.
+
+177
+00:07:59.760 --> 00:08:01.500 align:middle line:84%
+This is a lot more
+concise because we
+
+178
+00:08:01.500 --> 00:08:05.340 align:middle line:84%
+use the blocking task call
+and manage block method.
+
+179
+00:08:05.340 --> 00:08:08.330 align:middle line:84%
+We'll talk more about this
+method in later sessions.
+
+180
+00:08:08.330 --> 00:08:10.080 align:middle line:84%
+We'll talk about it
+when we talk about how
+
+181
+00:08:10.080 --> 00:08:13.500 align:middle line:84%
+to configure the fork-join
+pool's common thread
+
+182
+00:08:13.500 --> 00:08:16.090 align:middle line:84%
+pool in our later
+lessons in the course.
+
+183
+00:08:16.090 --> 00:08:18.120 align:middle line:84%
+But for right now,
+this basically
+
+184
+00:08:18.120 --> 00:08:22.440 align:middle line:84%
+encapsulates all this
+wacky anonymous innerclass
+
+185
+00:08:22.440 --> 00:08:26.220 align:middle line:84%
+gobbledygook and gives us a
+nice clean method to call,
+
+186
+00:08:26.220 --> 00:08:29.130 align:middle line:84%
+and we pass in a lambda
+supplier, which in this case
+
+187
+00:08:29.130 --> 00:08:30.360 align:middle line:90%
+downloads the image.
+
+188
+00:08:30.360 --> 00:08:33.150 align:middle line:84%
+And under the hood the call
+and manage block method
+
+189
+00:08:33.150 --> 00:08:36.390 align:middle line:84%
+does the manage
+blocker mechanism
+
+190
+00:08:36.390 --> 00:08:38.122 align:middle line:90%
+and then stores the image.
+
+191
+00:08:38.122 --> 00:08:39.830 align:middle line:84%
+Here's the image--
+here's the method that
+
+192
+00:08:39.830 --> 00:08:40.997 align:middle line:90%
+actually downloads an image.
+
+193
+00:08:40.997 --> 00:08:44.179 align:middle line:84%
+As you can see, it just takes
+the URL, downloads the content,
+
+194
+00:08:44.179 --> 00:08:46.310 align:middle line:90%
+and creates a new image for it.
+
+195
+00:08:46.310 --> 00:08:47.660 align:middle line:90%
+So that's basically the program.
+
+196
+00:08:47.660 --> 00:08:49.950 align:middle line:84%
+We print out some statistics
+and do some other stuff.
+
+197
+00:08:49.950 --> 00:08:51.908 align:middle line:90%
+But that's the real logic.
+
+198
+00:08:51.908 --> 00:08:53.450 align:middle line:84%
+Now that we've gone
+through the code,
+
+199
+00:08:53.450 --> 00:08:56.270 align:middle line:84%
+let's quickly go over here
+and look at the behavior.
+
+200
+00:08:56.270 --> 00:09:02.110 align:middle line:84%
+As you can see, we had 12
+cores, and the test download--
+
+201
+00:09:02.110 --> 00:09:04.850 align:middle line:84%
+sorry, test default
+download behavior method
+
+202
+00:09:04.850 --> 00:09:08.230 align:middle line:84%
+downloaded and stored 42 images
+using 12 threads in the pool.
+
+203
+00:09:08.230 --> 00:09:09.650 align:middle line:90%
+That's all we had.
+
+204
+00:09:09.650 --> 00:09:13.190 align:middle line:84%
+The test adaptive and
+the download behavior
+
+205
+00:09:13.190 --> 00:09:16.670 align:middle line:84%
+downloaded and stored 42
+images using 43 threads,
+
+206
+00:09:16.670 --> 00:09:20.540 align:middle line:84%
+and that's the same behavior
+we have with the adaptive BT
+
+207
+00:09:20.540 --> 00:09:21.960 align:middle line:90%
+download behavior.
+
+208
+00:09:21.960 --> 00:09:24.500 align:middle line:84%
+And here then are the
+performance results.
+
+209
+00:09:24.500 --> 00:09:27.020 align:middle line:84%
+As you might expect, the one
+that doesn't expand the thread
+
+210
+00:09:27.020 --> 00:09:29.930 align:middle line:84%
+pool takes the longest
+time to download,
+
+211
+00:09:29.930 --> 00:09:32.510 align:middle line:84%
+and the ones that do expand
+the thread pool take less time.
+
+212
+00:09:32.510 --> 00:09:34.010 align:middle line:84%
+And I think it's
+kind of interesting
+
+213
+00:09:34.010 --> 00:09:37.010 align:middle line:84%
+that the little wrapper
+code that I used actually
+
+214
+00:09:37.010 --> 00:09:38.300 align:middle line:90%
+performs the best.
+
+215
+00:09:38.300 --> 00:09:40.100 align:middle line:90%
+That one performs very well.
+
+216
+00:09:40.100 --> 00:09:42.200 align:middle line:84%
+Maybe it's just because
+the cache is fresher,
+
+217
+00:09:42.200 --> 00:09:44.090 align:middle line:84%
+but the bottom
+line is increasing
+
+218
+00:09:44.090 --> 00:09:46.190 align:middle line:84%
+the number of
+threads in the pool
+
+219
+00:09:46.190 --> 00:09:49.390 align:middle line:84%
+is correlated with
+increased performance.

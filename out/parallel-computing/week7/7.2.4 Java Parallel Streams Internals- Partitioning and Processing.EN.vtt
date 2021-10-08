@@ -1,0 +1,1089 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.820 align:middle line:90%
+
+
+2
+00:00:00.820 --> 00:00:02.620 align:middle line:84%
+So now that they
+gave you an overview
+
+3
+00:00:02.620 --> 00:00:06.610 align:middle line:84%
+of what the common ForkJoinPool
+is, let's take some time
+
+4
+00:00:06.610 --> 00:00:11.860 align:middle line:84%
+to see how Java parallel
+streams maps its programming
+
+5
+00:00:11.860 --> 00:00:14.650 align:middle line:84%
+abstractions, its functional
+programming abstractions,
+
+6
+00:00:14.650 --> 00:00:17.890 align:middle line:90%
+onto the common ForkJoinPool.
+
+7
+00:00:17.890 --> 00:00:19.810 align:middle line:84%
+And we'll see this is
+kind of interesting.
+
+8
+00:00:19.810 --> 00:00:22.330 align:middle line:84%
+It'll also give us a
+chance to talk about some
+
+9
+00:00:22.330 --> 00:00:24.430 align:middle line:84%
+of the behaviors of the
+common ForkJoinPool, which
+
+10
+00:00:24.430 --> 00:00:25.750 align:middle line:90%
+we'll outline here briefly.
+
+11
+00:00:25.750 --> 00:00:27.940 align:middle line:84%
+But we'll go into
+much more detail
+
+12
+00:00:27.940 --> 00:00:32.790 align:middle line:84%
+in the fork-join framework
+portion of this course.
+
+13
+00:00:32.790 --> 00:00:38.030 align:middle line:84%
+So each worker thread in
+the common ForkJoinPool
+
+14
+00:00:38.030 --> 00:00:41.050 align:middle line:90%
+essentially scans for task.
+
+15
+00:00:41.050 --> 00:00:43.760 align:middle line:84%
+It has a loop that
+just continuously scans
+
+16
+00:00:43.760 --> 00:00:45.740 align:middle line:90%
+for work to do.
+
+17
+00:00:45.740 --> 00:00:48.637 align:middle line:84%
+And we'll talk in more detail in
+a second about how many threads
+
+18
+00:00:48.637 --> 00:00:50.220 align:middle line:84%
+there are and how
+they work and so on.
+
+19
+00:00:50.220 --> 00:00:51.930 align:middle line:84%
+But just for the
+sake of argument,
+
+20
+00:00:51.930 --> 00:00:53.935 align:middle line:84%
+let's assume that
+there's three threads
+
+21
+00:00:53.935 --> 00:00:56.060 align:middle line:84%
+in the common ForkJoinPool,
+and they just sit there
+
+22
+00:00:56.060 --> 00:00:59.210 align:middle line:90%
+and look for stuff to do.
+
+23
+00:00:59.210 --> 00:01:01.155 align:middle line:84%
+In this particular
+part of the course,
+
+24
+00:01:01.155 --> 00:01:02.780 align:middle line:84%
+we're not going to
+go into great detail
+
+25
+00:01:02.780 --> 00:01:05.010 align:middle line:84%
+about how the common
+ForkJoinPool works.
+
+26
+00:01:05.010 --> 00:01:07.970 align:middle line:84%
+That will be covered later
+in the fork-join framework
+
+27
+00:01:07.970 --> 00:01:08.900 align:middle line:90%
+lessons.
+
+28
+00:01:08.900 --> 00:01:11.403 align:middle line:84%
+But we're going to focus
+about tasks that are associate
+
+29
+00:01:11.403 --> 00:01:12.320 align:middle line:90%
+with parallel streams.
+
+30
+00:01:12.320 --> 00:01:14.840 align:middle line:84%
+You don't care about any other
+kind of tasks at this point.
+
+31
+00:01:14.840 --> 00:01:18.240 align:middle line:84%
+The parallel streams tasks
+are interesting enough.
+
+32
+00:01:18.240 --> 00:01:19.730 align:middle line:84%
+Now, the whole goal
+of doing things
+
+33
+00:01:19.730 --> 00:01:22.490 align:middle line:84%
+this way is to have
+the common ForkJoinPool
+
+34
+00:01:22.490 --> 00:01:25.970 align:middle line:84%
+try to keep the
+threads in the pool,
+
+35
+00:01:25.970 --> 00:01:27.950 align:middle line:84%
+and of course the
+cores that are actually
+
+36
+00:01:27.950 --> 00:01:31.210 align:middle line:84%
+executing those threads,
+as busy as possible.
+
+37
+00:01:31.210 --> 00:01:34.180 align:middle line:84%
+We really want to
+maximize performance.
+
+38
+00:01:34.180 --> 00:01:37.930 align:middle line:84%
+So to enable this to
+happen, each worker thread
+
+39
+00:01:37.930 --> 00:01:40.330 align:middle line:84%
+has something called
+a deque, which
+
+40
+00:01:40.330 --> 00:01:42.760 align:middle line:90%
+stands for double-ended queue.
+
+41
+00:01:42.760 --> 00:01:44.740 align:middle line:84%
+And a deque is basically
+a data structure
+
+42
+00:01:44.740 --> 00:01:47.470 align:middle line:84%
+where you can efficiently
+put things on the front
+
+43
+00:01:47.470 --> 00:01:49.930 align:middle line:84%
+and take things off the
+front, and efficiently
+
+44
+00:01:49.930 --> 00:01:52.210 align:middle line:84%
+put things on the back and
+take things off the back.
+
+45
+00:01:52.210 --> 00:01:54.820 align:middle line:84%
+As it turns out, we want to be
+able to put things on the front
+
+46
+00:01:54.820 --> 00:01:57.820 align:middle line:84%
+and take things off the front,
+but we really mostly want
+
+47
+00:01:57.820 --> 00:01:59.600 align:middle line:90%
+to take things off the back.
+
+48
+00:01:59.600 --> 00:02:02.082 align:middle line:84%
+And so we'll talk about
+front and back here.
+
+49
+00:02:02.082 --> 00:02:03.790 align:middle line:84%
+Front and back can be
+a little deceiving.
+
+50
+00:02:03.790 --> 00:02:05.350 align:middle line:84%
+So just imagine
+there are two ends,
+
+51
+00:02:05.350 --> 00:02:08.650 align:middle line:84%
+and we want be able to add and
+remove things to both ends.
+
+52
+00:02:08.650 --> 00:02:12.160 align:middle line:84%
+And these deques are
+used as the main source
+
+53
+00:02:12.160 --> 00:02:20.140 align:middle line:84%
+of tasks for the threads in the
+worker thread pool to process.
+
+54
+00:02:20.140 --> 00:02:21.600 align:middle line:84%
+Now, not surprisingly,
+what we're
+
+55
+00:02:21.600 --> 00:02:24.600 align:middle line:84%
+going to have here is the
+parallel streams framework will
+
+56
+00:02:24.600 --> 00:02:27.840 align:middle line:84%
+automatically create
+ForkJoinTasks that will then
+
+57
+00:02:27.840 --> 00:02:30.550 align:middle line:84%
+be run by the worker threads
+in the common ForkJoinPool.
+
+58
+00:02:30.550 --> 00:02:33.000 align:middle line:84%
+And I think we've
+talked before about who
+
+59
+00:02:33.000 --> 00:02:35.670 align:middle line:90%
+creates these ForkJoinTasks--
+
+60
+00:02:35.670 --> 00:02:38.820 align:middle line:84%
+well, or rather where
+the data comes from
+
+61
+00:02:38.820 --> 00:02:41.730 align:middle line:84%
+is actually going to be from
+Spliterators that split things
+
+62
+00:02:41.730 --> 00:02:42.840 align:middle line:90%
+up into chunks.
+
+63
+00:02:42.840 --> 00:02:46.500 align:middle line:84%
+And then those chunks are
+kind of wrapped up into tasks
+
+64
+00:02:46.500 --> 00:02:49.185 align:middle line:84%
+that the parallel streams
+framework hands off
+
+65
+00:02:49.185 --> 00:02:51.370 align:middle line:90%
+to the comma ForkJoinPool.
+
+66
+00:02:51.370 --> 00:02:53.220 align:middle line:84%
+So that's kind of
+the control flow here
+
+67
+00:02:53.220 --> 00:02:55.950 align:middle line:90%
+between the different layers.
+
+68
+00:02:55.950 --> 00:02:57.510 align:middle line:84%
+There's a particular
+class that's
+
+69
+00:02:57.510 --> 00:02:59.580 align:middle line:90%
+part of the streams framework.
+
+70
+00:02:59.580 --> 00:03:02.700 align:middle line:84%
+It's part of the
+java.util.stream package.
+
+71
+00:03:02.700 --> 00:03:06.000 align:middle line:90%
+And it's called AbstractTask.
+
+72
+00:03:06.000 --> 00:03:08.220 align:middle line:84%
+And that's a
+superclass that's used
+
+73
+00:03:08.220 --> 00:03:13.020 align:middle line:84%
+by many of the ForkJoinTasks in
+the parallel streams framework
+
+74
+00:03:13.020 --> 00:03:15.190 align:middle line:90%
+to implement the behavior.
+
+75
+00:03:15.190 --> 00:03:19.870 align:middle line:84%
+So AbstractTask manages
+the splitting logic,
+
+76
+00:03:19.870 --> 00:03:22.170 align:middle line:84%
+the tracking of the
+child tasks, and all
+
+77
+00:03:22.170 --> 00:03:24.330 align:middle line:84%
+the various intermediate
+results that
+
+78
+00:03:24.330 --> 00:03:27.050 align:middle line:84%
+need to take place to
+process the tasks properly.
+
+79
+00:03:27.050 --> 00:03:29.550 align:middle line:84%
+So we're just going to look at
+a little snippet of the code.
+
+80
+00:03:29.550 --> 00:03:31.290 align:middle line:84%
+You can find the code
+here at this link
+
+81
+00:03:31.290 --> 00:03:33.910 align:middle line:84%
+if you're interested
+in reading more.
+
+82
+00:03:33.910 --> 00:03:36.780 align:middle line:84%
+The code, sadly, is not
+documented very thoroughly.
+
+83
+00:03:36.780 --> 00:03:39.780 align:middle line:84%
+So it's a bit of a mystery
+to try to understand it
+
+84
+00:03:39.780 --> 00:03:40.560 align:middle line:90%
+in its entirety.
+
+85
+00:03:40.560 --> 00:03:44.680 align:middle line:84%
+But I'll break down the key
+parts that we care about.
+
+86
+00:03:44.680 --> 00:03:49.860 align:middle line:84%
+The way of processing tasks
+in the fork-join framework
+
+87
+00:03:49.860 --> 00:03:51.690 align:middle line:84%
+is always through
+something called compute.
+
+88
+00:03:51.690 --> 00:03:54.210 align:middle line:84%
+It's a hook method that
+has to be overridden.
+
+89
+00:03:54.210 --> 00:03:56.460 align:middle line:84%
+And that's what the fork-join
+framework calls back
+
+90
+00:03:56.460 --> 00:03:58.410 align:middle line:90%
+in order to do the processing.
+
+91
+00:03:58.410 --> 00:04:00.690 align:middle line:84%
+And this compute
+method here will
+
+92
+00:04:00.690 --> 00:04:04.800 align:middle line:84%
+decide whether to split a
+task up further or compute it
+
+93
+00:04:04.800 --> 00:04:06.130 align:middle line:90%
+directly.
+
+94
+00:04:06.130 --> 00:04:09.150 align:middle line:84%
+So that's a very common
+way in which tasks work.
+
+95
+00:04:09.150 --> 00:04:11.010 align:middle line:84%
+They do this kind of
+divide-and-conquer-like
+
+96
+00:04:11.010 --> 00:04:12.840 align:middle line:90%
+approach.
+
+97
+00:04:12.840 --> 00:04:17.160 align:middle line:84%
+As you can see here, we end
+up creating a Spliterator.
+
+98
+00:04:17.160 --> 00:04:19.230 align:middle line:84%
+And then we use this
+Spliterator to try
+
+99
+00:04:19.230 --> 00:04:21.160 align:middle line:90%
+to partition the input source.
+
+100
+00:04:21.160 --> 00:04:24.060 align:middle line:84%
+So this is where the
+streams framework
+
+101
+00:04:24.060 --> 00:04:28.530 align:middle line:84%
+calls the trySplit method
+on the Spliterators.
+
+102
+00:04:28.530 --> 00:04:30.690 align:middle line:84%
+So if you have Spliterators
+that are designed
+
+103
+00:04:30.690 --> 00:04:33.060 align:middle line:84%
+to be used for
+parallel streams, this
+
+104
+00:04:33.060 --> 00:04:35.670 align:middle line:84%
+is where the trySplit
+method gets called.
+
+105
+00:04:35.670 --> 00:04:37.720 align:middle line:84%
+And as you can see, it's
+being called in a loop.
+
+106
+00:04:37.720 --> 00:04:39.240 align:middle line:84%
+So we're going to
+continually keep
+
+107
+00:04:39.240 --> 00:04:43.230 align:middle line:84%
+trying to split the Spliterator
+up into smaller chunks.
+
+108
+00:04:43.230 --> 00:04:45.208 align:middle line:84%
+And we keep doing that
+until it returns null.
+
+109
+00:04:45.208 --> 00:04:47.250 align:middle line:84%
+When it returns null,
+we'll go do something else.
+
+110
+00:04:47.250 --> 00:04:50.080 align:middle line:84%
+And I'll show you what
+something else is in a minute.
+
+111
+00:04:50.080 --> 00:04:52.390 align:middle line:84%
+So basically, every
+time through this loop,
+
+112
+00:04:52.390 --> 00:04:56.040 align:middle line:84%
+we go ahead and
+have a Spliterator.
+
+113
+00:04:56.040 --> 00:04:57.260 align:middle line:90%
+We split up the input.
+
+114
+00:04:57.260 --> 00:05:00.030 align:middle line:84%
+And now we've got a left-hand
+side and the right-hand side.
+
+115
+00:05:00.030 --> 00:05:01.620 align:middle line:84%
+And there's a
+little Boolean flag
+
+116
+00:05:01.620 --> 00:05:06.540 align:middle line:84%
+that is used to alternate
+which child is forked.
+
+117
+00:05:06.540 --> 00:05:09.960 align:middle line:84%
+And the idea here is to
+try to deal with the fact
+
+118
+00:05:09.960 --> 00:05:12.480 align:middle line:84%
+that not all Spliterators
+split evenly.
+
+119
+00:05:12.480 --> 00:05:15.270 align:middle line:84%
+And so we're trying to avoid
+always splitting things that
+
+120
+00:05:15.270 --> 00:05:17.940 align:middle line:84%
+will be biased, will
+end up splitting
+
+121
+00:05:17.940 --> 00:05:21.060 align:middle line:84%
+in the way that will be
+least productive in terms
+
+122
+00:05:21.060 --> 00:05:24.570 align:middle line:84%
+of getting performance
+to work well in parallel.
+
+123
+00:05:24.570 --> 00:05:26.490 align:middle line:84%
+So if we were
+forked right before,
+
+124
+00:05:26.490 --> 00:05:28.630 align:middle line:84%
+we're going to set
+forkRight to false.
+
+125
+00:05:28.630 --> 00:05:31.050 align:middle line:84%
+And then we're
+going to fork right.
+
+126
+00:05:31.050 --> 00:05:32.880 align:middle line:84%
+If we had not
+forked right before,
+
+127
+00:05:32.880 --> 00:05:34.000 align:middle line:90%
+we set forkRight to true.
+
+128
+00:05:34.000 --> 00:05:35.958 align:middle line:84%
+And then we're going to
+go ahead and fork left.
+
+129
+00:05:35.958 --> 00:05:38.460 align:middle line:90%
+So it just kind of alternates.
+
+130
+00:05:38.460 --> 00:05:42.450 align:middle line:84%
+What happens is, as you can
+see, we go ahead and make a task
+
+131
+00:05:42.450 --> 00:05:46.050 align:middle line:84%
+to fork here, using
+a makeChild factory
+
+132
+00:05:46.050 --> 00:05:48.360 align:middle line:84%
+method for the
+right-hand Spliterator
+
+133
+00:05:48.360 --> 00:05:49.860 align:middle line:90%
+or the left-hand Spliterator.
+
+134
+00:05:49.860 --> 00:05:52.582 align:middle line:84%
+And then we take that
+task and we fork it.
+
+135
+00:05:52.582 --> 00:05:54.040 align:middle line:84%
+And as we'll talk
+about later, when
+
+136
+00:05:54.040 --> 00:05:56.430 align:middle line:84%
+we talk in detail
+about the ForkJoinPool,
+
+137
+00:05:56.430 --> 00:05:59.940 align:middle line:84%
+forking a task
+basically arranges
+
+138
+00:05:59.940 --> 00:06:03.810 align:middle line:84%
+to execute this task in
+one of the worker threads
+
+139
+00:06:03.810 --> 00:06:05.340 align:middle line:90%
+in the ForkJoinPool.
+
+140
+00:06:05.340 --> 00:06:07.230 align:middle line:84%
+And very specifically,
+what happens
+
+141
+00:06:07.230 --> 00:06:10.870 align:middle line:84%
+here is when you fork a
+task, the calling thread
+
+142
+00:06:10.870 --> 00:06:15.810 align:middle line:84%
+will go ahead and stick
+that task onto its deque.
+
+143
+00:06:15.810 --> 00:06:18.780 align:middle line:84%
+And then it will either run
+it when it has time to run it,
+
+144
+00:06:18.780 --> 00:06:21.540 align:middle line:84%
+or one of the other
+threads in the worker pool
+
+145
+00:06:21.540 --> 00:06:24.780 align:middle line:84%
+will steal that task and
+run it in a different thread
+
+146
+00:06:24.780 --> 00:06:25.830 align:middle line:90%
+in the pool.
+
+147
+00:06:25.830 --> 00:06:29.070 align:middle line:84%
+But at any rate,
+forking a task arranges
+
+148
+00:06:29.070 --> 00:06:32.370 align:middle line:84%
+to have it executed
+concurrently, or in parallel,
+
+149
+00:06:32.370 --> 00:06:34.750 align:middle line:84%
+at some point in
+the near future.
+
+150
+00:06:34.750 --> 00:06:38.610 align:middle line:84%
+So we keep forking, forking,
+forking, while trySplit returns
+
+151
+00:06:38.610 --> 00:06:40.080 align:middle line:90%
+non-null.
+
+152
+00:06:40.080 --> 00:06:43.920 align:middle line:84%
+When finally trySplit
+returns null,
+
+153
+00:06:43.920 --> 00:06:47.820 align:middle line:84%
+then we go ahead and
+call this doLeaf method.
+
+154
+00:06:47.820 --> 00:06:53.220 align:middle line:84%
+And that will typically end up
+calling the forEachRemaining
+
+155
+00:06:53.220 --> 00:06:56.412 align:middle line:84%
+method to process all the
+elements sequentially.
+
+156
+00:06:56.412 --> 00:06:57.870 align:middle line:84%
+Because at that
+point, we no longer
+
+157
+00:06:57.870 --> 00:06:59.090 align:middle line:90%
+can split things any further.
+
+158
+00:06:59.090 --> 00:07:02.612 align:middle line:84%
+So this will go ahead and
+process the elements that
+
+159
+00:07:02.612 --> 00:07:05.070 align:middle line:84%
+are no longer able to be split
+any further, because they're
+
+160
+00:07:05.070 --> 00:07:07.442 align:middle line:84%
+down to their
+atomically small sizes.
+
+161
+00:07:07.442 --> 00:07:09.900 align:middle line:84%
+And those things will then go
+and be processed sequentially
+
+162
+00:07:09.900 --> 00:07:11.940 align:middle line:90%
+by calling forEachRemaining.
+
+163
+00:07:11.940 --> 00:07:13.890 align:middle line:84%
+And forEachRemaining
+is basically
+
+164
+00:07:13.890 --> 00:07:16.470 align:middle line:84%
+a version of
+tryAdvance that applies
+
+165
+00:07:16.470 --> 00:07:20.937 align:middle line:84%
+things for every element
+that's in the Spliterator.
+
+166
+00:07:20.937 --> 00:07:22.020 align:middle line:90%
+We'll talk later about it.
+
+167
+00:07:22.020 --> 00:07:24.660 align:middle line:84%
+Sometimes you have
+to call tryAdvance
+
+168
+00:07:24.660 --> 00:07:28.200 align:middle line:84%
+under certain circumstances
+if you have short-circuited
+
+169
+00:07:28.200 --> 00:07:29.190 align:middle line:90%
+operations.
+
+170
+00:07:29.190 --> 00:07:30.660 align:middle line:84%
+But forEachRemaining
+is what gets
+
+171
+00:07:30.660 --> 00:07:34.640 align:middle line:84%
+called if you don't have
+short-circuited operations.
+
+172
+00:07:34.640 --> 00:07:39.170 align:middle line:84%
+So after the
+AbstractTask.compute method
+
+173
+00:07:39.170 --> 00:07:40.050 align:middle line:90%
+calls fork--
+
+174
+00:07:40.050 --> 00:07:43.920 align:middle line:84%
+in other words, it's going
+back to this call here--
+
+175
+00:07:43.920 --> 00:07:49.520 align:middle line:84%
+what that does is that
+task, the taskToFork object
+
+176
+00:07:49.520 --> 00:07:53.680 align:middle line:84%
+is then pushed onto the head
+of its worker thread's deque.
+
+177
+00:07:53.680 --> 00:07:56.772 align:middle line:84%
+So as you can see here, let's
+say that that fork method was
+
+178
+00:07:56.772 --> 00:07:57.980 align:middle line:90%
+called in some worker thread.
+
+179
+00:07:57.980 --> 00:07:59.900 align:middle line:84%
+Obviously, it's always called
+in the context of some worker
+
+180
+00:07:59.900 --> 00:08:00.400 align:middle line:90%
+thread.
+
+181
+00:08:00.400 --> 00:08:03.470 align:middle line:84%
+Because that's how things get
+executed in the ForkJoinPool.
+
+182
+00:08:03.470 --> 00:08:08.640 align:middle line:84%
+And it goes ahead and pushes
+it on to the head of the deque.
+
+183
+00:08:08.640 --> 00:08:12.530 align:middle line:84%
+Now, the worker thread can keep
+pushing things onto the deque.
+
+184
+00:08:12.530 --> 00:08:14.480 align:middle line:84%
+But at some point,
+it's done pushing,
+
+185
+00:08:14.480 --> 00:08:17.810 align:middle line:84%
+and then the worker thread is
+responsible for removing things
+
+186
+00:08:17.810 --> 00:08:19.730 align:middle line:90%
+from the deque to process them.
+
+187
+00:08:19.730 --> 00:08:25.820 align:middle line:84%
+And it does this by popping
+things off the deque.
+
+188
+00:08:25.820 --> 00:08:28.700 align:middle line:84%
+And so each worker thread
+processes its deque
+
+189
+00:08:28.700 --> 00:08:33.380 align:middle line:84%
+in LIFO order, which is Last
+In, First Out, like a stack
+
+190
+00:08:33.380 --> 00:08:35.600 align:middle line:90%
+of cafeteria trays.
+
+191
+00:08:35.600 --> 00:08:37.580 align:middle line:84%
+And so it'll basically
+push, push, push,
+
+192
+00:08:37.580 --> 00:08:38.929 align:middle line:90%
+and then it'll come and pop.
+
+193
+00:08:38.929 --> 00:08:42.440 align:middle line:84%
+And it'll always pop off the
+item it most recently pushed.
+
+194
+00:08:42.440 --> 00:08:47.060 align:middle line:84%
+And once the task is popped
+from the head of the queue,
+
+195
+00:08:47.060 --> 00:08:48.363 align:middle line:90%
+it's then run to completion.
+
+196
+00:08:48.363 --> 00:08:50.030 align:middle line:84%
+It'll go ahead and
+execute it, and which
+
+197
+00:08:50.030 --> 00:08:52.918 align:middle line:84%
+will end up calling that
+compute method, for example.
+
+198
+00:08:52.918 --> 00:08:54.710 align:middle line:84%
+And run to completion
+just means that it'll
+
+199
+00:08:54.710 --> 00:08:57.770 align:middle line:90%
+keep running until it's done.
+
+200
+00:08:57.770 --> 00:09:01.810 align:middle line:84%
+The reason why we push
+and pop in the LIFO order
+
+201
+00:09:01.810 --> 00:09:04.900 align:middle line:84%
+is to improve the locality
+of reference and the cache
+
+202
+00:09:04.900 --> 00:09:05.660 align:middle line:90%
+performance.
+
+203
+00:09:05.660 --> 00:09:09.040 align:middle line:84%
+So the worker threads
+always work in LIFO order
+
+204
+00:09:09.040 --> 00:09:10.960 align:middle line:90%
+on their own decks.
+
+205
+00:09:10.960 --> 00:09:13.750 align:middle line:84%
+And the reason is to make sure
+that the item we most recently
+
+206
+00:09:13.750 --> 00:09:15.025 align:middle line:90%
+pushed is the one to be pop.
+
+207
+00:09:15.025 --> 00:09:17.920 align:middle line:84%
+And that's because it's most
+likely got all of its state
+
+208
+00:09:17.920 --> 00:09:22.030 align:middle line:84%
+and its instructions in the
+instruction and data caches
+
+209
+00:09:22.030 --> 00:09:22.750 align:middle line:90%
+on the processor.
+
+210
+00:09:22.750 --> 00:09:26.000 align:middle line:84%
+So it just tends to make
+things run a little faster.
+
+211
+00:09:26.000 --> 00:09:28.430 align:middle line:84%
+In order to maximize
+core utilization,
+
+212
+00:09:28.430 --> 00:09:31.010 align:middle line:84%
+if a thread doesn't have
+anything else on its deck,
+
+213
+00:09:31.010 --> 00:09:32.203 align:middle line:90%
+it looks around.
+
+214
+00:09:32.203 --> 00:09:33.870 align:middle line:84%
+And we'll talk how
+it looks around later
+
+215
+00:09:33.870 --> 00:09:36.020 align:middle line:84%
+when talk about the details
+of the ForkJoinPool.
+
+216
+00:09:36.020 --> 00:09:40.370 align:middle line:84%
+It looks around and steals
+work, or tries to steal work,
+
+217
+00:09:40.370 --> 00:09:44.910 align:middle line:84%
+from the tail of some
+other thread's deque
+
+218
+00:09:44.910 --> 00:09:48.320 align:middle line:84%
+which is too busy to process
+that data right away.
+
+219
+00:09:48.320 --> 00:09:51.890 align:middle line:84%
+So we always steal from
+the tail of another thread,
+
+220
+00:09:51.890 --> 00:09:55.510 align:middle line:84%
+but we push and pop
+to our own deque.
+
+221
+00:09:55.510 --> 00:09:57.190 align:middle line:84%
+And as we'll see
+later when we talk
+
+222
+00:09:57.190 --> 00:10:01.480 align:middle line:84%
+about how the fork-join
+framework works in more detail,
+
+223
+00:10:01.480 --> 00:10:04.990 align:middle line:84%
+this work-stealing model
+is very essential in order
+
+224
+00:10:04.990 --> 00:10:08.590 align:middle line:84%
+to ensure the processing takes
+place very efficiently and very
+
+225
+00:10:08.590 --> 00:10:10.900 align:middle line:84%
+scalabley, and
+uses the processor
+
+226
+00:10:10.900 --> 00:10:14.290 align:middle line:84%
+cores to their maximum
+capacity, thereby
+
+227
+00:10:14.290 --> 00:10:16.410 align:middle line:90%
+increasing overall throughput.

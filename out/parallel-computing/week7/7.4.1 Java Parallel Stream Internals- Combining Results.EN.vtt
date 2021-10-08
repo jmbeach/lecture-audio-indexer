@@ -1,0 +1,701 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.538 align:middle line:90%
+
+
+2
+00:00:00.538 --> 00:00:02.205 align:middle line:84%
+Now that we've wrapped
+up our discussion
+
+3
+00:00:02.205 --> 00:00:05.340 align:middle line:84%
+of Java parallel stream
+internals related
+
+4
+00:00:05.340 --> 00:00:08.100 align:middle line:84%
+to the applying phase,
+let's turn our attention
+
+5
+00:00:08.100 --> 00:00:10.110 align:middle line:84%
+to the Java parallel
+stream internals
+
+6
+00:00:10.110 --> 00:00:12.810 align:middle line:84%
+for the combining phase,
+starting with the discussion
+
+7
+00:00:12.810 --> 00:00:14.680 align:middle line:90%
+of combining results.
+
+8
+00:00:14.680 --> 00:00:18.390 align:middle line:84%
+In this part of the lesson, I'll
+talk about how a reduction can
+
+9
+00:00:18.390 --> 00:00:24.890 align:middle line:84%
+be performed to combine partial
+results into a single result.
+
+10
+00:00:24.890 --> 00:00:27.830 align:middle line:84%
+After the common fork-join
+pool finishes processing
+
+11
+00:00:27.830 --> 00:00:30.320 align:middle line:84%
+the chunks, their
+partial results
+
+12
+00:00:30.320 --> 00:00:34.590 align:middle line:84%
+are combined into a final
+so-called reduced result.
+
+13
+00:00:34.590 --> 00:00:36.810 align:middle line:84%
+This discussion
+here assumes we're
+
+14
+00:00:36.810 --> 00:00:39.030 align:middle line:84%
+talking about
+non-concurrent collectors.
+
+15
+00:00:39.030 --> 00:00:41.590 align:middle line:84%
+We'll talk about concurrent
+collectors later.
+
+16
+00:00:41.590 --> 00:00:44.070 align:middle line:84%
+As you can see in the
+diagram, partial results
+
+17
+00:00:44.070 --> 00:00:47.610 align:middle line:84%
+occur at multiple phases
+while the reductions
+
+18
+00:00:47.610 --> 00:00:50.850 align:middle line:84%
+are taking place, culminating
+in a single join that brings
+
+19
+00:00:50.850 --> 00:00:53.550 align:middle line:90%
+everything together at the end.
+
+20
+00:00:53.550 --> 00:00:57.730 align:middle line:84%
+The joins always occur in a
+single thread at each level,
+
+21
+00:00:57.730 --> 00:01:02.775 align:middle line:84%
+typically in the parent
+of the child tasks.
+
+22
+00:01:02.775 --> 00:01:04.900 align:middle line:84%
+And so you can see here
+that the children will then
+
+23
+00:01:04.900 --> 00:01:07.690 align:middle line:84%
+be used by the parent to
+join the results together
+
+24
+00:01:07.690 --> 00:01:10.750 align:middle line:90%
+into a merged result.
+
+25
+00:01:10.750 --> 00:01:13.150 align:middle line:84%
+Because it's always
+performed in a single thread,
+
+26
+00:01:13.150 --> 00:01:15.100 align:middle line:84%
+there's really no need
+to have synchronizers
+
+27
+00:01:15.100 --> 00:01:16.495 align:middle line:90%
+at all during the joining.
+
+28
+00:01:16.495 --> 00:01:18.370 align:middle line:84%
+The only reason you'd
+ever do synchronization
+
+29
+00:01:18.370 --> 00:01:20.320 align:middle line:84%
+is if there was something else
+you were synchronizing with,
+
+30
+00:01:20.320 --> 00:01:22.778 align:middle line:84%
+but you don't have to worry
+about synchronizing the results
+
+31
+00:01:22.778 --> 00:01:25.930 align:middle line:84%
+from the pool that's
+coming out with the results
+
+32
+00:01:25.930 --> 00:01:29.140 align:middle line:84%
+from being processed
+in the applying phase.
+
+33
+00:01:29.140 --> 00:01:32.260 align:middle line:84%
+Different terminal operations
+combine partial results
+
+34
+00:01:32.260 --> 00:01:33.920 align:middle line:90%
+in different ways.
+
+35
+00:01:33.920 --> 00:01:36.580 align:middle line:84%
+It's particularly important to
+understand these differences
+
+36
+00:01:36.580 --> 00:01:40.700 align:middle line:84%
+for parallel streams, which
+we'll be talking about later.
+
+37
+00:01:40.700 --> 00:01:45.320 align:middle line:84%
+Reduce creates a
+new, immutable value.
+
+38
+00:01:45.320 --> 00:01:46.580 align:middle line:90%
+Here's an example.
+
+39
+00:01:46.580 --> 00:01:49.250 align:middle line:84%
+This is our factorial
+example, where
+
+40
+00:01:49.250 --> 00:01:54.090 align:middle line:84%
+we're going to generate a stream
+of longs from, in this case,
+
+41
+00:01:54.090 --> 00:01:56.630 align:middle line:90%
+let's say, 1 to 8 in parallel.
+
+42
+00:01:56.630 --> 00:01:58.820 align:middle line:84%
+And then we're going to
+go ahead and reduce them.
+
+43
+00:01:58.820 --> 00:02:01.790 align:middle line:84%
+I've visualized this at the
+top of the right-hand portion
+
+44
+00:02:01.790 --> 00:02:02.420 align:middle line:90%
+of the slide.
+
+45
+00:02:02.420 --> 00:02:05.510 align:middle line:84%
+So you can see that we have
+a range of longs from 1 to 8,
+
+46
+00:02:05.510 --> 00:02:07.820 align:middle line:84%
+and the parallel spliterator
+will then go ahead
+
+47
+00:02:07.820 --> 00:02:12.200 align:middle line:84%
+and split that up into chunks,
+say, first range 1 to 4,
+
+48
+00:02:12.200 --> 00:02:15.080 align:middle line:84%
+and then 5 to 8, and then that
+will be further decomposed
+
+49
+00:02:15.080 --> 00:02:19.050 align:middle line:84%
+by the parallel spliterator
+into, say, the range is 1 to 2,
+
+50
+00:02:19.050 --> 00:02:21.830 align:middle line:90%
+3 to 4, 5 to 6, and 7 and 8.
+
+51
+00:02:21.830 --> 00:02:24.500 align:middle line:84%
+So that's how things are
+going to be decomposed.
+
+52
+00:02:24.500 --> 00:02:29.720 align:middle line:84%
+This example is also available
+in my ex16 folder in my GitHub
+
+53
+00:02:29.720 --> 00:02:31.710 align:middle line:90%
+repository.
+
+54
+00:02:31.710 --> 00:02:33.240 align:middle line:84%
+At this point,
+the reductions can
+
+55
+00:02:33.240 --> 00:02:35.850 align:middle line:84%
+occur, and keep in mind our
+point of all this discussion
+
+56
+00:02:35.850 --> 00:02:39.245 align:middle line:84%
+is to show that reduce
+creates immutable results.
+
+57
+00:02:39.245 --> 00:02:40.620 align:middle line:84%
+So what's going
+to happen here is
+
+58
+00:02:40.620 --> 00:02:43.170 align:middle line:84%
+we're going to end up
+pairwise multiplying
+
+59
+00:02:43.170 --> 00:02:44.500 align:middle line:90%
+the values together.
+
+60
+00:02:44.500 --> 00:02:49.680 align:middle line:84%
+So obviously, 1 times 2 is 2, 3
+times 4 is 12, 5 times 6 is 30,
+
+61
+00:02:49.680 --> 00:02:52.170 align:middle line:90%
+and seven times 8 is 56.
+
+62
+00:02:52.170 --> 00:02:55.620 align:middle line:84%
+But then those reductions are
+done up the reduction tree.
+
+63
+00:02:55.620 --> 00:02:58.620 align:middle line:84%
+So the next reductions
+will be multiplying 2
+
+64
+00:02:58.620 --> 00:03:03.390 align:middle line:84%
+by 12, which will reduce
+to 24, and 30 by 56,
+
+65
+00:03:03.390 --> 00:03:06.300 align:middle line:90%
+which reduces to 1680.
+
+66
+00:03:06.300 --> 00:03:08.940 align:middle line:84%
+And then, finally, we'll
+end up multiplying 24
+
+67
+00:03:08.940 --> 00:03:12.240 align:middle line:84%
+by 1680 to produce the
+final reduced result, which
+
+68
+00:03:12.240 --> 00:03:14.637 align:middle line:90%
+is 40,320.
+
+69
+00:03:14.637 --> 00:03:16.470 align:middle line:84%
+And the key thing I
+want you to realize here
+
+70
+00:03:16.470 --> 00:03:20.130 align:middle line:84%
+is that reduces combining
+two immutable values--
+
+71
+00:03:20.130 --> 00:03:21.570 align:middle line:90%
+in this case, a long--
+
+72
+00:03:21.570 --> 00:03:23.262 align:middle line:90%
+and produces a new value.
+
+73
+00:03:23.262 --> 00:03:25.470 align:middle line:84%
+We don't ever change the
+values once they're created.
+
+74
+00:03:25.470 --> 00:03:29.010 align:middle line:84%
+We simply use them for further
+stages in the reduction
+
+75
+00:03:29.010 --> 00:03:35.800 align:middle line:84%
+until we reach the final result.
+In contrast, collect mutates
+
+76
+00:03:35.800 --> 00:03:38.670 align:middle line:90%
+an existing results container.
+
+77
+00:03:38.670 --> 00:03:40.360 align:middle line:84%
+So it changes the
+results container
+
+78
+00:03:40.360 --> 00:03:43.340 align:middle line:84%
+rather than assuming
+that it's immutable.
+
+79
+00:03:43.340 --> 00:03:45.390 align:middle line:84%
+Here's another example
+to illustrate this point.
+
+80
+00:03:45.390 --> 00:03:47.932 align:middle line:84%
+We're not going to be able to
+be quite as detailed as we were
+
+81
+00:03:47.932 --> 00:03:51.240 align:middle line:84%
+for reduce for reasons that will
+become clear in just a moment.
+
+82
+00:03:51.240 --> 00:03:55.370 align:middle line:84%
+This particular example, which
+is in my ex14 folder in GitHub
+
+83
+00:03:55.370 --> 00:04:00.980 align:middle line:84%
+repository, gets a list of
+all the words in Shakespeare,
+
+84
+00:04:00.980 --> 00:04:03.800 align:middle line:84%
+and then, in parallel,
+will process that list
+
+85
+00:04:03.800 --> 00:04:08.270 align:middle line:84%
+and end up with a single
+set of all the unique words
+
+86
+00:04:08.270 --> 00:04:09.820 align:middle line:84%
+in Shakespeare--
+because, of course,
+
+87
+00:04:09.820 --> 00:04:12.175 align:middle line:90%
+a set is not allowed duplicates.
+
+88
+00:04:12.175 --> 00:04:14.487 align:middle line:84%
+So the way that this
+will work is visualized,
+
+89
+00:04:14.487 --> 00:04:16.820 align:middle line:84%
+at least partially, here in
+the upper right-hand portion
+
+90
+00:04:16.820 --> 00:04:18.019 align:middle line:90%
+of the slide.
+
+91
+00:04:18.019 --> 00:04:20.083 align:middle line:84%
+We start out with all
+the words of Shakespeare,
+
+92
+00:04:20.083 --> 00:04:22.250 align:middle line:84%
+and then the parallel
+spliterator will split that up
+
+93
+00:04:22.250 --> 00:04:24.540 align:middle line:84%
+into the first half of the
+words and the second half
+
+94
+00:04:24.540 --> 00:04:26.690 align:middle line:84%
+of the words, and then
+that will get further split
+
+95
+00:04:26.690 --> 00:04:29.390 align:middle line:84%
+up into the first quarter of
+the words, the second quarter
+
+96
+00:04:29.390 --> 00:04:31.307 align:middle line:90%
+of the words, and so on.
+
+97
+00:04:31.307 --> 00:04:33.890 align:middle line:84%
+Not going to take this all the
+way down to the individual word
+
+98
+00:04:33.890 --> 00:04:34.880 align:middle line:90%
+level.
+
+99
+00:04:34.880 --> 00:04:36.380 align:middle line:84%
+Once we break it
+down at that point,
+
+100
+00:04:36.380 --> 00:04:38.600 align:middle line:84%
+though, we can then process
+everything sequentially
+
+101
+00:04:38.600 --> 00:04:40.410 align:middle line:90%
+in the fork-join pool.
+
+102
+00:04:40.410 --> 00:04:41.990 align:middle line:84%
+Here's where things
+get interesting.
+
+103
+00:04:41.990 --> 00:04:44.300 align:middle line:84%
+When we run collect
+here, will actually
+
+104
+00:04:44.300 --> 00:04:47.900 align:middle line:84%
+end up mutating a result
+container in order
+
+105
+00:04:47.900 --> 00:04:50.930 align:middle line:84%
+to produce the
+intermediate results.
+
+106
+00:04:50.930 --> 00:04:53.450 align:middle line:84%
+And so what's going to happen
+is each of the threads that
+
+107
+00:04:53.450 --> 00:04:55.580 align:middle line:84%
+are running here
+in the background
+
+108
+00:04:55.580 --> 00:04:58.940 align:middle line:84%
+will start out with their own
+intermediate mutable result
+
+109
+00:04:58.940 --> 00:05:02.750 align:middle line:84%
+container, and they will go
+ahead and essentially merge
+
+110
+00:05:02.750 --> 00:05:06.050 align:middle line:84%
+the information from other
+mutable result containers
+
+111
+00:05:06.050 --> 00:05:08.750 align:middle line:84%
+together at each phase where
+we're joining the results
+
+112
+00:05:08.750 --> 00:05:10.790 align:middle line:90%
+together via collect.
+
+113
+00:05:10.790 --> 00:05:13.040 align:middle line:84%
+So as you can see
+in the diagram here,
+
+114
+00:05:13.040 --> 00:05:14.960 align:middle line:84%
+we'll end up
+merging the results,
+
+115
+00:05:14.960 --> 00:05:17.960 align:middle line:84%
+say, from the first
+quarter of the words
+
+116
+00:05:17.960 --> 00:05:19.460 align:middle line:84%
+with the second
+quarter the words,
+
+117
+00:05:19.460 --> 00:05:21.360 align:middle line:84%
+and that will be
+merged into a tree set.
+
+118
+00:05:21.360 --> 00:05:24.140 align:middle line:84%
+So we'll end up with unique
+words for the first half
+
+119
+00:05:24.140 --> 00:05:25.303 align:middle line:90%
+of Shakespeare.
+
+120
+00:05:25.303 --> 00:05:27.220 align:middle line:84%
+Same thing will happen
+in the right-hand side.
+
+121
+00:05:27.220 --> 00:05:28.640 align:middle line:84%
+You'll have the third
+quarter of the words
+
+122
+00:05:28.640 --> 00:05:30.110 align:middle line:84%
+and the fourth
+quarter the words.
+
+123
+00:05:30.110 --> 00:05:32.990 align:middle line:84%
+Those would be merged
+together into a tree set
+
+124
+00:05:32.990 --> 00:05:35.807 align:middle line:84%
+to find the unique words in
+the second half of Shakespeare.
+
+125
+00:05:35.807 --> 00:05:37.640 align:middle line:84%
+And then, finally, we'll
+merge them together
+
+126
+00:05:37.640 --> 00:05:39.650 align:middle line:84%
+in order to come up
+with the final reduced
+
+127
+00:05:39.650 --> 00:05:42.290 align:middle line:84%
+result, which is the
+complete work of Shakespeare.
+
+128
+00:05:42.290 --> 00:05:44.570 align:middle line:84%
+Every step along the way,
+we're mutating the container
+
+129
+00:05:44.570 --> 00:05:48.402 align:middle line:84%
+to accumulate the results
+that's being produced.
+
+130
+00:05:48.402 --> 00:05:50.610 align:middle line:84%
+There's also another way to
+do this, which we'll also
+
+131
+00:05:50.610 --> 00:05:53.322 align:middle line:84%
+talk about in further
+detail later in the course,
+
+132
+00:05:53.322 --> 00:05:54.780 align:middle line:84%
+and this is to use
+something called
+
+133
+00:05:54.780 --> 00:05:57.720 align:middle line:90%
+a concurrent collection--
+
+134
+00:05:57.720 --> 00:05:59.130 align:middle line:90%
+concurrent collector.
+
+135
+00:05:59.130 --> 00:06:01.020 align:middle line:84%
+And this is a little
+different from
+
+136
+00:06:01.020 --> 00:06:03.150 align:middle line:90%
+a non-concurrent collector.
+
+137
+00:06:03.150 --> 00:06:05.820 align:middle line:84%
+The version we saw here,
+which was using toCollection,
+
+138
+00:06:05.820 --> 00:06:07.740 align:middle line:90%
+is a non-concurrent collector.
+
+139
+00:06:07.740 --> 00:06:09.840 align:middle line:84%
+If we end up using a
+concurrent collector,
+
+140
+00:06:09.840 --> 00:06:12.120 align:middle line:84%
+all the words get
+merged together
+
+141
+00:06:12.120 --> 00:06:15.450 align:middle line:84%
+into one, single
+result container.
+
+142
+00:06:15.450 --> 00:06:17.610 align:middle line:84%
+Now, naturally that container
+had darn well better
+
+143
+00:06:17.610 --> 00:06:21.390 align:middle line:84%
+be thread-safe because multiple
+threads in the fork-joint pool
+
+144
+00:06:21.390 --> 00:06:24.730 align:middle line:84%
+will be merging things together
+in there simultaneously.
+
+145
+00:06:24.730 --> 00:06:27.960 align:middle line:84%
+So it has to be protected from
+concurrent raise conditions
+
+146
+00:06:27.960 --> 00:06:30.170 align:middle line:90%
+and other types of hazards.
