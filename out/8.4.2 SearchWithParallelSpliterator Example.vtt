@@ -1,0 +1,618 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.680 align:middle line:90%
+
+
+2
+00:00:00.680 --> 00:00:03.900 align:middle line:84%
+We'll now turn our attention
+to the PhraseMatchSpliterator
+
+3
+00:00:03.900 --> 00:00:08.880 align:middle line:84%
+constructor and the various
+fields that it defines.
+
+4
+00:00:08.880 --> 00:00:11.250 align:middle line:84%
+The fields here are
+identical with the fields
+
+5
+00:00:11.250 --> 00:00:13.350 align:middle line:84%
+that we covered
+earlier in our search
+
+6
+00:00:13.350 --> 00:00:15.578 align:middle line:90%
+with sequential streams class.
+
+7
+00:00:15.578 --> 00:00:18.120 align:middle line:84%
+For completeness, I'll go ahead
+and describe them once again,
+
+8
+00:00:18.120 --> 00:00:19.912 align:middle line:84%
+just so you don't have
+to go back and watch
+
+9
+00:00:19.912 --> 00:00:21.900 align:middle line:90%
+those videos again.
+
+10
+00:00:21.900 --> 00:00:25.740 align:middle line:84%
+So the SearchStreamGang uses
+the PhraseMatchSpliterator
+
+11
+00:00:25.740 --> 00:00:28.290 align:middle line:84%
+for both sequential
+and parallel streams,
+
+12
+00:00:28.290 --> 00:00:30.210 align:middle line:90%
+as we've talked about before.
+
+13
+00:00:30.210 --> 00:00:32.970 align:middle line:84%
+Earlier, we talked about the
+sequential portions, which we
+
+14
+00:00:32.970 --> 00:00:36.160 align:middle line:90%
+will review very briefly now.
+
+15
+00:00:36.160 --> 00:00:39.293 align:middle line:84%
+But the main focus is on
+the parallel portions.
+
+16
+00:00:39.293 --> 00:00:40.710 align:middle line:84%
+And those, of
+course, are the ones
+
+17
+00:00:40.710 --> 00:00:45.150 align:middle line:84%
+that use the trySplit method
+in order to further optimize
+
+18
+00:00:45.150 --> 00:00:48.840 align:middle line:84%
+the performance of our
+SearchWithParallelSpliterators
+
+19
+00:00:48.840 --> 00:00:51.050 align:middle line:90%
+solution.
+
+20
+00:00:51.050 --> 00:00:53.960 align:middle line:84%
+Here's the context
+in which this occurs.
+
+21
+00:00:53.960 --> 00:00:57.880 align:middle line:84%
+So as you can see, as we have
+a stream of search phrases
+
+22
+00:00:57.880 --> 00:00:59.260 align:middle line:84%
+that run in
+parallel, we're going
+
+23
+00:00:59.260 --> 00:01:02.080 align:middle line:84%
+to search for each
+phrase in parallel.
+
+24
+00:01:02.080 --> 00:01:03.580 align:middle line:84%
+And what we're
+going to do here is
+
+25
+00:01:03.580 --> 00:01:05.379 align:middle line:84%
+we're going to search
+for the phrase.
+
+26
+00:01:05.379 --> 00:01:07.900 align:middle line:84%
+And we're going to get back
+a stream of search results.
+
+27
+00:01:07.900 --> 00:01:10.360 align:middle line:84%
+And we're going to apply a
+parallel spliterator in order
+
+28
+00:01:10.360 --> 00:01:13.100 align:middle line:90%
+to speed up that search.
+
+29
+00:01:13.100 --> 00:01:16.180 align:middle line:84%
+Here's kind of the way in which
+we're intending this to work.
+
+30
+00:01:16.180 --> 00:01:18.370 align:middle line:84%
+This is the way of
+doing things before we
+
+31
+00:01:18.370 --> 00:01:20.230 align:middle line:90%
+use the parallel spliterator.
+
+32
+00:01:20.230 --> 00:01:23.650 align:middle line:84%
+You would simply
+have one big input,
+
+33
+00:01:23.650 --> 00:01:26.560 align:middle line:84%
+which would be the
+work of Shakespeare.
+
+34
+00:01:26.560 --> 00:01:29.560 align:middle line:84%
+And so if you wanted to search
+to find a phrase like "Brevity
+
+35
+00:01:29.560 --> 00:01:31.600 align:middle line:84%
+is the soul of
+wit," then you would
+
+36
+00:01:31.600 --> 00:01:33.787 align:middle line:84%
+use the regular expression
+pattern matcher.
+
+37
+00:01:33.787 --> 00:01:36.370 align:middle line:84%
+And it would just search through
+the whole thing sequentially,
+
+38
+00:01:36.370 --> 00:01:38.530 align:middle line:90%
+trying to find a match.
+
+39
+00:01:38.530 --> 00:01:40.600 align:middle line:84%
+And so what we're going
+to do here instead
+
+40
+00:01:40.600 --> 00:01:42.970 align:middle line:84%
+is we're going to use a
+parallel spliterator that
+
+41
+00:01:42.970 --> 00:01:45.910 align:middle line:84%
+will split the input
+up into multiple chunks
+
+42
+00:01:45.910 --> 00:01:48.220 align:middle line:84%
+and then search those
+chunks in parallel.
+
+43
+00:01:48.220 --> 00:01:50.020 align:middle line:84%
+So rather than
+something like this,
+
+44
+00:01:50.020 --> 00:01:54.100 align:middle line:84%
+instead we're going to
+have multiple chunks where
+
+45
+00:01:54.100 --> 00:01:57.340 align:middle line:84%
+the different threads
+in the thread pool
+
+46
+00:01:57.340 --> 00:01:59.470 align:middle line:84%
+can search those different
+chunks for a given
+
+47
+00:01:59.470 --> 00:02:01.480 align:middle line:90%
+phrase in parallel.
+
+48
+00:02:01.480 --> 00:02:04.900 align:middle line:84%
+And when the split occurs
+evenly and efficiently
+
+49
+00:02:04.900 --> 00:02:08.615 align:middle line:84%
+and correctly, with the
+emphasis on correctly here,
+
+50
+00:02:08.615 --> 00:02:10.240 align:middle line:84%
+speed ups can obviously
+be substantial.
+
+51
+00:02:10.240 --> 00:02:12.958 align:middle line:84%
+Because now we're
+able to do more work
+
+52
+00:02:12.958 --> 00:02:14.500 align:middle line:84%
+than we were able
+to do if we scanned
+
+53
+00:02:14.500 --> 00:02:18.520 align:middle line:84%
+the whole text of Shakespeare
+in a single thread.
+
+54
+00:02:18.520 --> 00:02:20.170 align:middle line:90%
+Now here's where it gets tricky.
+
+55
+00:02:20.170 --> 00:02:22.930 align:middle line:84%
+We have to be very,
+very careful not
+
+56
+00:02:22.930 --> 00:02:27.400 align:middle line:84%
+to have the spliterator
+split the input, the work
+
+57
+00:02:27.400 --> 00:02:30.220 align:middle line:84%
+of Shakespeare, up
+in such a way that it
+
+58
+00:02:30.220 --> 00:02:34.810 align:middle line:84%
+will split across the
+phrases we're searching for.
+
+59
+00:02:34.810 --> 00:02:36.790 align:middle line:84%
+So here would be
+a perfect split,
+
+60
+00:02:36.790 --> 00:02:38.950 align:middle line:84%
+"Brevity is the soul of
+wit" occurs at the end
+
+61
+00:02:38.950 --> 00:02:41.668 align:middle line:90%
+of one of these splits.
+
+62
+00:02:41.668 --> 00:02:43.960 align:middle line:84%
+And it could actually occur
+anywhere within that split.
+
+63
+00:02:43.960 --> 00:02:45.380 align:middle line:90%
+We would be fine.
+
+64
+00:02:45.380 --> 00:02:49.510 align:middle line:84%
+But if for some reason the
+spliterator splits the text up
+
+65
+00:02:49.510 --> 00:02:53.050 align:middle line:84%
+in such a way where
+"Brevity is the soul of"
+
+66
+00:02:53.050 --> 00:02:55.510 align:middle line:84%
+occurs in one
+portion of the split
+
+67
+00:02:55.510 --> 00:02:58.818 align:middle line:84%
+and "wit" occurs in another
+portion, then obviously,
+
+68
+00:02:58.818 --> 00:03:00.610 align:middle line:84%
+we're not going to be
+able to find "Brevity
+
+69
+00:03:00.610 --> 00:03:03.460 align:middle line:84%
+is the soul of wit"
+in any sensible way
+
+70
+00:03:03.460 --> 00:03:05.800 align:middle line:84%
+by using our regular
+expression pattern matcher.
+
+71
+00:03:05.800 --> 00:03:07.282 align:middle line:90%
+It's just not going to work.
+
+72
+00:03:07.282 --> 00:03:08.990 align:middle line:84%
+So we have to be very
+careful about that.
+
+73
+00:03:08.990 --> 00:03:11.200 align:middle line:84%
+And you'll see that the
+bulk of the complexity
+
+74
+00:03:11.200 --> 00:03:13.540 align:middle line:84%
+in the spliterator
+implementation we're
+
+75
+00:03:13.540 --> 00:03:17.230 align:middle line:84%
+about to examine is
+all trying to deal
+
+76
+00:03:17.230 --> 00:03:21.290 align:middle line:84%
+with this issue of
+avoiding bad splits.
+
+77
+00:03:21.290 --> 00:03:23.080 align:middle line:84%
+But before we get
+into those details,
+
+78
+00:03:23.080 --> 00:03:26.740 align:middle line:84%
+let's quickly recap the
+elements in the fields
+
+79
+00:03:26.740 --> 00:03:29.300 align:middle line:90%
+in PhraseMatchSpliterator.
+
+80
+00:03:29.300 --> 00:03:31.540 align:middle line:84%
+So I think you hopefully
+remember from our earliest
+
+81
+00:03:31.540 --> 00:03:34.180 align:middle line:84%
+discussion that spliterator
+is an interface that
+
+82
+00:03:34.180 --> 00:03:35.950 align:middle line:84%
+defines a whole
+bunch of methods,
+
+83
+00:03:35.950 --> 00:03:40.440 align:middle line:84%
+most interestingly being
+tryAdvance and trySplit.
+
+84
+00:03:40.440 --> 00:03:42.570 align:middle line:84%
+The fields that we're
+going to use here
+
+85
+00:03:42.570 --> 00:03:45.600 align:middle line:84%
+will be used for both the
+sequential and the parallel use
+
+86
+00:03:45.600 --> 00:03:47.100 align:middle line:90%
+cases.
+
+87
+00:03:47.100 --> 00:03:50.260 align:middle line:84%
+Some of these fields will be
+updated in the trySplit method,
+
+88
+00:03:50.260 --> 00:03:52.650 align:middle line:84%
+which we'll cover here soon,
+which is why we don't define
+
+89
+00:03:52.650 --> 00:03:53.760 align:middle line:90%
+them as being final.
+
+90
+00:03:53.760 --> 00:03:56.340 align:middle line:84%
+As a general rule of
+thumb, it's a good practice
+
+91
+00:03:56.340 --> 00:04:00.060 align:middle line:84%
+to find your fields as final if
+they won't change after they're
+
+92
+00:04:00.060 --> 00:04:01.890 align:middle line:90%
+initialized in the constructor.
+
+93
+00:04:01.890 --> 00:04:04.470 align:middle line:84%
+This helps to make
+the intent more clear
+
+94
+00:04:04.470 --> 00:04:07.650 align:middle line:84%
+and can also provide
+some nice optimization
+
+95
+00:04:07.650 --> 00:04:11.580 align:middle line:84%
+and synchronization benefits in
+some environments in some use
+
+96
+00:04:11.580 --> 00:04:12.115 align:middle line:90%
+cases.
+
+97
+00:04:12.115 --> 00:04:13.740 align:middle line:84%
+But we can't do that
+here because we're
+
+98
+00:04:13.740 --> 00:04:17.350 align:middle line:84%
+going to reset them in the
+trySplit method in some cases.
+
+99
+00:04:17.350 --> 00:04:20.260 align:middle line:84%
+The mInput field
+basically contains
+
+100
+00:04:20.260 --> 00:04:22.900 align:middle line:84%
+the text for a single
+work of Shakespeare.
+
+101
+00:04:22.900 --> 00:04:25.540 align:middle line:84%
+The mPhrase field contains
+the particular phrase
+
+102
+00:04:25.540 --> 00:04:29.690 align:middle line:84%
+we're searching for in
+the work of Shakespeare.
+
+103
+00:04:29.690 --> 00:04:32.580 align:middle line:84%
+mPattern is the regular
+expression representation
+
+104
+00:04:32.580 --> 00:04:37.950 align:middle line:84%
+of the phrase from the Java
+regular expression package.
+
+105
+00:04:37.950 --> 00:04:40.740 align:middle line:84%
+We have another class from
+the Java regular expression
+
+106
+00:04:40.740 --> 00:04:43.770 align:middle line:84%
+package, which is
+mPhraseMatcher, which
+
+107
+00:04:43.770 --> 00:04:47.430 align:middle line:84%
+is going to be connected with
+the pattern and the input
+
+108
+00:04:47.430 --> 00:04:49.932 align:middle line:84%
+in order to make
+a pattern matcher.
+
+109
+00:04:49.932 --> 00:04:51.890 align:middle line:84%
+Then we have a couple of
+fields that are really
+
+110
+00:04:51.890 --> 00:04:55.790 align:middle line:84%
+designed to help
+the split process
+
+111
+00:04:55.790 --> 00:05:00.630 align:middle line:84%
+and the output process
+of where things match.
+
+112
+00:05:00.630 --> 00:05:04.050 align:middle line:84%
+mMinSplitSize dictates
+the minimum size
+
+113
+00:05:04.050 --> 00:05:06.060 align:middle line:90%
+to perform a split.
+
+114
+00:05:06.060 --> 00:05:08.430 align:middle line:84%
+And we'll see that
+that's used by the split
+
+115
+00:05:08.430 --> 00:05:10.770 align:middle line:84%
+narrator in the trySplit
+method to figure out
+
+116
+00:05:10.770 --> 00:05:13.170 align:middle line:84%
+how many times to
+split the input.
+
+117
+00:05:13.170 --> 00:05:16.830 align:middle line:84%
+And then, finally, we also
+have an mOffset field,
+
+118
+00:05:16.830 --> 00:05:19.847 align:middle line:84%
+which is the offset
+into the chunk
+
+119
+00:05:19.847 --> 00:05:21.930 align:middle line:84%
+in order to make sure that
+we account for the fact
+
+120
+00:05:21.930 --> 00:05:23.670 align:middle line:90%
+that we're splitting things up.
+
+121
+00:05:23.670 --> 00:05:25.680 align:middle line:84%
+And this value will be
+reset by the spliterator
+
+122
+00:05:25.680 --> 00:05:27.210 align:middle line:84%
+to account for the
+different chunks we're
+
+123
+00:05:27.210 --> 00:05:28.050 align:middle line:90%
+running in parallel.
+
+124
+00:05:28.050 --> 00:05:30.750 align:middle line:84%
+We want to make sure that the
+offset, which is basically
+
+125
+00:05:30.750 --> 00:05:33.750 align:middle line:84%
+where the pattern of
+the phrase matches
+
+126
+00:05:33.750 --> 00:05:38.495 align:middle line:84%
+is globally meaningful
+across the splits that we do.
+
+127
+00:05:38.495 --> 00:05:39.870 align:middle line:84%
+And you'll see
+how that gets used
+
+128
+00:05:39.870 --> 00:05:42.770 align:middle line:90%
+in trySplit in just a minute.

@@ -1,0 +1,799 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.548 align:middle line:90%
+
+
+2
+00:00:00.548 --> 00:00:02.090 align:middle line:84%
+So now that we've
+finished describing
+
+3
+00:00:02.090 --> 00:00:04.760 align:middle line:84%
+how concurrent and
+non-concurrent collectors
+
+4
+00:00:04.760 --> 00:00:07.160 align:middle line:84%
+behave and how they're
+implemented, let's go ahead
+
+5
+00:00:07.160 --> 00:00:12.200 align:middle line:84%
+and do a demo that shows how
+collectors perform in practice.
+
+6
+00:00:12.200 --> 00:00:14.840 align:middle line:84%
+And we're going to basically
+compare and contrast
+
+7
+00:00:14.840 --> 00:00:18.100 align:middle line:84%
+concurrent and non-concurrent
+collectors for the same data
+
+8
+00:00:18.100 --> 00:00:20.390 align:middle line:84%
+sets to see how
+well they perform
+
+9
+00:00:20.390 --> 00:00:21.890 align:middle line:90%
+and how well they scale.
+
+10
+00:00:21.890 --> 00:00:28.120 align:middle line:84%
+This example is found in my EX14
+folder in my GitHub repository.
+
+11
+00:00:28.120 --> 00:00:30.730 align:middle line:84%
+As we talked about before,
+concurrent and non-concurrent
+
+12
+00:00:30.730 --> 00:00:32.920 align:middle line:84%
+collectors perform
+quite differently
+
+13
+00:00:32.920 --> 00:00:35.470 align:middle line:84%
+when used for parallel
+and sequential
+
+14
+00:00:35.470 --> 00:00:40.110 align:middle line:84%
+streams on different
+input sizes.
+
+15
+00:00:40.110 --> 00:00:42.570 align:middle line:84%
+As I mentioned earlier, a
+non-concurrent collector
+
+16
+00:00:42.570 --> 00:00:45.880 align:middle line:84%
+operates by merging
+sub results together.
+
+17
+00:00:45.880 --> 00:00:48.630 align:middle line:84%
+So different threads will
+operate on different instances
+
+18
+00:00:48.630 --> 00:00:50.640 align:middle line:84%
+of these intermediate
+result containers
+
+19
+00:00:50.640 --> 00:00:52.710 align:middle line:84%
+as we successively
+merge things together
+
+20
+00:00:52.710 --> 00:00:56.320 align:middle line:90%
+to a final reduced result.
+
+21
+00:00:56.320 --> 00:00:58.330 align:middle line:84%
+In contrast, a
+concurrent collector
+
+22
+00:00:58.330 --> 00:01:02.020 align:middle line:84%
+creates one concurrent
+mutable result container
+
+23
+00:01:02.020 --> 00:01:03.580 align:middle line:84%
+and then accumulates
+all the elements
+
+24
+00:01:03.580 --> 00:01:07.235 align:middle line:84%
+into that concurrent result
+container from multiple threads
+
+25
+00:01:07.235 --> 00:01:08.110 align:middle line:90%
+in a parallel stream.
+
+26
+00:01:08.110 --> 00:01:11.490 align:middle line:84%
+So there's only one
+of these things.
+
+27
+00:01:11.490 --> 00:01:13.410 align:middle line:84%
+As a result, there's
+no need to merge
+
+28
+00:01:13.410 --> 00:01:15.933 align:middle line:84%
+any of the intermediate
+sub results.
+
+29
+00:01:15.933 --> 00:01:17.350 align:middle line:84%
+So the question
+arises, of course,
+
+30
+00:01:17.350 --> 00:01:19.990 align:middle line:84%
+is which of these
+approaches is better,
+
+31
+00:01:19.990 --> 00:01:21.298 align:middle line:90%
+and when are they better?
+
+32
+00:01:21.298 --> 00:01:22.840 align:middle line:84%
+And so what I've
+done is I've written
+
+33
+00:01:22.840 --> 00:01:26.020 align:middle line:84%
+a test program that will
+help to answer that question.
+
+34
+00:01:26.020 --> 00:01:28.840 align:middle line:84%
+And this will show the
+performance differences
+
+35
+00:01:28.840 --> 00:01:31.060 align:middle line:84%
+between the different
+types of collectors.
+
+36
+00:01:31.060 --> 00:01:35.200 align:middle line:84%
+And what this shows is that
+as the input size grows,
+
+37
+00:01:35.200 --> 00:01:38.920 align:middle line:84%
+the choice of concurrent
+versus non-concurrent collector
+
+38
+00:01:38.920 --> 00:01:41.050 align:middle line:84%
+starts to make more and
+more of a difference.
+
+39
+00:01:41.050 --> 00:01:44.390 align:middle line:84%
+When the input sizes are small,
+when we have, for example, just
+
+40
+00:01:44.390 --> 00:01:47.050 align:middle line:84%
+1,000 words from
+Shakespeare, everybody
+
+41
+00:01:47.050 --> 00:01:49.040 align:middle line:90%
+performs about the same.
+
+42
+00:01:49.040 --> 00:01:50.775 align:middle line:84%
+In fact, you can
+actually see that
+
+43
+00:01:50.775 --> 00:01:56.050 align:middle line:84%
+the concurrent implementation's
+a little bit slower,
+
+44
+00:01:56.050 --> 00:01:58.280 align:middle line:84%
+just because there's
+extra overhead there.
+
+45
+00:01:58.280 --> 00:02:00.100 align:middle line:84%
+But as the number
+of words increases,
+
+46
+00:02:00.100 --> 00:02:02.260 align:middle line:84%
+as the size of the things
+that have to be collected
+
+47
+00:02:02.260 --> 00:02:04.180 align:middle line:84%
+gets larger and
+larger and larger,
+
+48
+00:02:04.180 --> 00:02:07.660 align:middle line:84%
+that's where you start to see
+that the concurrent collectors
+
+49
+00:02:07.660 --> 00:02:08.352 align:middle line:90%
+really shine.
+
+50
+00:02:08.352 --> 00:02:10.060 align:middle line:84%
+And if you look down
+at the bottom, where
+
+51
+00:02:10.060 --> 00:02:14.410 align:middle line:84%
+we have all the words of
+Shakespeare, all 883,000
+
+52
+00:02:14.410 --> 00:02:17.660 align:middle line:84%
+of them, you'll see that
+we end up with much,
+
+53
+00:02:17.660 --> 00:02:22.090 align:middle line:84%
+much faster performance for the
+concurrent collector as opposed
+
+54
+00:02:22.090 --> 00:02:23.772 align:middle line:90%
+to the non-concurrent collector.
+
+55
+00:02:23.772 --> 00:02:26.230 align:middle line:84%
+And not surprising that we also
+see much better performance
+
+56
+00:02:26.230 --> 00:02:29.110 align:middle line:84%
+for the parallel collectors
+in general than the sequential
+
+57
+00:02:29.110 --> 00:02:33.278 align:middle line:84%
+collectors because we're
+using parallel processing.
+
+58
+00:02:33.278 --> 00:02:34.820 align:middle line:84%
+So let's go ahead
+now and take a look
+
+59
+00:02:34.820 --> 00:02:36.860 align:middle line:84%
+at the source code
+for this example.
+
+60
+00:02:36.860 --> 00:02:39.170 align:middle line:84%
+And I'll walk through
+and show you why
+
+61
+00:02:39.170 --> 00:02:41.070 align:middle line:90%
+it performs the way it does.
+
+62
+00:02:41.070 --> 00:02:44.360 align:middle line:84%
+We're now going to
+return to the EX14 test
+
+63
+00:02:44.360 --> 00:02:47.180 align:middle line:84%
+and use it to demonstrate
+the difference in performance
+
+64
+00:02:47.180 --> 00:02:50.180 align:middle line:84%
+between collecting results
+in a parallel stream
+
+65
+00:02:50.180 --> 00:02:53.750 align:middle line:84%
+versus a sequential stream using
+concurrent and non-concurrent
+
+66
+00:02:53.750 --> 00:02:55.470 align:middle line:90%
+collectors.
+
+67
+00:02:55.470 --> 00:02:57.720 align:middle line:90%
+So as before, we come down here.
+
+68
+00:02:57.720 --> 00:03:00.690 align:middle line:84%
+We see that there's a
+test function called
+
+69
+00:03:00.690 --> 00:03:02.980 align:middle line:90%
+runCollectorTests.
+
+70
+00:03:02.980 --> 00:03:05.560 align:middle line:84%
+Let's go ahead and
+take a look at that.
+
+71
+00:03:05.560 --> 00:03:07.030 align:middle line:90%
+Here's runCollectorTests.
+
+72
+00:03:07.030 --> 00:03:09.750 align:middle line:84%
+As you can see, we're going to
+run for different test sizes.
+
+73
+00:03:09.750 --> 00:03:11.375 align:middle line:84%
+Before I look through
+the code, though,
+
+74
+00:03:11.375 --> 00:03:13.637 align:middle line:90%
+let me start this thing running.
+
+75
+00:03:13.637 --> 00:03:15.220 align:middle line:84%
+Again, it takes a
+little while to run.
+
+76
+00:03:15.220 --> 00:03:17.640 align:middle line:90%
+So we'll let it run.
+
+77
+00:03:17.640 --> 00:03:20.190 align:middle line:84%
+And what we do for
+each of these sizes,
+
+78
+00:03:20.190 --> 00:03:24.810 align:middle line:84%
+as before, we go ahead and get
+all the works of Shakespeare
+
+79
+00:03:24.810 --> 00:03:27.450 align:middle line:84%
+and all the words in
+Shakespeare up to the limit.
+
+80
+00:03:27.450 --> 00:03:29.398 align:middle line:90%
+First we get it as an ArrayList.
+
+81
+00:03:29.398 --> 00:03:31.440 align:middle line:84%
+And in this case, we don't
+care about LinkedList.
+
+82
+00:03:31.440 --> 00:03:33.857 align:middle line:84%
+We already know that linked
+lists don't perform very well.
+
+83
+00:03:33.857 --> 00:03:35.860 align:middle line:84%
+So we're just going to
+focus on array lists.
+
+84
+00:03:35.860 --> 00:03:37.860 align:middle line:84%
+And then we come down
+here, and we call a bunch
+
+85
+00:03:37.860 --> 00:03:40.120 align:middle line:90%
+of different test methods.
+
+86
+00:03:40.120 --> 00:03:44.100 align:middle line:84%
+One is going to be called
+timeStreamCollectToSet.
+
+87
+00:03:44.100 --> 00:03:46.500 align:middle line:84%
+And we're going to do
+this sequentially first.
+
+88
+00:03:46.500 --> 00:03:49.260 align:middle line:84%
+Then we're going to call
+timeStreamCollectToSet,
+
+89
+00:03:49.260 --> 00:03:53.660 align:middle line:84%
+running things in parallel,
+passing in the array words.
+
+90
+00:03:53.660 --> 00:03:56.005 align:middle line:84%
+Then we're going to
+call timeStreamCollec
+
+91
+00:03:56.005 --> 00:03:57.700 align:middle line:90%
+tToConcurrentSet.
+
+92
+00:03:57.700 --> 00:04:01.000 align:middle line:84%
+So this is going to use a
+non-concurrent collector.
+
+93
+00:04:01.000 --> 00:04:03.090 align:middle line:84%
+This is going to use a
+concurrent collector.
+
+94
+00:04:03.090 --> 00:04:05.320 align:middle line:84%
+And as before, we're going
+to do it both sequentially
+
+95
+00:04:05.320 --> 00:04:07.570 align:middle line:84%
+by turning parallel to
+false, and we're also
+
+96
+00:04:07.570 --> 00:04:12.710 align:middle line:84%
+going to test a concurrent
+set with parallel set to true.
+
+97
+00:04:12.710 --> 00:04:15.370 align:middle line:84%
+So with that in mind, then
+let's go ahead down here
+
+98
+00:04:15.370 --> 00:04:17.680 align:middle line:84%
+and take a look at
+those implementations.
+
+99
+00:04:17.680 --> 00:04:21.680 align:middle line:84%
+So we'll skip along here
+and go find the code.
+
+100
+00:04:21.680 --> 00:04:24.370 align:middle line:84%
+So here is
+timeStreamCollectToSet.
+
+101
+00:04:24.370 --> 00:04:28.060 align:middle line:84%
+This is the one that's going
+to use the version that's
+
+102
+00:04:28.060 --> 00:04:31.120 align:middle line:90%
+a non-concurrent collector.
+
+103
+00:04:31.120 --> 00:04:33.987 align:middle line:84%
+So as you can see, we're going
+to run this thing and time it.
+
+104
+00:04:33.987 --> 00:04:36.070 align:middle line:84%
+We're going to run it for
+the number of iterations
+
+105
+00:04:36.070 --> 00:04:37.600 align:middle line:90%
+that we set here.
+
+106
+00:04:37.600 --> 00:04:40.480 align:middle line:84%
+We first go ahead and
+get ourselves a stream
+
+107
+00:04:40.480 --> 00:04:42.730 align:middle line:84%
+from the array list of
+words of whatever size
+
+108
+00:04:42.730 --> 00:04:43.977 align:middle line:90%
+they happen to be.
+
+109
+00:04:43.977 --> 00:04:46.060 align:middle line:84%
+If we're running with the
+parallel mode turned on,
+
+110
+00:04:46.060 --> 00:04:48.498 align:middle line:84%
+we convert that stream
+to a parallel stream.
+
+111
+00:04:48.498 --> 00:04:50.290 align:middle line:84%
+And then what we do is
+we go ahead and take
+
+112
+00:04:50.290 --> 00:04:53.890 align:middle line:84%
+that stream, which is either
+parallel or sequential,
+
+113
+00:04:53.890 --> 00:04:56.860 align:middle line:84%
+and once again, we convert
+the elements of the stream
+
+114
+00:04:56.860 --> 00:04:58.180 align:middle line:90%
+to strings.
+
+115
+00:04:58.180 --> 00:05:00.490 align:middle line:84%
+This time we lower case
+them, just for differences
+
+116
+00:05:00.490 --> 00:05:02.142 align:middle line:84%
+between the previous
+approach, if we're
+
+117
+00:05:02.142 --> 00:05:03.850 align:middle line:84%
+looking at Spliterator
+performance, which
+
+118
+00:05:03.850 --> 00:05:05.103 align:middle line:90%
+uppercase them.
+
+119
+00:05:05.103 --> 00:05:07.270 align:middle line:84%
+And then we go ahead and
+collect everything together
+
+120
+00:05:07.270 --> 00:05:09.370 align:middle line:90%
+into a HashSet.
+
+121
+00:05:09.370 --> 00:05:11.860 align:middle line:84%
+Now, as I'm sure you
+recall, a HashSet
+
+122
+00:05:11.860 --> 00:05:14.200 align:middle line:84%
+in the collection that's
+created by ToCollection,
+
+123
+00:05:14.200 --> 00:05:18.100 align:middle line:90%
+is a non-concurrent collection.
+
+124
+00:05:18.100 --> 00:05:19.690 align:middle line:84%
+If you come over
+here and look at
+
+125
+00:05:19.690 --> 00:05:22.390 align:middle line:84%
+the
+timeStreamCollectToConcurrent
+
+126
+00:05:22.390 --> 00:05:26.000 align:middle line:84%
+set, once again, the overall
+structure is very similar.
+
+127
+00:05:26.000 --> 00:05:27.230 align:middle line:90%
+We're going to time the runs.
+
+128
+00:05:27.230 --> 00:05:29.260 align:middle line:84%
+We're going to do a certain
+number of iterations
+
+129
+00:05:29.260 --> 00:05:30.430 align:middle line:90%
+of the runs.
+
+130
+00:05:30.430 --> 00:05:32.410 align:middle line:84%
+We create a stream
+from all the words.
+
+131
+00:05:32.410 --> 00:05:34.210 align:middle line:84%
+We conditionally
+turn that stream
+
+132
+00:05:34.210 --> 00:05:36.530 align:middle line:90%
+to be parallel or sequential.
+
+133
+00:05:36.530 --> 00:05:39.670 align:middle line:84%
+And then when we're done,
+again, we go through the stream,
+
+134
+00:05:39.670 --> 00:05:42.820 align:middle line:84%
+convert everything to a
+string, and lower case it.
+
+135
+00:05:42.820 --> 00:05:45.460 align:middle line:84%
+Except this time, we're
+going to collect everything
+
+136
+00:05:45.460 --> 00:05:49.450 align:middle line:84%
+with a concurrent collector,
+concurrent HashSet collector,
+
+137
+00:05:49.450 --> 00:05:52.840 align:middle line:84%
+which uses under the hood
+a concurrent HashSet, which
+
+138
+00:05:52.840 --> 00:05:54.430 align:middle line:84%
+is implemented as
+a little wrapper
+
+139
+00:05:54.430 --> 00:05:55.810 align:middle line:90%
+around concurrent HashMap.
+
+140
+00:05:55.810 --> 00:05:57.393 align:middle line:84%
+So this is something
+that can actually
+
+141
+00:05:57.393 --> 00:06:01.420 align:middle line:84%
+be having its accumulation
+collected in parallel
+
+142
+00:06:01.420 --> 00:06:03.870 align:middle line:84%
+from multiple threads
+in the stream.
+
+143
+00:06:03.870 --> 00:06:05.850 align:middle line:84%
+So given that as background,
+now let's go over
+
+144
+00:06:05.850 --> 00:06:07.560 align:middle line:90%
+and take a look at the results.
+
+145
+00:06:07.560 --> 00:06:10.800 align:middle line:84%
+And you can see here, we
+run the collector tests.
+
+146
+00:06:10.800 --> 00:06:15.850 align:middle line:84%
+And for 1,000 words, everybody
+performs about the same.
+
+147
+00:06:15.850 --> 00:06:18.570 align:middle line:84%
+In fact, ironically,
+the parallel version
+
+148
+00:06:18.570 --> 00:06:22.140 align:middle line:84%
+runs a little slower
+for the concurrent set
+
+149
+00:06:22.140 --> 00:06:24.090 align:middle line:90%
+when there aren't many words.
+
+150
+00:06:24.090 --> 00:06:26.340 align:middle line:84%
+As we have more
+words, however, all
+
+151
+00:06:26.340 --> 00:06:29.130 align:middle line:84%
+of a sudden, what you'll see
+is that the concurrent sets
+
+152
+00:06:29.130 --> 00:06:30.730 align:middle line:90%
+get better.
+
+153
+00:06:30.730 --> 00:06:33.260 align:middle line:84%
+And then when we have a lot
+of words here, you can see,
+
+154
+00:06:33.260 --> 00:06:35.760 align:middle line:84%
+especially when we get up to
+100,000 words, all of a sudden,
+
+155
+00:06:35.760 --> 00:06:38.490 align:middle line:84%
+the parallel versions
+are running much better,
+
+156
+00:06:38.490 --> 00:06:42.730 align:middle line:84%
+and the concurrent version
+is running much better.
+
+157
+00:06:42.730 --> 00:06:45.420 align:middle line:84%
+And when we get up to the
+max number of words, which
+
+158
+00:06:45.420 --> 00:06:51.490 align:middle line:84%
+is 882,311 words in
+Shakespeare, now at that point,
+
+159
+00:06:51.490 --> 00:06:54.090 align:middle line:84%
+the concurrent version
+that's parallel
+
+160
+00:06:54.090 --> 00:06:59.010 align:middle line:84%
+is running much faster,
+almost twice as fast
+
+161
+00:06:59.010 --> 00:07:02.430 align:middle line:84%
+as the one that's running
+the non-concurrent collector.
+
+162
+00:07:02.430 --> 00:07:03.930 align:middle line:84%
+And of course, the
+parallel versions
+
+163
+00:07:03.930 --> 00:07:06.820 align:middle line:84%
+are quite outstripping
+the sequential versions.
+
+164
+00:07:06.820 --> 00:07:10.050 align:middle line:84%
+So this is an illustration
+of the relevance
+
+165
+00:07:10.050 --> 00:07:12.720 align:middle line:84%
+and the importance of using
+concurrent collectors when
+
+166
+00:07:12.720 --> 00:07:16.520 align:middle line:84%
+you have large items and
+you have to work with sets.

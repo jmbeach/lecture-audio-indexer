@@ -1,0 +1,283 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.730 align:middle line:90%
+
+
+2
+00:00:00.730 --> 00:00:02.440 align:middle line:84%
+Welcome to the next
+week of our course
+
+3
+00:00:02.440 --> 00:00:05.350 align:middle line:84%
+on parallel functional
+programming with Java.
+
+4
+00:00:05.350 --> 00:00:07.000 align:middle line:84%
+We start this week
+by wrapping up
+
+5
+00:00:07.000 --> 00:00:09.220 align:middle line:84%
+our coverage of
+the combining phase
+
+6
+00:00:09.220 --> 00:00:11.950 align:middle line:84%
+of Java parallel
+streams internals, which
+
+7
+00:00:11.950 --> 00:00:13.860 align:middle line:90%
+focuses on the behavior of--
+
+8
+00:00:13.860 --> 00:00:17.320 align:middle line:84%
+and differences between--
+concurrent and non-concurrent
+
+9
+00:00:17.320 --> 00:00:18.870 align:middle line:90%
+collectors.
+
+10
+00:00:18.870 --> 00:00:21.000 align:middle line:84%
+As discussed in prior
+weeks, a collector
+
+11
+00:00:21.000 --> 00:00:23.010 align:middle line:84%
+is an interface
+whose implementations
+
+12
+00:00:23.010 --> 00:00:26.280 align:middle line:84%
+can accumulate input elements
+into a so-called mutable result
+
+13
+00:00:26.280 --> 00:00:28.000 align:middle line:90%
+container.
+
+14
+00:00:28.000 --> 00:00:29.500 align:middle line:84%
+Collector implementations
+can either
+
+15
+00:00:29.500 --> 00:00:32.290 align:middle line:84%
+be concurrent, or
+non-concurrent, depending
+
+16
+00:00:32.290 --> 00:00:34.220 align:middle line:90%
+on their characteristics.
+
+17
+00:00:34.220 --> 00:00:35.820 align:middle line:84%
+A non-concurrent
+collector can be
+
+18
+00:00:35.820 --> 00:00:39.930 align:middle line:84%
+used for either a sequential
+stream or a parallel stream.
+
+19
+00:00:39.930 --> 00:00:44.170 align:middle line:84%
+It works by merging sub-results
+into a final reduced result.
+
+20
+00:00:44.170 --> 00:00:46.870 align:middle line:84%
+In contrast, a
+concurrent collector
+
+21
+00:00:46.870 --> 00:00:49.950 align:middle line:84%
+is only relevant for
+parallel streams.
+
+22
+00:00:49.950 --> 00:00:52.860 align:middle line:84%
+It works by creating just
+one concurrent mutable result
+
+23
+00:00:52.860 --> 00:00:55.050 align:middle line:84%
+container, and
+accumulating elements
+
+24
+00:00:55.050 --> 00:00:59.345 align:middle line:84%
+into it from multiple threads
+in the parallel stream.
+
+25
+00:00:59.345 --> 00:01:00.970 align:middle line:84%
+In addition to showing
+how to implement
+
+26
+00:01:00.970 --> 00:01:03.400 align:middle line:84%
+concurrent and
+non-concurrent collectors,
+
+27
+00:01:03.400 --> 00:01:06.700 align:middle line:84%
+we also analyze a program that
+quantifies the performance
+
+28
+00:01:06.700 --> 00:01:10.030 align:middle line:84%
+differences between concurrent
+and non-concurrent collectors
+
+29
+00:01:10.030 --> 00:01:12.010 align:middle line:84%
+when applied to
+parallel and sequential
+
+30
+00:01:12.010 --> 00:01:16.277 align:middle line:84%
+streams on
+different-sized inputs.
+
+31
+00:01:16.277 --> 00:01:17.860 align:middle line:84%
+The remainder of the
+lessons this week
+
+32
+00:01:17.860 --> 00:01:20.380 align:middle line:84%
+focus on the design
+and implementation
+
+33
+00:01:20.380 --> 00:01:23.400 align:middle line:84%
+of yet another search
+stream gang variant
+
+34
+00:01:23.400 --> 00:01:26.080 align:middle line:84%
+that finds phrases in the
+complete work of William
+
+35
+00:01:26.080 --> 00:01:28.370 align:middle line:90%
+Shakespeare.
+
+36
+00:01:28.370 --> 00:01:32.160 align:middle line:84%
+This variant uses parallel
+streams in three ways.
+
+37
+00:01:32.160 --> 00:01:35.000 align:middle line:84%
+First, it searches
+chunks of input strings,
+
+38
+00:01:35.000 --> 00:01:38.100 align:middle line:84%
+each containing a work of
+Shakespeare in parallel.
+
+39
+00:01:38.100 --> 00:01:40.800 align:middle line:84%
+Second, it searches
+chunks of phrases
+
+40
+00:01:40.800 --> 00:01:43.490 align:middle line:84%
+in each work of
+Shakespeare in parallel.
+
+41
+00:01:43.490 --> 00:01:47.060 align:middle line:84%
+And third and finally, it
+uses a parallel spliterator
+
+42
+00:01:47.060 --> 00:01:50.090 align:middle line:84%
+to search for phrases in chunks
+of each work of Shakespeare
+
+43
+00:01:50.090 --> 00:01:51.920 align:middle line:90%
+in parallel.
+
+44
+00:01:51.920 --> 00:01:54.470 align:middle line:84%
+This highly-aggressive
+parallelism strategy
+
+45
+00:01:54.470 --> 00:01:57.440 align:middle line:84%
+yields the highest performance
+of all the search stream gang
+
+46
+00:01:57.440 --> 00:02:00.230 align:middle line:84%
+variance, since its
+granularity of parallelism
+
+47
+00:02:00.230 --> 00:02:03.320 align:middle line:84%
+is finer, and thus
+better able to leverage
+
+48
+00:02:03.320 --> 00:02:06.040 align:middle line:90%
+all available processor cores.
+
+49
+00:02:06.040 --> 00:02:08.410 align:middle line:84%
+At the heart of this
+strategy is the spliterator's
+
+50
+00:02:08.410 --> 00:02:11.080 align:middle line:84%
+tri-split method,
+which is an advanced
+
+51
+00:02:11.080 --> 00:02:13.690 align:middle line:84%
+Java parallel streams
+programming mechanism that
+
+52
+00:02:13.690 --> 00:02:15.280 align:middle line:84%
+partitions each
+work of Shakespeare
+
+53
+00:02:15.280 --> 00:02:19.460 align:middle line:84%
+into chunks that can be
+searched in parallel.
+
+54
+00:02:19.460 --> 00:02:22.440 align:middle line:84%
+When this splitting occurs
+evenly and efficiently,
+
+55
+00:02:22.440 --> 00:02:25.160 align:middle line:84%
+the performance improvements
+can be significant.
+
+56
+00:02:25.160 --> 00:02:28.640 align:middle line:84%
+However, the tri-split method
+must be carefully programmed
+
+57
+00:02:28.640 --> 00:02:30.640 align:middle line:84%
+to ensure it doesn't split
+a work of Shakespeare
+
+58
+00:02:30.640 --> 00:02:35.130 align:middle line:84%
+in a way that prevents a
+phrase from matching at all.

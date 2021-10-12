@@ -1,0 +1,1215 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.670 align:middle line:90%
+
+
+2
+00:00:00.670 --> 00:00:03.040 align:middle line:84%
+So what we're going to do
+now is take a step back
+
+3
+00:00:03.040 --> 00:00:06.700 align:middle line:84%
+and evaluate the
+pros and the cons
+
+4
+00:00:06.700 --> 00:00:09.910 align:middle line:84%
+of our
+SearchWithParallelSpliterator
+
+5
+00:00:09.910 --> 00:00:12.640 align:middle line:90%
+example.
+
+6
+00:00:12.640 --> 00:00:14.340 align:middle line:90%
+So there's a number of benefits.
+
+7
+00:00:14.340 --> 00:00:17.130 align:middle line:84%
+Probably the most
+obvious one is how
+
+8
+00:00:17.130 --> 00:00:19.860 align:middle line:84%
+the application of a
+parallel Spliterator
+
+9
+00:00:19.860 --> 00:00:22.680 align:middle line:84%
+can help to transparently
+improve program performance.
+
+10
+00:00:22.680 --> 00:00:24.720 align:middle line:84%
+Of course, transparently
+is a relative term,
+
+11
+00:00:24.720 --> 00:00:26.470 align:middle line:90%
+as we'll see here in a second.
+
+12
+00:00:26.470 --> 00:00:30.240 align:middle line:84%
+Basically, if you take a look
+at the performance results
+
+13
+00:00:30.240 --> 00:00:34.470 align:middle line:84%
+that we get from running
+this on my quad-core laptop
+
+14
+00:00:34.470 --> 00:00:39.810 align:middle line:84%
+with 32 gigs of RAM, we can see
+that the parallel Spliterator
+
+15
+00:00:39.810 --> 00:00:42.330 align:middle line:84%
+implementation is
+the fastest one.
+
+16
+00:00:42.330 --> 00:00:45.540 align:middle line:84%
+And it's faster than the
+parallel streams version.
+
+17
+00:00:45.540 --> 00:00:48.660 align:middle line:84%
+Now, it's not
+ridiculously faster.
+
+18
+00:00:48.660 --> 00:00:53.190 align:middle line:84%
+It's by no means faster than
+the parallel streams version
+
+19
+00:00:53.190 --> 00:00:55.260 align:middle line:84%
+relative to the
+parallel streams version
+
+20
+00:00:55.260 --> 00:00:57.930 align:middle line:84%
+being faster than the
+sequential streams version,
+
+21
+00:00:57.930 --> 00:01:00.890 align:middle line:90%
+but it is faster.
+
+22
+00:01:00.890 --> 00:01:02.870 align:middle line:84%
+And the interesting
+thing you can also see
+
+23
+00:01:02.870 --> 00:01:05.770 align:middle line:90%
+is if you run the same test--
+
+24
+00:01:05.770 --> 00:01:09.310 align:middle line:84%
+same program-- on
+my quad-core MacBook
+
+25
+00:01:09.310 --> 00:01:13.400 align:middle line:84%
+Pro, you see some other
+interesting results.
+
+26
+00:01:13.400 --> 00:01:17.050 align:middle line:84%
+So once again, parallel
+Spliterator is faster,
+
+27
+00:01:17.050 --> 00:01:20.240 align:middle line:84%
+but parallel streams is
+also very fast as well.
+
+28
+00:01:20.240 --> 00:01:24.460 align:middle line:84%
+And it's interesting, because
+in the version on my Windows
+
+29
+00:01:24.460 --> 00:01:28.300 align:middle line:84%
+machine, my Lenovo, the
+completable futures versions
+
+30
+00:01:28.300 --> 00:01:29.980 align:middle line:90%
+are very fast.
+
+31
+00:01:29.980 --> 00:01:34.360 align:middle line:84%
+Whereas on the MacBook Pro, the
+completable futures versions
+
+32
+00:01:34.360 --> 00:01:35.620 align:middle line:90%
+are not as fast--
+
+33
+00:01:35.620 --> 00:01:39.550 align:middle line:84%
+relatively speaking-- as the
+parallel streams version.
+
+34
+00:01:39.550 --> 00:01:42.040 align:middle line:84%
+And I kind of scratch
+my head trying
+
+35
+00:01:42.040 --> 00:01:44.060 align:middle line:84%
+to figure out why that
+might be the case,
+
+36
+00:01:44.060 --> 00:01:48.610 align:middle line:84%
+and I think it comes down to the
+fact that on the MacBook Pro,
+
+37
+00:01:48.610 --> 00:01:51.550 align:middle line:90%
+I only have 16 gigabytes of RAM.
+
+38
+00:01:51.550 --> 00:01:56.830 align:middle line:84%
+Whereas on the Lenovo laptop,
+I have 32 gigabytes of RAM.
+
+39
+00:01:56.830 --> 00:02:01.090 align:middle line:84%
+So maybe there's some reason
+why completable futures
+
+40
+00:02:01.090 --> 00:02:04.840 align:middle line:84%
+with smaller amounts of memory
+doesn't perform as well.
+
+41
+00:02:04.840 --> 00:02:08.740 align:middle line:84%
+Could have to do, perhaps,
+with processor cache
+
+42
+00:02:08.740 --> 00:02:11.090 align:middle line:84%
+affinity issues,
+or who knows what.
+
+43
+00:02:11.090 --> 00:02:13.380 align:middle line:84%
+But perhaps as you
+have more memory,
+
+44
+00:02:13.380 --> 00:02:16.493 align:middle line:84%
+than maybe the completable
+future stuff runs faster.
+
+45
+00:02:16.493 --> 00:02:18.160 align:middle line:84%
+It's actually a little
+bit hard to tell.
+
+46
+00:02:18.160 --> 00:02:20.770 align:middle line:84%
+I would be somewhat
+careful trying
+
+47
+00:02:20.770 --> 00:02:22.520 align:middle line:90%
+to take these results too far.
+
+48
+00:02:22.520 --> 00:02:24.550 align:middle line:84%
+But it is instructive
+to show that we
+
+49
+00:02:24.550 --> 00:02:27.860 align:middle line:84%
+get different behaviors in
+different runtime environments.
+
+50
+00:02:27.860 --> 00:02:29.890 align:middle line:84%
+And the thing that
+comes across here
+
+51
+00:02:29.890 --> 00:02:32.710 align:middle line:84%
+is that the parallel
+completable version that we just
+
+52
+00:02:32.710 --> 00:02:36.240 align:middle line:90%
+talked about performs the best.
+
+53
+00:02:36.240 --> 00:02:38.760 align:middle line:84%
+Now, why does it
+perform the best?
+
+54
+00:02:38.760 --> 00:02:40.920 align:middle line:84%
+Well, the reason
+it performs better
+
+55
+00:02:40.920 --> 00:02:45.930 align:middle line:84%
+is because the granularity
+of parallelism is finer.
+
+56
+00:02:45.930 --> 00:02:48.150 align:middle line:84%
+And what I mean by that is
+the parallel Spliterator
+
+57
+00:02:48.150 --> 00:02:52.940 align:middle line:84%
+version, as we saw, has
+three degrees of parallelism.
+
+58
+00:02:52.940 --> 00:02:56.800 align:middle line:84%
+It processes each work of
+Shakespeare in parallel.
+
+59
+00:02:56.800 --> 00:03:00.030 align:middle line:84%
+It processes each phrase we're
+searching for in each input
+
+60
+00:03:00.030 --> 00:03:01.510 align:middle line:90%
+string in parallel.
+
+61
+00:03:01.510 --> 00:03:04.980 align:middle line:84%
+And it also splits
+up the input string--
+
+62
+00:03:04.980 --> 00:03:07.290 align:middle line:84%
+the work of Shakespeare--
+into chunks,
+
+63
+00:03:07.290 --> 00:03:08.940 align:middle line:84%
+and processes those
+things in parallel
+
+64
+00:03:08.940 --> 00:03:10.890 align:middle line:90%
+to search for the phrases.
+
+65
+00:03:10.890 --> 00:03:15.390 align:middle line:84%
+So as a result, we
+have more opportunities
+
+66
+00:03:15.390 --> 00:03:17.650 align:middle line:90%
+to leverage available cores.
+
+67
+00:03:17.650 --> 00:03:19.570 align:middle line:84%
+In fact, you wouldn't
+be surprised--
+
+68
+00:03:19.570 --> 00:03:21.390 align:middle line:84%
+I probably should have
+run this benchmark
+
+69
+00:03:21.390 --> 00:03:28.290 align:middle line:84%
+with my six-core laptop, just
+to see what happened there.
+
+70
+00:03:28.290 --> 00:03:31.505 align:middle line:84%
+But I suspect that that
+would be even more scalable,
+
+71
+00:03:31.505 --> 00:03:33.380 align:middle line:84%
+because we'd have more
+cores at our disposal.
+
+72
+00:03:33.380 --> 00:03:35.990 align:middle line:84%
+And we would probably
+expect that a version
+
+73
+00:03:35.990 --> 00:03:39.410 align:middle line:84%
+of this implementation
+that was able to break up
+
+74
+00:03:39.410 --> 00:03:41.180 align:middle line:84%
+the granularity
+of parallelization
+
+75
+00:03:41.180 --> 00:03:42.980 align:middle line:84%
+to be smaller and
+smaller would work better
+
+76
+00:03:42.980 --> 00:03:45.260 align:middle line:90%
+the more cores that we have.
+
+77
+00:03:45.260 --> 00:03:49.365 align:middle line:84%
+I can see that I need to go out
+and buy an octo-core processor
+
+78
+00:03:49.365 --> 00:03:51.740 align:middle line:84%
+soon and try to run these
+experiments again, because it'd
+
+79
+00:03:51.740 --> 00:03:55.280 align:middle line:84%
+be fun to see if you really
+do continue to see basically
+
+80
+00:03:55.280 --> 00:03:58.280 align:middle line:84%
+linear or superlinear
+scale-ups as the number
+
+81
+00:03:58.280 --> 00:03:59.690 align:middle line:90%
+of cores increase.
+
+82
+00:03:59.690 --> 00:04:04.520 align:middle line:84%
+At some point you run into other
+boundaries, other blockers,
+
+83
+00:04:04.520 --> 00:04:06.680 align:middle line:84%
+and other impediments
+to speed up--
+
+84
+00:04:06.680 --> 00:04:09.080 align:middle line:84%
+like memory
+bandwidth and so on--
+
+85
+00:04:09.080 --> 00:04:11.840 align:middle line:84%
+but seems to work pretty well
+for quad-core and six-core
+
+86
+00:04:11.840 --> 00:04:14.047 align:middle line:90%
+processors.
+
+87
+00:04:14.047 --> 00:04:16.089 align:middle line:84%
+So the bottom line is we
+get these nice speed-ups
+
+88
+00:04:16.089 --> 00:04:19.660 align:middle line:84%
+because we're able to process
+the code that we wrote--
+
+89
+00:04:19.660 --> 00:04:24.160 align:middle line:84%
+the instructions-- at a
+finer level of detail.
+
+90
+00:04:24.160 --> 00:04:27.090 align:middle line:84%
+This example also
+illustrates the differences
+
+91
+00:04:27.090 --> 00:04:31.260 align:middle line:84%
+between using sequential
+and parallel Spliterators,
+
+92
+00:04:31.260 --> 00:04:38.160 align:middle line:84%
+and how deciding to choose
+between parallel or sequential
+
+93
+00:04:38.160 --> 00:04:39.870 align:middle line:90%
+is really very simple.
+
+94
+00:04:39.870 --> 00:04:42.390 align:middle line:90%
+The changes are very minuscule.
+
+95
+00:04:42.390 --> 00:04:44.490 align:middle line:84%
+So as you can see
+here, all we did
+
+96
+00:04:44.490 --> 00:04:48.330 align:middle line:84%
+is we had this search
+for phrase method
+
+97
+00:04:48.330 --> 00:04:50.610 align:middle line:84%
+that was parameterized
+by a Boolean that said,
+
+98
+00:04:50.610 --> 00:04:53.550 align:middle line:84%
+do I want to run
+in parallel or not?
+
+99
+00:04:53.550 --> 00:04:55.470 align:middle line:84%
+And then depending
+on what was passed
+
+100
+00:04:55.470 --> 00:04:58.620 align:middle line:84%
+in there from the
+process input method,
+
+101
+00:04:58.620 --> 00:05:05.590 align:middle line:84%
+the call to StreamSupport.stream
+PhraseMatchSpliterator
+
+102
+00:05:05.590 --> 00:05:10.670 align:middle line:84%
+will end up either running
+sequentially or in parallel.
+
+103
+00:05:10.670 --> 00:05:13.240 align:middle line:84%
+And that's really the beauty
+of the streams framework.
+
+104
+00:05:13.240 --> 00:05:17.500 align:middle line:84%
+They provide these cool classes
+like StreamSupport.stream,
+
+105
+00:05:17.500 --> 00:05:19.990 align:middle line:84%
+which will
+"automagically" create
+
+106
+00:05:19.990 --> 00:05:22.210 align:middle line:84%
+for you sequential
+or parallel streams
+
+107
+00:05:22.210 --> 00:05:24.220 align:middle line:90%
+at just the flick of a switch.
+
+108
+00:05:24.220 --> 00:05:25.840 align:middle line:90%
+And that's very, very cool.
+
+109
+00:05:25.840 --> 00:05:28.510 align:middle line:84%
+And you sure as heck would not
+want to try to write that code
+
+110
+00:05:28.510 --> 00:05:29.610 align:middle line:90%
+yourself.
+
+111
+00:05:29.610 --> 00:05:32.778 align:middle line:84%
+I'm very certain it's
+complicated code, and probably
+
+112
+00:05:32.778 --> 00:05:33.820 align:middle line:90%
+not very well-documented.
+
+113
+00:05:33.820 --> 00:05:36.560 align:middle line:84%
+So if you try to read it,
+your mind will explode,
+
+114
+00:05:36.560 --> 00:05:38.890 align:middle line:90%
+and so on and so forth.
+
+115
+00:05:38.890 --> 00:05:41.010 align:middle line:84%
+Now, here's the tricky
+part-- and we'll
+
+116
+00:05:41.010 --> 00:05:45.300 align:middle line:84%
+talk about this in just a second
+when we talk about the cons.
+
+117
+00:05:45.300 --> 00:05:47.610 align:middle line:84%
+It obviously took
+non-trivial time and effort
+
+118
+00:05:47.610 --> 00:05:51.380 align:middle line:84%
+to create the
+PhraseMatchSpliterator.
+
+119
+00:05:51.380 --> 00:05:55.520 align:middle line:84%
+So even though it was easy
+to get the streams framework
+
+120
+00:05:55.520 --> 00:05:58.670 align:middle line:84%
+to use that Spliterator
+to run in parallel
+
+121
+00:05:58.670 --> 00:06:02.260 align:middle line:84%
+or to run sequentially,
+making that Spliterator
+
+122
+00:06:02.260 --> 00:06:03.640 align:middle line:90%
+work properly--
+
+123
+00:06:03.640 --> 00:06:06.530 align:middle line:90%
+that took some serious thought.
+
+124
+00:06:06.530 --> 00:06:09.220 align:middle line:84%
+So let's now go
+ahead and talk about
+
+125
+00:06:09.220 --> 00:06:12.220 align:middle line:84%
+the
+SearchWithParallelSpliterator
+
+126
+00:06:12.220 --> 00:06:13.900 align:middle line:90%
+class cons--
+
+127
+00:06:13.900 --> 00:06:16.960 align:middle line:84%
+the downsides, the drawbacks--
+because, of course,
+
+128
+00:06:16.960 --> 00:06:19.840 align:middle line:84%
+it's not all unicorns
+and rainbows.
+
+129
+00:06:19.840 --> 00:06:22.870 align:middle line:84%
+So the main issue to think
+about here, the key point
+
+130
+00:06:22.870 --> 00:06:26.260 align:middle line:84%
+to come away with is, is that
+the parallel-related portions
+
+131
+00:06:26.260 --> 00:06:30.610 align:middle line:84%
+of PhraseMatchSpliterator
+are much more complicated
+
+132
+00:06:30.610 --> 00:06:34.300 align:middle line:84%
+to program than the
+sequential-related portions.
+
+133
+00:06:34.300 --> 00:06:39.410 align:middle line:84%
+Writing the code to do
+tryAdvance was really simple.
+
+134
+00:06:39.410 --> 00:06:41.590 align:middle line:84%
+All we had to do was
+figure out if there
+
+135
+00:06:41.590 --> 00:06:44.470 align:middle line:84%
+was a regular
+expression match or not.
+
+136
+00:06:44.470 --> 00:06:47.910 align:middle line:84%
+If there was not, we just
+returned false, bail out.
+
+137
+00:06:47.910 --> 00:06:49.680 align:middle line:84%
+If there was a
+match, we figured out
+
+138
+00:06:49.680 --> 00:06:52.380 align:middle line:84%
+where the match started,
+created a new result object
+
+139
+00:06:52.380 --> 00:06:54.900 align:middle line:84%
+to encapsulate that
+match, and then
+
+140
+00:06:54.900 --> 00:06:56.820 align:middle line:84%
+gave that back to
+the stream framework
+
+141
+00:06:56.820 --> 00:07:00.360 align:middle line:84%
+through the consumer action
+that basically gives you
+
+142
+00:07:00.360 --> 00:07:02.230 align:middle line:90%
+pass-by reference semantics.
+
+143
+00:07:02.230 --> 00:07:03.510 align:middle line:90%
+So that was really simple.
+
+144
+00:07:03.510 --> 00:07:06.720 align:middle line:84%
+And that worked quite nicely for
+our SearchWithParallelStreams
+
+145
+00:07:06.720 --> 00:07:09.020 align:middle line:90%
+implementation.
+
+146
+00:07:09.020 --> 00:07:10.460 align:middle line:84%
+The
+SearchWithParallelSpliterator
+
+147
+00:07:10.460 --> 00:07:13.910 align:middle line:84%
+implementation, of course, had
+to go that one step further,
+
+148
+00:07:13.910 --> 00:07:16.610 align:middle line:84%
+and it required us to
+implement the trySplit method.
+
+149
+00:07:16.610 --> 00:07:19.460 align:middle line:84%
+And as you can see, there's
+a lot of moving parts here.
+
+150
+00:07:19.460 --> 00:07:22.220 align:middle line:84%
+There was trying to figure out
+where the start position could
+
+151
+00:07:22.220 --> 00:07:26.330 align:middle line:84%
+be by taking a guess, updating
+the split position to reflect
+
+152
+00:07:26.330 --> 00:07:29.360 align:middle line:84%
+various properties,
+and then that
+
+153
+00:07:29.360 --> 00:07:32.930 align:middle line:84%
+would involve, essentially,
+readjusting the split
+
+154
+00:07:32.930 --> 00:07:36.600 align:middle line:84%
+position if it would have been
+placed in such a way where
+
+155
+00:07:36.600 --> 00:07:39.320 align:middle line:84%
+the phrase wouldn't
+match because we split
+
+156
+00:07:39.320 --> 00:07:42.470 align:middle line:84%
+the input incorrectly
+and we split the phrase
+
+157
+00:07:42.470 --> 00:07:45.880 align:middle line:84%
+across input
+boundaries, and so on.
+
+158
+00:07:45.880 --> 00:07:48.240 align:middle line:84%
+And then finally, we had to
+write the splitInput method
+
+159
+00:07:48.240 --> 00:07:52.290 align:middle line:84%
+itself, which took the
+corrected splitPos,
+
+160
+00:07:52.290 --> 00:07:54.770 align:middle line:84%
+and then broke things
+up into two chunks.
+
+161
+00:07:54.770 --> 00:07:58.350 align:middle line:84%
+The breaking up into two chunks
+is fairly simple, although even
+
+162
+00:07:58.350 --> 00:08:02.410 align:middle line:84%
+there, if you go back and
+look at the splitInput method,
+
+163
+00:08:02.410 --> 00:08:05.820 align:middle line:84%
+you'll see how we had to
+make some interesting design
+
+164
+00:08:05.820 --> 00:08:06.700 align:middle line:90%
+choices.
+
+165
+00:08:06.700 --> 00:08:08.280 align:middle line:84%
+We decided to use
+care sequences,
+
+166
+00:08:08.280 --> 00:08:10.560 align:middle line:84%
+for example, to make
+the splitting as
+
+167
+00:08:10.560 --> 00:08:15.210 align:middle line:84%
+efficient as possible, rather
+than using substr from a string
+
+168
+00:08:15.210 --> 00:08:17.880 align:middle line:84%
+or substring, where you end up
+basically splitting a string
+
+169
+00:08:17.880 --> 00:08:20.820 align:middle line:84%
+and copying its data, because
+string splitting is more
+
+170
+00:08:20.820 --> 00:08:23.310 align:middle line:84%
+expensive than character
+sequence splitting--
+
+171
+00:08:23.310 --> 00:08:24.610 align:middle line:90%
+and so on and so forth.
+
+172
+00:08:24.610 --> 00:08:27.210 align:middle line:84%
+So there were lots of
+subtle design issues.
+
+173
+00:08:27.210 --> 00:08:29.910 align:middle line:84%
+But quite frankly, by far,
+the most complicated part
+
+174
+00:08:29.910 --> 00:08:31.770 align:middle line:84%
+of the code was
+the part that did
+
+175
+00:08:31.770 --> 00:08:34.860 align:middle line:90%
+the tryToUpdateSplitPos logic.
+
+176
+00:08:34.860 --> 00:08:40.257 align:middle line:84%
+That's very subtle, creating
+this subset of the total space
+
+177
+00:08:40.257 --> 00:08:41.840 align:middle line:84%
+and using a regular
+expression matcher
+
+178
+00:08:41.840 --> 00:08:45.550 align:middle line:84%
+in that to see if we split
+the string in the wrong place.
+
+179
+00:08:45.550 --> 00:08:49.460 align:middle line:84%
+That actually took me
+a while to get right.
+
+180
+00:08:49.460 --> 00:08:52.940 align:middle line:84%
+And in fact, when I first wrote
+this code, it wasn't correct.
+
+181
+00:08:52.940 --> 00:08:54.470 align:middle line:90%
+It didn't work properly.
+
+182
+00:08:54.470 --> 00:08:57.650 align:middle line:84%
+And so I ended up eventually
+having someone point
+
+183
+00:08:57.650 --> 00:08:59.510 align:middle line:84%
+out the fact that it
+didn't work properly,
+
+184
+00:08:59.510 --> 00:09:02.040 align:middle line:84%
+and so I went back and wrote
+a bunch of and JUnit tests.
+
+185
+00:09:02.040 --> 00:09:04.040 align:middle line:84%
+Probably should've written
+the JUnit test first.
+
+186
+00:09:04.040 --> 00:09:06.437 align:middle line:84%
+And I wrote the JUnit
+test to make sure
+
+187
+00:09:06.437 --> 00:09:08.270 align:middle line:84%
+that the code was
+splitting things properly,
+
+188
+00:09:08.270 --> 00:09:10.520 align:middle line:90%
+not splitting across boundaries.
+
+189
+00:09:10.520 --> 00:09:11.990 align:middle line:84%
+And now, of course,
+once the tests
+
+190
+00:09:11.990 --> 00:09:14.180 align:middle line:84%
+are written, as
+is always the case
+
+191
+00:09:14.180 --> 00:09:16.220 align:middle line:84%
+with wonderful
+test-driven development,
+
+192
+00:09:16.220 --> 00:09:19.370 align:middle line:84%
+my code henceforth can be
+enhanced and maintained
+
+193
+00:09:19.370 --> 00:09:22.070 align:middle line:84%
+and modified, and I should
+have better confidence
+
+194
+00:09:22.070 --> 00:09:27.290 align:middle line:84%
+that I haven't broken
+anything in some horrible way.
+
+195
+00:09:27.290 --> 00:09:29.540 align:middle line:84%
+So ironically, it
+actually turned out
+
+196
+00:09:29.540 --> 00:09:31.490 align:middle line:84%
+that writing the
+parallel Spliterator
+
+197
+00:09:31.490 --> 00:09:35.460 align:middle line:84%
+took longer than writing
+the rest of the program.
+
+198
+00:09:35.460 --> 00:09:38.220 align:middle line:84%
+So doing the other parts of
+the logic were really simple,
+
+199
+00:09:38.220 --> 00:09:40.580 align:middle line:84%
+but I really had to sit
+down and scratch my head
+
+200
+00:09:40.580 --> 00:09:42.650 align:middle line:84%
+to get the
+PhraseMatchSpliterator's
+
+201
+00:09:42.650 --> 00:09:45.210 align:middle line:84%
+trySplit method
+to work properly.
+
+202
+00:09:45.210 --> 00:09:48.770 align:middle line:84%
+Now, having said all that,
+it's important to remember
+
+203
+00:09:48.770 --> 00:09:51.920 align:middle line:84%
+that the reason why
+this trySplit method was
+
+204
+00:09:51.920 --> 00:09:54.290 align:middle line:84%
+so complicated was
+because we were using it
+
+205
+00:09:54.290 --> 00:09:57.770 align:middle line:90%
+for a very advanced scenario.
+
+206
+00:09:57.770 --> 00:10:01.900 align:middle line:84%
+We were trying to take
+a large piece of text--
+
+207
+00:10:01.900 --> 00:10:03.238 align:middle line:90%
+a work of Shakespeare--
+
+208
+00:10:03.238 --> 00:10:05.030 align:middle line:84%
+and then be able to
+split it up into chunks
+
+209
+00:10:05.030 --> 00:10:07.010 align:middle line:90%
+to search it in parallel.
+
+210
+00:10:07.010 --> 00:10:10.850 align:middle line:84%
+Most uses of Spliterators
+and parallel Spliterators,
+
+211
+00:10:10.850 --> 00:10:13.980 align:middle line:84%
+in practice, are nowhere
+near this complicated.
+
+212
+00:10:13.980 --> 00:10:17.540 align:middle line:84%
+So this is kind of a
+worst-case scenario that really
+
+213
+00:10:17.540 --> 00:10:20.780 align:middle line:84%
+demonstrates the black
+belt-level expertise needed
+
+214
+00:10:20.780 --> 00:10:22.392 align:middle line:90%
+to get this stuff to work.
+
+215
+00:10:22.392 --> 00:10:24.350 align:middle line:84%
+If you take a look at a
+lot of the Spliterators
+
+216
+00:10:24.350 --> 00:10:27.260 align:middle line:84%
+that you'll find in the
+Java collections framework--
+
+217
+00:10:27.260 --> 00:10:30.560 align:middle line:84%
+especially things like the
+ArrayList Spliterator--
+
+218
+00:10:30.560 --> 00:10:32.040 align:middle line:90%
+it's really straightforward.
+
+219
+00:10:32.040 --> 00:10:34.640 align:middle line:84%
+It's just classic
+divide and conquer--
+
+220
+00:10:34.640 --> 00:10:37.460 align:middle line:84%
+pick a midpoint,
+split things in half,
+
+221
+00:10:37.460 --> 00:10:39.500 align:middle line:84%
+call yourself recursively,
+find another midpoint
+
+222
+00:10:39.500 --> 00:10:41.630 align:middle line:84%
+in each of those
+halves, split that
+
+223
+00:10:41.630 --> 00:10:43.190 align:middle line:84%
+in half, and so
+you keep going down
+
+224
+00:10:43.190 --> 00:10:47.360 align:middle line:84%
+and down and down, until you
+get to some atomic-sized value
+
+225
+00:10:47.360 --> 00:10:48.350 align:middle line:90%
+at the end.
+
+226
+00:10:48.350 --> 00:10:51.530 align:middle line:84%
+So you shouldn't come away
+from this lesson being
+
+227
+00:10:51.530 --> 00:10:55.940 align:middle line:84%
+intimidated by the complexity of
+writing parallel Spliterators.
+
+228
+00:10:55.940 --> 00:10:58.610 align:middle line:84%
+Most of them are
+really quite simple.
+
+229
+00:10:58.610 --> 00:11:01.040 align:middle line:84%
+Of course, it also
+depends on the complexity
+
+230
+00:11:01.040 --> 00:11:02.130 align:middle line:90%
+of your data structure.
+
+231
+00:11:02.130 --> 00:11:03.920 align:middle line:84%
+So if you remember
+our discussion
+
+232
+00:11:03.920 --> 00:11:06.560 align:middle line:84%
+about ArrayList
+versus LinkedList,
+
+233
+00:11:06.560 --> 00:11:10.310 align:middle line:84%
+the LinkedList trySplit
+method is kind of complicated,
+
+234
+00:11:10.310 --> 00:11:13.370 align:middle line:84%
+because they're trying to
+be somewhat clever about how
+
+235
+00:11:13.370 --> 00:11:17.390 align:middle line:84%
+to split a data structure that
+is inherently not easily split
+
+236
+00:11:17.390 --> 00:11:19.350 align:middle line:90%
+evenly and efficiently.
+
+237
+00:11:19.350 --> 00:11:22.130 align:middle line:84%
+So it's probably
+arguably more complicated
+
+238
+00:11:22.130 --> 00:11:24.680 align:middle line:84%
+than it needs to be, but
+obviously some smart person
+
+239
+00:11:24.680 --> 00:11:27.470 align:middle line:84%
+spent a lot of time looking
+about the different design
+
+240
+00:11:27.470 --> 00:11:28.790 align:middle line:90%
+alternatives.
+
+241
+00:11:28.790 --> 00:11:31.820 align:middle line:84%
+The good news is, for the
+bulk of the collections
+
+242
+00:11:31.820 --> 00:11:35.060 align:middle line:84%
+you're going to use for
+your parallel streams,
+
+243
+00:11:35.060 --> 00:11:37.520 align:middle line:84%
+they've already got the
+Spliterators implemented
+
+244
+00:11:37.520 --> 00:11:39.950 align:middle line:84%
+for you, so you don't
+have to worry about having
+
+245
+00:11:39.950 --> 00:11:41.640 align:middle line:90%
+to implement them yourselves.
+
+246
+00:11:41.640 --> 00:11:43.580 align:middle line:84%
+So it's only for
+special cases like this,
+
+247
+00:11:43.580 --> 00:11:47.030 align:middle line:84%
+where we're trying to do some
+special user-defined data
+
+248
+00:11:47.030 --> 00:11:49.950 align:middle line:84%
+structure-- like our work of
+Shakespeare, for example--
+
+249
+00:11:49.950 --> 00:11:52.010 align:middle line:84%
+where you'd ever
+run across the need
+
+250
+00:11:52.010 --> 00:11:54.320 align:middle line:90%
+to do parallel Spliterators.
+
+251
+00:11:54.320 --> 00:11:57.410 align:middle line:84%
+But now that you've seen it, you
+should be well-equipped to be
+
+252
+00:11:57.410 --> 00:12:00.540 align:middle line:84%
+able to tackle these
+things in practise.

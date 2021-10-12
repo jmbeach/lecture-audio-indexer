@@ -1,0 +1,556 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.670 align:middle line:90%
+
+
+2
+00:00:00.670 --> 00:00:03.880 align:middle line:84%
+Now that we've wrapped up our
+coverage of the Java parallel
+
+3
+00:00:03.880 --> 00:00:07.240 align:middle line:84%
+streams framework internals,
+let's turn our attention
+
+4
+00:00:07.240 --> 00:00:09.380 align:middle line:90%
+to yet another example.
+
+5
+00:00:09.380 --> 00:00:13.917 align:middle line:84%
+This one will demonstrate the
+use of parallel spliterators.
+
+6
+00:00:13.917 --> 00:00:15.750 align:middle line:84%
+We'll show how the
+parallel spliterators can
+
+7
+00:00:15.750 --> 00:00:19.770 align:middle line:84%
+be applied to improve parallel
+stream performance by getting
+
+8
+00:00:19.770 --> 00:00:23.760 align:middle line:84%
+yet finer level granularity
+parallelism, which will run
+
+9
+00:00:23.760 --> 00:00:27.288 align:middle line:90%
+faster on multicore processors.
+
+10
+00:00:27.288 --> 00:00:28.830 align:middle line:84%
+The solution we're
+talking about here
+
+11
+00:00:28.830 --> 00:00:33.750 align:middle line:84%
+will fix a limitation, a
+con, limited performance
+
+12
+00:00:33.750 --> 00:00:35.640 align:middle line:84%
+that we covered
+earlier in our search
+
+13
+00:00:35.640 --> 00:00:39.780 align:middle line:90%
+with parallel streams example.
+
+14
+00:00:39.780 --> 00:00:41.640 align:middle line:84%
+SearchWithParallelSpliterator
+is yet
+
+15
+00:00:41.640 --> 00:00:45.390 align:middle line:84%
+another implementation strategy
+in our omnibus SearchStreamGang
+
+16
+00:00:45.390 --> 00:00:47.580 align:middle line:90%
+program.
+
+17
+00:00:47.580 --> 00:00:50.520 align:middle line:84%
+As you can see, there's many
+different strategies involved
+
+18
+00:00:50.520 --> 00:00:51.930 align:middle line:84%
+here, but we're
+going to focus on
+
+19
+00:00:51.930 --> 00:00:55.050 align:middle line:84%
+SearchWithParallelSpliterator
+now.
+
+20
+00:00:55.050 --> 00:00:57.450 align:middle line:84%
+This particular
+implementation uses parallel
+
+21
+00:00:57.450 --> 00:01:01.330 align:middle line:90%
+streams in three distinct ways.
+
+22
+00:01:01.330 --> 00:01:05.790 align:middle line:84%
+First, it searches chunks
+of input in parallel,
+
+23
+00:01:05.790 --> 00:01:07.380 align:middle line:84%
+where input, of
+course here would
+
+24
+00:01:07.380 --> 00:01:09.150 align:middle line:90%
+be the works of Shakespeare.
+
+25
+00:01:09.150 --> 00:01:12.300 align:middle line:84%
+Each input string is a
+different work of Shakespeare.
+
+26
+00:01:12.300 --> 00:01:16.940 align:middle line:84%
+It also searches chunks
+of phrases in parallel.
+
+27
+00:01:16.940 --> 00:01:18.410 align:middle line:84%
+And finally-- and
+this is the part
+
+28
+00:01:18.410 --> 00:01:21.530 align:middle line:84%
+that's different-- we
+search chunks of each input
+
+29
+00:01:21.530 --> 00:01:22.820 align:middle line:90%
+string in parallel.
+
+30
+00:01:22.820 --> 00:01:25.190 align:middle line:84%
+So each input string
+itself will be split up,
+
+31
+00:01:25.190 --> 00:01:28.670 align:middle line:84%
+using a parallel spliterator
+so we can search that input
+
+32
+00:01:28.670 --> 00:01:31.910 align:middle line:90%
+string in parallel.
+
+33
+00:01:31.910 --> 00:01:34.760 align:middle line:84%
+This is clearly a very
+aggressive parallelism
+
+34
+00:01:34.760 --> 00:01:35.270 align:middle line:90%
+strategy.
+
+35
+00:01:35.270 --> 00:01:36.950 align:middle line:84%
+It's kind of like a
+three headed monster
+
+36
+00:01:36.950 --> 00:01:41.180 align:middle line:84%
+like Cerberus who guards
+the gates to Hades.
+
+37
+00:01:41.180 --> 00:01:44.540 align:middle line:84%
+And basically, this allows
+us to take maximal advantages
+
+38
+00:01:44.540 --> 00:01:48.290 align:middle line:90%
+of the cores on our CPU.
+
+39
+00:01:48.290 --> 00:01:51.640 align:middle line:84%
+In fact, I actually
+implemented a program
+
+40
+00:01:51.640 --> 00:01:56.080 align:middle line:84%
+that tries out all possible
+combinations of parallelism
+
+41
+00:01:56.080 --> 00:02:01.300 align:middle line:84%
+versus sequential processing
+for spliterators, phrases,
+
+42
+00:02:01.300 --> 00:02:03.370 align:middle line:90%
+and input strings.
+
+43
+00:02:03.370 --> 00:02:11.030 align:middle line:84%
+And I ran this on my six core
+CPU Lenovo workstation laptop
+
+44
+00:02:11.030 --> 00:02:15.650 align:middle line:84%
+with 64 gigabytes of RAM and
+a 2.6 gigahertz processor.
+
+45
+00:02:15.650 --> 00:02:17.360 align:middle line:84%
+And here are the
+results that I got.
+
+46
+00:02:17.360 --> 00:02:21.140 align:middle line:84%
+When I did the processing
+for each work of Shakespeare
+
+47
+00:02:21.140 --> 00:02:25.220 align:middle line:84%
+in parallel, so there are 37
+plays and a bunch of sonnets,
+
+48
+00:02:25.220 --> 00:02:28.940 align:middle line:84%
+which I'll glommed together,
+we ended up with 38 strings.
+
+49
+00:02:28.940 --> 00:02:31.010 align:middle line:84%
+When I ran all the
+different models
+
+50
+00:02:31.010 --> 00:02:34.682 align:middle line:84%
+with parallelism turned on,
+that gave the best performance.
+
+51
+00:02:34.682 --> 00:02:36.140 align:middle line:84%
+Likewise, when I
+ran everything was
+
+52
+00:02:36.140 --> 00:02:38.240 align:middle line:84%
+sequential processing
+turned on, that
+
+53
+00:02:38.240 --> 00:02:39.365 align:middle line:90%
+gave the worst performance.
+
+54
+00:02:39.365 --> 00:02:41.657 align:middle line:84%
+And then everything else is
+somewhere in between there.
+
+55
+00:02:41.657 --> 00:02:44.270 align:middle line:84%
+And you can see that some
+things add more than others
+
+56
+00:02:44.270 --> 00:02:47.817 align:middle line:84%
+in terms of providing
+improvements for parallelism.
+
+57
+00:02:47.817 --> 00:02:49.400 align:middle line:84%
+In particular, it
+looks like searching
+
+58
+00:02:49.400 --> 00:02:53.130 align:middle line:84%
+for parallel phrases has a
+big impact on performance.
+
+59
+00:02:53.130 --> 00:02:55.520 align:middle line:84%
+But the main point is
+if we turn parallelism
+
+60
+00:02:55.520 --> 00:02:59.540 align:middle line:84%
+on for everything, that's the
+best performing configuration.
+
+61
+00:02:59.540 --> 00:03:01.940 align:middle line:84%
+Then I also ran a
+different implementation,
+
+62
+00:03:01.940 --> 00:03:04.490 align:middle line:84%
+where I went out and split
+the works of Shakespeare
+
+63
+00:03:04.490 --> 00:03:08.112 align:middle line:84%
+up into just two strings,
+the first half of Shakespeare
+
+64
+00:03:08.112 --> 00:03:09.570 align:middle line:84%
+and the second half
+of Shakespeare.
+
+65
+00:03:09.570 --> 00:03:13.970 align:middle line:84%
+So of course, each string
+is substantially longer.
+
+66
+00:03:13.970 --> 00:03:17.000 align:middle line:84%
+And so you can see here, if
+you compare the performance,
+
+67
+00:03:17.000 --> 00:03:22.000 align:middle line:84%
+that we got a little bit better
+performance with the two string
+
+68
+00:03:22.000 --> 00:03:24.850 align:middle line:84%
+variant with everything
+running in parallel than we
+
+69
+00:03:24.850 --> 00:03:26.802 align:middle line:90%
+did with the 38 string variant.
+
+70
+00:03:26.802 --> 00:03:28.510 align:middle line:84%
+And what I think that
+kind of illustrates
+
+71
+00:03:28.510 --> 00:03:31.810 align:middle line:84%
+is that longer strings
+may provide a better
+
+72
+00:03:31.810 --> 00:03:35.578 align:middle line:84%
+opportunity to leverage
+the benefits of spliterator
+
+73
+00:03:35.578 --> 00:03:37.120 align:middle line:84%
+parallelism, because
+of course, we're
+
+74
+00:03:37.120 --> 00:03:39.250 align:middle line:84%
+splitting the strings
+up for the chunks
+
+75
+00:03:39.250 --> 00:03:41.255 align:middle line:90%
+and processing them in parallel.
+
+76
+00:03:41.255 --> 00:03:43.630 align:middle line:84%
+So that just provides you with
+a little bit of background
+
+77
+00:03:43.630 --> 00:03:46.780 align:middle line:84%
+to illustrate the way in which
+you can use these mechanisms
+
+78
+00:03:46.780 --> 00:03:50.350 align:middle line:90%
+in a very fine grained manner.
+
+79
+00:03:50.350 --> 00:03:53.860 align:middle line:84%
+As you'll see, the search with
+parallel spliterator process
+
+80
+00:03:53.860 --> 00:03:58.480 align:middle line:84%
+input method has just
+one miniscule change.
+
+81
+00:03:58.480 --> 00:04:00.170 align:middle line:90%
+And everything else is the same.
+
+82
+00:04:00.170 --> 00:04:04.180 align:middle line:84%
+The implementation of
+everything else in this variant
+
+83
+00:04:04.180 --> 00:04:07.210 align:middle line:84%
+is identical to these search
+with parallel streams version
+
+84
+00:04:07.210 --> 00:04:09.730 align:middle line:84%
+we looked at before
+with one exception.
+
+85
+00:04:09.730 --> 00:04:12.640 align:middle line:84%
+We pass true here
+instead of false.
+
+86
+00:04:12.640 --> 00:04:15.010 align:middle line:84%
+We had false for the
+sequential streams version.
+
+87
+00:04:15.010 --> 00:04:18.649 align:middle line:84%
+We had false for the search
+with parallel streams version.
+
+88
+00:04:18.649 --> 00:04:20.570 align:middle line:84%
+And now we're going
+to turn this to true.
+
+89
+00:04:20.570 --> 00:04:24.700 align:middle line:84%
+What that does is that triggers
+the search for phrase method
+
+90
+00:04:24.700 --> 00:04:27.850 align:middle line:84%
+to use a parallel
+stream in order
+
+91
+00:04:27.850 --> 00:04:31.157 align:middle line:84%
+to be able to search for a
+phrase in an input string.
+
+92
+00:04:31.157 --> 00:04:32.740 align:middle line:84%
+And so let's go ahead
+and kind of take
+
+93
+00:04:32.740 --> 00:04:35.330 align:middle line:84%
+a look at that
+SearchForPhrase code.
+
+94
+00:04:35.330 --> 00:04:38.710 align:middle line:84%
+This code, as you can see now,
+will use a parallel spliterator
+
+95
+00:04:38.710 --> 00:04:43.480 align:middle line:84%
+to break the input a work of
+Shakespeare up into chunks,
+
+96
+00:04:43.480 --> 00:04:46.210 align:middle line:84%
+and then those chunks
+are processed in parallel
+
+97
+00:04:46.210 --> 00:04:49.290 align:middle line:84%
+to search for phrases
+within the chunks.
+
+98
+00:04:49.290 --> 00:04:53.280 align:middle line:84%
+So you can see here that we
+call StreamSupportStream, which
+
+99
+00:04:53.280 --> 00:04:56.160 align:middle line:84%
+is that helper method
+that is used to create
+
+100
+00:04:56.160 --> 00:04:58.410 align:middle line:84%
+streams, either
+sequential or parallel.
+
+101
+00:04:58.410 --> 00:05:02.280 align:middle line:84%
+And we pass in the
+PhraseMatchSpliterator instance
+
+102
+00:05:02.280 --> 00:05:07.320 align:middle line:84%
+that we allocate, which connects
+the input work with the phrase
+
+103
+00:05:07.320 --> 00:05:08.610 align:middle line:90%
+we're searching for.
+
+104
+00:05:08.610 --> 00:05:12.730 align:middle line:84%
+And in this case, we're going
+to pass in true for parallel.
+
+105
+00:05:12.730 --> 00:05:15.090 align:middle line:84%
+And so when that
+becomes true, this
+
+106
+00:05:15.090 --> 00:05:18.540 align:middle line:84%
+will end up being
+a parallel search,
+
+107
+00:05:18.540 --> 00:05:21.220 align:middle line:84%
+as opposed to a
+sequential search.
+
+108
+00:05:21.220 --> 00:05:23.220 align:middle line:84%
+So that's basically just
+kind of what's going on
+
+109
+00:05:23.220 --> 00:05:25.892 align:middle line:90%
+with this implementation.
+
+110
+00:05:25.892 --> 00:05:27.350 align:middle line:84%
+What we're going
+to do now is we're
+
+111
+00:05:27.350 --> 00:05:29.840 align:middle line:84%
+going to focus
+in-depth on the phrase
+
+112
+00:05:29.840 --> 00:05:33.620 align:middle line:84%
+match spliterator
+methods, and this
+
+113
+00:05:33.620 --> 00:05:36.080 align:middle line:84%
+will illustrate lots of
+the different points we've
+
+114
+00:05:36.080 --> 00:05:39.790 align:middle line:84%
+been talking about throughout
+our discussion of spliterators
+
+115
+00:05:39.790 --> 00:05:41.340 align:middle line:90%
+in Java.

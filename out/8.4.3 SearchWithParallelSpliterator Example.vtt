@@ -1,0 +1,414 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.553 align:middle line:90%
+
+
+2
+00:00:00.553 --> 00:00:01.970 align:middle line:84%
+So what we'll do
+now is we'll talk
+
+3
+00:00:01.970 --> 00:00:04.370 align:middle line:84%
+about the
+PhraseMatchSpliterator's
+
+4
+00:00:04.370 --> 00:00:08.900 align:middle line:84%
+constructor and its
+tryAdvance method.
+
+5
+00:00:08.900 --> 00:00:10.850 align:middle line:84%
+These methods, again,
+are identical with what
+
+6
+00:00:10.850 --> 00:00:14.020 align:middle line:84%
+we covered in the search with
+sequential streams class.
+
+7
+00:00:14.020 --> 00:00:17.000 align:middle line:84%
+You can go back and watch
+that if you're interested.
+
+8
+00:00:17.000 --> 00:00:19.390 align:middle line:84%
+So here is
+PhraseMatchSpliterator.
+
+9
+00:00:19.390 --> 00:00:20.740 align:middle line:90%
+It's the constructor.
+
+10
+00:00:20.740 --> 00:00:24.790 align:middle line:84%
+It takes the work of Shakespeare
+as a character sequence
+
+11
+00:00:24.790 --> 00:00:27.250 align:middle line:90%
+and the phrase as a string.
+
+12
+00:00:27.250 --> 00:00:32.770 align:middle line:84%
+It converts the string into
+a regular expression form,
+
+13
+00:00:32.770 --> 00:00:34.390 align:middle line:84%
+where it basically
+wraps things up
+
+14
+00:00:34.390 --> 00:00:37.210 align:middle line:84%
+in a way that will
+match phrases properly,
+
+15
+00:00:37.210 --> 00:00:39.400 align:middle line:84%
+dealing with
+extraneous whitespace
+
+16
+00:00:39.400 --> 00:00:41.680 align:middle line:84%
+and bounding the whole
+phrase as to make
+
+17
+00:00:41.680 --> 00:00:45.370 align:middle line:84%
+it one cohesive unit to avoid
+matching sub phrases instead
+
+18
+00:00:45.370 --> 00:00:47.193 align:middle line:90%
+of entire phrases.
+
+19
+00:00:47.193 --> 00:00:48.610 align:middle line:84%
+And then we go
+ahead and recompile
+
+20
+00:00:48.610 --> 00:00:51.400 align:middle line:84%
+this regular expression
+into a pattern that
+
+21
+00:00:51.400 --> 00:00:55.050 align:middle line:84%
+will match a phrase in
+a case-insensitive way
+
+22
+00:00:55.050 --> 00:00:56.930 align:middle line:90%
+across line breaks.
+
+23
+00:00:56.930 --> 00:00:59.320 align:middle line:84%
+So CASE_INSENSITIVE
+is a flag that
+
+24
+00:00:59.320 --> 00:01:01.780 align:middle line:84%
+indicates to the regular
+expression compiler
+
+25
+00:01:01.780 --> 00:01:04.180 align:middle line:84%
+that we should not
+care whether we have
+
+26
+00:01:04.180 --> 00:01:06.220 align:middle line:90%
+uppercase or lowercase matches.
+
+27
+00:01:06.220 --> 00:01:09.610 align:middle line:84%
+And DOTALL is another
+flag that indicates
+
+28
+00:01:09.610 --> 00:01:13.560 align:middle line:84%
+that we should be able to
+do checks across new lines.
+
+29
+00:01:13.560 --> 00:01:16.320 align:middle line:84%
+We then connect the
+input work of Shakespeare
+
+30
+00:01:16.320 --> 00:01:19.830 align:middle line:84%
+with the pattern to make a
+pattern matcher or a phrase
+
+31
+00:01:19.830 --> 00:01:21.420 align:middle line:90%
+matcher as we call it here.
+
+32
+00:01:21.420 --> 00:01:24.340 align:middle line:84%
+And that's what we actually use
+with our regular expression.
+
+33
+00:01:24.340 --> 00:01:28.410 align:middle line:84%
+We initialize the input
+field and the phrase field
+
+34
+00:01:28.410 --> 00:01:31.110 align:middle line:84%
+with the parameters
+passed to the constructor.
+
+35
+00:01:31.110 --> 00:01:33.480 align:middle line:84%
+And then the final
+thing we do is we define
+
+36
+00:01:33.480 --> 00:01:36.630 align:middle line:90%
+the size of mMinSplitSize.
+
+37
+00:01:36.630 --> 00:01:38.400 align:middle line:84%
+And what we do here
+just to be simple
+
+38
+00:01:38.400 --> 00:01:42.240 align:middle line:84%
+is we take the entire length
+of the input, whatever
+
+39
+00:01:42.240 --> 00:01:45.888 align:middle line:84%
+the work of Shakespeare's
+length is, divided by 2.
+
+40
+00:01:45.888 --> 00:01:48.180 align:middle line:84%
+Now there are all kinds of
+other ways we could do this.
+
+41
+00:01:48.180 --> 00:01:49.110 align:middle line:90%
+This was just a simple way.
+
+42
+00:01:49.110 --> 00:01:50.568 align:middle line:84%
+What this will mean
+is we'll end up
+
+43
+00:01:50.568 --> 00:01:53.040 align:middle line:84%
+being able to basically take
+each work of Shakespeare
+
+44
+00:01:53.040 --> 00:01:55.980 align:middle line:84%
+and break it up into four
+chunks to be searched
+
+45
+00:01:55.980 --> 00:01:57.720 align:middle line:84%
+in parallel and
+different threads.
+
+46
+00:01:57.720 --> 00:02:01.050 align:middle line:84%
+And I chose that, because
+I initially had four cores
+
+47
+00:02:01.050 --> 00:02:04.620 align:middle line:84%
+and I figured that that was
+probably a pretty good mapping.
+
+48
+00:02:04.620 --> 00:02:07.470 align:middle line:84%
+So you see how this field gets
+used by the trySplit method
+
+49
+00:02:07.470 --> 00:02:11.130 align:middle line:90%
+for a parallel Spliterator.
+
+50
+00:02:11.130 --> 00:02:13.420 align:middle line:84%
+Let's now take a look at
+the tryAdvance method.
+
+51
+00:02:13.420 --> 00:02:15.660 align:middle line:84%
+This is the method that's
+called by the Java Streams
+
+52
+00:02:15.660 --> 00:02:19.800 align:middle line:84%
+framework, which will attempt to
+advance the Spliterator by one
+
+53
+00:02:19.800 --> 00:02:21.620 align:middle line:90%
+matching phrase.
+
+54
+00:02:21.620 --> 00:02:26.930 align:middle line:84%
+And so you can see here that
+this is past a consumer action
+
+55
+00:02:26.930 --> 00:02:28.250 align:middle line:90%
+parameter.
+
+56
+00:02:28.250 --> 00:02:32.210 align:middle line:84%
+And that is used to pass the
+results back by reference
+
+57
+00:02:32.210 --> 00:02:35.150 align:middle line:84%
+to the streams framework,
+because we can update this
+
+58
+00:02:35.150 --> 00:02:37.700 align:middle line:84%
+by accepting the result into
+it, and then it gets passed back
+
+59
+00:02:37.700 --> 00:02:38.962 align:middle line:90%
+to the framework.
+
+60
+00:02:38.962 --> 00:02:40.420 align:middle line:84%
+The next thing
+we're going to do is
+
+61
+00:02:40.420 --> 00:02:44.500 align:middle line:84%
+we're going to call the find
+method on the PhraseMatcher.
+
+62
+00:02:44.500 --> 00:02:48.580 align:middle line:84%
+And this will return
+true if we find a match.
+
+63
+00:02:48.580 --> 00:02:51.760 align:middle line:84%
+And that match's starting index
+location will be recorded,
+
+64
+00:02:51.760 --> 00:02:54.550 align:middle line:84%
+so we can retrieve
+it momentarily.
+
+65
+00:02:54.550 --> 00:02:58.060 align:middle line:84%
+If we don't find a match,
+it'll return false.
+
+66
+00:02:58.060 --> 00:03:00.440 align:middle line:84%
+And so what we'll do in that
+case is we'll just bail out.
+
+67
+00:03:00.440 --> 00:03:03.790 align:middle line:84%
+This Informs the Streams
+framework that we're done.
+
+68
+00:03:03.790 --> 00:03:05.540 align:middle line:90%
+Don't call tryAdvance anymore.
+
+69
+00:03:05.540 --> 00:03:09.880 align:middle line:84%
+There's no more matches to be
+found in this particular input.
+
+70
+00:03:09.880 --> 00:03:12.010 align:middle line:84%
+Assuming we do
+find a match, then
+
+71
+00:03:12.010 --> 00:03:14.380 align:middle line:84%
+the accept method
+on action is called,
+
+72
+00:03:14.380 --> 00:03:18.058 align:middle line:84%
+and that keeps track of which
+index in the input string
+
+73
+00:03:18.058 --> 00:03:18.850 align:middle line:90%
+the match occurred.
+
+74
+00:03:18.850 --> 00:03:21.640 align:middle line:84%
+And you can see it does this
+by going to the PhraseMatcher
+
+75
+00:03:21.640 --> 00:03:23.740 align:middle line:84%
+and calling its
+start method, which
+
+76
+00:03:23.740 --> 00:03:27.280 align:middle line:84%
+records the starting
+location as an index.
+
+77
+00:03:27.280 --> 00:03:31.585 align:middle line:84%
+We add that to the offset, so
+we get a globally unique offset.
+
+78
+00:03:31.585 --> 00:03:33.340 align:middle line:84%
+And you'll see
+how an offset gets
+
+79
+00:03:33.340 --> 00:03:35.470 align:middle line:90%
+set in the trySplit method.
+
+80
+00:03:35.470 --> 00:03:39.370 align:middle line:84%
+And we wrap that index
+up into a result object,
+
+81
+00:03:39.370 --> 00:03:43.450 align:middle line:84%
+which then gets accepted
+into the consumer action.
+
+82
+00:03:43.450 --> 00:03:46.150 align:middle line:84%
+And the last thing we do
+here is we return true,
+
+83
+00:03:46.150 --> 00:03:49.000 align:middle line:84%
+informing the Streams
+framework that we got a match.
+
+84
+00:03:49.000 --> 00:03:50.710 align:middle line:84%
+And therefore, it's
+worthwhile trying
+
+85
+00:03:50.710 --> 00:03:52.870 align:middle line:84%
+to call tryAdvance again,
+because maybe we'll
+
+86
+00:03:52.870 --> 00:03:54.810 align:middle line:90%
+get another match.
