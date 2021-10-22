@@ -1,0 +1,1272 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.510 align:middle line:90%
+
+
+2
+00:00:00.510 --> 00:00:03.010 align:middle line:84%
+So now that we've talked about
+the conditions under which it
+
+3
+00:00:03.010 --> 00:00:05.470 align:middle line:84%
+makes sense to use
+parallel streams,
+
+4
+00:00:05.470 --> 00:00:08.020 align:middle line:84%
+let's talk about the conditions
+under which it doesn't make
+
+5
+00:00:08.020 --> 00:00:09.640 align:middle line:90%
+sense to use parallel streams.
+
+6
+00:00:09.640 --> 00:00:11.320 align:middle line:84%
+And this is perhaps
+even more important,
+
+7
+00:00:11.320 --> 00:00:12.820 align:middle line:84%
+because if you're
+not careful you'll
+
+8
+00:00:12.820 --> 00:00:15.040 align:middle line:84%
+start to get carried
+away and apply
+
+9
+00:00:15.040 --> 00:00:17.930 align:middle line:84%
+streams where you
+shouldn't be doing it.
+
+10
+00:00:17.930 --> 00:00:21.010 align:middle line:84%
+And it's important to know
+what not to do as much as it's
+
+11
+00:00:21.010 --> 00:00:23.560 align:middle line:90%
+important to know what to do.
+
+12
+00:00:23.560 --> 00:00:27.810 align:middle line:84%
+So, it turns out that certain
+programs just don't work well
+
+13
+00:00:27.810 --> 00:00:28.772 align:middle line:90%
+with parallel streams.
+
+14
+00:00:28.772 --> 00:00:30.480 align:middle line:84%
+In fact, certain
+programs don't work well
+
+15
+00:00:30.480 --> 00:00:33.730 align:middle line:84%
+with parallel
+computing in general.
+
+16
+00:00:33.730 --> 00:00:39.130 align:middle line:84%
+One type of problem is if
+you have data sources that
+
+17
+00:00:39.130 --> 00:00:43.960 align:middle line:84%
+are expensive to split
+and/or split unevenly,
+
+18
+00:00:43.960 --> 00:00:47.320 align:middle line:84%
+so you don't get this nice
+balanced splitting approach.
+
+19
+00:00:47.320 --> 00:00:49.480 align:middle line:84%
+If you take a look
+at the ex14 example
+
+20
+00:00:49.480 --> 00:00:51.370 align:middle line:84%
+that we've talked
+about earlier, you'll
+
+21
+00:00:51.370 --> 00:00:54.103 align:middle line:84%
+see that it's an
+illustration of this.
+
+22
+00:00:54.103 --> 00:00:56.020 align:middle line:84%
+So, just kind of a recap
+for what we went over
+
+23
+00:00:56.020 --> 00:00:59.410 align:middle line:84%
+in the demo, this application
+makes an ArrayList
+
+24
+00:00:59.410 --> 00:01:03.050 align:middle line:84%
+that contains all the words
+in the works of Shakespeare.
+
+25
+00:01:03.050 --> 00:01:07.312 align:middle line:84%
+And then it converts that
+ArrayList into a LinkedList,
+
+26
+00:01:07.312 --> 00:01:09.520 align:middle line:84%
+so that we have a LinkedList
+version and an ArrayList
+
+27
+00:01:09.520 --> 00:01:10.660 align:middle line:90%
+version.
+
+28
+00:01:10.660 --> 00:01:13.780 align:middle line:84%
+And then we go ahead
+and do some computations
+
+29
+00:01:13.780 --> 00:01:17.560 align:middle line:84%
+in parallel for the ArrayLists,
+and do some computations
+
+30
+00:01:17.560 --> 00:01:19.350 align:middle line:90%
+for the LinkedList version.
+
+31
+00:01:19.350 --> 00:01:22.720 align:middle line:84%
+And what you see is that the
+ArrayList parallel stream
+
+32
+00:01:22.720 --> 00:01:26.530 align:middle line:84%
+becomes much, much faster
+than the LinkedList version,
+
+33
+00:01:26.530 --> 00:01:28.940 align:middle line:84%
+especially as the size
+of the input goes up.
+
+34
+00:01:28.940 --> 00:01:31.960 align:middle line:84%
+So for small inputs, it
+doesn't really matter.
+
+35
+00:01:31.960 --> 00:01:34.180 align:middle line:84%
+As the inputs get larger,
+the LinkedList version
+
+36
+00:01:34.180 --> 00:01:36.950 align:middle line:84%
+takes a very, very
+long time to run.
+
+37
+00:01:36.950 --> 00:01:39.940 align:middle line:84%
+And obviously we've covered
+this in our earlier lesson
+
+38
+00:01:39.940 --> 00:01:42.180 align:middle line:84%
+on demoing the
+Spliterator performance
+
+39
+00:01:42.180 --> 00:01:46.330 align:middle line:84%
+when we were talking about
+Java parallel stream internals.
+
+40
+00:01:46.330 --> 00:01:47.565 align:middle line:90%
+So just keep that in mind.
+
+41
+00:01:47.565 --> 00:01:49.690 align:middle line:84%
+It's a good idea to try to
+use data structures that
+
+42
+00:01:49.690 --> 00:01:52.180 align:middle line:84%
+split evenly, and
+split efficiently,
+
+43
+00:01:52.180 --> 00:01:53.440 align:middle line:90%
+and don't copy the data.
+
+44
+00:01:53.440 --> 00:01:55.990 align:middle line:90%
+
+
+45
+00:01:55.990 --> 00:01:58.230 align:middle line:84%
+Why does this work so
+well for ArrayLists?
+
+46
+00:01:58.230 --> 00:02:01.740 align:middle line:84%
+Well, obviously, it's because
+the trySplit() method is very
+
+47
+00:02:01.740 --> 00:02:02.550 align:middle line:90%
+optimized.
+
+48
+00:02:02.550 --> 00:02:05.100 align:middle line:84%
+It runs in constant
+time, it basically
+
+49
+00:02:05.100 --> 00:02:08.293 align:middle line:84%
+just does some mathematics
+to figure out the midpoint,
+
+50
+00:02:08.293 --> 00:02:09.210 align:middle line:90%
+does that efficiently.
+
+51
+00:02:09.210 --> 00:02:11.790 align:middle line:84%
+It's just an addition
+and a divide by 2,
+
+52
+00:02:11.790 --> 00:02:13.890 align:middle line:90%
+or a right-shift by 1.
+
+53
+00:02:13.890 --> 00:02:18.000 align:middle line:84%
+And then we go ahead and
+split the ArrayList evenly
+
+54
+00:02:18.000 --> 00:02:19.630 align:middle line:90%
+without having to copy any data.
+
+55
+00:02:19.630 --> 00:02:22.170 align:middle line:84%
+So the list stays in place and
+we just basically recompute
+
+56
+00:02:22.170 --> 00:02:23.460 align:middle line:90%
+the indices.
+
+57
+00:02:23.460 --> 00:02:26.670 align:middle line:84%
+And when everything is done,
+we end up with a single item.
+
+58
+00:02:26.670 --> 00:02:29.670 align:middle line:84%
+And that's the one that
+we're going to accept
+
+59
+00:02:29.670 --> 00:02:31.810 align:middle line:90%
+in tryAdvance().
+
+60
+00:02:31.810 --> 00:02:34.630 align:middle line:84%
+In contrast, the
+LinkedList's Spliterator
+
+61
+00:02:34.630 --> 00:02:37.000 align:middle line:90%
+runs in basically linear time.
+
+62
+00:02:37.000 --> 00:02:40.090 align:middle line:84%
+It's certainly not constant
+time, it's much slower.
+
+63
+00:02:40.090 --> 00:02:44.350 align:middle line:84%
+It's more complicated-- first
+we create some fixed-size chunk,
+
+64
+00:02:44.350 --> 00:02:47.860 align:middle line:84%
+and then we go ahead and copy
+the data into this chunk,
+
+65
+00:02:47.860 --> 00:02:50.620 align:middle line:84%
+and then we go ahead and
+run this Spliterator that
+
+66
+00:02:50.620 --> 00:02:54.520 align:middle line:84%
+goes ahead and creates a
+Spliterator from the chunk.
+
+67
+00:02:54.520 --> 00:02:56.800 align:middle line:84%
+And that has to keep going
+on and on and on in order
+
+68
+00:02:56.800 --> 00:02:58.600 align:middle line:84%
+to be able to do
+this, and it just
+
+69
+00:02:58.600 --> 00:03:00.200 align:middle line:90%
+is going to take a long time.
+
+70
+00:03:00.200 --> 00:03:02.870 align:middle line:84%
+It copies the data, it
+doesn't split evenly.
+
+71
+00:03:02.870 --> 00:03:05.200 align:middle line:84%
+So I think, again, you can
+get a good sense of why
+
+72
+00:03:05.200 --> 00:03:08.440 align:middle line:84%
+the LinkedList
+implementation was not
+
+73
+00:03:08.440 --> 00:03:14.800 align:middle line:84%
+as performant, as the input size
+grew, as the ArrayList version.
+
+74
+00:03:14.800 --> 00:03:17.297 align:middle line:84%
+Another aspect here-- and this
+is not unrelated to what we
+
+75
+00:03:17.297 --> 00:03:19.630 align:middle line:84%
+just talked about, but it can
+be looked at in a somewhat
+
+76
+00:03:19.630 --> 00:03:20.740 align:middle line:90%
+different way--
+
+77
+00:03:20.740 --> 00:03:23.230 align:middle line:84%
+if the startup
+costs of parallelism
+
+78
+00:03:23.230 --> 00:03:26.360 align:middle line:84%
+are higher than the amount
+of data we actually process.
+
+79
+00:03:26.360 --> 00:03:32.840 align:middle line:84%
+This comes back to the N times
+Q model we talked about before.
+
+80
+00:03:32.840 --> 00:03:37.150 align:middle line:84%
+So if N times Q
+is low, then we're
+
+81
+00:03:37.150 --> 00:03:39.610 align:middle line:84%
+probably going to pay
+a lot more overhead
+
+82
+00:03:39.610 --> 00:03:43.150 align:middle line:84%
+to set up the parallelism
+apparatus than we
+
+83
+00:03:43.150 --> 00:03:47.290 align:middle line:84%
+will getting a win from
+our use of parallelism.
+
+84
+00:03:47.290 --> 00:03:55.030 align:middle line:84%
+And a good example of this
+is shown in my ex16 folder
+
+85
+00:03:55.030 --> 00:03:58.060 align:middle line:84%
+on my GitHub account,
+my repository.
+
+86
+00:03:58.060 --> 00:04:00.550 align:middle line:84%
+And what I do here
+is I show a couple
+
+87
+00:04:00.550 --> 00:04:04.330 align:middle line:84%
+of different implementations
+of factorial.
+
+88
+00:04:04.330 --> 00:04:08.020 align:middle line:84%
+One of the implementations
+here is going to be done
+
+89
+00:04:08.020 --> 00:04:11.020 align:middle line:84%
+in parallel-- it's called
+ParallelStreamFactorial--
+
+90
+00:04:11.020 --> 00:04:12.820 align:middle line:84%
+and the other
+implementation here
+
+91
+00:04:12.820 --> 00:04:16.690 align:middle line:84%
+is going to be done with
+a sequential string.
+
+92
+00:04:16.690 --> 00:04:21.160 align:middle line:84%
+And as it turns out, if you
+pass in small values of n,
+
+93
+00:04:21.160 --> 00:04:25.480 align:middle line:84%
+like n equals 10, or n
+equals 20, or whatever,
+
+94
+00:04:25.480 --> 00:04:27.490 align:middle line:84%
+you're probably
+going to find out
+
+95
+00:04:27.490 --> 00:04:31.750 align:middle line:84%
+that the parallel version is
+actually going to run slower
+
+96
+00:04:31.750 --> 00:04:33.760 align:middle line:90%
+than the sequential version.
+
+97
+00:04:33.760 --> 00:04:35.170 align:middle line:90%
+Why the heck is that?
+
+98
+00:04:35.170 --> 00:04:38.350 align:middle line:84%
+The reason is that it takes
+a while to partition things
+
+99
+00:04:38.350 --> 00:04:39.610 align:middle line:90%
+with a Spliterator.
+
+100
+00:04:39.610 --> 00:04:43.350 align:middle line:84%
+It takes a while to reduce
+stuff with the combining stage.
+
+101
+00:04:43.350 --> 00:04:46.060 align:middle line:84%
+And so unless you're going to
+be doing large values of n,
+
+102
+00:04:46.060 --> 00:04:48.890 align:middle line:84%
+it's really not much
+of a win at all.
+
+103
+00:04:48.890 --> 00:04:51.820 align:middle line:84%
+In fact, for small values of
+n, the sequential solution
+
+104
+00:04:51.820 --> 00:04:53.630 align:middle line:90%
+will be more efficient.
+
+105
+00:04:53.630 --> 00:04:55.310 align:middle line:84%
+It's also sort of
+worth knowing--
+
+106
+00:04:55.310 --> 00:04:58.670 align:middle line:84%
+you'll notice that this
+particular implementation uses
+
+107
+00:04:58.670 --> 00:05:00.560 align:middle line:90%
+big integers.
+
+108
+00:05:00.560 --> 00:05:02.450 align:middle line:84%
+So I end up using
+big integers in order
+
+109
+00:05:02.450 --> 00:05:04.740 align:middle line:84%
+to be able to compute
+the n factorial.
+
+110
+00:05:04.740 --> 00:05:09.950 align:middle line:84%
+So even though the parameter
+to the factorial is Long,
+
+111
+00:05:09.950 --> 00:05:11.270 align:middle line:90%
+the result is a BigInteger.
+
+112
+00:05:11.270 --> 00:05:13.490 align:middle line:90%
+And that's because after about--
+
+113
+00:05:13.490 --> 00:05:18.800 align:middle line:84%
+I think it's 23, an n of 23,
+the size of the factorial
+
+114
+00:05:18.800 --> 00:05:23.270 align:middle line:84%
+grows so quickly that it
+exceeds the precision in a Long.
+
+115
+00:05:23.270 --> 00:05:25.470 align:middle line:84%
+So we have to use BigInteger
+in order to do that.
+
+116
+00:05:25.470 --> 00:05:27.440 align:middle line:84%
+So that's yet another
+reason why you really
+
+117
+00:05:27.440 --> 00:05:31.310 align:middle line:84%
+gotta have a large number
+to make this thing pay off.
+
+118
+00:05:31.310 --> 00:05:33.170 align:middle line:84%
+In fact, for small
+numbers of factorials,
+
+119
+00:05:33.170 --> 00:05:35.670 align:middle line:84%
+you'll see that you really don't
+want to use streams at all.
+
+120
+00:05:35.670 --> 00:05:38.438 align:middle line:84%
+It'll be faster to do, probably,
+iteratively with a loop.
+
+121
+00:05:38.438 --> 00:05:39.980 align:middle line:84%
+But of course what's
+interesting here
+
+122
+00:05:39.980 --> 00:05:45.200 align:middle line:84%
+is what happens in the limit,
+as these sizes get much larger.
+
+123
+00:05:45.200 --> 00:05:48.710 align:middle line:84%
+Another consideration is,
+what's the cost of combining
+
+124
+00:05:48.710 --> 00:05:50.360 align:middle line:90%
+the partial results?
+
+125
+00:05:50.360 --> 00:05:53.150 align:middle line:84%
+This, of course, is
+really what matters
+
+126
+00:05:53.150 --> 00:05:59.250 align:middle line:84%
+if you're dealing especially
+with non-concurrent collectors.
+
+127
+00:05:59.250 --> 00:06:03.345 align:middle line:84%
+So if you take a look at
+the ex14 folder in my GitHub
+
+128
+00:06:03.345 --> 00:06:05.970 align:middle line:84%
+repository, and you go back and
+watch the other video we talked
+
+129
+00:06:05.970 --> 00:06:11.250 align:middle line:84%
+about earlier that quantified
+the collector performance,
+
+130
+00:06:11.250 --> 00:06:13.080 align:middle line:84%
+you'll see that
+combining partial results
+
+131
+00:06:13.080 --> 00:06:15.140 align:middle line:90%
+can be costly, too.
+
+132
+00:06:15.140 --> 00:06:17.150 align:middle line:84%
+So the example we
+looked at before,
+
+133
+00:06:17.150 --> 00:06:22.500 align:middle line:84%
+once again we make ourselves
+a LinkedList of words--
+
+134
+00:06:22.500 --> 00:06:25.410 align:middle line:84%
+this is a LinkedList of all
+the words in Shakespeare--
+
+135
+00:06:25.410 --> 00:06:29.760 align:middle line:84%
+and then we go ahead and
+we have a parallel stream
+
+136
+00:06:29.760 --> 00:06:34.600 align:middle line:84%
+that will collect those words
+together into a TreeSet.
+
+137
+00:06:34.600 --> 00:06:38.100 align:middle line:84%
+And it turns out that the
+performance will be poor here.
+
+138
+00:06:38.100 --> 00:06:39.690 align:middle line:84%
+Actually, the
+performance will be poor
+
+139
+00:06:39.690 --> 00:06:42.600 align:middle line:84%
+if we use an ArrayList
+instead of a LinkedList.
+
+140
+00:06:42.600 --> 00:06:45.300 align:middle line:84%
+And that's because
+there's overhead
+
+141
+00:06:45.300 --> 00:06:49.860 align:middle line:84%
+of having to merge together
+these intermediate result
+
+142
+00:06:49.860 --> 00:06:53.970 align:middle line:84%
+containers in parallel streams,
+as we talked about when
+
+143
+00:06:53.970 --> 00:06:56.910 align:middle line:84%
+we discussed the concurrent
+versus non-concurrent
+
+144
+00:06:56.910 --> 00:07:00.250 align:middle line:84%
+collectors and demoed
+the performance.
+
+145
+00:07:00.250 --> 00:07:02.500 align:middle line:84%
+Now, you could
+maybe get back some
+
+146
+00:07:02.500 --> 00:07:05.350 align:middle line:84%
+win if you did a lot of
+work between the point
+
+147
+00:07:05.350 --> 00:07:07.077 align:middle line:84%
+where you split
+things up in parallel,
+
+148
+00:07:07.077 --> 00:07:08.660 align:middle line:84%
+and where you collected
+them together.
+
+149
+00:07:08.660 --> 00:07:10.270 align:middle line:84%
+So if you did a
+lot of work there,
+
+150
+00:07:10.270 --> 00:07:13.540 align:middle line:84%
+that would drive the
+value of Q high enough
+
+151
+00:07:13.540 --> 00:07:16.390 align:middle line:90%
+perhaps to eventually be a win.
+
+152
+00:07:16.390 --> 00:07:17.950 align:middle line:84%
+But as we saw earlier,
+you have to be
+
+153
+00:07:17.950 --> 00:07:20.000 align:middle line:90%
+kind of careful with this.
+
+154
+00:07:20.000 --> 00:07:23.800 align:middle line:84%
+One way to address this
+issue is to switch from using
+
+155
+00:07:23.800 --> 00:07:27.740 align:middle line:84%
+a non-concurrent collector--
+such as the one that's created
+
+156
+00:07:27.740 --> 00:07:32.500 align:middle line:84%
+by the toCollection factory
+method on the collectors
+
+157
+00:07:32.500 --> 00:07:33.970 align:middle line:90%
+utility --
+
+158
+00:07:33.970 --> 00:07:36.970 align:middle line:84%
+and instead replace it with some
+kind of concurrent collector,
+
+159
+00:07:36.970 --> 00:07:39.310 align:middle line:84%
+like the
+ConcurrentHashSetCollector
+
+160
+00:07:39.310 --> 00:07:41.770 align:middle line:84%
+that we have defined
+here in this example.
+
+161
+00:07:41.770 --> 00:07:45.490 align:middle line:84%
+And this can be used to help to
+optimize the reduction phase,
+
+162
+00:07:45.490 --> 00:07:48.740 align:middle line:84%
+because we will just
+collect everything in place.
+
+163
+00:07:48.740 --> 00:07:51.890 align:middle line:84%
+And in fact when we ran
+the performance tests
+
+164
+00:07:51.890 --> 00:07:56.540 align:middle line:84%
+in our earlier lesson on
+demoing collector performance,
+
+165
+00:07:56.540 --> 00:07:59.180 align:middle line:84%
+you can see that
+as the values of n
+
+166
+00:07:59.180 --> 00:08:03.300 align:middle line:84%
+get larger, as we have more
+and more words to process
+
+167
+00:08:03.300 --> 00:08:07.780 align:middle line:84%
+and collect, that the concurrent
+collector runs a lot faster
+
+168
+00:08:07.780 --> 00:08:08.440 align:middle line:90%
+than--
+
+169
+00:08:08.440 --> 00:08:10.080 align:middle line:84%
+the parallel
+concurrent collector
+
+170
+00:08:10.080 --> 00:08:11.830 align:middle line:84%
+runs a lot faster than
+the parallel stream
+
+171
+00:08:11.830 --> 00:08:13.780 align:middle line:84%
+with the non-concurrent
+collector,
+
+172
+00:08:13.780 --> 00:08:16.150 align:middle line:84%
+and of course both of
+those perform much better
+
+173
+00:08:16.150 --> 00:08:18.670 align:middle line:84%
+than the sequential
+collectors, because they're
+
+174
+00:08:18.670 --> 00:08:20.380 align:middle line:90%
+able to use threads.
+
+175
+00:08:20.380 --> 00:08:24.970 align:middle line:84%
+So even if you do have to use
+non-concurrent collectors that
+
+176
+00:08:24.970 --> 00:08:27.220 align:middle line:84%
+have to merge things
+together, if you've
+
+177
+00:08:27.220 --> 00:08:30.040 align:middle line:84%
+got a good implementation
+of parallel streams
+
+178
+00:08:30.040 --> 00:08:33.159 align:middle line:84%
+and a fast set of cores,
+you'll get a speed-up.
+
+179
+00:08:33.159 --> 00:08:34.840 align:middle line:84%
+But you get a better
+speed-up if you're
+
+180
+00:08:34.840 --> 00:08:38.700 align:middle line:84%
+able to use the
+concurrent collectors.
+
+181
+00:08:38.700 --> 00:08:41.820 align:middle line:84%
+Yet another consideration--
+and this is pretty subtle--
+
+182
+00:08:41.820 --> 00:08:45.480 align:middle line:84%
+not all stream operations
+exploit parallelism
+
+183
+00:08:45.480 --> 00:08:46.440 align:middle line:90%
+effectively.
+
+184
+00:08:46.440 --> 00:08:49.332 align:middle line:84%
+Lots of them do,
+but not all of them.
+
+185
+00:08:49.332 --> 00:08:50.790 align:middle line:84%
+So let's take a
+look at an example.
+
+186
+00:08:50.790 --> 00:08:55.700 align:middle line:84%
+And this example comes
+from my ex15 folder
+
+187
+00:08:55.700 --> 00:08:57.830 align:middle line:90%
+in my GitHub repository.
+
+188
+00:08:57.830 --> 00:09:00.890 align:middle line:84%
+So here we're going to
+have a little stream that's
+
+189
+00:09:00.890 --> 00:09:04.640 align:middle line:84%
+going to use the
+Stream.iterate method.
+
+190
+00:09:04.640 --> 00:09:06.210 align:middle line:90%
+It's basically a generator.
+
+191
+00:09:06.210 --> 00:09:09.700 align:middle line:84%
+This produces so-called
+infinite unbounded streams.
+
+192
+00:09:09.700 --> 00:09:12.350 align:middle line:84%
+And it's basically going to go
+through and generate a range
+
+193
+00:09:12.350 --> 00:09:15.650 align:middle line:90%
+of numbers from 2 to infinity.
+
+194
+00:09:15.650 --> 00:09:16.988 align:middle line:90%
+It keeps adding this each time.
+
+195
+00:09:16.988 --> 00:09:18.530 align:middle line:84%
+I guess it'll
+eventually wrap around.
+
+196
+00:09:18.530 --> 00:09:21.680 align:middle line:84%
+But it'll generate a
+large number of values
+
+197
+00:09:21.680 --> 00:09:24.630 align:middle line:84%
+indefinitely, if you
+let it run indefinitely.
+
+198
+00:09:24.630 --> 00:09:26.810 align:middle line:84%
+And then we run
+this in parallel.
+
+199
+00:09:26.810 --> 00:09:29.510 align:middle line:84%
+We filter out the odd
+numbers, so there's
+
+200
+00:09:29.510 --> 00:09:31.790 align:middle line:84%
+only even numbers allowed
+through the filter.
+
+201
+00:09:31.790 --> 00:09:34.850 align:middle line:84%
+And then we limit the whole
+thing to some value of n.
+
+202
+00:09:34.850 --> 00:09:39.400 align:middle line:84%
+So we end up-- let's say we
+have the first 100 even numbers.
+
+203
+00:09:39.400 --> 00:09:42.200 align:middle line:84%
+And then we go ahead and
+we find the square root
+
+204
+00:09:42.200 --> 00:09:45.050 align:middle line:84%
+of those numbers
+using the map method
+
+205
+00:09:45.050 --> 00:09:47.350 align:middle line:84%
+and a method reference
+called findSQRT,
+
+206
+00:09:47.350 --> 00:09:49.380 align:middle line:84%
+and then we collect
+that into a list.
+
+207
+00:09:49.380 --> 00:09:52.670 align:middle line:84%
+So if you run this
+in parallel, it
+
+208
+00:09:52.670 --> 00:09:56.070 align:middle line:84%
+turns out it's
+really, really slow.
+
+209
+00:09:56.070 --> 00:09:59.150 align:middle line:84%
+And if you watch the-- if you
+put a peek() call in there
+
+210
+00:09:59.150 --> 00:10:01.460 align:middle line:84%
+and print out the results,
+you'll see that it's really,
+
+211
+00:10:01.460 --> 00:10:03.310 align:middle line:90%
+really inefficient.
+
+212
+00:10:03.310 --> 00:10:06.350 align:middle line:84%
+And the reason for that is
+that Stream.iterate and limit
+
+213
+00:10:06.350 --> 00:10:10.310 align:middle line:84%
+split and parallelize very
+poorly, because iterate
+
+214
+00:10:10.310 --> 00:10:12.890 align:middle line:90%
+creates an ordered stream.
+
+215
+00:10:12.890 --> 00:10:14.990 align:middle line:84%
+And that just turns
+out to be a nightmare.
+
+216
+00:10:14.990 --> 00:10:17.160 align:middle line:90%
+It's very, very slow.
+
+217
+00:10:17.160 --> 00:10:19.830 align:middle line:84%
+In contrast, we could
+get the same result--
+
+218
+00:10:19.830 --> 00:10:22.290 align:middle line:90%
+we could compute the first n--
+
+219
+00:10:22.290 --> 00:10:25.080 align:middle line:84%
+the square root of the
+first n even numbers--
+
+220
+00:10:25.080 --> 00:10:28.440 align:middle line:84%
+much more efficiently by using
+some different mechanisms.
+
+221
+00:10:28.440 --> 00:10:33.720 align:middle line:84%
+So here we're going to use the
+range() method on LongStream,
+
+222
+00:10:33.720 --> 00:10:37.350 align:middle line:84%
+which splits very nicely and
+therefore runs efficiently
+
+223
+00:10:37.350 --> 00:10:38.455 align:middle line:90%
+in parallel.
+
+224
+00:10:38.455 --> 00:10:40.080 align:middle line:84%
+So in this case, you
+can see that we're
+
+225
+00:10:40.080 --> 00:10:43.620 align:middle line:84%
+going to generate the first
+n even numbers in parallel,
+
+226
+00:10:43.620 --> 00:10:46.570 align:middle line:84%
+and we're going to filter out
+odd numbers, get rid of them.
+
+227
+00:10:46.570 --> 00:10:47.940 align:middle line:84%
+We're going to go ahead
+and find the square root
+
+228
+00:10:47.940 --> 00:10:49.065 align:middle line:90%
+and collect it into a list.
+
+229
+00:10:49.065 --> 00:10:53.250 align:middle line:84%
+So if you time the two results
+the range() version is way,
+
+230
+00:10:53.250 --> 00:10:54.550 align:middle line:90%
+way faster.
+
+231
+00:10:54.550 --> 00:10:56.520 align:middle line:84%
+So the lesson to come
+away with from this
+
+232
+00:10:56.520 --> 00:11:00.090 align:middle line:84%
+is make sure you pick
+the right model of--
+
+233
+00:11:00.090 --> 00:11:01.830 align:middle line:84%
+right operations
+to do your task.
+
+234
+00:11:01.830 --> 00:11:06.000 align:middle line:84%
+Not everything parallelizes
+as nicely as you might expect.
+
+235
+00:11:06.000 --> 00:11:08.295 align:middle line:84%
+And of course, the last
+thing I'll say here is that--
+
+236
+00:11:08.295 --> 00:11:11.040 align:middle line:84%
+or the last point about
+the performance issues
+
+237
+00:11:11.040 --> 00:11:13.560 align:middle line:84%
+if you don't have many cores,
+you don't have any cores,
+
+238
+00:11:13.560 --> 00:11:15.810 align:middle line:84%
+you just have one core,
+or just one processor,
+
+239
+00:11:15.810 --> 00:11:18.660 align:middle line:84%
+you're not going to get much
+of a speed-up from parallelism
+
+240
+00:11:18.660 --> 00:11:20.162 align:middle line:90%
+at all.
+
+241
+00:11:20.162 --> 00:11:21.620 align:middle line:84%
+One more thing I
+want to point out,
+
+242
+00:11:21.620 --> 00:11:24.660 align:middle line:84%
+briefly-- it's not necessarily
+a performance issue,
+
+243
+00:11:24.660 --> 00:11:27.010 align:middle line:84%
+but it's more of a
+functionality issue.
+
+244
+00:11:27.010 --> 00:11:29.070 align:middle line:84%
+For various reasons that
+are a bit mysterious,
+
+245
+00:11:29.070 --> 00:11:33.110 align:middle line:84%
+there's no easy built-in means
+to shut down the processing
+
+246
+00:11:33.110 --> 00:11:34.790 align:middle line:90%
+of a parallel stream.
+
+247
+00:11:34.790 --> 00:11:37.670 align:middle line:84%
+So once the parallel stream
+has been set into motion,
+
+248
+00:11:37.670 --> 00:11:40.160 align:middle line:84%
+it'll just keep running
+until an exception is thrown,
+
+249
+00:11:40.160 --> 00:11:43.490 align:middle line:84%
+or until you program
+it to do something
+
+250
+00:11:43.490 --> 00:11:46.070 align:middle line:90%
+to cause it to shut down.
+
+251
+00:11:46.070 --> 00:11:49.820 align:middle line:84%
+So one way to do this
+is to use some kind
+
+252
+00:11:49.820 --> 00:11:54.590 align:middle line:84%
+of static volatile flag, like
+some kind of canceled flag.
+
+253
+00:11:54.590 --> 00:11:57.710 align:middle line:84%
+And then you could
+set that to true.
+
+254
+00:11:57.710 --> 00:12:00.380 align:middle line:84%
+And if you have been
+canceled, then you
+
+255
+00:12:00.380 --> 00:12:03.998 align:middle line:84%
+could have your behavior
+throw an exception.
+
+256
+00:12:03.998 --> 00:12:06.290 align:middle line:84%
+Now, again, it would be nice
+if there was an easier way
+
+257
+00:12:06.290 --> 00:12:08.490 align:middle line:84%
+to do this, but that's
+kind of the way it works.
+
+258
+00:12:08.490 --> 00:12:10.200 align:middle line:90%
+So just be aware of that.
+
+259
+00:12:10.200 --> 00:12:12.590 align:middle line:84%
+There's no easy way to
+shut down parallel streams.
+
+260
+00:12:12.590 --> 00:12:14.730 align:middle line:84%
+They typically run
+until they complete.
+
+261
+00:12:14.730 --> 00:12:16.967 align:middle line:84%
+And if you don't
+like that, you should
+
+262
+00:12:16.967 --> 00:12:18.800 align:middle line:84%
+either consider using
+a mechanism like this,
+
+263
+00:12:18.800 --> 00:12:20.990 align:middle line:84%
+or pick a different
+mechanism altogether,
+
+264
+00:12:20.990 --> 00:12:22.770 align:middle line:90%
+like CompletableFutures.

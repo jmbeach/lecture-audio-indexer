@@ -1,0 +1,1341 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.510 align:middle line:90%
+
+
+2
+00:00:00.510 --> 00:00:02.100 align:middle line:84%
+So now it's time to
+turn our attention
+
+3
+00:00:02.100 --> 00:00:06.000 align:middle line:84%
+to our last great
+example, and this will be
+
+4
+00:00:06.000 --> 00:00:09.130 align:middle line:90%
+the ImageStreamGang case study.
+
+5
+00:00:09.130 --> 00:00:11.940 align:middle line:84%
+And we're going to focus on
+the parallel implementation
+
+6
+00:00:11.940 --> 00:00:13.415 align:middle line:90%
+of ImageStreamGang.
+
+7
+00:00:13.415 --> 00:00:14.790 align:middle line:84%
+There will also
+be other variants
+
+8
+00:00:14.790 --> 00:00:17.940 align:middle line:84%
+we'll talk about later that
+involve completable futures.
+
+9
+00:00:17.940 --> 00:00:20.250 align:middle line:84%
+So in this part
+of the lesson, I'm
+
+10
+00:00:20.250 --> 00:00:22.260 align:middle line:84%
+going to talk
+about the structure
+
+11
+00:00:22.260 --> 00:00:25.290 align:middle line:84%
+and the functionality of
+the ImageStreamGang app,
+
+12
+00:00:25.290 --> 00:00:27.570 align:middle line:84%
+which as I mentioned,
+is this framework
+
+13
+00:00:27.570 --> 00:00:30.240 align:middle line:84%
+of apps, a framework of
+behaviors and strategies
+
+14
+00:00:30.240 --> 00:00:33.360 align:middle line:84%
+that illustrate various
+parallelism and asynchrony
+
+15
+00:00:33.360 --> 00:00:35.957 align:middle line:90%
+mechanisms in Java.
+
+16
+00:00:35.957 --> 00:00:37.790 align:middle line:84%
+It applies a couple of
+different frameworks.
+
+17
+00:00:37.790 --> 00:00:40.100 align:middle line:84%
+It applies the parallel
+streams framework.
+
+18
+00:00:40.100 --> 00:00:42.800 align:middle line:84%
+It also applies the
+completable futures framework,
+
+19
+00:00:42.800 --> 00:00:45.600 align:middle line:84%
+and it uses the
+fork join framework.
+
+20
+00:00:45.600 --> 00:00:47.990 align:middle line:84%
+So as I'm sure you
+recall, the parallel
+
+21
+00:00:47.990 --> 00:00:52.070 align:middle line:84%
+streams model uses
+fork join, and also,
+
+22
+00:00:52.070 --> 00:00:56.420 align:middle line:84%
+the completable futures
+model may use fork join.
+
+23
+00:00:56.420 --> 00:00:57.470 align:middle line:90%
+It doesn't have to.
+
+24
+00:00:57.470 --> 00:00:59.978 align:middle line:84%
+Parallel streams has
+to use fork join,
+
+25
+00:00:59.978 --> 00:01:02.520 align:middle line:84%
+whereas completable futures--
+it's kind of an optional thing.
+
+26
+00:01:02.520 --> 00:01:04.395 align:middle line:84%
+And we'll talk more
+about completable futures
+
+27
+00:01:04.395 --> 00:01:07.130 align:middle line:90%
+in a few weeks.
+
+28
+00:01:07.130 --> 00:01:10.700 align:middle line:84%
+The focus here is on integrating
+object-oriented and functional
+
+29
+00:01:10.700 --> 00:01:11.870 align:middle line:90%
+programming.
+
+30
+00:01:11.870 --> 00:01:14.210 align:middle line:84%
+It's been my experience
+that both of these paradigms
+
+31
+00:01:14.210 --> 00:01:16.250 align:middle line:84%
+work well in isolation,
+but they work really
+
+32
+00:01:16.250 --> 00:01:17.460 align:middle line:90%
+well when you combine them.
+
+33
+00:01:17.460 --> 00:01:20.190 align:middle line:84%
+And that's because they
+have different purposes,
+
+34
+00:01:20.190 --> 00:01:23.810 align:middle line:84%
+different charters, if you
+will, and when you combine them,
+
+35
+00:01:23.810 --> 00:01:25.490 align:middle line:84%
+you get the best of
+both worlds, sort of
+
+36
+00:01:25.490 --> 00:01:27.542 align:middle line:84%
+like a like a Reese's
+peanut butter cup.
+
+37
+00:01:27.542 --> 00:01:29.000 align:middle line:84%
+You get peanut
+butter and chocolat.
+
+38
+00:01:29.000 --> 00:01:31.083 align:middle line:84%
+They taste really good
+when you put them together,
+
+39
+00:01:31.083 --> 00:01:32.210 align:middle line:90%
+or at least I think so.
+
+40
+00:01:32.210 --> 00:01:34.980 align:middle line:84%
+I recently found some people
+who didn't like Reese's peanut
+
+41
+00:01:34.980 --> 00:01:35.480 align:middle line:90%
+butter cups.
+
+42
+00:01:35.480 --> 00:01:37.190 align:middle line:90%
+I was very surprised.
+
+43
+00:01:37.190 --> 00:01:39.110 align:middle line:84%
+We'll also talk here
+about how patterns
+
+44
+00:01:39.110 --> 00:01:42.740 align:middle line:84%
+are used to emphasize key
+roles and responsibilities
+
+45
+00:01:42.740 --> 00:01:44.390 align:middle line:84%
+in the design of
+the app, as well
+
+46
+00:01:44.390 --> 00:01:48.470 align:middle line:84%
+as the design of the underlying
+parallelism frameworks.
+
+47
+00:01:48.470 --> 00:01:52.610 align:middle line:84%
+One thing to note is that many
+of the classes and frameworks
+
+48
+00:01:52.610 --> 00:01:57.890 align:middle line:84%
+in Java are heavily, heavily
+influenced by patterns--
+
+49
+00:01:57.890 --> 00:01:59.720 align:middle line:84%
+gang of four patterns,
+post patterns.
+
+50
+00:01:59.720 --> 00:02:02.060 align:middle line:84%
+You name it, you'll
+probably find
+
+51
+00:02:02.060 --> 00:02:06.290 align:middle line:84%
+examples of most of the core
+patterns in these classic works
+
+52
+00:02:06.290 --> 00:02:10.979 align:middle line:84%
+on patterns in the
+Java class library.
+
+53
+00:02:10.979 --> 00:02:14.100 align:middle line:84%
+So let's start by describing
+the pattern-oriented
+
+54
+00:02:14.100 --> 00:02:16.080 align:middle line:90%
+ImageStreamGang app.
+
+55
+00:02:16.080 --> 00:02:20.490 align:middle line:84%
+The purpose of this app is to
+combine streams and completable
+
+56
+00:02:20.490 --> 00:02:24.720 align:middle line:84%
+futures with a framework
+called the StreamGang framework
+
+57
+00:02:24.720 --> 00:02:26.790 align:middle line:84%
+in order to be
+able to efficiently
+
+58
+00:02:26.790 --> 00:02:31.590 align:middle line:84%
+and scalably and simply
+download, transform, store,
+
+59
+00:02:31.590 --> 00:02:34.510 align:middle line:90%
+and display images.
+
+60
+00:02:34.510 --> 00:02:36.860 align:middle line:84%
+So here's kind of
+what it how it works.
+
+61
+00:02:36.860 --> 00:02:38.710 align:middle line:84%
+There's a couple
+different variants.
+
+62
+00:02:38.710 --> 00:02:42.682 align:middle line:84%
+I'll talk about the variant here
+that's the Android app version.
+
+63
+00:02:42.682 --> 00:02:44.140 align:middle line:84%
+There's also a
+command-line version
+
+64
+00:02:44.140 --> 00:02:46.900 align:middle line:84%
+if you don't like Android
+or you don't have Android.
+
+65
+00:02:46.900 --> 00:02:50.460 align:middle line:84%
+So what it does is, it prompts
+the user for a list of URLs
+
+66
+00:02:50.460 --> 00:02:54.230 align:middle line:90%
+to download through a dialog.
+
+67
+00:02:54.230 --> 00:02:55.263 align:middle line:90%
+You give it the user.
+
+68
+00:02:55.263 --> 00:02:56.680 align:middle line:84%
+The user gives it
+the list of URLs
+
+69
+00:02:56.680 --> 00:02:58.388 align:middle line:84%
+it wants to have
+downloaded, or he or she
+
+70
+00:02:58.388 --> 00:03:00.200 align:middle line:90%
+wants to have downloaded.
+
+71
+00:03:00.200 --> 00:03:01.730 align:middle line:84%
+And then it goes
+ahead and downloads
+
+72
+00:03:01.730 --> 00:03:04.790 align:middle line:84%
+those images via
+one or more threads.
+
+73
+00:03:04.790 --> 00:03:07.290 align:middle line:84%
+In the case of the parallel
+streams version, of course,
+
+74
+00:03:07.290 --> 00:03:13.310 align:middle line:84%
+one or more threads in the
+Java common ForkJoinPool.
+
+75
+00:03:13.310 --> 00:03:15.380 align:middle line:84%
+It then goes ahead and
+applies a bunch of filters
+
+76
+00:03:15.380 --> 00:03:17.420 align:middle line:84%
+to transform the
+downloaded images.
+
+77
+00:03:17.420 --> 00:03:21.090 align:middle line:84%
+These filters are not the
+filter intermediate operation
+
+78
+00:03:21.090 --> 00:03:24.110 align:middle line:84%
+in the streams framework,
+but instead, they're
+
+79
+00:03:24.110 --> 00:03:26.220 align:middle line:84%
+image filters that
+transform the images.
+
+80
+00:03:26.220 --> 00:03:29.120 align:middle line:84%
+So we might go from,
+say, colored images
+
+81
+00:03:29.120 --> 00:03:31.460 align:middle line:84%
+to grayscale images,
+or whatever you
+
+82
+00:03:31.460 --> 00:03:34.660 align:middle line:90%
+want to use as your transform.
+
+83
+00:03:34.660 --> 00:03:39.310 align:middle line:84%
+These filtered images are then
+output to persistent storage,
+
+84
+00:03:39.310 --> 00:03:42.400 align:middle line:84%
+to files on the device,
+so that they can then
+
+85
+00:03:42.400 --> 00:03:45.770 align:middle line:90%
+go ahead and be displayed.
+
+86
+00:03:45.770 --> 00:03:48.950 align:middle line:84%
+This particular app
+applies a whole range
+
+87
+00:03:48.950 --> 00:03:50.990 align:middle line:90%
+of modern Java features.
+
+88
+00:03:50.990 --> 00:03:53.900 align:middle line:84%
+I highly recommend you
+get a copy of the Modern
+
+89
+00:03:53.900 --> 00:03:55.880 align:middle line:90%
+Java in Action book.
+
+90
+00:03:55.880 --> 00:03:58.610 align:middle line:84%
+The precursor to this
+was Java 8 in Action.
+
+91
+00:03:58.610 --> 00:04:00.500 align:middle line:84%
+That's really where I
+learned all this stuff
+
+92
+00:04:00.500 --> 00:04:01.940 align:middle line:90%
+several years ago.
+
+93
+00:04:01.940 --> 00:04:03.993 align:middle line:90%
+I recommend you get this book.
+
+94
+00:04:03.993 --> 00:04:04.910 align:middle line:90%
+It's a wonderful book.
+
+95
+00:04:04.910 --> 00:04:07.050 align:middle line:84%
+You'll learn a lot
+of things from it.
+
+96
+00:04:07.050 --> 00:04:09.720 align:middle line:84%
+So we demonstrate the use
+of sequential and parallel
+
+97
+00:04:09.720 --> 00:04:12.960 align:middle line:84%
+streams, which we're
+going to cover now.
+
+98
+00:04:12.960 --> 00:04:15.210 align:middle line:84%
+In a couple weeks, we're
+going to come back and cover
+
+99
+00:04:15.210 --> 00:04:17.790 align:middle line:84%
+CompletableFutures,
+which interesting enough,
+
+100
+00:04:17.790 --> 00:04:22.019 align:middle line:84%
+you can see here are
+guided by the structure
+
+101
+00:04:22.019 --> 00:04:24.520 align:middle line:90%
+of sequential streams.
+
+102
+00:04:24.520 --> 00:04:28.090 align:middle line:84%
+And of course, we also use
+our foundational Java features
+
+103
+00:04:28.090 --> 00:04:30.670 align:middle line:84%
+we covered in other courses,
+like lambda expressions
+
+104
+00:04:30.670 --> 00:04:32.350 align:middle line:90%
+and method references.
+
+105
+00:04:32.350 --> 00:04:34.510 align:middle line:84%
+So this is a really
+cool tour de force
+
+106
+00:04:34.510 --> 00:04:35.950 align:middle line:84%
+of all the different
+things we're
+
+107
+00:04:35.950 --> 00:04:39.730 align:middle line:84%
+covering in the different
+classes in our program,
+
+108
+00:04:39.730 --> 00:04:43.210 align:middle line:84%
+and it kind of pulls it
+all together, hopefully.
+
+109
+00:04:43.210 --> 00:04:45.070 align:middle line:84%
+It's much better,
+in my mind, to write
+
+110
+00:04:45.070 --> 00:04:47.770 align:middle line:84%
+code that looks like this,
+which uses lambda expressions
+
+111
+00:04:47.770 --> 00:04:50.770 align:middle line:84%
+and method references, rather
+than to write hideous code,
+
+112
+00:04:50.770 --> 00:04:53.980 align:middle line:84%
+like this, that uses Java
+anonymous inner classes, which
+
+113
+00:04:53.980 --> 00:04:56.680 align:middle line:84%
+are just so full of
+extraneous syntax,
+
+114
+00:04:56.680 --> 00:05:00.765 align:middle line:90%
+it makes your mind ache.
+
+115
+00:05:00.765 --> 00:05:02.890 align:middle line:84%
+What I'd like to do now is
+start talking about some
+
+116
+00:05:02.890 --> 00:05:07.770 align:middle line:84%
+of the patterns that are applied
+in the ImageStreamGang app.
+
+117
+00:05:07.770 --> 00:05:09.287 align:middle line:84%
+There's a wide
+range of patterns.
+
+118
+00:05:09.287 --> 00:05:10.620 align:middle line:90%
+I'm going to cover the key ones.
+
+119
+00:05:10.620 --> 00:05:12.245 align:middle line:84%
+There's a bunch of
+other ones, as well,
+
+120
+00:05:12.245 --> 00:05:13.860 align:middle line:90%
+but we'll cover the core ones.
+
+121
+00:05:13.860 --> 00:05:15.570 align:middle line:84%
+Some of these patterns
+are so-called Gang
+
+122
+00:05:15.570 --> 00:05:19.200 align:middle line:84%
+of Four patterns from the
+Design Patterns Catalog.
+
+123
+00:05:19.200 --> 00:05:21.570 align:middle line:84%
+Other patterns are
+so-called POSA patterns
+
+124
+00:05:21.570 --> 00:05:23.700 align:middle line:84%
+from the Pattern-Oriented
+Software Architecture
+
+125
+00:05:23.700 --> 00:05:27.450 align:middle line:84%
+series of books, of which
+I'm a co-author on several.
+
+126
+00:05:27.450 --> 00:05:29.250 align:middle line:84%
+And these patterns
+are all applied
+
+127
+00:05:29.250 --> 00:05:32.310 align:middle line:84%
+to help enhance the
+framework-based architecture
+
+128
+00:05:32.310 --> 00:05:35.910 align:middle line:84%
+of this app, and also
+of the underlying Java
+
+129
+00:05:35.910 --> 00:05:38.440 align:middle line:90%
+parallelism frameworks, as well.
+
+130
+00:05:38.440 --> 00:05:41.400 align:middle line:84%
+Some of the patterns are
+essential to the design
+
+131
+00:05:41.400 --> 00:05:42.870 align:middle line:90%
+of the software.
+
+132
+00:05:42.870 --> 00:05:47.640 align:middle line:84%
+For example, the use of
+streams implies the fact
+
+133
+00:05:47.640 --> 00:05:50.490 align:middle line:84%
+that we're using the
+pipes and filters pattern.
+
+134
+00:05:50.490 --> 00:05:52.680 align:middle line:84%
+You'll recall we talked
+about the pipes and filters
+
+135
+00:05:52.680 --> 00:05:54.780 align:middle line:84%
+pattern quite a while
+back, a number of weeks
+
+136
+00:05:54.780 --> 00:05:58.230 align:middle line:84%
+ago, when we first
+discussed what a stream was.
+
+137
+00:05:58.230 --> 00:06:00.810 align:middle line:84%
+And I talked about how the
+pipes and filters pattern, which
+
+138
+00:06:00.810 --> 00:06:05.220 align:middle line:84%
+came from the POSA 1 book, and
+then also reappears in the POSA
+
+139
+00:06:05.220 --> 00:06:08.400 align:middle line:84%
+4 book, divides an
+application's tasks
+
+140
+00:06:08.400 --> 00:06:12.030 align:middle line:84%
+into several self-contained
+data processing steps,
+
+141
+00:06:12.030 --> 00:06:13.860 align:middle line:84%
+and then connects
+these steps together
+
+142
+00:06:13.860 --> 00:06:18.480 align:middle line:84%
+via intermediate data buffers
+to provide a data processing
+
+143
+00:06:18.480 --> 00:06:19.860 align:middle line:90%
+pipeline.
+
+144
+00:06:19.860 --> 00:06:23.610 align:middle line:84%
+And this is a very powerful,
+very common pattern.
+
+145
+00:06:23.610 --> 00:06:27.090 align:middle line:84%
+Shows up all over the place,
+as we talked about before.
+
+146
+00:06:27.090 --> 00:06:32.370 align:middle line:84%
+Another pattern, which occurs
+in the Describing POSA 4 book
+
+147
+00:06:32.370 --> 00:06:35.670 align:middle line:84%
+and also described a
+bit in the POSA 2 book,
+
+148
+00:06:35.670 --> 00:06:38.730 align:middle line:84%
+is the future pattern,
+which provides a proxy
+
+149
+00:06:38.730 --> 00:06:42.160 align:middle line:84%
+to a client when it
+invokes a service,
+
+150
+00:06:42.160 --> 00:06:44.800 align:middle line:84%
+and it's used to keep track
+of the state of the service's
+
+151
+00:06:44.800 --> 00:06:46.810 align:middle line:90%
+concurrent computation.
+
+152
+00:06:46.810 --> 00:06:50.830 align:middle line:84%
+And the future only can be
+used to get a value back
+
+153
+00:06:50.830 --> 00:06:53.135 align:middle line:84%
+by the client when the
+computation completes.
+
+154
+00:06:53.135 --> 00:06:54.760 align:middle line:84%
+So typically what
+happens is you invoke
+
+155
+00:06:54.760 --> 00:06:56.440 align:middle line:90%
+an asynchronous operation.
+
+156
+00:06:56.440 --> 00:06:58.150 align:middle line:90%
+You get back a future.
+
+157
+00:06:58.150 --> 00:07:00.753 align:middle line:84%
+Then the operation
+runs asynchronously,
+
+158
+00:07:00.753 --> 00:07:02.170 align:middle line:84%
+and when the
+operation's complete,
+
+159
+00:07:02.170 --> 00:07:05.260 align:middle line:84%
+the future becomes triggered and
+you can get the result. This,
+
+160
+00:07:05.260 --> 00:07:08.230 align:middle line:84%
+of course, is at the
+very heart of a lot
+
+161
+00:07:08.230 --> 00:07:10.660 align:middle line:84%
+of the asynchronous programming
+that we do with Java,
+
+162
+00:07:10.660 --> 00:07:13.570 align:middle line:84%
+with Java CompletableFutures
+or Java Futures.
+
+163
+00:07:13.570 --> 00:07:16.420 align:middle line:84%
+In our world for the
+ImageStreamGang app,
+
+164
+00:07:16.420 --> 00:07:20.710 align:middle line:84%
+this is used very heavily by
+the CompletableFutures version
+
+165
+00:07:20.710 --> 00:07:23.800 align:middle line:84%
+of this app, which
+we'll talk about later.
+
+166
+00:07:23.800 --> 00:07:26.760 align:middle line:84%
+There's also another fundamental
+pattern called ResourcePool,
+
+167
+00:07:26.760 --> 00:07:29.100 align:middle line:84%
+which appears in
+the POSA 3 book,
+
+168
+00:07:29.100 --> 00:07:31.620 align:middle line:84%
+and this prevents expensive
+acquisition and release
+
+169
+00:07:31.620 --> 00:07:34.595 align:middle line:84%
+of resources by
+recycling them, and when
+
+170
+00:07:34.595 --> 00:07:35.970 align:middle line:84%
+they're no longer
+needed, they're
+
+171
+00:07:35.970 --> 00:07:37.345 align:middle line:84%
+just put back in
+the pool, rather
+
+172
+00:07:37.345 --> 00:07:40.350 align:middle line:84%
+than having to be shut down
+and recreated from scratch.
+
+173
+00:07:40.350 --> 00:07:41.790 align:middle line:84%
+And obviously,
+this is what's used
+
+174
+00:07:41.790 --> 00:07:44.250 align:middle line:84%
+with something like
+a ForkJoinPool,
+
+175
+00:07:44.250 --> 00:07:46.290 align:middle line:84%
+or some other type
+of thread pool
+
+176
+00:07:46.290 --> 00:07:48.060 align:middle line:84%
+that comes from the
+Executor framework,
+
+177
+00:07:48.060 --> 00:07:51.450 align:middle line:84%
+or is developed in a custom
+way by some user who implements
+
+178
+00:07:51.450 --> 00:07:53.650 align:middle line:90%
+the ExecutorService interface.
+
+179
+00:07:53.650 --> 00:07:55.740 align:middle line:84%
+So all the thread pooling
+mechanisms we talk about
+
+180
+00:07:55.740 --> 00:08:00.415 align:middle line:84%
+are basically the ResourcePool
+pattern in the POSA 3 book.
+
+181
+00:08:00.415 --> 00:08:02.790 align:middle line:84%
+Some other patterns that occur
+from the Gang of Four book
+
+182
+00:08:02.790 --> 00:08:05.060 align:middle line:84%
+would be things like
+template method,
+
+183
+00:08:05.060 --> 00:08:08.250 align:middle line:84%
+where you define the overall
+structure of a method
+
+184
+00:08:08.250 --> 00:08:10.710 align:middle line:84%
+and then allow subclasses
+to refine or redefine
+
+185
+00:08:10.710 --> 00:08:12.330 align:middle line:90%
+some steps in the method.
+
+186
+00:08:12.330 --> 00:08:15.210 align:middle line:84%
+This is a very common pattern
+used all over the place
+
+187
+00:08:15.210 --> 00:08:15.930 align:middle line:90%
+in frameworks.
+
+188
+00:08:15.930 --> 00:08:20.250 align:middle line:84%
+We use this stuff left, right,
+and center in our StreamGang
+
+189
+00:08:20.250 --> 00:08:21.000 align:middle line:90%
+framework.
+
+190
+00:08:21.000 --> 00:08:24.150 align:middle line:84%
+Things like processStream(),
+processInput()--
+
+191
+00:08:24.150 --> 00:08:27.630 align:middle line:84%
+those are examples hook
+methods that get called back,
+
+192
+00:08:27.630 --> 00:08:30.270 align:middle line:84%
+and you can customize them and
+fill them in to do different
+
+193
+00:08:30.270 --> 00:08:31.110 align:middle line:90%
+things.
+
+194
+00:08:31.110 --> 00:08:32.789 align:middle line:84%
+The Java class
+libraries, of course,
+
+195
+00:08:32.789 --> 00:08:35.250 align:middle line:84%
+are actually chock full
+of template methods
+
+196
+00:08:35.250 --> 00:08:37.770 align:middle line:84%
+all over the place,
+and that's no surprise,
+
+197
+00:08:37.770 --> 00:08:41.767 align:middle line:84%
+because it's a very fundamental
+framework-based pattern.
+
+198
+00:08:41.767 --> 00:08:43.600 align:middle line:84%
+Yet another method that
+appears everywhere--
+
+199
+00:08:43.600 --> 00:08:45.808 align:middle line:84%
+you've probably heard me
+mention this over, and over,
+
+200
+00:08:45.808 --> 00:08:47.170 align:middle line:90%
+and over again in this course--
+
+201
+00:08:47.170 --> 00:08:49.990 align:middle line:84%
+is the concept of a factory
+method pattern, which
+
+202
+00:08:49.990 --> 00:08:52.990 align:middle line:84%
+encapsulates the concrete
+details of object creation
+
+203
+00:08:52.990 --> 00:08:56.320 align:middle line:84%
+inside a factory method, rather
+than letting the clients create
+
+204
+00:08:56.320 --> 00:08:58.870 align:middle line:84%
+the objects themselves,
+thereby separating
+
+205
+00:08:58.870 --> 00:09:01.420 align:middle line:84%
+object creation and
+all of its messiness
+
+206
+00:09:01.420 --> 00:09:05.500 align:middle line:84%
+from object use and all of
+its subsequent simplicity.
+
+207
+00:09:05.500 --> 00:09:08.120 align:middle line:84%
+This is another
+classic pattern you
+
+208
+00:09:08.120 --> 00:09:13.670 align:middle line:84%
+see that's used in things like
+the various Collectors utility
+
+209
+00:09:13.670 --> 00:09:16.362 align:middle line:84%
+class, the Executors
+utility class.
+
+210
+00:09:16.362 --> 00:09:18.320 align:middle line:84%
+You can see this using
+the Collector interface.
+
+211
+00:09:18.320 --> 00:09:20.840 align:middle line:84%
+There's just factory methods
+galore throughout Java
+
+212
+00:09:20.840 --> 00:09:23.480 align:middle line:90%
+and throughout our examples.
+
+213
+00:09:23.480 --> 00:09:26.843 align:middle line:84%
+Another pattern we use in
+the ImageStreamGang app
+
+214
+00:09:26.843 --> 00:09:28.510 align:middle line:84%
+is something called
+the decorator, which
+
+215
+00:09:28.510 --> 00:09:31.480 align:middle line:84%
+allows a behavior to be
+added to an individual object
+
+216
+00:09:31.480 --> 00:09:34.090 align:middle line:84%
+dynamically without
+affecting the behavior
+
+217
+00:09:34.090 --> 00:09:36.850 align:middle line:84%
+of any other objects
+from the same class.
+
+218
+00:09:36.850 --> 00:09:40.730 align:middle line:84%
+And we use this for the image
+filter processing hierarchy,
+
+219
+00:09:40.730 --> 00:09:43.150 align:middle line:84%
+where we have decorators
+that can come along and add
+
+220
+00:09:43.150 --> 00:09:47.350 align:middle line:84%
+these image filters to an object
+that knows how to store itself
+
+221
+00:09:47.350 --> 00:09:49.990 align:middle line:84%
+on disk, an image that knows
+how to store itself on disk
+
+222
+00:09:49.990 --> 00:09:52.600 align:middle line:84%
+after it's been filtered
+through its decorators.
+
+223
+00:09:52.600 --> 00:09:56.823 align:middle line:84%
+So that's another cool example
+of patterns that are applied.
+
+224
+00:09:56.823 --> 00:09:58.240 align:middle line:84%
+There are also
+other patterns that
+
+225
+00:09:58.240 --> 00:10:00.670 align:middle line:84%
+are applied not quite
+as profound, patterns
+
+226
+00:10:00.670 --> 00:10:02.680 align:middle line:84%
+like the Singleton
+pattern, that ensures
+
+227
+00:10:02.680 --> 00:10:05.350 align:middle line:84%
+a class has only one instance
+and provides a global access
+
+228
+00:10:05.350 --> 00:10:06.430 align:middle line:90%
+point to it.
+
+229
+00:10:06.430 --> 00:10:09.940 align:middle line:84%
+Ironically, Singleton, which is
+a bit of a notorious pattern,
+
+230
+00:10:09.940 --> 00:10:12.550 align:middle line:84%
+actually finds
+many uses in Java,
+
+231
+00:10:12.550 --> 00:10:14.540 align:middle line:84%
+at least in terms
+of the behaviors.
+
+232
+00:10:14.540 --> 00:10:17.230 align:middle line:84%
+So you can think of something
+like the common ForkJoinPool
+
+233
+00:10:17.230 --> 00:10:19.360 align:middle line:84%
+as effectively
+being a Singleton,
+
+234
+00:10:19.360 --> 00:10:21.550 align:middle line:84%
+where you've got one
+instance of them.
+
+235
+00:10:21.550 --> 00:10:24.897 align:middle line:84%
+and we use Singletons in other
+places in our program, as well.
+
+236
+00:10:24.897 --> 00:10:26.730 align:middle line:84%
+And then something else
+that's worth noting,
+
+237
+00:10:26.730 --> 00:10:30.690 align:middle line:84%
+which is a pattern that appears
+in the POSA 1 book and the POSA
+
+238
+00:10:30.690 --> 00:10:33.137 align:middle line:84%
+4 book, is called
+command processor.
+
+239
+00:10:33.137 --> 00:10:35.220 align:middle line:84%
+And this is used to package
+a piece of application
+
+240
+00:10:35.220 --> 00:10:39.370 align:middle line:84%
+functionality and
+parameterize it into an object
+
+241
+00:10:39.370 --> 00:10:42.600 align:middle line:84%
+so it can be usable in other
+contexts, such as later
+
+242
+00:10:42.600 --> 00:10:44.640 align:middle line:84%
+in time, or running
+on a different thread,
+
+243
+00:10:44.640 --> 00:10:46.320 align:middle line:84%
+or running in a
+different process.
+
+244
+00:10:46.320 --> 00:10:49.680 align:middle line:84%
+And this pattern gets used
+in our ImageStreamGang app
+
+245
+00:10:49.680 --> 00:10:53.550 align:middle line:84%
+for Android when we want to
+pass certain information created
+
+246
+00:10:53.550 --> 00:10:56.160 align:middle line:84%
+in the background to the
+user interface thread
+
+247
+00:10:56.160 --> 00:10:57.650 align:middle line:90%
+to be displayed.
+
+248
+00:10:57.650 --> 00:10:59.380 align:middle line:84%
+And it gets used
+other places, as well.
+
+249
+00:10:59.380 --> 00:11:03.750 align:middle line:84%
+It's used in a number of
+Java concurrency frameworks,
+
+250
+00:11:03.750 --> 00:11:08.000 align:middle line:90%
+such as the ExecutorService.
+
+251
+00:11:08.000 --> 00:11:09.940 align:middle line:84%
+So let's just give
+a little summary
+
+252
+00:11:09.940 --> 00:11:13.310 align:middle line:84%
+of how to understand
+the ImageStreamGang app.
+
+253
+00:11:13.310 --> 00:11:14.650 align:middle line:90%
+This app is complicated.
+
+254
+00:11:14.650 --> 00:11:16.873 align:middle line:90%
+It contains a lot of classes.
+
+255
+00:11:16.873 --> 00:11:18.790 align:middle line:84%
+But if we kind of break
+it down and look at it
+
+256
+00:11:18.790 --> 00:11:21.082 align:middle line:84%
+from different perspectives,
+it becomes a little easier
+
+257
+00:11:21.082 --> 00:11:22.083 align:middle line:90%
+to get your head around.
+
+258
+00:11:22.083 --> 00:11:23.500 align:middle line:84%
+So the different
+perspectives here
+
+259
+00:11:23.500 --> 00:11:26.140 align:middle line:84%
+are its pattern-oriented
+design, which is partially
+
+260
+00:11:26.140 --> 00:11:28.423 align:middle line:84%
+what we covered
+here; its data flows,
+
+261
+00:11:28.423 --> 00:11:30.340 align:middle line:84%
+and we'll talk about
+some of those things when
+
+262
+00:11:30.340 --> 00:11:33.220 align:middle line:84%
+we look at how to
+visualize its behavior;
+
+263
+00:11:33.220 --> 00:11:36.280 align:middle line:84%
+as well as various detailed
+code walkthroughs, which
+
+264
+00:11:36.280 --> 00:11:37.060 align:middle line:90%
+will do a lot of.
+
+265
+00:11:37.060 --> 00:11:39.400 align:middle line:84%
+So trying to look at this
+from the right perspective
+
+266
+00:11:39.400 --> 00:11:40.960 align:middle line:90%
+is really important.
+
+267
+00:11:40.960 --> 00:11:44.290 align:middle line:84%
+I recommend you watch
+this entire set of lessons
+
+268
+00:11:44.290 --> 00:11:46.870 align:middle line:84%
+carefully to understand
+how everything works.
+
+269
+00:11:46.870 --> 00:11:49.770 align:middle line:84%
+It might or might not make
+sense the first time you see it,
+
+270
+00:11:49.770 --> 00:11:52.270 align:middle line:84%
+but the more you watch it and
+the more you look at the code,
+
+271
+00:11:52.270 --> 00:11:54.460 align:middle line:90%
+the better you'll feel about it.
+
+272
+00:11:54.460 --> 00:11:56.920 align:middle line:84%
+We'll be showing a
+bunch of visualizations
+
+273
+00:11:56.920 --> 00:12:00.020 align:middle line:84%
+using parallel streams to
+demonstrate how things work.
+
+274
+00:12:00.020 --> 00:12:03.130 align:middle line:84%
+I really like this nomenclature
+because I think it gives you
+
+275
+00:12:03.130 --> 00:12:05.980 align:middle line:84%
+a high level, bird's-eye
+view of what's going on.
+
+276
+00:12:05.980 --> 00:12:08.650 align:middle line:84%
+And of course, the
+ground truth in anything
+
+277
+00:12:08.650 --> 00:12:11.920 align:middle line:84%
+is to look at the source
+code, which is available here
+
+278
+00:12:11.920 --> 00:12:16.650 align:middle line:84%
+in the ImageStreamGang folder
+in my GitHub repository.

@@ -1,0 +1,783 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.637 align:middle line:90%
+
+
+2
+00:00:00.637 --> 00:00:02.220 align:middle line:84%
+So now that we've
+had a chance to talk
+
+3
+00:00:02.220 --> 00:00:05.730 align:middle line:84%
+about the ImageStreamGang
+app and give you
+
+4
+00:00:05.730 --> 00:00:08.610 align:middle line:84%
+a sense of its overall
+behavior, give you
+
+5
+00:00:08.610 --> 00:00:10.200 align:middle line:84%
+a sense of the
+patterns that are used,
+
+6
+00:00:10.200 --> 00:00:13.230 align:middle line:84%
+talk about some techniques
+for learning its behavior,
+
+7
+00:00:13.230 --> 00:00:15.312 align:middle line:84%
+and learning how its
+functionality works,
+
+8
+00:00:15.312 --> 00:00:17.520 align:middle line:84%
+let's spend a little time
+talking about its structure
+
+9
+00:00:17.520 --> 00:00:19.440 align:middle line:84%
+and functionality
+in more detail.
+
+10
+00:00:19.440 --> 00:00:21.180 align:middle line:84%
+And in particular,
+we're going to focus
+
+11
+00:00:21.180 --> 00:00:26.130 align:middle line:84%
+on the integration of
+object-oriented paradigm
+
+12
+00:00:26.130 --> 00:00:29.577 align:middle line:84%
+concepts and functional
+programming paradigm concepts.
+
+13
+00:00:29.577 --> 00:00:31.410 align:middle line:84%
+And I think-- I hope--
+that you'll come away
+
+14
+00:00:31.410 --> 00:00:35.308 align:middle line:84%
+with this discussion with a good
+understanding of the synergies
+
+15
+00:00:35.308 --> 00:00:37.350 align:middle line:84%
+that exist between
+object-oriented and functional
+
+16
+00:00:37.350 --> 00:00:38.288 align:middle line:90%
+programming.
+
+17
+00:00:38.288 --> 00:00:40.080 align:middle line:84%
+Sometimes people like
+to pretend that these
+
+18
+00:00:40.080 --> 00:00:43.260 align:middle line:84%
+are disjoint
+programming paradigms,
+
+19
+00:00:43.260 --> 00:00:45.300 align:middle line:90%
+and never the twain shall meet.
+
+20
+00:00:45.300 --> 00:00:47.490 align:middle line:84%
+And I think that's always
+been a very misplaced sort
+
+21
+00:00:47.490 --> 00:00:49.410 align:middle line:90%
+of purist view.
+
+22
+00:00:49.410 --> 00:00:52.800 align:middle line:84%
+But with languages that are
+hybrid languages, like Java 8
+
+23
+00:00:52.800 --> 00:00:54.750 align:middle line:84%
+and beyond, it really
+makes no sense.
+
+24
+00:00:54.750 --> 00:00:56.760 align:middle line:84%
+Because you might
+as well get the best
+
+25
+00:00:56.760 --> 00:00:59.010 align:middle line:84%
+of these different worlds,
+and combine them together
+
+26
+00:00:59.010 --> 00:01:02.400 align:middle line:90%
+in very effective ways.
+
+27
+00:01:02.400 --> 00:01:06.020 align:middle line:84%
+So let's first start by taking
+a bird's-eye view of the overall
+
+28
+00:01:06.020 --> 00:01:10.100 align:middle line:84%
+structure of the
+ImageStreamGang app.
+
+29
+00:01:10.100 --> 00:01:12.800 align:middle line:84%
+And this is a UML class
+diagram, that kind of
+
+30
+00:01:12.800 --> 00:01:15.920 align:middle line:84%
+shows the key classes
+that are defined here.
+
+31
+00:01:15.920 --> 00:01:17.690 align:middle line:84%
+And you can see
+just from a glance
+
+32
+00:01:17.690 --> 00:01:21.410 align:middle line:84%
+that the overall
+structure of this app
+
+33
+00:01:21.410 --> 00:01:23.280 align:middle line:90%
+uses object-oriented design.
+
+34
+00:01:23.280 --> 00:01:24.830 align:middle line:90%
+So we've got classes.
+
+35
+00:01:24.830 --> 00:01:25.980 align:middle line:90%
+We've got interfaces.
+
+36
+00:01:25.980 --> 00:01:27.170 align:middle line:90%
+We've got inheritance.
+
+37
+00:01:27.170 --> 00:01:28.790 align:middle line:90%
+We've got composition.
+
+38
+00:01:28.790 --> 00:01:31.490 align:middle line:84%
+We've got nesting, all these
+good object-oriented kinds
+
+39
+00:01:31.490 --> 00:01:33.940 align:middle line:90%
+of things.
+
+40
+00:01:33.940 --> 00:01:36.718 align:middle line:84%
+Now, the classes that we're
+going to look at, of course,
+
+41
+00:01:36.718 --> 00:01:38.760 align:middle line:84%
+are going to apply a whole
+pile of different Java
+
+42
+00:01:38.760 --> 00:01:42.570 align:middle line:84%
+features, some object-oriented,
+some functional, in order
+
+43
+00:01:42.570 --> 00:01:45.570 align:middle line:84%
+to enable efficient and
+scalable image downloading
+
+44
+00:01:45.570 --> 00:01:47.965 align:middle line:90%
+and processing.
+
+45
+00:01:47.965 --> 00:01:49.590 align:middle line:84%
+At the core of this
+is something called
+
+46
+00:01:49.590 --> 00:01:52.500 align:middle line:84%
+the StreamGang class,
+which is basically
+
+47
+00:01:52.500 --> 00:01:55.650 align:middle line:84%
+the root of a framework
+for initiating
+
+48
+00:01:55.650 --> 00:01:59.940 align:middle line:84%
+streams that will process
+input from a list of elements.
+
+49
+00:01:59.940 --> 00:02:02.580 align:middle line:84%
+And I use the StreamGang for
+a bunch of different thing.
+
+50
+00:02:02.580 --> 00:02:07.260 align:middle line:84%
+The SearchStreamGang case
+study used StreamGang.
+
+51
+00:02:07.260 --> 00:02:09.780 align:middle line:84%
+The ImageStreamGang
+study uses StreamGang.
+
+52
+00:02:09.780 --> 00:02:13.020 align:middle line:84%
+Various things use
+the StreamGang base
+
+53
+00:02:13.020 --> 00:02:15.868 align:middle line:84%
+class and the overall
+paradigm it provides.
+
+54
+00:02:15.868 --> 00:02:17.410 align:middle line:84%
+In this particular
+case, we then have
+
+55
+00:02:17.410 --> 00:02:20.650 align:middle line:84%
+something that we call
+the ImageStreamGang
+
+56
+00:02:20.650 --> 00:02:23.080 align:middle line:90%
+class that extends StreamGang.
+
+57
+00:02:23.080 --> 00:02:25.360 align:middle line:84%
+It adds some other
+specific behaviors
+
+58
+00:02:25.360 --> 00:02:28.690 align:middle line:84%
+that customize it, and
+customizes StreamGang framework
+
+59
+00:02:28.690 --> 00:02:32.560 align:middle line:84%
+to download and process images,
+which is what we're doing here.
+
+60
+00:02:32.560 --> 00:02:36.340 align:middle line:84%
+From there, we then have a bunch
+of different implementations
+
+61
+00:02:36.340 --> 00:02:39.430 align:middle line:84%
+that extend StreamGang,
+or ImageStreamGang,
+
+62
+00:02:39.430 --> 00:02:44.140 align:middle line:84%
+and provide various concurrency
+and parallelism exemplars
+
+63
+00:02:44.140 --> 00:02:45.830 align:middle line:90%
+or strategies.
+
+64
+00:02:45.830 --> 00:02:49.273 align:middle line:84%
+So as we'll see here, we have
+a sequential version, which
+
+65
+00:02:49.273 --> 00:02:50.440 align:middle line:90%
+we're not going to focus on.
+
+66
+00:02:50.440 --> 00:02:53.650 align:middle line:84%
+It just does everything
+sequentially using a stream.
+
+67
+00:02:53.650 --> 00:02:55.400 align:middle line:84%
+We have a parallel
+streams version,
+
+68
+00:02:55.400 --> 00:02:56.817 align:middle line:84%
+which is what we're
+going to focus
+
+69
+00:02:56.817 --> 00:02:59.110 align:middle line:84%
+on now, of course, the
+download and filter
+
+70
+00:02:59.110 --> 00:03:01.030 align:middle line:90%
+the images in parallel.
+
+71
+00:03:01.030 --> 00:03:04.180 align:middle line:84%
+And then we've also got a
+couple of CompletableFutures
+
+72
+00:03:04.180 --> 00:03:06.490 align:middle line:84%
+implementations that'll
+download and filter
+
+73
+00:03:06.490 --> 00:03:07.850 align:middle line:90%
+the images asynchronously.
+
+74
+00:03:07.850 --> 00:03:09.580 align:middle line:84%
+And we're going to
+cover one of these
+
+75
+00:03:09.580 --> 00:03:12.830 align:middle line:84%
+later when we talk about the
+CompletableFutures framework.
+
+76
+00:03:12.830 --> 00:03:14.330 align:middle line:84%
+So it'll be kind
+of fun, because you
+
+77
+00:03:14.330 --> 00:03:16.900 align:middle line:84%
+get a chance to
+compare and contrast
+
+78
+00:03:16.900 --> 00:03:19.120 align:middle line:84%
+the parallel streams
+implementation, which we're
+
+79
+00:03:19.120 --> 00:03:22.600 align:middle line:84%
+going to cover now, with one
+of the CompletableFutures
+
+80
+00:03:22.600 --> 00:03:25.780 align:middle line:84%
+implementations that we're
+going to cover later.
+
+81
+00:03:25.780 --> 00:03:29.220 align:middle line:84%
+There's also a class that is
+used to store image metadata
+
+82
+00:03:29.220 --> 00:03:34.070 align:middle line:84%
+and provide methods for common
+image and file-related tasks.
+
+83
+00:03:34.070 --> 00:03:37.190 align:middle line:84%
+We use that in conjunction
+with the class hierarchy
+
+84
+00:03:37.190 --> 00:03:40.070 align:middle line:84%
+that applies the decorator
+pattern to filter and store
+
+85
+00:03:40.070 --> 00:03:40.910 align:middle line:90%
+the images.
+
+86
+00:03:40.910 --> 00:03:42.890 align:middle line:84%
+You can have different
+kinds of filters
+
+87
+00:03:42.890 --> 00:03:45.740 align:middle line:84%
+to transform the images,
+like a grayscale filter
+
+88
+00:03:45.740 --> 00:03:49.620 align:middle line:84%
+or an embossed filter or a
+sharpened filter or whatnot.
+
+89
+00:03:49.620 --> 00:03:51.810 align:middle line:84%
+And then there's also
+a bunch of classes
+
+90
+00:03:51.810 --> 00:03:54.540 align:middle line:84%
+that provide the user
+interface for an Android
+
+91
+00:03:54.540 --> 00:03:56.530 align:middle line:90%
+version of this app.
+
+92
+00:03:56.530 --> 00:03:59.920 align:middle line:84%
+And there's also a
+Java console version
+
+93
+00:03:59.920 --> 00:04:03.460 align:middle line:84%
+of this app that shares
+99% percent of the code.
+
+94
+00:04:03.460 --> 00:04:05.740 align:middle line:84%
+So almost all the code is
+identical between Android
+
+95
+00:04:05.740 --> 00:04:06.363 align:middle line:90%
+and Java.
+
+96
+00:04:06.363 --> 00:04:08.530 align:middle line:84%
+And just the parts that
+deal with the user interface
+
+97
+00:04:08.530 --> 00:04:11.770 align:middle line:84%
+are kind of moved often
+and have to be distinct.
+
+98
+00:04:11.770 --> 00:04:14.950 align:middle line:90%
+But most of the stuff is shared.
+
+99
+00:04:14.950 --> 00:04:17.200 align:middle line:84%
+Now, I'm not going to run
+the ImageStreamGang app.
+
+100
+00:04:17.200 --> 00:04:18.209 align:middle line:90%
+It's easy to run.
+
+101
+00:04:18.209 --> 00:04:20.899 align:middle line:84%
+But if you were
+to run it, and you
+
+102
+00:04:20.899 --> 00:04:23.720 align:middle line:84%
+were to look at its performance,
+especially for the command line
+
+103
+00:04:23.720 --> 00:04:27.278 align:middle line:84%
+version, which really is there
+largely to do benchmarking--
+
+104
+00:04:27.278 --> 00:04:28.820 align:middle line:84%
+the Android version
+actually is cool,
+
+105
+00:04:28.820 --> 00:04:31.237 align:middle line:84%
+and you can do interesting
+things with its user interface.
+
+106
+00:04:31.237 --> 00:04:33.350 align:middle line:84%
+But the command line
+version is basically there
+
+107
+00:04:33.350 --> 00:04:35.930 align:middle line:84%
+just to download files
+and tell you how fast they
+
+108
+00:04:35.930 --> 00:04:37.400 align:middle line:90%
+downloaded and processed.
+
+109
+00:04:37.400 --> 00:04:38.900 align:middle line:84%
+So if you were to
+do this, you would
+
+110
+00:04:38.900 --> 00:04:40.760 align:middle line:90%
+see the following results.
+
+111
+00:04:40.760 --> 00:04:43.190 align:middle line:84%
+And in this
+particular case, I ran
+
+112
+00:04:43.190 --> 00:04:47.310 align:middle line:84%
+this on my 6-core
+Lenovo Windows laptop,
+
+113
+00:04:47.310 --> 00:04:51.080 align:middle line:90%
+which has 64 gigabytes of RAM.
+
+114
+00:04:51.080 --> 00:04:53.570 align:middle line:84%
+And I have two different
+sources of input.
+
+115
+00:04:53.570 --> 00:04:58.100 align:middle line:84%
+One has a bunch of large
+files that it downloads.
+
+116
+00:04:58.100 --> 00:05:02.420 align:middle line:84%
+And one has a bunch of smaller
+files that it downloads.
+
+117
+00:05:02.420 --> 00:05:05.700 align:middle line:84%
+And as you can see
+here, in all the cases,
+
+118
+00:05:05.700 --> 00:05:07.960 align:middle line:84%
+whether they're big
+files or small files,
+
+119
+00:05:07.960 --> 00:05:10.490 align:middle line:84%
+the CompletableFutures
+implementation
+
+120
+00:05:10.490 --> 00:05:12.650 align:middle line:90%
+runs the fastest.
+
+121
+00:05:12.650 --> 00:05:14.150 align:middle line:84%
+Now, different
+CompletableFutures
+
+122
+00:05:14.150 --> 00:05:15.650 align:middle line:84%
+implementations
+perform differently,
+
+123
+00:05:15.650 --> 00:05:17.733 align:middle line:84%
+based on whether they're
+big files or small files.
+
+124
+00:05:17.733 --> 00:05:20.830 align:middle line:84%
+But they always outperform
+parallel streams.
+
+125
+00:05:20.830 --> 00:05:23.570 align:middle line:84%
+Parallel streams performs
+well, but not as well
+
+126
+00:05:23.570 --> 00:05:24.980 align:middle line:90%
+as CompletableFutures.
+
+127
+00:05:24.980 --> 00:05:28.340 align:middle line:84%
+And of course, parallel streams
+and CompletableFutures all
+
+128
+00:05:28.340 --> 00:05:30.350 align:middle line:84%
+perform better than
+the sequential version
+
+129
+00:05:30.350 --> 00:05:31.910 align:middle line:90%
+of this stuff.
+
+130
+00:05:31.910 --> 00:05:34.040 align:middle line:84%
+But unlike the
+version we looked at
+
+131
+00:05:34.040 --> 00:05:37.460 align:middle line:84%
+before, unlike the
+SearchStreamGang case
+
+132
+00:05:37.460 --> 00:05:40.730 align:middle line:84%
+study, where we
+really saw linear
+
+133
+00:05:40.730 --> 00:05:43.210 align:middle line:84%
+or super linear
+performance speed up,
+
+134
+00:05:43.210 --> 00:05:46.130 align:middle line:84%
+you'll notice here that we
+don't get quite the speedup.
+
+135
+00:05:46.130 --> 00:05:49.790 align:middle line:84%
+Here, I've got this 6-core
+processor with hyperthreading.
+
+136
+00:05:49.790 --> 00:05:54.380 align:middle line:84%
+So it's got 12 effective
+cores, or 12 virtual cores.
+
+137
+00:05:54.380 --> 00:05:56.600 align:middle line:84%
+You can see that the
+difference in performance
+
+138
+00:05:56.600 --> 00:05:59.330 align:middle line:84%
+between, say, the
+sequential stream
+
+139
+00:05:59.330 --> 00:06:02.210 align:middle line:84%
+and the CompletableFutures
+is really a factor of 3,
+
+140
+00:06:02.210 --> 00:06:04.280 align:middle line:90%
+not a factor of 6.
+
+141
+00:06:04.280 --> 00:06:08.090 align:middle line:84%
+And that holds pretty
+much also for both
+
+142
+00:06:08.090 --> 00:06:10.750 align:middle line:90%
+of these implementations.
+
+143
+00:06:10.750 --> 00:06:11.530 align:middle line:90%
+Why is that?
+
+144
+00:06:11.530 --> 00:06:13.930 align:middle line:84%
+Well, the main reason is
+that this implementation
+
+145
+00:06:13.930 --> 00:06:16.647 align:middle line:90%
+is an I/O bound solution.
+
+146
+00:06:16.647 --> 00:06:17.980 align:middle line:90%
+It has to go out to the network.
+
+147
+00:06:17.980 --> 00:06:19.652 align:middle line:90%
+It has to download the images.
+
+148
+00:06:19.652 --> 00:06:20.860 align:middle line:90%
+It has to process the images.
+
+149
+00:06:20.860 --> 00:06:22.840 align:middle line:84%
+It has to store
+the images on disk.
+
+150
+00:06:22.840 --> 00:06:26.920 align:middle line:84%
+And so you are not going to have
+the wonderful embarrassingly
+
+151
+00:06:26.920 --> 00:06:31.370 align:middle line:84%
+parallel benefits we saw
+with the SearchStreamGang
+
+152
+00:06:31.370 --> 00:06:34.640 align:middle line:84%
+solution, which didn't have any
+of those I/O bound properties.
+
+153
+00:06:34.640 --> 00:06:36.140 align:middle line:90%
+They're all compute bound.
+
+154
+00:06:36.140 --> 00:06:39.160 align:middle line:84%
+So they're just running as fast
+as the CPU will let them go.
+
+155
+00:06:39.160 --> 00:06:41.320 align:middle line:84%
+And there's very little
+blocking and very little
+
+156
+00:06:41.320 --> 00:06:45.820 align:middle line:84%
+impeding the parallels--
+the extreme embarrassingly
+
+157
+00:06:45.820 --> 00:06:50.260 align:middle line:84%
+parallel performance speedup
+with the SearchStreamGang
+
+158
+00:06:50.260 --> 00:06:50.760 align:middle line:90%
+solution.
+
+159
+00:06:50.760 --> 00:06:52.510 align:middle line:84%
+But in this solution,
+there's other things
+
+160
+00:06:52.510 --> 00:06:54.780 align:middle line:84%
+that are going on, like
+networking overhead and file
+
+161
+00:06:54.780 --> 00:06:56.300 align:middle line:90%
+system, I/O, and so on.
+
+162
+00:06:56.300 --> 00:06:59.020 align:middle line:84%
+So it's just going to be a
+little bit less scalable.
+
+163
+00:06:59.020 --> 00:07:03.160 align:middle line:84%
+But as you can see,
+parallelism still comes along
+
+164
+00:07:03.160 --> 00:07:07.140 align:middle line:84%
+and helps to improve things
+pretty substantially.

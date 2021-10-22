@@ -1,0 +1,294 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.500 align:middle line:90%
+
+
+2
+00:00:00.500 --> 00:00:02.100 align:middle line:84%
+Welcome to the next
+week of our course
+
+3
+00:00:02.100 --> 00:00:05.187 align:middle line:84%
+on parallel functional
+programming with Java.
+
+4
+00:00:05.187 --> 00:00:07.270 align:middle line:84%
+Now that we've examined
+and explained the features
+
+5
+00:00:07.270 --> 00:00:09.820 align:middle line:84%
+and inner workings of
+Java parallel streams,
+
+6
+00:00:09.820 --> 00:00:12.010 align:middle line:84%
+it's time to step
+back and discuss
+
+7
+00:00:12.010 --> 00:00:14.890 align:middle line:84%
+the conditions under which
+parallel streams should
+
+8
+00:00:14.890 --> 00:00:17.520 align:middle line:90%
+and should not be applied.
+
+9
+00:00:17.520 --> 00:00:20.020 align:middle line:84%
+Although converting a sequential
+stream to a parallel stream
+
+10
+00:00:20.020 --> 00:00:22.780 align:middle line:84%
+requires only
+minuscule code changes,
+
+11
+00:00:22.780 --> 00:00:25.240 align:middle line:84%
+it's not always the
+right thing to do,
+
+12
+00:00:25.240 --> 00:00:27.520 align:middle line:84%
+since parallel streams
+only provide a performance
+
+13
+00:00:27.520 --> 00:00:30.830 align:middle line:90%
+boost under certain conditions.
+
+14
+00:00:30.830 --> 00:00:33.890 align:middle line:84%
+In particular, parallel
+streams work best
+
+15
+00:00:33.890 --> 00:00:38.260 align:middle line:84%
+when tasks are independent,
+computationally expensive,
+
+16
+00:00:38.260 --> 00:00:43.270 align:middle line:84%
+and are applied to large data
+sources on multicore platforms.
+
+17
+00:00:43.270 --> 00:00:45.640 align:middle line:84%
+In contrast, parallel
+stream performance
+
+18
+00:00:45.640 --> 00:00:49.090 align:middle line:84%
+can suffer when the data
+source is expensive to split
+
+19
+00:00:49.090 --> 00:00:52.680 align:middle line:84%
+and/or splits unevenly,
+the startup costs
+
+20
+00:00:52.680 --> 00:00:54.600 align:middle line:84%
+of parallel processing
+overwhelm the amount
+
+21
+00:00:54.600 --> 00:00:57.700 align:middle line:84%
+of data actually
+processed in parallel,
+
+22
+00:00:57.700 --> 00:01:00.920 align:middle line:84%
+the cost of combining
+partial results is high,
+
+23
+00:01:00.920 --> 00:01:03.970 align:middle line:84%
+and there is only a
+single processor core.
+
+24
+00:01:03.970 --> 00:01:06.040 align:middle line:84%
+When such conditions
+apply, it's often better
+
+25
+00:01:06.040 --> 00:01:09.150 align:middle line:84%
+just to stick with
+sequential streams.
+
+26
+00:01:09.150 --> 00:01:11.190 align:middle line:84%
+The bulk of this
+week's lessons focus
+
+27
+00:01:11.190 --> 00:01:14.250 align:middle line:84%
+on the Java parallel
+ImageStreamGang example,
+
+28
+00:01:14.250 --> 00:01:17.040 align:middle line:84%
+which is yet another case
+study that showcases parallel
+
+29
+00:01:17.040 --> 00:01:18.750 align:middle line:90%
+streams.
+
+30
+00:01:18.750 --> 00:01:22.140 align:middle line:84%
+This app combines Java's
+object-oriented and functional
+
+31
+00:01:22.140 --> 00:01:25.500 align:middle line:84%
+programming features together
+with parallel streams
+
+32
+00:01:25.500 --> 00:01:28.535 align:middle line:84%
+to process a list of
+image URLs by ignoring
+
+33
+00:01:28.535 --> 00:01:30.660 align:middle line:84%
+any cached images that have
+already been downloaded
+
+34
+00:01:30.660 --> 00:01:34.850 align:middle line:84%
+and processed, downloading
+the non-cached images
+
+35
+00:01:34.850 --> 00:01:38.090 align:middle line:84%
+from remote websites,
+applying a list of filters
+
+36
+00:01:38.090 --> 00:01:41.940 align:middle line:84%
+to transform each image,
+storing the filtered images
+
+37
+00:01:41.940 --> 00:01:44.250 align:middle line:84%
+in the local file
+system, and finally,
+
+38
+00:01:44.250 --> 00:01:47.300 align:middle line:84%
+displaying the
+images to the user.
+
+39
+00:01:47.300 --> 00:01:50.720 align:middle line:84%
+The declarative stream
+pipeline used in this example
+
+40
+00:01:50.720 --> 00:01:53.660 align:middle line:84%
+helps to close the gap between
+the ImageStreamGang's domain
+
+41
+00:01:53.660 --> 00:01:56.600 align:middle line:84%
+intent and the parallel
+computations performed
+
+42
+00:01:56.600 --> 00:01:59.270 align:middle line:90%
+to implement that intent.
+
+43
+00:01:59.270 --> 00:02:00.830 align:middle line:84%
+The final lessons
+this week evaluate
+
+44
+00:02:00.830 --> 00:02:04.930 align:middle line:84%
+the pros and cons of the Java
+parallel streams framework.
+
+45
+00:02:04.930 --> 00:02:07.690 align:middle line:84%
+There are many benefits
+of parallel streams.
+
+46
+00:02:07.690 --> 00:02:11.290 align:middle line:84%
+In particular, this framework
+simplifies parallel programming
+
+47
+00:02:11.290 --> 00:02:14.410 align:middle line:84%
+by shielding developers from
+the details of splitting,
+
+48
+00:02:14.410 --> 00:02:18.040 align:middle line:84%
+applying, and combining
+results, as well as alleviating
+
+49
+00:02:18.040 --> 00:02:20.050 align:middle line:84%
+the need for explicit
+multi-threading
+
+50
+00:02:20.050 --> 00:02:22.790 align:middle line:84%
+and synchronization
+and application code.
+
+51
+00:02:22.790 --> 00:02:25.220 align:middle line:84%
+Moreover, parallel
+stream implementations
+
+52
+00:02:25.220 --> 00:02:27.920 align:middle line:84%
+are often much faster
+and more scalable
+
+53
+00:02:27.920 --> 00:02:30.420 align:middle line:90%
+than sequential implementations.
+
+54
+00:02:30.420 --> 00:02:33.390 align:middle line:84%
+Naturally, there are
+also some drawbacks.
+
+55
+00:02:33.390 --> 00:02:36.260 align:middle line:84%
+For example, not all
+parallel programming problems
+
+56
+00:02:36.260 --> 00:02:40.550 align:middle line:84%
+can be expressed via the
+split, apply, combine model.
+
+57
+00:02:40.550 --> 00:02:43.390 align:middle line:84%
+Likewise, spliterators
+and collectors
+
+58
+00:02:43.390 --> 00:02:45.630 align:middle line:90%
+do incur some overhead.
+
+59
+00:02:45.630 --> 00:02:47.920 align:middle line:84%
+In, general, however
+the pros of Java
+
+60
+00:02:47.920 --> 00:02:52.970 align:middle line:84%
+parallel streams outweigh the
+cons for many common use cases.

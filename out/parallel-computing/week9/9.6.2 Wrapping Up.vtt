@@ -1,0 +1,688 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:01.130 align:middle line:90%
+
+
+2
+00:00:01.130 --> 00:00:03.320 align:middle line:84%
+The final discussion
+we're going to give here
+
+3
+00:00:03.320 --> 00:00:06.230 align:middle line:84%
+will look at the cons,
+look at the downsides.
+
+4
+00:00:06.230 --> 00:00:09.350 align:middle line:84%
+And of course, there will
+always be cons with everything.
+
+5
+00:00:09.350 --> 00:00:13.160 align:middle line:84%
+As I always like to say, and now
+I finally can visualize this,
+
+6
+00:00:13.160 --> 00:00:15.620 align:middle line:84%
+not everything is
+unicorns and rainbows.
+
+7
+00:00:15.620 --> 00:00:18.530 align:middle line:84%
+Here's actually a unicorn
+with a rainbow coloring.
+
+8
+00:00:18.530 --> 00:00:21.460 align:middle line:84%
+So this is a classic example
+of unicorns and rainbows.
+
+9
+00:00:21.460 --> 00:00:24.260 align:middle line:84%
+So we don't want to think
+that parallel streams is
+
+10
+00:00:24.260 --> 00:00:25.560 align:middle line:90%
+all unicorns and rainbows.
+
+11
+00:00:25.560 --> 00:00:28.920 align:middle line:84%
+There's some things that
+will just drive you crazy.
+
+12
+00:00:28.920 --> 00:00:30.750 align:middle line:84%
+One of the first
+obvious limitations
+
+13
+00:00:30.750 --> 00:00:35.040 align:middle line:84%
+is, not every problem can
+be expressed via the split,
+
+14
+00:00:35.040 --> 00:00:38.610 align:middle line:84%
+apply, combine model,
+which tends to force you
+
+15
+00:00:38.610 --> 00:00:41.280 align:middle line:84%
+into somewhat of
+a Procrustean bed,
+
+16
+00:00:41.280 --> 00:00:45.030 align:middle line:84%
+where if you can live with this
+divide and conquer-like thing,
+
+17
+00:00:45.030 --> 00:00:45.790 align:middle line:90%
+it works great.
+
+18
+00:00:45.790 --> 00:00:48.990 align:middle line:84%
+If you can't, you're
+kind of out of luck.
+
+19
+00:00:48.990 --> 00:00:50.790 align:middle line:84%
+If you don't like
+that model, you
+
+20
+00:00:50.790 --> 00:00:54.450 align:middle line:84%
+might be able to leverage
+things like the Java
+
+21
+00:00:54.450 --> 00:00:56.730 align:middle line:84%
+fork join framework
+in some ways,
+
+22
+00:00:56.730 --> 00:00:59.428 align:middle line:90%
+as well we'll talk about later.
+
+23
+00:00:59.428 --> 00:01:01.720 align:middle line:84%
+Another issue is, if the
+behaviors that you want to run
+
+24
+00:01:01.720 --> 00:01:04.120 align:middle line:84%
+are not stateless and
+are not thread safe,
+
+25
+00:01:04.120 --> 00:01:06.410 align:middle line:90%
+then race conditions can occur.
+
+26
+00:01:06.410 --> 00:01:09.130 align:middle line:84%
+And of course, those occur
+when you end up with programs
+
+27
+00:01:09.130 --> 00:01:11.560 align:middle line:84%
+depending on sequence
+or timing for threads
+
+28
+00:01:11.560 --> 00:01:14.307 align:middle line:90%
+to operate properly.
+
+29
+00:01:14.307 --> 00:01:16.390 align:middle line:84%
+I think we've seen already,
+through the discussion
+
+30
+00:01:16.390 --> 00:01:18.490 align:middle line:84%
+about the trySplit
+method in the search
+
+31
+00:01:18.490 --> 00:01:19.960 align:middle line:84%
+with parallel
+spliterator example
+
+32
+00:01:19.960 --> 00:01:23.140 align:middle line:84%
+that parallel spliterators
+can be tricky,
+
+33
+00:01:23.140 --> 00:01:25.600 align:middle line:84%
+so they're hard
+to write if you're
+
+34
+00:01:25.600 --> 00:01:27.370 align:middle line:90%
+doing something sophisticated.
+
+35
+00:01:27.370 --> 00:01:30.690 align:middle line:84%
+A good example of where
+unit tests come in handy.
+
+36
+00:01:30.690 --> 00:01:32.550 align:middle line:84%
+Interestingly enough,
+concurrent collectors
+
+37
+00:01:32.550 --> 00:01:34.500 align:middle line:90%
+are often a lot easier to write.
+
+38
+00:01:34.500 --> 00:01:35.850 align:middle line:90%
+They're just not as complicated.
+
+39
+00:01:35.850 --> 00:01:37.600 align:middle line:84%
+The main thing you
+need to do is just pick
+
+40
+00:01:37.600 --> 00:01:41.900 align:middle line:84%
+the mutable result container
+that will be thread safe,
+
+41
+00:01:41.900 --> 00:01:43.150 align:middle line:90%
+and away you go.
+
+42
+00:01:43.150 --> 00:01:44.858 align:middle line:84%
+And that's usually
+something you can just
+
+43
+00:01:44.858 --> 00:01:46.870 align:middle line:90%
+get right off the shelf.
+
+44
+00:01:46.870 --> 00:01:49.720 align:middle line:84%
+Another potential downside
+is, all parallel streams
+
+45
+00:01:49.720 --> 00:01:52.060 align:middle line:90%
+share a common ForkJoinPool.
+
+46
+00:01:52.060 --> 00:01:54.220 align:middle line:84%
+Now, from one point of
+view, that's actually a win,
+
+47
+00:01:54.220 --> 00:01:57.550 align:middle line:84%
+because it gives better global
+visibility into the resource
+
+48
+00:01:57.550 --> 00:01:58.690 align:middle line:90%
+utilization.
+
+49
+00:01:58.690 --> 00:02:01.600 align:middle line:84%
+But there might be situations
+where the ForkJoinPool is not
+
+50
+00:02:01.600 --> 00:02:04.570 align:middle line:84%
+your cup of tea, and the
+parallel strings framework
+
+51
+00:02:04.570 --> 00:02:06.670 align:middle line:84%
+forces you into that
+Procrustean bed,
+
+52
+00:02:06.670 --> 00:02:11.780 align:middle line:84%
+if you will, of thread
+pool and resource fork.
+
+53
+00:02:11.780 --> 00:02:14.750 align:middle line:84%
+Interestingly enough the Java
+CompletableFutures framework
+
+54
+00:02:14.750 --> 00:02:16.900 align:middle line:90%
+does not have this limitation.
+
+55
+00:02:16.900 --> 00:02:20.420 align:middle line:84%
+A Java completable future
+can have its own thread
+
+56
+00:02:20.420 --> 00:02:21.980 align:middle line:90%
+pool that's a custom pool.
+
+57
+00:02:21.980 --> 00:02:26.420 align:middle line:84%
+It's a predefined triple
+other than the ForkJoinPool.
+
+58
+00:02:26.420 --> 00:02:28.790 align:middle line:84%
+So there's additional
+degrees of flexibility
+
+59
+00:02:28.790 --> 00:02:31.970 align:middle line:84%
+to be found with the
+CompletableFutures
+
+60
+00:02:31.970 --> 00:02:35.840 align:middle line:84%
+framework that's not
+there for ForkJoinPool
+
+61
+00:02:35.840 --> 00:02:39.600 align:middle line:84%
+and the common ForkJoinPool
+for the parallel streams.
+
+62
+00:02:39.600 --> 00:02:41.100 align:middle line:84%
+As a consequence
+of the fact that we
+
+63
+00:02:41.100 --> 00:02:43.020 align:middle line:84%
+share a common
+ForkJoinPool, you really
+
+64
+00:02:43.020 --> 00:02:45.750 align:middle line:84%
+need to understand how to
+apply and manage blockers.
+
+65
+00:02:45.750 --> 00:02:49.780 align:middle line:84%
+That's really important
+to get your head around.
+
+66
+00:02:49.780 --> 00:02:52.990 align:middle line:84%
+The streams framework
+also incurs some overhead.
+
+67
+00:02:52.990 --> 00:02:56.620 align:middle line:84%
+Not surprisingly, really,
+splitting and combining
+
+68
+00:02:56.620 --> 00:02:58.670 align:middle line:90%
+takes some time.
+
+69
+00:02:58.670 --> 00:03:02.310 align:middle line:84%
+The fork join framework
+might have some overheads.
+
+70
+00:03:02.310 --> 00:03:03.850 align:middle line:90%
+There's a really funny--
+
+71
+00:03:03.850 --> 00:03:06.160 align:middle line:90%
+at least, funny to me--
+
+72
+00:03:06.160 --> 00:03:09.460 align:middle line:84%
+screed, polemic, if
+you will, written
+
+73
+00:03:09.460 --> 00:03:11.740 align:middle line:84%
+by a person who really,
+really, really hates
+
+74
+00:03:11.740 --> 00:03:14.890 align:middle line:90%
+the ForkJoinPool model in Java.
+
+75
+00:03:14.890 --> 00:03:18.430 align:middle line:84%
+And he wrote this thing talking
+about the ForkJoinPool blunder
+
+76
+00:03:18.430 --> 00:03:21.220 align:middle line:84%
+and what a terrible
+mess it is and so on.
+
+77
+00:03:21.220 --> 00:03:25.210 align:middle line:84%
+And I think his concerns
+are sort of overblown.
+
+78
+00:03:25.210 --> 00:03:26.710 align:middle line:84%
+Basically, his
+points he's making
+
+79
+00:03:26.710 --> 00:03:30.460 align:middle line:84%
+are that if you wanted to
+write your own custom thread
+
+80
+00:03:30.460 --> 00:03:33.245 align:middle line:84%
+pool for some very
+specialized application,
+
+81
+00:03:33.245 --> 00:03:35.620 align:middle line:84%
+you probably could come up
+with a more optimized approach
+
+82
+00:03:35.620 --> 00:03:37.030 align:middle line:90%
+than the ForkJoinPool.
+
+83
+00:03:37.030 --> 00:03:38.385 align:middle line:90%
+And he's probably right.
+
+84
+00:03:38.385 --> 00:03:40.510 align:middle line:84%
+But who the heck wants to
+go through that headache?
+
+85
+00:03:40.510 --> 00:03:43.920 align:middle line:84%
+The ForkJoinPool works really
+well, it scales up nicely,
+
+86
+00:03:43.920 --> 00:03:47.140 align:middle line:84%
+it's been tested with an inch of
+its life, it's well maintained,
+
+87
+00:03:47.140 --> 00:03:48.730 align:middle line:90%
+it gets better every release.
+
+88
+00:03:48.730 --> 00:03:51.940 align:middle line:84%
+So yes, you could probably write
+everything in assembly code
+
+89
+00:03:51.940 --> 00:03:54.420 align:middle line:84%
+and get it to be faster
+and more scalable, too.
+
+90
+00:03:54.420 --> 00:03:55.780 align:middle line:90%
+But is it worth it?
+
+91
+00:03:55.780 --> 00:03:57.520 align:middle line:90%
+The answer, largely, is no.
+
+92
+00:03:57.520 --> 00:03:59.230 align:middle line:84%
+So it's a pretty
+amusing document
+
+93
+00:03:59.230 --> 00:04:01.150 align:middle line:84%
+to read to see
+what he has to say.
+
+94
+00:04:01.150 --> 00:04:05.430 align:middle line:84%
+I don't think it really has had
+much of an impact over time.
+
+95
+00:04:05.430 --> 00:04:06.840 align:middle line:84%
+There are cases,
+of course, where
+
+96
+00:04:06.840 --> 00:04:09.058 align:middle line:84%
+the Java CompletableFutures
+framework can
+
+97
+00:04:09.058 --> 00:04:10.350 align:middle line:90%
+be more efficient and scalable.
+
+98
+00:04:10.350 --> 00:04:13.300 align:middle line:84%
+We've seen that it runs
+faster for certain use cases,
+
+99
+00:04:13.300 --> 00:04:15.540 align:middle line:84%
+especially things
+that are I/O-bound.
+
+100
+00:04:15.540 --> 00:04:18.420 align:middle line:84%
+And you may want to use that
+framework in those cases.
+
+101
+00:04:18.420 --> 00:04:20.850 align:middle line:84%
+So be aware that it
+exists, and learn
+
+102
+00:04:20.850 --> 00:04:24.710 align:middle line:84%
+how it works when we talk
+about it later in this course.
+
+103
+00:04:24.710 --> 00:04:26.500 align:middle line:84%
+Naturally, your
+mileage may vary.
+
+104
+00:04:26.500 --> 00:04:29.452 align:middle line:84%
+So sometimes, parallel
+streams will work better.
+
+105
+00:04:29.452 --> 00:04:31.410 align:middle line:84%
+Sometimes, computable
+futures will work better.
+
+106
+00:04:31.410 --> 00:04:34.020 align:middle line:84%
+It really helps to
+benchmark things.
+
+107
+00:04:34.020 --> 00:04:35.910 align:middle line:84%
+And to help do that,
+there's actually
+
+108
+00:04:35.910 --> 00:04:40.440 align:middle line:84%
+a benchmarking framework called
+the Java micro-benchmarking
+
+109
+00:04:40.440 --> 00:04:43.620 align:middle line:84%
+harness, or JMH,
+and you can use that
+
+110
+00:04:43.620 --> 00:04:46.440 align:middle line:84%
+to help run benchmarks
+of parallel code
+
+111
+00:04:46.440 --> 00:04:49.230 align:middle line:84%
+to do things like warm
+up the thread pools
+
+112
+00:04:49.230 --> 00:04:52.868 align:middle line:84%
+and warm up the
+just-in-time compiler
+
+113
+00:04:52.868 --> 00:04:55.410 align:middle line:84%
+and other things that otherwise
+make your performance, highly
+
+114
+00:04:55.410 --> 00:04:57.990 align:middle line:84%
+variable, distracting
+you from what
+
+115
+00:04:57.990 --> 00:05:02.510 align:middle line:84%
+the real benefits of parallelism
+them might happen to be.
+
+116
+00:05:02.510 --> 00:05:04.720 align:middle line:84%
+So to wrap up our
+discussion of Java parallel
+
+117
+00:05:04.720 --> 00:05:06.790 align:middle line:84%
+streams, as I mentioned
+before, there's
+
+118
+00:05:06.790 --> 00:05:11.110 align:middle line:84%
+a trade-off between programmer
+productivity and computing
+
+119
+00:05:11.110 --> 00:05:12.520 align:middle line:90%
+performance.
+
+120
+00:05:12.520 --> 00:05:14.630 align:middle line:84%
+As a general rule of
+thumb, completable futures
+
+121
+00:05:14.630 --> 00:05:16.630 align:middle line:84%
+are more efficient and
+scalable but a bit harder
+
+122
+00:05:16.630 --> 00:05:19.510 align:middle line:84%
+to program, for reasons
+we'll see later.
+
+123
+00:05:19.510 --> 00:05:23.230 align:middle line:84%
+However, for the
+majority of use cases--
+
+124
+00:05:23.230 --> 00:05:24.920 align:middle line:84%
+I won't say vast
+majority of use cases,
+
+125
+00:05:24.920 --> 00:05:27.910 align:middle line:84%
+but for the majority
+of use cases,
+
+126
+00:05:27.910 --> 00:05:31.300 align:middle line:84%
+going from a sequential
+stream to a parallel stream
+
+127
+00:05:31.300 --> 00:05:32.680 align:middle line:84%
+is a straightforward
+thing to do.
+
+128
+00:05:32.680 --> 00:05:35.110 align:middle line:84%
+You can debug your program
+using the simplicity
+
+129
+00:05:35.110 --> 00:05:36.970 align:middle line:90%
+of sequential programming.
+
+130
+00:05:36.970 --> 00:05:38.800 align:middle line:84%
+Once it's working,
+you flip on the switch
+
+131
+00:05:38.800 --> 00:05:40.640 align:middle line:90%
+to make it run parallel.
+
+132
+00:05:40.640 --> 00:05:43.540 align:middle line:84%
+And so for many use cases
+that's the way to go.
+
+133
+00:05:43.540 --> 00:05:46.920 align:middle line:84%
+Even though it's possible to
+write implementations using
+
+134
+00:05:46.920 --> 00:05:48.670 align:middle line:84%
+completable features
+that will run, faster
+
+135
+00:05:48.670 --> 00:05:51.040 align:middle line:84%
+it's often not worth the
+effort, unless you really
+
+136
+00:05:51.040 --> 00:05:54.220 align:middle line:84%
+have to wrangle every
+last nanosecond out
+
+137
+00:05:54.220 --> 00:05:59.300 align:middle line:84%
+of your computing performance
+requirement budget.
+
+138
+00:05:59.300 --> 00:06:01.220 align:middle line:84%
+Great coverage of
+parallel streams
+
+139
+00:06:01.220 --> 00:06:03.290 align:middle line:84%
+appears in this book
+Modern Java in Action
+
+140
+00:06:03.290 --> 00:06:05.420 align:middle line:84%
+so I highly recommend
+you take a look at it.
+
+141
+00:06:05.420 --> 00:06:07.670 align:middle line:84%
+And I'm sure you'll
+learn as much of it
+
+142
+00:06:07.670 --> 00:06:09.680 align:middle line:84%
+from it as I did when
+I used it to learn
+
+143
+00:06:09.680 --> 00:06:13.180 align:middle line:84%
+how all these techniques
+work several years ago.

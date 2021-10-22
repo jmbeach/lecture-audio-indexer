@@ -1,0 +1,765 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:01.120 align:middle line:90%
+
+
+2
+00:00:01.120 --> 00:00:03.910 align:middle line:84%
+So now that we've talked about
+the structure and functionality
+
+3
+00:00:03.910 --> 00:00:06.490 align:middle line:84%
+of the ImageStreamGang,
+let's take a look
+
+4
+00:00:06.490 --> 00:00:09.200 align:middle line:84%
+at how to visualize
+its behavior.
+
+5
+00:00:09.200 --> 00:00:11.110 align:middle line:84%
+And so I'm going to
+kind of show you how
+
+6
+00:00:11.110 --> 00:00:12.460 align:middle line:90%
+parallel streams are applied.
+
+7
+00:00:12.460 --> 00:00:14.210 align:middle line:84%
+First we're going to
+show how to visualize
+
+8
+00:00:14.210 --> 00:00:16.790 align:middle line:84%
+the behavior, and then, of
+course, in the next lesson,
+
+9
+00:00:16.790 --> 00:00:20.410 align:middle line:84%
+we're going to come back and
+actually show you the code.
+
+10
+00:00:20.410 --> 00:00:24.640 align:middle line:84%
+This particular implementation
+enhances a previous solution
+
+11
+00:00:24.640 --> 00:00:28.090 align:middle line:84%
+that I also have on
+my GitHub repository
+
+12
+00:00:28.090 --> 00:00:30.800 align:middle line:84%
+called the
+ImageTaskGang solution.
+
+13
+00:00:30.800 --> 00:00:33.970 align:middle line:84%
+And this solution
+does not use streams.
+
+14
+00:00:33.970 --> 00:00:37.270 align:middle line:84%
+Instead, it uses
+various executor service
+
+15
+00:00:37.270 --> 00:00:40.190 align:middle line:84%
+implementations, such as the
+ExecutorCompletionService.
+
+16
+00:00:40.190 --> 00:00:42.940 align:middle line:90%
+So it's a Java--
+
+17
+00:00:42.940 --> 00:00:45.550 align:middle line:84%
+it's an object-oriented
+Java solution, as opposed
+
+18
+00:00:45.550 --> 00:00:50.980 align:middle line:84%
+to a functional Java solution
+using the more modern features.
+
+19
+00:00:50.980 --> 00:00:54.010 align:middle line:84%
+So this particular app
+uses a parallel stream
+
+20
+00:00:54.010 --> 00:00:55.960 align:middle line:84%
+with blocking I/O.
+Obviously it has
+
+21
+00:00:55.960 --> 00:00:58.913 align:middle line:84%
+to block when it downloads the
+images from across the network.
+
+22
+00:00:58.913 --> 00:01:00.580 align:middle line:84%
+And it also would end
+up having to block
+
+23
+00:01:00.580 --> 00:01:03.310 align:middle line:84%
+when it writes the images
+that have been transformed out
+
+24
+00:01:03.310 --> 00:01:07.260 align:middle line:90%
+to the files on the device.
+
+25
+00:01:07.260 --> 00:01:09.940 align:middle line:84%
+It also combines object-oriented
+and functional programming
+
+26
+00:01:09.940 --> 00:01:10.440 align:middle line:90%
+features.
+
+27
+00:01:10.440 --> 00:01:14.975 align:middle line:84%
+And this is really important,
+I think, to embrace.
+
+28
+00:01:14.975 --> 00:01:16.600 align:middle line:84%
+So let's take a look
+at how this works.
+
+29
+00:01:16.600 --> 00:01:18.450 align:middle line:84%
+So the first thing it
+does is it goes ahead
+
+30
+00:01:18.450 --> 00:01:21.000 align:middle line:90%
+and will get a list of URLs.
+
+31
+00:01:21.000 --> 00:01:25.150 align:middle line:84%
+And that list of URLs
+will ignore cached images.
+
+32
+00:01:25.150 --> 00:01:27.420 align:middle line:84%
+So if you've already
+downloaded an image before,
+
+33
+00:01:27.420 --> 00:01:28.740 align:middle line:90%
+we're going to ignore it.
+
+34
+00:01:28.740 --> 00:01:31.760 align:middle line:84%
+And I'll show you how
+that works in just a bit.
+
+35
+00:01:31.760 --> 00:01:33.950 align:middle line:84%
+For all the images that
+are not already cached,
+
+36
+00:01:33.950 --> 00:01:35.720 align:middle line:90%
+we're going to download them.
+
+37
+00:01:35.720 --> 00:01:38.330 align:middle line:84%
+And all that will take place
+in parallel, of course.
+
+38
+00:01:38.330 --> 00:01:40.520 align:middle line:84%
+And we'll be using
+the ForkJoinPool
+
+39
+00:01:40.520 --> 00:01:43.250 align:middle line:84%
+to do all the
+parallel downloads.
+
+40
+00:01:43.250 --> 00:01:45.470 align:middle line:84%
+As the downloads
+complete, then they
+
+41
+00:01:45.470 --> 00:01:49.940 align:middle line:84%
+will be synchronously
+applied to a bunch of filters
+
+42
+00:01:49.940 --> 00:01:53.030 align:middle line:84%
+that will transform each image
+by applying the image filtering
+
+43
+00:01:53.030 --> 00:01:55.740 align:middle line:84%
+algorithms that are
+configured into the app.
+
+44
+00:01:55.740 --> 00:01:58.360 align:middle line:84%
+And there could be
+a bunch of them.
+
+45
+00:01:58.360 --> 00:02:00.490 align:middle line:84%
+The filtered images
+that we end up with
+
+46
+00:02:00.490 --> 00:02:02.680 align:middle line:84%
+will then be stored
+in the file system--
+
+47
+00:02:02.680 --> 00:02:04.750 align:middle line:84%
+so there's some more
+examples of blocking I/O,
+
+48
+00:02:04.750 --> 00:02:06.827 align:middle line:84%
+we have to write the
+filtered images out
+
+49
+00:02:06.827 --> 00:02:09.160 align:middle line:84%
+to the file system, which,
+depending on the file system,
+
+50
+00:02:09.160 --> 00:02:11.570 align:middle line:90%
+could be fast or slow.
+
+51
+00:02:11.570 --> 00:02:13.780 align:middle line:84%
+And then finally, when
+everything is said and done,
+
+52
+00:02:13.780 --> 00:02:15.880 align:middle line:84%
+we'll be able to display
+the images to the user
+
+53
+00:02:15.880 --> 00:02:19.150 align:middle line:84%
+by popping up some
+Android activity that
+
+54
+00:02:19.150 --> 00:02:23.120 align:middle line:90%
+has a nice browsing capability.
+
+55
+00:02:23.120 --> 00:02:26.450 align:middle line:84%
+So the cool thing about this
+is, if you read the description
+
+56
+00:02:26.450 --> 00:02:27.890 align:middle line:90%
+of the design intent-- right?
+
+57
+00:02:27.890 --> 00:02:30.590 align:middle line:84%
+The design intent is,
+ignore cached images,
+
+58
+00:02:30.590 --> 00:02:33.620 align:middle line:84%
+download non-cached images,
+apply a list of filters to each
+
+59
+00:02:33.620 --> 00:02:36.200 align:middle line:84%
+image, store the filtered
+images in the file system,
+
+60
+00:02:36.200 --> 00:02:38.240 align:middle line:90%
+display the images to the user--
+
+61
+00:02:38.240 --> 00:02:41.090 align:middle line:84%
+that's pretty much
+almost one to one
+
+62
+00:02:41.090 --> 00:02:43.880 align:middle line:84%
+what's going on in
+our parallel stream
+
+63
+00:02:43.880 --> 00:02:45.920 align:middle line:84%
+that you see on the
+right hand side.
+
+64
+00:02:45.920 --> 00:02:49.010 align:middle line:84%
+And that's a very
+reassuring thing,
+
+65
+00:02:49.010 --> 00:02:51.950 align:middle line:84%
+because it means that the
+design intent is reflected
+
+66
+00:02:51.950 --> 00:02:54.000 align:middle line:90%
+in the implementation.
+
+67
+00:02:54.000 --> 00:02:55.240 align:middle line:90%
+Why is this important?
+
+68
+00:02:55.240 --> 00:02:58.590 align:middle line:84%
+Because many times,
+when we write code,
+
+69
+00:02:58.590 --> 00:03:02.900 align:middle line:84%
+the actual implementation
+that defines the computations
+
+70
+00:03:02.900 --> 00:03:06.660 align:middle line:84%
+looks nothing whatsoever
+like the design intent.
+
+71
+00:03:06.660 --> 00:03:08.960 align:middle line:84%
+There's a huge gap,
+a huge mismatch,
+
+72
+00:03:08.960 --> 00:03:12.530 align:middle line:84%
+between what you're trying to
+do, what your requirements say
+
+73
+00:03:12.530 --> 00:03:14.480 align:middle line:84%
+you're doing, what
+you're trying to design,
+
+74
+00:03:14.480 --> 00:03:16.670 align:middle line:84%
+and the computations
+that actually implement
+
+75
+00:03:16.670 --> 00:03:18.240 align:middle line:90%
+the intent of that design.
+
+76
+00:03:18.240 --> 00:03:20.690 align:middle line:84%
+But the cool thing about
+the parallel streams model
+
+77
+00:03:20.690 --> 00:03:24.050 align:middle line:84%
+is it's very, very
+convenient, and very, very
+
+78
+00:03:24.050 --> 00:03:28.523 align:middle line:84%
+synergistic between those
+two levels of abstraction.
+
+79
+00:03:28.523 --> 00:03:29.940 align:middle line:84%
+So let's just kind
+of look at this
+
+80
+00:03:29.940 --> 00:03:34.440 align:middle line:84%
+so we're going to basically
+take a list of images--
+
+81
+00:03:34.440 --> 00:03:36.690 align:middle line:84%
+URLs, we're going to
+take a list of image URLs
+
+82
+00:03:36.690 --> 00:03:38.640 align:middle line:84%
+that come in to the
+program, wherever
+
+83
+00:03:38.640 --> 00:03:41.970 align:middle line:84%
+they come from-- from the user,
+or from a file, or whatnot.
+
+84
+00:03:41.970 --> 00:03:44.490 align:middle line:84%
+And we convert these things
+into a parallel stream.
+
+85
+00:03:44.490 --> 00:03:46.290 align:middle line:84%
+So now we've got
+a bunch of things
+
+86
+00:03:46.290 --> 00:03:48.600 align:middle line:90%
+that could run in parallel.
+
+87
+00:03:48.600 --> 00:03:51.630 align:middle line:90%
+That creates a stream of URLs.
+
+88
+00:03:51.630 --> 00:03:56.520 align:middle line:84%
+We then go ahead and we'll run
+that stream of URLs through
+
+89
+00:03:56.520 --> 00:03:59.190 align:middle line:84%
+the filter()
+intermediate operation.
+
+90
+00:03:59.190 --> 00:04:02.790 align:middle line:84%
+And if there's any URLs that are
+already present on the device,
+
+91
+00:04:02.790 --> 00:04:04.767 align:middle line:84%
+because we've
+downloaded them before,
+
+92
+00:04:04.767 --> 00:04:06.100 align:middle line:90%
+we're just going to ignore them.
+
+93
+00:04:06.100 --> 00:04:07.950 align:middle line:84%
+So things that have been cached
+before we're going to ignore.
+
+94
+00:04:07.950 --> 00:04:10.050 align:middle line:84%
+So we're going to
+filter out anything
+
+95
+00:04:10.050 --> 00:04:13.320 align:middle line:90%
+that we've already seen.
+
+96
+00:04:13.320 --> 00:04:15.270 align:middle line:84%
+Filter() will ignore
+the cached images.
+
+97
+00:04:15.270 --> 00:04:19.880 align:middle line:84%
+We then end up with a stream
+of non-cached image URLs.
+
+98
+00:04:19.880 --> 00:04:22.850 align:middle line:84%
+We then connect that
+into the map() operation.
+
+99
+00:04:22.850 --> 00:04:25.250 align:middle line:84%
+So we input a stream of
+non-cached image URLs
+
+100
+00:04:25.250 --> 00:04:27.230 align:middle line:90%
+into map().
+
+101
+00:04:27.230 --> 00:04:31.550 align:middle line:84%
+Map() then goes ahead and
+applies the blocking download
+
+102
+00:04:31.550 --> 00:04:35.180 align:middle line:84%
+method reference
+to every image URL.
+
+103
+00:04:35.180 --> 00:04:37.040 align:middle line:84%
+And that will turn
+around and download
+
+104
+00:04:37.040 --> 00:04:41.130 align:middle line:84%
+all the non-cached images in
+parallel, which will output
+
+105
+00:04:41.130 --> 00:04:42.870 align:middle line:90%
+a stream of downloaded images.
+
+106
+00:04:42.870 --> 00:04:44.550 align:middle line:84%
+Notice all these
+calls are synchronous.
+
+107
+00:04:44.550 --> 00:04:46.160 align:middle line:84%
+They're blocking
+until they're done
+
+108
+00:04:46.160 --> 00:04:49.410 align:middle line:84%
+and then returning
+their results.
+
+109
+00:04:49.410 --> 00:04:56.040 align:middle line:84%
+The downloaded images stream
+is then connected into the next
+
+110
+00:04:56.040 --> 00:04:59.490 align:middle line:84%
+stage in the pipeline, which
+is the flatMap() intermediate
+
+111
+00:04:59.490 --> 00:05:00.680 align:middle line:90%
+operation.
+
+112
+00:05:00.680 --> 00:05:03.420 align:middle line:84%
+And what flatMap() is going to
+do is it's going to take each
+
+113
+00:05:03.420 --> 00:05:06.570 align:middle line:84%
+image that it receives, which
+has already been downloaded,
+
+114
+00:05:06.570 --> 00:05:12.300 align:middle line:84%
+and in parallel it will go
+ahead and apply a bunch of image
+
+115
+00:05:12.300 --> 00:05:15.910 align:middle line:90%
+filters to transform that image.
+
+116
+00:05:15.910 --> 00:05:20.430 align:middle line:84%
+So for every filter it will
+create a new transformed image,
+
+117
+00:05:20.430 --> 00:05:22.935 align:middle line:84%
+and it'll go ahead and
+store that filtered image--
+
+118
+00:05:22.935 --> 00:05:24.810 align:middle line:84%
+or those filtered images,
+because there could
+
+119
+00:05:24.810 --> 00:05:26.610 align:middle line:90%
+be multiple filters to apply--
+
+120
+00:05:26.610 --> 00:05:28.510 align:middle line:90%
+in the file system.
+
+121
+00:05:28.510 --> 00:05:31.330 align:middle line:84%
+And what that then
+generates is a stream
+
+122
+00:05:31.330 --> 00:05:34.180 align:middle line:90%
+of filtered and stored images.
+
+123
+00:05:34.180 --> 00:05:38.500 align:middle line:84%
+And that stream of filtered
+and stored images will then be
+
+124
+00:05:38.500 --> 00:05:40.760 align:middle line:90%
+connected into collect().
+
+125
+00:05:40.760 --> 00:05:45.000 align:middle line:84%
+So we get the stream of
+input into collect().
+
+126
+00:05:45.000 --> 00:05:46.350 align:middle line:90%
+And as you all know--
+
+127
+00:05:46.350 --> 00:05:48.780 align:middle line:84%
+because we've talked about
+this countless times now,
+
+128
+00:05:48.780 --> 00:05:49.913 align:middle line:90%
+or many times--
+
+129
+00:05:49.913 --> 00:05:52.080 align:middle line:84%
+collect() will go ahead and
+trigger the intermediate
+
+130
+00:05:52.080 --> 00:05:53.850 align:middle line:90%
+operation processing.
+
+131
+00:05:53.850 --> 00:05:55.380 align:middle line:84%
+And in this
+particular case, it's
+
+132
+00:05:55.380 --> 00:06:00.750 align:middle line:84%
+going to end up creating a list
+of filtered and stored images.
+
+133
+00:06:00.750 --> 00:06:03.600 align:middle line:84%
+So hopefully taking a
+look at this visualization
+
+134
+00:06:03.600 --> 00:06:06.750 align:middle line:84%
+gives you a pretty good idea of
+what's actually taking place.
+
+135
+00:06:06.750 --> 00:06:09.990 align:middle line:84%
+You can see how we start out
+with a list of URLs, which
+
+136
+00:06:09.990 --> 00:06:11.610 align:middle line:84%
+turns into a stream
+of URLs, which
+
+137
+00:06:11.610 --> 00:06:15.870 align:middle line:84%
+gets filtered to a potentially
+smaller stream of URLs.
+
+138
+00:06:15.870 --> 00:06:17.490 align:middle line:84%
+We then turn those
+things into images,
+
+139
+00:06:17.490 --> 00:06:21.040 align:middle line:84%
+so you can see the changes
+occur with the types,
+
+140
+00:06:21.040 --> 00:06:23.045 align:middle line:84%
+and then once again
+we change the types--
+
+141
+00:06:23.045 --> 00:06:24.420 align:middle line:84%
+or not so much
+changed the types,
+
+142
+00:06:24.420 --> 00:06:28.740 align:middle line:84%
+but we change the contents
+of what the images contain.
+
+143
+00:06:28.740 --> 00:06:30.690 align:middle line:84%
+And those things
+get collected back
+
+144
+00:06:30.690 --> 00:06:33.270 align:middle line:84%
+into a list, which will be
+an ArrayList in this case.
+
+145
+00:06:33.270 --> 00:06:36.120 align:middle line:84%
+So that just kind of shows
+you how all the various stages
+
+146
+00:06:36.120 --> 00:06:38.400 align:middle line:90%
+and steps work together.
+
+147
+00:06:38.400 --> 00:06:41.940 align:middle line:84%
+The Java streams framework-- or
+more specifically the parallel
+
+148
+00:06:41.940 --> 00:06:44.910 align:middle line:84%
+streams variant of the
+Java streams framework--
+
+149
+00:06:44.910 --> 00:06:49.128 align:middle line:84%
+orchestrates all of these steps
+to run together in parallel.
+
+150
+00:06:49.128 --> 00:06:50.670 align:middle line:84%
+Naturally, under
+the hood, of course,
+
+151
+00:06:50.670 --> 00:06:53.400 align:middle line:84%
+we know that other
+things are at play.
+
+152
+00:06:53.400 --> 00:06:55.860 align:middle line:84%
+There are Spliterators,
+there's collectors--
+
+153
+00:06:55.860 --> 00:06:58.320 align:middle line:84%
+in this case a
+non-concurrent collector--
+
+154
+00:06:58.320 --> 00:07:01.770 align:middle line:84%
+there naturally will be
+various tasks running around
+
+155
+00:07:01.770 --> 00:07:04.920 align:middle line:84%
+in the ForkJoinPool, the
+common ForkJointPool.
+
+156
+00:07:04.920 --> 00:07:06.840 align:middle line:84%
+But all of those things
+are hidden from you.
+
+157
+00:07:06.840 --> 00:07:09.480 align:middle line:84%
+You just write this
+code and magic happens,
+
+158
+00:07:09.480 --> 00:07:11.040 align:middle line:84%
+and you get these
+great speed-ups
+
+159
+00:07:11.040 --> 00:07:14.660 align:middle line:84%
+with very little
+effort on your part.
