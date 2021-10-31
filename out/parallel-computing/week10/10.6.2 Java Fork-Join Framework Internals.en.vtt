@@ -1,0 +1,1310 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.860 align:middle line:90%
+
+
+2
+00:00:00.860 --> 00:00:02.390 align:middle line:84%
+Now that we've had
+a chance to talk
+
+3
+00:00:02.390 --> 00:00:07.010 align:middle line:84%
+about worker threads and
+the overall structure
+
+4
+00:00:07.010 --> 00:00:11.040 align:middle line:84%
+of the fork-join
+pool with its decks,
+
+5
+00:00:11.040 --> 00:00:15.020 align:middle line:84%
+the work queues, and so on,
+let's zoom in and really focus
+
+6
+00:00:15.020 --> 00:00:17.390 align:middle line:90%
+in on work stealing.
+
+7
+00:00:17.390 --> 00:00:19.730 align:middle line:84%
+And work stealing
+is, quite frankly,
+
+8
+00:00:19.730 --> 00:00:22.340 align:middle line:84%
+what differentiates
+the fork-join pool
+
+9
+00:00:22.340 --> 00:00:24.170 align:middle line:84%
+from all the other
+types of thread pools
+
+10
+00:00:24.170 --> 00:00:26.060 align:middle line:84%
+that you get out of
+the box with Java
+
+11
+00:00:26.060 --> 00:00:28.340 align:middle line:84%
+through the thread
+pool executor.
+
+12
+00:00:28.340 --> 00:00:34.010 align:middle line:84%
+Things like fixed size thread
+pool or cash thread pool.
+
+13
+00:00:34.010 --> 00:00:37.250 align:middle line:84%
+As we'll see, the fork-join
+pool has magic mechanisms
+
+14
+00:00:37.250 --> 00:00:41.030 align:middle line:84%
+that are way more powerful
+and scalable and complicated,
+
+15
+00:00:41.030 --> 00:00:46.070 align:middle line:84%
+for that matter, than the other
+more civilized and refined
+
+16
+00:00:46.070 --> 00:00:49.450 align:middle line:90%
+thread pools, if you will.
+
+17
+00:00:49.450 --> 00:00:53.430 align:middle line:84%
+So remember again, we
+want the worker threads
+
+18
+00:00:53.430 --> 00:00:58.410 align:middle line:84%
+to run until there is absolutely
+nothing left for them to do.
+
+19
+00:00:58.410 --> 00:01:01.740 align:middle line:84%
+So we want the worker threads
+to block if, and only if, there
+
+20
+00:01:01.740 --> 00:01:03.690 align:middle line:90%
+are no tasks left to run.
+
+21
+00:01:03.690 --> 00:01:08.280 align:middle line:84%
+And one of the consequences
+of worker threads blocking
+
+22
+00:01:08.280 --> 00:01:11.550 align:middle line:84%
+is that if nothing
+is available to run,
+
+23
+00:01:11.550 --> 00:01:15.150 align:middle line:84%
+that can cause the processor
+core to go to sleep.
+
+24
+00:01:15.150 --> 00:01:18.420 align:middle line:84%
+And it turns out if you watch
+Doug Lee's excellent talk
+
+25
+00:01:18.420 --> 00:01:23.340 align:middle line:84%
+here at this YouTube link where
+he talks about engineering
+
+26
+00:01:23.340 --> 00:01:27.000 align:middle line:84%
+concurrent library components,
+the reason that you don't want
+
+27
+00:01:27.000 --> 00:01:29.520 align:middle line:84%
+to block things-- if you can
+avoid it-- is because blocking
+
+28
+00:01:29.520 --> 00:01:31.950 align:middle line:84%
+threads and cores
+is prohibitively
+
+29
+00:01:31.950 --> 00:01:34.740 align:middle line:84%
+expensive on modern
+multicore processors.
+
+30
+00:01:34.740 --> 00:01:36.960 align:middle line:84%
+These things really
+want to keep running.
+
+31
+00:01:36.960 --> 00:01:39.390 align:middle line:84%
+And in fact, if you take a
+look at the implementation
+
+32
+00:01:39.390 --> 00:01:44.520 align:middle line:84%
+of the fork-joint pool, you'll
+see this really weird code runs
+
+33
+00:01:44.520 --> 00:01:47.280 align:middle line:84%
+in the, quote, "idle
+loop" of the threads
+
+34
+00:01:47.280 --> 00:01:50.190 align:middle line:84%
+when they're just kind of
+spinning, not doing anything.
+
+35
+00:01:50.190 --> 00:01:53.180 align:middle line:84%
+And they do all these
+bizarre bit wise shifts
+
+36
+00:01:53.180 --> 00:01:54.870 align:middle line:90%
+and ands and ors and so on.
+
+37
+00:01:54.870 --> 00:01:57.390 align:middle line:84%
+And the whole point is to
+try to fake out the processor
+
+38
+00:01:57.390 --> 00:02:00.870 align:middle line:84%
+core into thinking something
+useful is actually going on.
+
+39
+00:02:00.870 --> 00:02:03.000 align:middle line:84%
+Because if you just run a
+loop that just sits there
+
+40
+00:02:03.000 --> 00:02:05.580 align:middle line:84%
+in a tight loop, the
+underlying hardware
+
+41
+00:02:05.580 --> 00:02:07.530 align:middle line:90%
+can recognize that nowadays.
+
+42
+00:02:07.530 --> 00:02:11.370 align:middle line:84%
+It can actually turn around and
+put the thread to sleep anyway.
+
+43
+00:02:11.370 --> 00:02:12.960 align:middle line:84%
+So they do all kinds
+of wacky things
+
+44
+00:02:12.960 --> 00:02:15.073 align:middle line:84%
+to fool the processor into
+thinking they're really
+
+45
+00:02:15.073 --> 00:02:17.490 align:middle line:84%
+doing something useful when
+they're actually just spinning
+
+46
+00:02:17.490 --> 00:02:20.370 align:middle line:90%
+waiting for work to show up.
+
+47
+00:02:20.370 --> 00:02:22.990 align:middle line:84%
+So therefore, before
+a worker thread
+
+48
+00:02:22.990 --> 00:02:27.750 align:middle line:84%
+that would be potentially
+idle actually bites the bullet
+
+49
+00:02:27.750 --> 00:02:34.170 align:middle line:84%
+and goes to sleep, it will first
+check other decks in the pool
+
+50
+00:02:34.170 --> 00:02:37.392 align:middle line:90%
+to find other tasks to run.
+
+51
+00:02:37.392 --> 00:02:38.850 align:middle line:84%
+And the whole point
+of this is just
+
+52
+00:02:38.850 --> 00:02:42.030 align:middle line:84%
+to keep the process
+running, keep things going.
+
+53
+00:02:42.030 --> 00:02:44.770 align:middle line:84%
+If you don't have
+anything to do,
+
+54
+00:02:44.770 --> 00:02:47.950 align:middle line:84%
+then go ahead and find
+somebody else who does.
+
+55
+00:02:47.950 --> 00:02:51.540 align:middle line:84%
+And that's why I like to call
+this the Jiffy Lube model.
+
+56
+00:02:51.540 --> 00:02:53.550 align:middle line:84%
+If your buddies
+are in another bay
+
+57
+00:02:53.550 --> 00:02:55.410 align:middle line:84%
+and they've got
+something to do and you
+
+58
+00:02:55.410 --> 00:02:57.570 align:middle line:84%
+have no cars in your
+bay, you're not just
+
+59
+00:02:57.570 --> 00:03:02.340 align:middle line:84%
+going to sit there and browse
+the web or text a friend
+
+60
+00:03:02.340 --> 00:03:03.240 align:middle line:90%
+or read the paper.
+
+61
+00:03:03.240 --> 00:03:05.240 align:middle line:84%
+You're going to get up
+and go over and help them
+
+62
+00:03:05.240 --> 00:03:06.600 align:middle line:90%
+out and pitch in.
+
+63
+00:03:06.600 --> 00:03:09.870 align:middle line:84%
+So therefore, these otherwise
+idle or potentially idle
+
+64
+00:03:09.870 --> 00:03:16.590 align:middle line:84%
+worker threads will steal work
+from the tail of other threads
+
+65
+00:03:16.590 --> 00:03:20.790 align:middle line:84%
+decks that are too busy
+with their own tasks
+
+66
+00:03:20.790 --> 00:03:24.330 align:middle line:84%
+to get around to processing
+the work that's at their tail.
+
+67
+00:03:24.330 --> 00:03:28.327 align:middle line:84%
+So again, imagine a world
+where we have an empty deck.
+
+68
+00:03:28.327 --> 00:03:29.910 align:middle line:84%
+It's like the old
+joke about someone's
+
+69
+00:03:29.910 --> 00:03:31.370 align:middle line:90%
+not playing with a full deck.
+
+70
+00:03:31.370 --> 00:03:33.745 align:middle line:84%
+Well, if we have an empty
+deck-- the threads playing with
+
+71
+00:03:33.745 --> 00:03:34.590 align:middle line:90%
+an empty deck--
+
+72
+00:03:34.590 --> 00:03:36.300 align:middle line:84%
+then rather than
+go to sleep, it'll
+
+73
+00:03:36.300 --> 00:03:39.180 align:middle line:84%
+look around, find somebody
+who's got work to do,
+
+74
+00:03:39.180 --> 00:03:44.840 align:middle line:84%
+and then go steal work
+from the end of their deck.
+
+75
+00:03:44.840 --> 00:03:46.692 align:middle line:84%
+Now we're going to
+talk about why it does
+
+76
+00:03:46.692 --> 00:03:47.900 align:middle line:90%
+it this way in just a second.
+
+77
+00:03:47.900 --> 00:03:49.358 align:middle line:84%
+But if you stop
+and think about it,
+
+78
+00:03:49.358 --> 00:03:52.670 align:middle line:84%
+it's a really good reason why
+it steals it from the end.
+
+79
+00:03:52.670 --> 00:03:55.310 align:middle line:84%
+Now before we talk
+about the details of how
+
+80
+00:03:55.310 --> 00:03:59.030 align:middle line:84%
+the stealing takes place,
+let's talk about which deck
+
+81
+00:03:59.030 --> 00:04:00.740 align:middle line:90%
+is stolen from.
+
+82
+00:04:00.740 --> 00:04:04.100 align:middle line:84%
+And the way that the logic
+works in the fork-joint pool
+
+83
+00:04:04.100 --> 00:04:07.610 align:middle line:84%
+implementation is
+that the worker thread
+
+84
+00:04:07.610 --> 00:04:11.690 align:middle line:84%
+deck to steal from
+is selected randomly
+
+85
+00:04:11.690 --> 00:04:13.880 align:middle line:84%
+by the thread that's
+trying to steal.
+
+86
+00:04:13.880 --> 00:04:17.240 align:middle line:84%
+And this is done to try
+to lower contention.
+
+87
+00:04:17.240 --> 00:04:21.910 align:middle line:84%
+We don't want to have the
+thread pools always go
+
+88
+00:04:21.910 --> 00:04:25.272 align:middle line:84%
+to the same deck each time
+because that would become
+
+89
+00:04:25.272 --> 00:04:26.480 align:middle line:90%
+a single point of contention.
+
+90
+00:04:26.480 --> 00:04:29.360 align:middle line:84%
+Instead, we want to
+spread it around randomly,
+
+91
+00:04:29.360 --> 00:04:31.170 align:middle line:84%
+and they start at
+different places.
+
+92
+00:04:31.170 --> 00:04:32.692 align:middle line:84%
+Now the way this
+works-- if you know
+
+93
+00:04:32.692 --> 00:04:33.900 align:middle line:90%
+how the implementation works.
+
+94
+00:04:33.900 --> 00:04:38.450 align:middle line:84%
+I mentioned their is sort
+of this big table of decks--
+
+95
+00:04:38.450 --> 00:04:40.730 align:middle line:84%
+some of which are associated
+with individual threads,
+
+96
+00:04:40.730 --> 00:04:42.397 align:middle line:84%
+some of which are the
+ones that are the,
+
+97
+00:04:42.397 --> 00:04:47.360 align:middle line:84%
+quote, "shared cues" that are
+used by the non fork-joint task
+
+98
+00:04:47.360 --> 00:04:51.080 align:middle line:84%
+clients to put things
+into the fork-joint pool.
+
+99
+00:04:51.080 --> 00:04:53.030 align:middle line:84%
+And so when you start
+to steal, you randomly
+
+100
+00:04:53.030 --> 00:04:54.238 align:middle line:90%
+start at one of these things.
+
+101
+00:04:54.238 --> 00:04:55.940 align:middle line:84%
+And then you just
+start searching down
+
+102
+00:04:55.940 --> 00:05:00.200 align:middle line:84%
+the table until you happen to
+find a deck that has something
+
+103
+00:05:00.200 --> 00:05:02.930 align:middle line:84%
+in it that you can steal,
+which could be coming in
+
+104
+00:05:02.930 --> 00:05:07.160 align:middle line:84%
+from a non fork-joint task or
+could be coming from a deck
+
+105
+00:05:07.160 --> 00:05:08.660 align:middle line:84%
+from another thread
+that owns it.
+
+106
+00:05:08.660 --> 00:05:11.150 align:middle line:84%
+But it's too busy to
+get around to processing
+
+107
+00:05:11.150 --> 00:05:13.850 align:middle line:84%
+that particular element
+in the deck yet,
+
+108
+00:05:13.850 --> 00:05:17.850 align:middle line:84%
+that particular task
+in the deck yet.
+
+109
+00:05:17.850 --> 00:05:21.870 align:middle line:84%
+The tasks are stolen
+in FIFO order.
+
+110
+00:05:21.870 --> 00:05:26.760 align:middle line:84%
+So keep in mind that a given
+worker thread will push and pop
+
+111
+00:05:26.760 --> 00:05:32.900 align:middle line:84%
+in LIFO order on to and from
+its deck with a LIFO model--
+
+112
+00:05:32.900 --> 00:05:34.510 align:middle line:90%
+Last In, First Out.
+
+113
+00:05:34.510 --> 00:05:38.310 align:middle line:84%
+However, tasks are
+stolen in FIFO order.
+
+114
+00:05:38.310 --> 00:05:42.103 align:middle line:84%
+So you push things
+on to the head.
+
+115
+00:05:42.103 --> 00:05:43.770 align:middle line:84%
+And then as things
+are push, push, push,
+
+116
+00:05:43.770 --> 00:05:46.620 align:middle line:84%
+they logically
+move down the deck
+
+117
+00:05:46.620 --> 00:05:48.300 align:middle line:90%
+till they end up at the tail.
+
+118
+00:05:48.300 --> 00:05:51.060 align:middle line:84%
+And when someone comes
+along and steals something,
+
+119
+00:05:51.060 --> 00:05:54.310 align:middle line:84%
+they do this by calling
+the poll method--
+
+120
+00:05:54.310 --> 00:05:58.170 align:middle line:84%
+which will take the item
+at the tail of the queue,
+
+121
+00:05:58.170 --> 00:06:00.060 align:middle line:90%
+not the head of the queue.
+
+122
+00:06:00.060 --> 00:06:04.280 align:middle line:84%
+So that's what's called First
+In, First Out or FIFO ordering.
+
+123
+00:06:04.280 --> 00:06:06.530 align:middle line:84%
+And the reason for doing
+this is really pretty obvious
+
+124
+00:06:06.530 --> 00:06:08.240 align:middle line:90%
+if you stop to think about it.
+
+125
+00:06:08.240 --> 00:06:14.090 align:middle line:84%
+This approach, this discipline
+of doing things at the tail
+
+126
+00:06:14.090 --> 00:06:17.390 align:middle line:84%
+rather than at the head,
+minimizes contention
+
+127
+00:06:17.390 --> 00:06:21.290 align:middle line:84%
+with the worker thread that
+owns the deck because the worker
+
+128
+00:06:21.290 --> 00:06:24.740 align:middle line:84%
+thread that owns the deck is
+going to be pushing and popping
+
+129
+00:06:24.740 --> 00:06:30.290 align:middle line:84%
+off the head of the deck and
+will be pulling and pulling
+
+130
+00:06:30.290 --> 00:06:32.420 align:middle line:90%
+things off the tail of the deck.
+
+131
+00:06:32.420 --> 00:06:35.210 align:middle line:84%
+And that way if there's more
+than one entry in the deck,
+
+132
+00:06:35.210 --> 00:06:37.820 align:middle line:84%
+those two operations can
+actually run in parallel.
+
+133
+00:06:37.820 --> 00:06:40.250 align:middle line:84%
+And they don't have to
+share a single lock.
+
+134
+00:06:40.250 --> 00:06:42.410 align:middle line:84%
+They can actually
+have different locks
+
+135
+00:06:42.410 --> 00:06:45.470 align:middle line:84%
+used for the front, different
+locks used for the tail.
+
+136
+00:06:45.470 --> 00:06:48.260 align:middle line:84%
+And therefore, we can
+have a much better chance
+
+137
+00:06:48.260 --> 00:06:53.238 align:middle line:84%
+of not incurring
+synchronization overhead.
+
+138
+00:06:53.238 --> 00:06:54.780 align:middle line:84%
+It'll just go through
+really quickly.
+
+139
+00:06:54.780 --> 00:06:57.020 align:middle line:84%
+And I'll talk about how
+that works in just a second.
+
+140
+00:06:57.020 --> 00:06:59.005 align:middle line:84%
+Once again, just think
+through, you know,
+
+141
+00:06:59.005 --> 00:07:00.380 align:middle line:84%
+would you have
+thought about this
+
+142
+00:07:00.380 --> 00:07:04.430 align:middle line:84%
+if you were developing
+a worker thread pool?
+
+143
+00:07:04.430 --> 00:07:06.810 align:middle line:90%
+Probably not.
+
+144
+00:07:06.810 --> 00:07:08.790 align:middle line:84%
+Another reason for
+stealing the tale
+
+145
+00:07:08.790 --> 00:07:13.050 align:middle line:84%
+is that the older
+items in the deck
+
+146
+00:07:13.050 --> 00:07:17.560 align:middle line:84%
+probably constitute a
+larger unit of work.
+
+147
+00:07:17.560 --> 00:07:20.280 align:middle line:84%
+And the reason for this
+is because of the divide
+
+148
+00:07:20.280 --> 00:07:24.330 align:middle line:84%
+and conquer nature of fork-join
+tasks, especially those
+
+149
+00:07:24.330 --> 00:07:26.265 align:middle line:90%
+that work with parallel streams.
+
+150
+00:07:26.265 --> 00:07:28.140 align:middle line:84%
+If you recall parallel
+streams, you typically
+
+151
+00:07:28.140 --> 00:07:30.860 align:middle line:84%
+start with the
+whole data source.
+
+152
+00:07:30.860 --> 00:07:32.650 align:middle line:90%
+And then you split it in half.
+
+153
+00:07:32.650 --> 00:07:36.210 align:middle line:84%
+So if you were to think about
+pushing a task onto a deck,
+
+154
+00:07:36.210 --> 00:07:39.057 align:middle line:84%
+the first thing you push on
+might be the whole thing.
+
+155
+00:07:39.057 --> 00:07:40.140 align:middle line:90%
+And then you pop that off.
+
+156
+00:07:40.140 --> 00:07:41.307 align:middle line:90%
+You break it into two parts.
+
+157
+00:07:41.307 --> 00:07:43.230 align:middle line:90%
+You push the two halves on.
+
+158
+00:07:43.230 --> 00:07:44.522 align:middle line:90%
+Then you pick one part off.
+
+159
+00:07:44.522 --> 00:07:45.480 align:middle line:90%
+You break that in half.
+
+160
+00:07:45.480 --> 00:07:47.520 align:middle line:90%
+And you push the two fourths on.
+
+161
+00:07:47.520 --> 00:07:50.550 align:middle line:84%
+And then you pop off one of
+the fourths, break it in half,
+
+162
+00:07:50.550 --> 00:07:53.380 align:middle line:84%
+push the two eighths on,
+and so on and so forth.
+
+163
+00:07:53.380 --> 00:07:55.830 align:middle line:84%
+And what will happen is
+you'll end up with a deck
+
+164
+00:07:55.830 --> 00:07:59.040 align:middle line:84%
+where the bigger items
+are towards the tail
+
+165
+00:07:59.040 --> 00:08:01.380 align:middle line:84%
+and the smaller items
+are towards the front.
+
+166
+00:08:01.380 --> 00:08:04.710 align:middle line:84%
+So therefore, if you
+steal from the end,
+
+167
+00:08:04.710 --> 00:08:07.540 align:middle line:84%
+you'll probably get a
+larger unit of work.
+
+168
+00:08:07.540 --> 00:08:10.620 align:middle line:84%
+And then you can turn around
+and use that large unit of work
+
+169
+00:08:10.620 --> 00:08:13.890 align:middle line:84%
+to further recursively
+decompose that
+
+170
+00:08:13.890 --> 00:08:17.400 align:middle line:84%
+into progressively
+smaller chunks.
+
+171
+00:08:17.400 --> 00:08:19.440 align:middle line:84%
+So it's always better to
+start with a big chunk
+
+172
+00:08:19.440 --> 00:08:23.190 align:middle line:84%
+to break up into parts than
+to start with a smaller chunk.
+
+173
+00:08:23.190 --> 00:08:25.510 align:middle line:84%
+And that may explain
+some of the subtleties
+
+174
+00:08:25.510 --> 00:08:29.470 align:middle line:84%
+that we saw with the way
+in which the abstract task
+
+175
+00:08:29.470 --> 00:08:32.380 align:middle line:84%
+implementation from the
+parallel streams framework
+
+176
+00:08:32.380 --> 00:08:35.742 align:middle line:84%
+would switch back and forth
+between doing left-hand side
+
+177
+00:08:35.742 --> 00:08:37.450 align:middle line:84%
+Spliterator, right-hand
+side Spliterator,
+
+178
+00:08:37.450 --> 00:08:38.659 align:middle line:90%
+forking those things.
+
+179
+00:08:38.659 --> 00:08:41.830 align:middle line:84%
+And the whole intent was to try
+to avoid bias Spliterator that
+
+180
+00:08:41.830 --> 00:08:45.530 align:middle line:90%
+didn't split things evenly.
+
+181
+00:08:45.530 --> 00:08:48.400 align:middle line:84%
+Let's take a look at
+the work cue deck now.
+
+182
+00:08:48.400 --> 00:08:49.280 align:middle line:90%
+This is pretty cool.
+
+183
+00:08:49.280 --> 00:08:53.860 align:middle line:84%
+This is what actually is used
+to store the contents that will
+
+184
+00:08:53.860 --> 00:08:56.758 align:middle line:90%
+be stolen during work stealing.
+
+185
+00:08:56.758 --> 00:08:58.300 align:middle line:84%
+And the whole point
+of this is to try
+
+186
+00:08:58.300 --> 00:09:01.000 align:middle line:90%
+to minimize lock contention.
+
+187
+00:09:01.000 --> 00:09:02.890 align:middle line:84%
+So as you can see here,
+we've got a couple
+
+188
+00:09:02.890 --> 00:09:04.900 align:middle line:90%
+of different scenarios.
+
+189
+00:09:04.900 --> 00:09:07.960 align:middle line:84%
+Push and pop are
+only ever called
+
+190
+00:09:07.960 --> 00:09:10.040 align:middle line:90%
+by the owning worker thread.
+
+191
+00:09:10.040 --> 00:09:14.120 align:middle line:84%
+So we always push things on
+to the front of the queue.
+
+192
+00:09:14.120 --> 00:09:16.240 align:middle line:84%
+And then we pop things off
+the front of the queue.
+
+193
+00:09:16.240 --> 00:09:21.320 align:middle line:84%
+And that's always done by the
+thread that owns the deck.
+
+194
+00:09:21.320 --> 00:09:25.240 align:middle line:84%
+These methods use compare
+and swap operations.
+
+195
+00:09:25.240 --> 00:09:27.160 align:middle line:84%
+We've talked about compare
+and swap operations
+
+196
+00:09:27.160 --> 00:09:29.035 align:middle line:84%
+in the concurrent
+object-oriented programming
+
+197
+00:09:29.035 --> 00:09:29.770 align:middle line:90%
+class.
+
+198
+00:09:29.770 --> 00:09:31.880 align:middle line:84%
+These are so-called
+weight free operations,
+
+199
+00:09:31.880 --> 00:09:34.450 align:middle line:84%
+which means that they
+will never block.
+
+200
+00:09:34.450 --> 00:09:36.183 align:middle line:90%
+And they basically just spin.
+
+201
+00:09:36.183 --> 00:09:37.600 align:middle line:84%
+And this operation
+is super fast--
+
+202
+00:09:37.600 --> 00:09:40.400 align:middle line:84%
+pushing something on,
+popping something off really,
+
+203
+00:09:40.400 --> 00:09:42.820 align:middle line:90%
+really fast.
+
+204
+00:09:42.820 --> 00:09:45.400 align:middle line:84%
+In contrast, poll
+is the method that's
+
+205
+00:09:45.400 --> 00:09:50.430 align:middle line:84%
+called to try to steal from
+another worker threads deck.
+
+206
+00:09:50.430 --> 00:09:53.050 align:middle line:84%
+So you try to steal it
+from another worker thread.
+
+207
+00:09:53.050 --> 00:09:57.355 align:middle line:84%
+And in this case, you may
+not be entirely weight free.
+
+208
+00:09:57.355 --> 00:09:59.980 align:middle line:84%
+They have to use different data
+structures in order to do that.
+
+209
+00:09:59.980 --> 00:10:04.540 align:middle line:84%
+But the key point to note here
+is that the pushing and popping
+
+210
+00:10:04.540 --> 00:10:07.282 align:middle line:84%
+can be synchronized
+with one lock,
+
+211
+00:10:07.282 --> 00:10:08.740 align:middle line:84%
+and the polling
+can be synchronized
+
+212
+00:10:08.740 --> 00:10:09.850 align:middle line:90%
+with a different lock.
+
+213
+00:10:09.850 --> 00:10:12.142 align:middle line:84%
+And only if you end up with
+a single item in the queue,
+
+214
+00:10:12.142 --> 00:10:14.470 align:middle line:84%
+is it ever even an issue
+as to what gets used.
+
+215
+00:10:14.470 --> 00:10:16.630 align:middle line:84%
+And of course, they've
+accounted for that
+
+216
+00:10:16.630 --> 00:10:19.740 align:middle line:84%
+in the very clever
+implementation under the hood.
+
+217
+00:10:19.740 --> 00:10:21.490 align:middle line:84%
+If you want to read
+more about this really
+
+218
+00:10:21.490 --> 00:10:24.580 align:middle line:84%
+clever implementation under the
+hood, take a look at this paper
+
+219
+00:10:24.580 --> 00:10:27.070 align:middle line:84%
+that Doug Lee published
+a number of years ago.
+
+220
+00:10:27.070 --> 00:10:32.563 align:middle line:84%
+It's not precisely
+what you find with Java
+
+221
+00:10:32.563 --> 00:10:33.730 align:middle line:90%
+and the Java fork-join pool.
+
+222
+00:10:33.730 --> 00:10:35.590 align:middle line:84%
+Some of the method names
+are a little different.
+
+223
+00:10:35.590 --> 00:10:36.970 align:middle line:84%
+But it gives you
+a very good idea
+
+224
+00:10:36.970 --> 00:10:40.680 align:middle line:84%
+of how the framework
+is designed.
+
+225
+00:10:40.680 --> 00:10:43.050 align:middle line:84%
+Another great place to go
+to get even more information
+
+226
+00:10:43.050 --> 00:10:47.100 align:middle line:84%
+about the details of how
+the fork-join pool source
+
+227
+00:10:47.100 --> 00:10:51.420 align:middle line:84%
+code works is to take a look
+at the implementation overview
+
+228
+00:10:51.420 --> 00:10:54.690 align:middle line:84%
+comments in the fork-join
+pool source code.
+
+229
+00:10:54.690 --> 00:10:56.790 align:middle line:84%
+So if you go to this
+link here, you'll
+
+230
+00:10:56.790 --> 00:11:00.360 align:middle line:84%
+be able to download the
+fork-join pool implementation.
+
+231
+00:11:00.360 --> 00:11:01.890 align:middle line:84%
+I think this is
+the Java 8 version.
+
+232
+00:11:01.890 --> 00:11:04.440 align:middle line:84%
+You can also use
+Google to search
+
+233
+00:11:04.440 --> 00:11:06.540 align:middle line:84%
+to find the latest
+versions, which are also
+
+234
+00:11:06.540 --> 00:11:07.852 align:middle line:90%
+available in open source form.
+
+235
+00:11:07.852 --> 00:11:09.810 align:middle line:84%
+And if you go read that
+implementation overview
+
+236
+00:11:09.810 --> 00:11:11.610 align:middle line:90%
+section, it explains--
+
+237
+00:11:11.610 --> 00:11:13.470 align:middle line:90%
+in gory, gory detail--
+
+238
+00:11:13.470 --> 00:11:15.420 align:middle line:84%
+how everything works
+under the hood.
+
+239
+00:11:15.420 --> 00:11:18.600 align:middle line:84%
+I only wish that the
+rest of the source code
+
+240
+00:11:18.600 --> 00:11:21.810 align:middle line:84%
+was as thoroughly commented
+as the implementation overview
+
+241
+00:11:21.810 --> 00:11:24.113 align:middle line:90%
+portion.
+
+242
+00:11:24.113 --> 00:11:25.530 align:middle line:84%
+I think Doug Lee
+must have decided
+
+243
+00:11:25.530 --> 00:11:28.860 align:middle line:84%
+if this code was hard to write,
+it should be hard to read.
+
+244
+00:11:28.860 --> 00:11:32.040 align:middle line:84%
+And so he made it
+very impenetrable.
+
+245
+00:11:32.040 --> 00:11:35.160 align:middle line:84%
+But you can rest assured
+it's super duper optimized.
+
+246
+00:11:35.160 --> 00:11:39.120 align:middle line:84%
+It's about as efficient as you
+could imagine Java code to be.
+
+247
+00:11:39.120 --> 00:11:42.750 align:middle line:84%
+And it takes advantage of lots
+of very low level primitives
+
+248
+00:11:42.750 --> 00:11:46.650 align:middle line:84%
+that come out of the bowels
+of the Java libraries.
+
+249
+00:11:46.650 --> 00:11:48.800 align:middle line:84%
+In particular, things
+like the parents
+
+250
+00:11:48.800 --> 00:11:51.750 align:middle line:84%
+swap operations
+that historically
+
+251
+00:11:51.750 --> 00:11:54.060 align:middle line:84%
+been part of the
+Java unsafe class,
+
+252
+00:11:54.060 --> 00:11:56.160 align:middle line:84%
+which we also talk
+about in the earlier
+
+253
+00:11:56.160 --> 00:12:00.420 align:middle line:84%
+lesson on Java and the
+concurrent object-oriented
+
+254
+00:12:00.420 --> 00:12:02.590 align:middle line:90%
+programming course.
+
+255
+00:12:02.590 --> 00:12:04.990 align:middle line:84%
+So that basically gives
+you a good overview
+
+256
+00:12:04.990 --> 00:12:09.280 align:middle line:84%
+of how work stealing behaves
+in a Java fork-join pool.
+
+257
+00:12:09.280 --> 00:12:12.130 align:middle line:84%
+The good news is you
+don't really have to know,
+
+258
+00:12:12.130 --> 00:12:15.640 align:middle line:84%
+you don't really have to care
+how all these details work.
+
+259
+00:12:15.640 --> 00:12:18.270 align:middle line:84%
+It's probably interesting
+intellectually to know this.
+
+260
+00:12:18.270 --> 00:12:20.170 align:middle line:84%
+I find it absolutely
+fascinating.
+
+261
+00:12:20.170 --> 00:12:21.270 align:middle line:90%
+It's fun to teach.
+
+262
+00:12:21.270 --> 00:12:22.660 align:middle line:90%
+It may be fun to learn.
+
+263
+00:12:22.660 --> 00:12:24.340 align:middle line:84%
+But to use this
+framework, you don't
+
+264
+00:12:24.340 --> 00:12:26.780 align:middle line:84%
+have to be a master
+of all these details.
+
+265
+00:12:26.780 --> 00:12:30.610 align:middle line:84%
+Instead, you can just focus on
+using the various subclasses
+
+266
+00:12:30.610 --> 00:12:33.820 align:middle line:84%
+of fork-join task, like
+recursive task and recursive
+
+267
+00:12:33.820 --> 00:12:38.320 align:middle line:84%
+action, in conjunction with
+those non fork-join task
+
+268
+00:12:38.320 --> 00:12:40.840 align:middle line:84%
+methods defined in
+fork-join pool--
+
+269
+00:12:40.840 --> 00:12:43.300 align:middle line:90%
+like execute submit and invoke--
+
+270
+00:12:43.300 --> 00:12:47.477 align:middle line:84%
+to get things into the fork-join
+pools worker thread pool
+
+271
+00:12:47.477 --> 00:12:49.060 align:middle line:84%
+where all the wheels
+start get setting
+
+272
+00:12:49.060 --> 00:12:53.640 align:middle line:84%
+in motion and all the stealing
+and processing takes place.

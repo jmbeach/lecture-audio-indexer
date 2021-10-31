@@ -1,0 +1,553 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.530 align:middle line:90%
+
+
+2
+00:00:00.530 --> 00:00:03.500 align:middle line:84%
+Welcome to the
+introduction to the lesson
+
+3
+00:00:03.500 --> 00:00:06.620 align:middle line:90%
+on the Java fork-join pool.
+
+4
+00:00:06.620 --> 00:00:08.390 align:middle line:84%
+In this part of the
+lesson, I'll explain
+
+5
+00:00:08.390 --> 00:00:11.090 align:middle line:84%
+how the Java fork-join
+framework can be used
+
+6
+00:00:11.090 --> 00:00:15.330 align:middle line:90%
+to process tasks in parallel.
+
+7
+00:00:15.330 --> 00:00:17.952 align:middle line:84%
+We've talked about the
+Java fork-join pool before,
+
+8
+00:00:17.952 --> 00:00:19.410 align:middle line:84%
+but we've really
+never had a chance
+
+9
+00:00:19.410 --> 00:00:22.860 align:middle line:84%
+to do a deep dive on all of
+its structure and functionality
+
+10
+00:00:22.860 --> 00:00:23.740 align:middle line:90%
+and APIs.
+
+11
+00:00:23.740 --> 00:00:25.620 align:middle line:84%
+So that's what we're
+going to do now.
+
+12
+00:00:25.620 --> 00:00:28.290 align:middle line:84%
+The Java fork-join pool
+provides a high-performance,
+
+13
+00:00:28.290 --> 00:00:32.340 align:middle line:84%
+fine-grained, object-oriented
+task execution framework
+
+14
+00:00:32.340 --> 00:00:34.787 align:middle line:90%
+for Java data parallelism.
+
+15
+00:00:34.787 --> 00:00:37.120 align:middle line:84%
+As we've mentioned before,
+the parallel computing engine
+
+16
+00:00:37.120 --> 00:00:40.620 align:middle line:84%
+it provides is used by the
+other higher-level parallels
+
+17
+00:00:40.620 --> 00:00:43.920 align:middle line:84%
+and frameworks we're
+covering in Java.
+
+18
+00:00:43.920 --> 00:00:48.070 align:middle line:84%
+Fork-join pool supports a
+style of parallel programming
+
+19
+00:00:48.070 --> 00:00:51.820 align:middle line:84%
+that is typically used to solve
+problems by divide and conquer.
+
+20
+00:00:51.820 --> 00:00:54.030 align:middle line:84%
+Although, there are other
+ways you can use it.
+
+21
+00:00:54.030 --> 00:00:55.990 align:middle line:90%
+But this is the most common way.
+
+22
+00:00:55.990 --> 00:00:57.610 align:middle line:84%
+The way this problem
+approach works
+
+23
+00:00:57.610 --> 00:01:00.580 align:middle line:84%
+is you solve a big
+problem by checking
+
+24
+00:01:00.580 --> 00:01:02.390 align:middle line:84%
+to see if the problem
+is small enough,
+
+25
+00:01:02.390 --> 00:01:03.970 align:middle line:84%
+and then solving
+it directly using
+
+26
+00:01:03.970 --> 00:01:06.250 align:middle line:84%
+some type of
+sequential algorithm.
+
+27
+00:01:06.250 --> 00:01:09.460 align:middle line:84%
+And if you don't have
+a small enough problem,
+
+28
+00:01:09.460 --> 00:01:11.560 align:middle line:84%
+then you take the big
+problem and you break it
+
+29
+00:01:11.560 --> 00:01:14.680 align:middle line:84%
+up into independent parts,
+perhaps splitting it
+
+30
+00:01:14.680 --> 00:01:15.580 align:middle line:90%
+in half each time.
+
+31
+00:01:15.580 --> 00:01:17.540 align:middle line:84%
+There are other
+approaches as well.
+
+32
+00:01:17.540 --> 00:01:19.660 align:middle line:84%
+And then you go ahead
+and fork new sub-tasks
+
+33
+00:01:19.660 --> 00:01:21.520 align:middle line:90%
+to solve each part.
+
+34
+00:01:21.520 --> 00:01:23.800 align:middle line:84%
+You let those parts
+all run in parallel.
+
+35
+00:01:23.800 --> 00:01:25.870 align:middle line:84%
+You then join the
+sub-tasks, and you
+
+36
+00:01:25.870 --> 00:01:29.390 align:middle line:84%
+compose a final result
+from the composition,
+
+37
+00:01:29.390 --> 00:01:32.863 align:middle line:84%
+or the merging or combination
+of the sub-results.
+
+38
+00:01:32.863 --> 00:01:35.030 align:middle line:84%
+And that should sound pretty
+familiar by this point.
+
+39
+00:01:35.030 --> 00:01:36.850 align:middle line:84%
+We've talked about
+this type of approach
+
+40
+00:01:36.850 --> 00:01:38.642 align:middle line:84%
+over and over again
+when we've been talking
+
+41
+00:01:38.642 --> 00:01:40.030 align:middle line:90%
+about parallel streams--
+
+42
+00:01:40.030 --> 00:01:42.130 align:middle line:84%
+which, not surprisingly,
+uses fork-join pool
+
+43
+00:01:42.130 --> 00:01:44.940 align:middle line:90%
+to do its dirty work.
+
+44
+00:01:44.940 --> 00:01:47.287 align:middle line:84%
+Here's a more effective
+way of thinking
+
+45
+00:01:47.287 --> 00:01:48.870 align:middle line:84%
+about this based on
+the paradigm we've
+
+46
+00:01:48.870 --> 00:01:50.460 align:middle line:84%
+been talking about
+with splitting,
+
+47
+00:01:50.460 --> 00:01:51.860 align:middle line:90%
+applying, and combining.
+
+48
+00:01:51.860 --> 00:01:56.340 align:middle line:84%
+So the fork-join pool splits
+a task into sub-tasks.
+
+49
+00:01:56.340 --> 00:02:00.750 align:middle line:84%
+The task create
+sub-tasks by forking.
+
+50
+00:02:00.750 --> 00:02:03.120 align:middle line:84%
+When a sub-task is
+forked, it typically
+
+51
+00:02:03.120 --> 00:02:05.400 align:middle line:84%
+splits itself into
+more sub-tasks,
+
+52
+00:02:05.400 --> 00:02:07.900 align:middle line:84%
+if the work is still
+sufficiently big.
+
+53
+00:02:07.900 --> 00:02:12.190 align:middle line:84%
+And you only stop splitting when
+you get things small enough.
+
+54
+00:02:12.190 --> 00:02:15.610 align:middle line:84%
+Once you've gotten things
+split up into their atomic size
+
+55
+00:02:15.610 --> 00:02:20.410 align:middle line:84%
+units, then those sub-tasks
+are applied in parallel.
+
+56
+00:02:20.410 --> 00:02:22.660 align:middle line:84%
+This is implemented
+by a combination
+
+57
+00:02:22.660 --> 00:02:25.900 align:middle line:84%
+of layers in the Java
+platform, including
+
+58
+00:02:25.900 --> 00:02:30.200 align:middle line:84%
+the Java fork-join framework,
+the Java execution environment,
+
+59
+00:02:30.200 --> 00:02:32.240 align:middle line:84%
+the operating system
+kernel, and of course,
+
+60
+00:02:32.240 --> 00:02:33.820 align:middle line:84%
+the underlying
+hardware that really
+
+61
+00:02:33.820 --> 00:02:36.670 align:middle line:90%
+does all the hard lifting.
+
+62
+00:02:36.670 --> 00:02:39.970 align:middle line:84%
+Sub-tasks that are split
+by the splitting phase
+
+63
+00:02:39.970 --> 00:02:43.060 align:middle line:84%
+can run in parallel
+on different cores.
+
+64
+00:02:43.060 --> 00:02:44.830 align:middle line:84%
+And as you might
+expect, obviously,
+
+65
+00:02:44.830 --> 00:02:47.038 align:middle line:84%
+the more cores, the
+better the performance,
+
+66
+00:02:47.038 --> 00:02:48.580 align:middle line:84%
+depending on certain
+characteristics.
+
+67
+00:02:48.580 --> 00:02:50.770 align:middle line:84%
+We've talked about when
+to use parallelism,
+
+68
+00:02:50.770 --> 00:02:52.490 align:middle line:90%
+when not to use parallelism.
+
+69
+00:02:52.490 --> 00:02:55.330 align:middle line:84%
+So as a general rule, the
+more cores and the more things
+
+70
+00:02:55.330 --> 00:02:58.330 align:middle line:84%
+run independently and the
+more data, the bigger the win
+
+71
+00:02:58.330 --> 00:03:02.560 align:middle line:84%
+is going to be by applying
+parallel computing.
+
+72
+00:03:02.560 --> 00:03:04.630 align:middle line:84%
+Interesting enough,
+a sub-task could also
+
+73
+00:03:04.630 --> 00:03:07.990 align:middle line:84%
+run concurrently in
+different threads
+
+74
+00:03:07.990 --> 00:03:10.960 align:middle line:90%
+that map to a single core.
+
+75
+00:03:10.960 --> 00:03:14.360 align:middle line:84%
+This is, of course, not the
+preferred configuration.
+
+76
+00:03:14.360 --> 00:03:16.690 align:middle line:84%
+In fact, it's increasingly
+a next-to-impossible
+
+77
+00:03:16.690 --> 00:03:19.450 align:middle line:84%
+configuration, because nobody
+sells single core processors
+
+78
+00:03:19.450 --> 00:03:21.160 align:middle line:90%
+anymore for the most part.
+
+79
+00:03:21.160 --> 00:03:25.120 align:middle line:84%
+But this configuration might
+not enhance performance,
+
+80
+00:03:25.120 --> 00:03:28.030 align:middle line:84%
+unless of course the
+sub-tasks are highly I/O bound
+
+81
+00:03:28.030 --> 00:03:31.420 align:middle line:84%
+and you've got I/O hardware
+that can do the I/O in parallel
+
+82
+00:03:31.420 --> 00:03:34.150 align:middle line:90%
+with the central CPU and so on.
+
+83
+00:03:34.150 --> 00:03:36.650 align:middle line:84%
+And then the final phase, as
+we've seen over and over again,
+
+84
+00:03:36.650 --> 00:03:40.130 align:middle line:84%
+is to combine the
+various sub-task results.
+
+85
+00:03:40.130 --> 00:03:41.810 align:middle line:84%
+And the interesting
+thing about the way
+
+86
+00:03:41.810 --> 00:03:46.340 align:middle line:84%
+that the fork-join framework
+works is that join logically
+
+87
+00:03:46.340 --> 00:03:49.370 align:middle line:90%
+waits for sub-tasks to finish.
+
+88
+00:03:49.370 --> 00:03:52.190 align:middle line:84%
+But it actually pitches
+in and plays a role
+
+89
+00:03:52.190 --> 00:03:53.960 align:middle line:90%
+in executing sub-tasks as well.
+
+90
+00:03:53.960 --> 00:03:56.425 align:middle line:84%
+And I'll talk more about
+this in an upcoming lesson
+
+91
+00:03:56.425 --> 00:03:58.580 align:middle line:84%
+when we talk about
+some of the key methods
+
+92
+00:03:58.580 --> 00:04:02.000 align:middle line:90%
+in the fork-join task class.
+
+93
+00:04:02.000 --> 00:04:05.840 align:middle line:84%
+As sub-tasks finish, then
+the results are merged.
+
+94
+00:04:05.840 --> 00:04:07.700 align:middle line:84%
+And they're merged
+by joining together
+
+95
+00:04:07.700 --> 00:04:10.650 align:middle line:84%
+the results from
+sub-tasks that run
+
+96
+00:04:10.650 --> 00:04:14.400 align:middle line:84%
+in the background
+in other threads.
+
+97
+00:04:14.400 --> 00:04:17.010 align:middle line:84%
+These partial sub-results
+are all merged together
+
+98
+00:04:17.010 --> 00:04:18.640 align:middle line:90%
+into a final result.
+
+99
+00:04:18.640 --> 00:04:20.250 align:middle line:84%
+So there could be
+multiple phases
+
+100
+00:04:20.250 --> 00:04:23.010 align:middle line:84%
+of joining at different
+levels of abstraction,
+
+101
+00:04:23.010 --> 00:04:25.740 align:middle line:84%
+depending on how you've
+decomposed your program up
+
+102
+00:04:25.740 --> 00:04:26.712 align:middle line:90%
+into pieces.
+
+103
+00:04:26.712 --> 00:04:28.170 align:middle line:84%
+But the end result
+is you'll end up
+
+104
+00:04:28.170 --> 00:04:31.410 align:middle line:84%
+with a final joined
+result that has the result
+
+105
+00:04:31.410 --> 00:04:34.450 align:middle line:90%
+of the overall processing.
+
+106
+00:04:34.450 --> 00:04:37.390 align:middle line:84%
+A join always occurs at a single
+thread at any given level.
+
+107
+00:04:37.390 --> 00:04:40.990 align:middle line:84%
+So a join will join the
+results from its children.
+
+108
+00:04:40.990 --> 00:04:44.270 align:middle line:84%
+A parent will join
+results from its children.
+
+109
+00:04:44.270 --> 00:04:46.090 align:middle line:84%
+And as a result,
+there's no need to have
+
+110
+00:04:46.090 --> 00:04:49.420 align:middle line:84%
+any type of synchronizers
+in the code for the joining.
+
+111
+00:04:49.420 --> 00:04:52.960 align:middle line:84%
+Unless, of course, you're
+accessing some other shared
+
+112
+00:04:52.960 --> 00:04:54.462 align:middle line:84%
+mutable state in
+some way, then you
+
+113
+00:04:54.462 --> 00:04:55.670 align:middle line:90%
+would need the synchronizers.
+
+114
+00:04:55.670 --> 00:04:58.295 align:middle line:84%
+But if you're just trying to get
+the results back from joining,
+
+115
+00:04:58.295 --> 00:05:01.110 align:middle line:84%
+then you don't need to worry
+about synchronization at all.

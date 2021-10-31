@@ -1,0 +1,259 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.720 align:middle line:90%
+
+
+2
+00:00:00.720 --> 00:00:03.000 align:middle line:84%
+Now that we've talked about
+the ForkJoinTask class,
+
+3
+00:00:03.000 --> 00:00:07.010 align:middle line:84%
+we can start to discuss some
+of its common subclasses.
+
+4
+00:00:07.010 --> 00:00:09.860 align:middle line:84%
+These classes will be recursive
+action, recursive task,
+
+5
+00:00:09.860 --> 00:00:13.265 align:middle line:90%
+and counted completer.
+
+6
+00:00:13.265 --> 00:00:16.520 align:middle line:90%
+
+
+7
+00:00:16.520 --> 00:00:21.710 align:middle line:84%
+Programs don't typically
+implement ForkJoinTask.
+
+8
+00:00:21.710 --> 00:00:26.870 align:middle line:84%
+But instead, they extend
+from one of its subclasses
+
+9
+00:00:26.870 --> 00:00:30.050 align:middle line:84%
+and override the
+compute hook method
+
+10
+00:00:30.050 --> 00:00:31.580 align:middle line:90%
+defined in those subclasses.
+
+11
+00:00:31.580 --> 00:00:33.235 align:middle line:84%
+This is a little
+bit goofy at first.
+
+12
+00:00:33.235 --> 00:00:34.610 align:middle line:84%
+And I'm not quite
+sure, honestly,
+
+13
+00:00:34.610 --> 00:00:36.080 align:middle line:90%
+why they did it quite this way.
+
+14
+00:00:36.080 --> 00:00:38.660 align:middle line:84%
+We'll talk more about
+that in just a second.
+
+15
+00:00:38.660 --> 00:00:41.990 align:middle line:84%
+Here is a quick summary of
+the three primary subclasses
+
+16
+00:00:41.990 --> 00:00:42.950 align:middle line:90%
+of ForkJoinTask.
+
+17
+00:00:42.950 --> 00:00:44.988 align:middle line:84%
+We're going to
+focus on two of them
+
+18
+00:00:44.988 --> 00:00:46.280 align:middle line:90%
+in great detail in this course.
+
+19
+00:00:46.280 --> 00:00:49.260 align:middle line:84%
+But all three of them
+are RecursiveAction,
+
+20
+00:00:49.260 --> 00:00:54.290 align:middle line:84%
+which is used for computations
+that do not return results;
+
+21
+00:00:54.290 --> 00:00:56.870 align:middle line:84%
+RecursiveTask, which
+is for computations
+
+22
+00:00:56.870 --> 00:01:01.490 align:middle line:84%
+that do return results; and
+finally, CountedCompleter,
+
+23
+00:01:01.490 --> 00:01:05.209 align:middle line:84%
+which is used for computation in
+which completed actions trigger
+
+24
+00:01:05.209 --> 00:01:06.500 align:middle line:90%
+other actions.
+
+25
+00:01:06.500 --> 00:01:09.980 align:middle line:84%
+And Counted Completer
+isn't typically used
+
+26
+00:01:09.980 --> 00:01:10.910 align:middle line:90%
+by application code.
+
+27
+00:01:10.910 --> 00:01:13.850 align:middle line:84%
+But it's used very, very
+heavily in the context
+
+28
+00:01:13.850 --> 00:01:16.880 align:middle line:84%
+of the underlying
+functional parallelism
+
+29
+00:01:16.880 --> 00:01:19.580 align:middle line:84%
+frameworks in Java,
+such as parallel streams
+
+30
+00:01:19.580 --> 00:01:23.290 align:middle line:90%
+and completable futures.
+
+31
+00:01:23.290 --> 00:01:25.480 align:middle line:84%
+Interestingly
+enough, these classes
+
+32
+00:01:25.480 --> 00:01:26.830 align:middle line:90%
+aren't functional interfaces.
+
+33
+00:01:26.830 --> 00:01:29.110 align:middle line:90%
+They were defined in Java 7.
+
+34
+00:01:29.110 --> 00:01:32.680 align:middle line:84%
+So they have to be
+subclassed rather than
+
+35
+00:01:32.680 --> 00:01:35.560 align:middle line:84%
+by using lambda
+expressions to implement
+
+36
+00:01:35.560 --> 00:01:38.020 align:middle line:90%
+the abstract compute method.
+
+37
+00:01:38.020 --> 00:01:40.000 align:middle line:84%
+And this is really
+sort of annoying,
+
+38
+00:01:40.000 --> 00:01:41.633 align:middle line:84%
+and it makes your
+code more cumbersome.
+
+39
+00:01:41.633 --> 00:01:42.800 align:middle line:90%
+But it's just the way it is.
+
+40
+00:01:42.800 --> 00:01:46.084 align:middle line:90%
+We just have to deal with it.
+
+41
+00:01:46.084 --> 00:01:49.110 align:middle line:84%
+So you can basically think of
+the parallel streams framework
+
+42
+00:01:49.110 --> 00:01:53.160 align:middle line:84%
+as providing a functional
+facade for ForkJoinTask,
+
+43
+00:01:53.160 --> 00:01:55.060 align:middle line:90%
+fork-join pool, and so on.
+
+44
+00:01:55.060 --> 00:01:58.380 align:middle line:84%
+So even though ForkJoinTask
+is not a particularly
+
+45
+00:01:58.380 --> 00:02:02.800 align:middle line:84%
+pleasant interface to program
+from a functional perspective,
+
+46
+00:02:02.800 --> 00:02:04.950 align:middle line:84%
+you can use parallel
+streams and all
+
+47
+00:02:04.950 --> 00:02:07.260 align:middle line:84%
+is forgiven, because the
+streams framework will
+
+48
+00:02:07.260 --> 00:02:10.560 align:middle line:84%
+hide all that details from you
+behind a much cooler and more
+
+49
+00:02:10.560 --> 00:02:15.150 align:middle line:84%
+composable functional
+programming model.
+
+50
+00:02:15.150 --> 00:02:16.080 align:middle line:90%
+And we'll talk--
+
+51
+00:02:16.080 --> 00:02:18.720 align:middle line:84%
+I think we've actually talked
+already about this, how to map
+
+52
+00:02:18.720 --> 00:02:20.760 align:middle line:84%
+the parallel
+streams abstractions
+
+53
+00:02:20.760 --> 00:02:22.730 align:middle line:84%
+onto the common fork-join
+pool abstractions,
+
+54
+00:02:22.730 --> 00:02:26.280 align:middle line:84%
+if you go back and watch the
+video from the earlier week's
+
+55
+00:02:26.280 --> 00:02:30.140 align:middle line:84%
+lessons on parallel
+streams internals.

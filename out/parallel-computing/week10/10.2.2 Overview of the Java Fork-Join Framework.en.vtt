@@ -1,0 +1,338 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.650 align:middle line:90%
+
+
+2
+00:00:00.650 --> 00:00:02.120 align:middle line:84%
+One of the most
+important classes
+
+3
+00:00:02.120 --> 00:00:04.290 align:middle line:84%
+in the fork-join
+framework, of course,
+
+4
+00:00:04.290 --> 00:00:07.282 align:middle line:84%
+is the ForkJoinPool
+class, not surprisingly.
+
+5
+00:00:07.282 --> 00:00:08.740 align:middle line:84%
+And in this part
+of the lesson, I'm
+
+6
+00:00:08.740 --> 00:00:11.750 align:middle line:84%
+going to talk about the
+structure and functionality
+
+7
+00:00:11.750 --> 00:00:14.600 align:middle line:84%
+of the fork-join framework,
+and focus particularly
+
+8
+00:00:14.600 --> 00:00:17.030 align:middle line:90%
+on the ForkJoinPool itself.
+
+9
+00:00:17.030 --> 00:00:20.090 align:middle line:84%
+But be aware that ForkJoinPool
+works in conjunction
+
+10
+00:00:20.090 --> 00:00:23.260 align:middle line:90%
+with a bunch of other things.
+
+11
+00:00:23.260 --> 00:00:27.790 align:middle line:84%
+So the ForkJoinPool actually
+implements the ExecutorService,
+
+12
+00:00:27.790 --> 00:00:30.930 align:middle line:84%
+which means it's capable of
+doing the same kinds of things
+
+13
+00:00:30.930 --> 00:00:35.560 align:middle line:84%
+that other ExecutorService
+implementations can do.
+
+14
+00:00:35.560 --> 00:00:37.600 align:middle line:84%
+This ExecutorService
+is the basis
+
+15
+00:00:37.600 --> 00:00:42.415 align:middle line:84%
+for a whole bunch of subclasses
+in the Java executor framework.
+
+16
+00:00:42.415 --> 00:00:45.190 align:middle line:84%
+Again, if you go
+and watch my course
+
+17
+00:00:45.190 --> 00:00:47.410 align:middle line:84%
+on concurrent
+object-oriented programming,
+
+18
+00:00:47.410 --> 00:00:49.870 align:middle line:84%
+you'll get to learn all about
+the different interfaces
+
+19
+00:00:49.870 --> 00:00:53.590 align:middle line:84%
+and abstract classes and
+concrete classes in the Java
+
+20
+00:00:53.590 --> 00:00:55.180 align:middle line:90%
+executor framework.
+
+21
+00:00:55.180 --> 00:00:59.470 align:middle line:84%
+We, of course, care primarily
+about the ForkJoinPool here.
+
+22
+00:00:59.470 --> 00:01:02.550 align:middle line:84%
+There are other implementations
+of the ExecutorService
+
+23
+00:01:02.550 --> 00:01:06.720 align:middle line:84%
+that can be used to execute
+other kinds of entities.
+
+24
+00:01:06.720 --> 00:01:10.410 align:middle line:84%
+For example, the
+ThreadPoolExecutor
+
+25
+00:01:10.410 --> 00:01:11.970 align:middle line:84%
+and the
+ScheduledThreadPoolExecutor
+
+26
+00:01:11.970 --> 00:01:15.450 align:middle line:84%
+can be used to execute
+runnables, which
+
+27
+00:01:15.450 --> 00:01:19.560 align:middle line:84%
+have no return
+value, or callables,
+
+28
+00:01:19.560 --> 00:01:22.300 align:middle line:90%
+which do have a return value.
+
+29
+00:01:22.300 --> 00:01:25.930 align:middle line:84%
+In contrast, the ForkJoinPool
+is primarily there
+
+30
+00:01:25.930 --> 00:01:27.730 align:middle line:90%
+to execute ForkJoinTasks.
+
+31
+00:01:27.730 --> 00:01:29.980 align:middle line:84%
+And we'll talk more about
+what a ForkJoinTask is
+
+32
+00:01:29.980 --> 00:01:31.760 align:middle line:90%
+in just the second.
+
+33
+00:01:31.760 --> 00:01:34.070 align:middle line:84%
+It's possible for
+the ForkJoinPool
+
+34
+00:01:34.070 --> 00:01:36.320 align:middle line:84%
+to also execute
+runnables and callables,
+
+35
+00:01:36.320 --> 00:01:40.250 align:middle line:84%
+since after all, it's
+basically implementing
+
+36
+00:01:40.250 --> 00:01:42.530 align:middle line:84%
+portions of the
+ExecutorService interface.
+
+37
+00:01:42.530 --> 00:01:44.240 align:middle line:84%
+But that's not really
+its main purpose.
+
+38
+00:01:44.240 --> 00:01:46.820 align:middle line:84%
+If you use ForkJoinPool
+to execute callables
+
+39
+00:01:46.820 --> 00:01:48.780 align:middle line:84%
+and runnables, you're
+probably missing out
+
+40
+00:01:48.780 --> 00:01:51.770 align:middle line:84%
+on the real benefit
+of what it does.
+
+41
+00:01:51.770 --> 00:01:55.070 align:middle line:84%
+There are intentionally
+very few knobs that
+
+42
+00:01:55.070 --> 00:01:57.200 align:middle line:90%
+can control a ForkJoinPool.
+
+43
+00:01:57.200 --> 00:01:58.903 align:middle line:84%
+So it's kind of like
+a one-button mouse.
+
+44
+00:01:58.903 --> 00:02:00.320 align:middle line:84%
+There's hardly
+anything you can do
+
+45
+00:02:00.320 --> 00:02:04.910 align:middle line:84%
+to it to control it other
+than just maybe selecting
+
+46
+00:02:04.910 --> 00:02:08.600 align:middle line:84%
+some ways of
+influencing its size.
+
+47
+00:02:08.600 --> 00:02:11.690 align:middle line:84%
+Compare and contrast that
+with the ThreadPoolExecutor
+
+48
+00:02:11.690 --> 00:02:14.270 align:middle line:84%
+framework, which has lots
+and lots of knobs and buttons
+
+49
+00:02:14.270 --> 00:02:15.440 align:middle line:90%
+to control.
+
+50
+00:02:15.440 --> 00:02:19.160 align:middle line:84%
+With the ThreadPoolExecutor, you
+can control the CorePool size,
+
+51
+00:02:19.160 --> 00:02:20.630 align:middle line:90%
+the MaxPool size.
+
+52
+00:02:20.630 --> 00:02:22.220 align:middle line:84%
+You can select the
+type of WorkQueue
+
+53
+00:02:22.220 --> 00:02:25.010 align:middle line:84%
+that's used to queue up
+incoming requests before they're
+
+54
+00:02:25.010 --> 00:02:26.310 align:middle line:90%
+processed by threads.
+
+55
+00:02:26.310 --> 00:02:28.490 align:middle line:84%
+You can determine
+how long threads will
+
+56
+00:02:28.490 --> 00:02:30.540 align:middle line:90%
+live if they're not active.
+
+57
+00:02:30.540 --> 00:02:32.060 align:middle line:90%
+You can select a thread factory.
+
+58
+00:02:32.060 --> 00:02:34.670 align:middle line:84%
+You can have this thing called
+the RejectedExceptionHandler,
+
+59
+00:02:34.670 --> 00:02:35.760 align:middle line:90%
+and so on and so forth.
+
+60
+00:02:35.760 --> 00:02:37.760 align:middle line:84%
+So there's myriad
+policies that can
+
+61
+00:02:37.760 --> 00:02:41.900 align:middle line:84%
+be overridden and customized
+and set with ThreadPoolExecutor,
+
+62
+00:02:41.900 --> 00:02:44.330 align:middle line:84%
+none of which can be done
+with the ForkJoinPool,
+
+63
+00:02:44.330 --> 00:02:45.860 align:middle line:90%
+for the most part.
+
+64
+00:02:45.860 --> 00:02:48.740 align:middle line:84%
+About the only thing you can
+do with the ForkJoinPool class
+
+65
+00:02:48.740 --> 00:02:51.020 align:middle line:90%
+is you can configure its size.
+
+66
+00:02:51.020 --> 00:02:53.750 align:middle line:84%
+And there, you primarily
+focus on configuring the size
+
+67
+00:02:53.750 --> 00:02:56.328 align:middle line:90%
+of the common ForkJoinPool.
+
+68
+00:02:56.328 --> 00:02:57.870 align:middle line:84%
+And as we'll talk
+about here shortly,
+
+69
+00:02:57.870 --> 00:03:00.410 align:middle line:84%
+you can either do this by
+setting a system property,
+
+70
+00:03:00.410 --> 00:03:02.390 align:middle line:90%
+which is sort of crafty.
+
+71
+00:03:02.390 --> 00:03:06.850 align:middle line:84%
+Or you can use something called
+the managed blocker interface.

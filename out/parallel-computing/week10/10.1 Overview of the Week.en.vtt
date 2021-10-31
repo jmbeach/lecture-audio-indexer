@@ -1,0 +1,283 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:01.010 align:middle line:90%
+
+
+2
+00:00:01.010 --> 00:00:02.710 align:middle line:84%
+Welcome to the next
+week of our course
+
+3
+00:00:02.710 --> 00:00:05.580 align:middle line:84%
+on parallel functional
+programming with Java.
+
+4
+00:00:05.580 --> 00:00:08.670 align:middle line:84%
+Now that we've covered the Java
+parallel Streams framework,
+
+5
+00:00:08.670 --> 00:00:10.710 align:middle line:84%
+we'll drop down a
+level of abstraction
+
+6
+00:00:10.710 --> 00:00:13.830 align:middle line:84%
+and start exploring Java
+ForkJoinPools, which
+
+7
+00:00:13.830 --> 00:00:16.379 align:middle line:84%
+provide the parallel
+computing infrastructure used
+
+8
+00:00:16.379 --> 00:00:20.040 align:middle line:84%
+by both parallel Streams and
+the Java CompletableFuture's
+
+9
+00:00:20.040 --> 00:00:21.870 align:middle line:90%
+framework.
+
+10
+00:00:21.870 --> 00:00:24.660 align:middle line:84%
+The Fork/Join framework
+provides a high-performance and
+
+11
+00:00:24.660 --> 00:00:28.620 align:middle line:84%
+fine-grained task execution
+engine for object-oriented data
+
+12
+00:00:28.620 --> 00:00:30.450 align:middle line:90%
+parallelism.
+
+13
+00:00:30.450 --> 00:00:32.900 align:middle line:84%
+This framework consists
+of several public classes,
+
+14
+00:00:32.900 --> 00:00:36.920 align:middle line:84%
+including ForkJoinPool,
+ForkJoinTask, RecursiveTask,
+
+15
+00:00:36.920 --> 00:00:39.090 align:middle line:90%
+and RecursiveAction.
+
+16
+00:00:39.090 --> 00:00:42.500 align:middle line:84%
+ForkJoinPool implements the
+ExecutorService interface
+
+17
+00:00:42.500 --> 00:00:46.650 align:middle line:84%
+and executes Fork/Join tasks
+within a pool of worker threads
+
+18
+00:00:46.650 --> 00:00:49.240 align:middle line:90%
+it manages in a very clever way.
+
+19
+00:00:49.240 --> 00:00:51.550 align:middle line:84%
+A Fork/Join task
+associates a chunk
+
+20
+00:00:51.550 --> 00:00:55.200 align:middle line:84%
+of data along with a
+computation on that data.
+
+21
+00:00:55.200 --> 00:00:57.630 align:middle line:84%
+Since it's lighter weight
+than a Java thread,
+
+22
+00:00:57.630 --> 00:01:00.420 align:middle line:84%
+a large number of
+Fork/Join tasks
+
+23
+00:01:00.420 --> 00:01:04.200 align:middle line:84%
+can run scalably atop a much
+smaller number of Java threads
+
+24
+00:01:04.200 --> 00:01:06.690 align:middle line:90%
+in a Fork/Join pool.
+
+25
+00:01:06.690 --> 00:01:09.570 align:middle line:84%
+Application programs rarely
+implement Fork/Join tasks
+
+26
+00:01:09.570 --> 00:01:10.560 align:middle line:90%
+directly.
+
+27
+00:01:10.560 --> 00:01:13.200 align:middle line:84%
+But instead, they extend
+one of its subclasses,
+
+28
+00:01:13.200 --> 00:01:16.380 align:middle line:84%
+such as RecursiveTask
+or RecursiveAction,
+
+29
+00:01:16.380 --> 00:01:19.560 align:middle line:84%
+and override the compute
+hook method in those classes
+
+30
+00:01:19.560 --> 00:01:23.630 align:middle line:84%
+to have their computations
+performed in parallel.
+
+31
+00:01:23.630 --> 00:01:28.310 align:middle line:84%
+After describing the APIs of
+ForkJoinPool, ForkJoinTask,
+
+32
+00:01:28.310 --> 00:01:31.070 align:middle line:84%
+RecursiveTask, and
+RecursiveAction,
+
+33
+00:01:31.070 --> 00:01:33.050 align:middle line:84%
+we turn our attention
+to the inner workings
+
+34
+00:01:33.050 --> 00:01:35.480 align:middle line:84%
+of the Java Fork/Join
+framework, which
+
+35
+00:01:35.480 --> 00:01:37.640 align:middle line:84%
+is based on a pool
+of worker threads
+
+36
+00:01:37.640 --> 00:01:39.860 align:middle line:84%
+that implement the
+so-called Work Stealing
+
+37
+00:01:39.860 --> 00:01:42.400 align:middle line:90%
+model of parallel computing.
+
+38
+00:01:42.400 --> 00:01:45.310 align:middle line:84%
+In this model, each worker
+thread and the Fork/Join pool
+
+39
+00:01:45.310 --> 00:01:47.980 align:middle line:84%
+has a double-ended
+queue, or DEQ,
+
+40
+00:01:47.980 --> 00:01:51.460 align:middle line:84%
+that manages tasks it executes
+in parallel with other worker
+
+41
+00:01:51.460 --> 00:01:53.420 align:middle line:90%
+threads in the pool.
+
+42
+00:01:53.420 --> 00:01:56.210 align:middle line:84%
+A key design goal of the
+Java Fork/Join framework
+
+43
+00:01:56.210 --> 00:01:59.150 align:middle line:84%
+is to maximize processor
+core utilization
+
+44
+00:01:59.150 --> 00:02:03.020 align:middle line:84%
+by not blocking cores unless
+there are absolutely no tasks
+
+45
+00:02:03.020 --> 00:02:05.750 align:middle line:84%
+to run since putting
+a core to sleep
+
+46
+00:02:05.750 --> 00:02:08.419 align:middle line:84%
+by blocking it is a
+very costly operation
+
+47
+00:02:08.419 --> 00:02:10.729 align:middle line:90%
+on moderate processors.
+
+48
+00:02:10.729 --> 00:02:13.400 align:middle line:84%
+Therefore, if a potentially
+idle worker thread
+
+49
+00:02:13.400 --> 00:02:16.440 align:middle line:84%
+has no more tasks
+in its deck, it
+
+50
+00:02:16.440 --> 00:02:18.960 align:middle line:84%
+checks the decks of other
+worker threads in the pool
+
+51
+00:02:18.960 --> 00:02:22.880 align:middle line:84%
+to see if they have tasks
+that aren't being processed.
+
+52
+00:02:22.880 --> 00:02:25.720 align:middle line:84%
+If such a task is found,
+potentially, Idle Worker thread
+
+53
+00:02:25.720 --> 00:02:29.650 align:middle line:84%
+steals that task from the end
+of the other thread's deck
+
+54
+00:02:29.650 --> 00:02:32.050 align:middle line:84%
+and executes it,
+thereby increasing
+
+55
+00:02:32.050 --> 00:02:34.860 align:middle line:90%
+processor core utilization.
+
+56
+00:02:34.860 --> 00:02:37.840 align:middle line:84%
+The Fork/Join framework
+is powerful and scalable.
+
+57
+00:02:37.840 --> 00:02:39.730 align:middle line:90%
+But it's also complex.
+
+58
+00:02:39.730 --> 00:02:43.120 align:middle line:84%
+So don't be surprised if our
+discussion of its internals
+
+59
+00:02:43.120 --> 00:02:45.270 align:middle line:90%
+takes a while to digest.

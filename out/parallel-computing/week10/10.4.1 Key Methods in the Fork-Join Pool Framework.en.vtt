@@ -1,0 +1,1220 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.500 align:middle line:90%
+
+
+2
+00:00:00.500 --> 00:00:03.150 align:middle line:84%
+So now that we've talked
+about some of the key classes
+
+3
+00:00:03.150 --> 00:00:05.257 align:middle line:84%
+at a high level, we've
+talked about ForkJoinPool,
+
+4
+00:00:05.257 --> 00:00:06.840 align:middle line:84%
+we've talked about
+ForkJoinTask, we've
+
+5
+00:00:06.840 --> 00:00:10.050 align:middle line:84%
+talked about RecursiveAction
+and RecursiveTask,
+
+6
+00:00:10.050 --> 00:00:14.550 align:middle line:84%
+let's start looking in more
+detail for the various methods
+
+7
+00:00:14.550 --> 00:00:21.480 align:middle line:84%
+defined in those classes,
+beginning with ForkJoinPool.
+
+8
+00:00:21.480 --> 00:00:24.420 align:middle line:84%
+So as you can see,
+there's about maybe
+
+9
+00:00:24.420 --> 00:00:26.360 align:middle line:84%
+a dozen interesting
+methods in ForkJoinPool.
+
+10
+00:00:26.360 --> 00:00:28.110 align:middle line:84%
+We're not going to
+talk about all of them.
+
+11
+00:00:28.110 --> 00:00:29.902 align:middle line:84%
+But we're going to talk
+about the ones that
+
+12
+00:00:29.902 --> 00:00:31.820 align:middle line:90%
+are the most interesting.
+
+13
+00:00:31.820 --> 00:00:36.400 align:middle line:84%
+So first and foremost, remember
+that ForkJoinPool extends
+
+14
+00:00:36.400 --> 00:00:39.220 align:middle line:84%
+the AbstractExecutorService,
+which,
+
+15
+00:00:39.220 --> 00:00:45.010 align:middle line:84%
+in turn, extends or implements
+the ExecutorService.
+
+16
+00:00:45.010 --> 00:00:47.860 align:middle line:84%
+And therefore, it
+implements all the methods
+
+17
+00:00:47.860 --> 00:00:49.600 align:middle line:90%
+that ExecutorService defines.
+
+18
+00:00:49.600 --> 00:00:54.760 align:middle line:84%
+So it implements execute,
+submit, invoke all, invoke any.
+
+19
+00:00:54.760 --> 00:00:57.910 align:middle line:84%
+And these are methods that
+we covered at some length
+
+20
+00:00:57.910 --> 00:01:01.810 align:middle line:84%
+in the context of my concurrent
+object-oriented programming
+
+21
+00:01:01.810 --> 00:01:02.320 align:middle line:90%
+course.
+
+22
+00:01:02.320 --> 00:01:04.720 align:middle line:84%
+So if you want to really
+get a sense of that,
+
+23
+00:01:04.720 --> 00:01:06.520 align:middle line:84%
+you might want to
+go back and re-watch
+
+24
+00:01:06.520 --> 00:01:10.240 align:middle line:84%
+some of those lessons just to
+remember what we talked about.
+
+25
+00:01:10.240 --> 00:01:14.980 align:middle line:84%
+Execute arranges for the
+asynchronous execution
+
+26
+00:01:14.980 --> 00:01:17.830 align:middle line:84%
+of a one-way task, which, of
+course, is implemented here
+
+27
+00:01:17.830 --> 00:01:19.510 align:middle line:90%
+by a runnable.
+
+28
+00:01:19.510 --> 00:01:21.070 align:middle line:90%
+No value is returned from that.
+
+29
+00:01:21.070 --> 00:01:22.420 align:middle line:90%
+It just runs it asynchronously.
+
+30
+00:01:22.420 --> 00:01:24.128 align:middle line:84%
+If you need a value,
+you'll have to do it
+
+31
+00:01:24.128 --> 00:01:26.290 align:middle line:84%
+through some other means,
+like a side effect,
+
+32
+00:01:26.290 --> 00:01:28.690 align:middle line:84%
+like printing something
+or sending a message
+
+33
+00:01:28.690 --> 00:01:31.380 align:middle line:90%
+or putting something on a queue.
+
+34
+00:01:31.380 --> 00:01:35.580 align:middle line:84%
+Submit, in contrast,
+takes a callable
+
+35
+00:01:35.580 --> 00:01:38.220 align:middle line:90%
+and uses it as a two-way task.
+
+36
+00:01:38.220 --> 00:01:42.510 align:middle line:84%
+So two-way means that we give it
+a task to do, it does its work,
+
+37
+00:01:42.510 --> 00:01:45.300 align:middle line:84%
+and then a result will
+eventually be generated.
+
+38
+00:01:45.300 --> 00:01:46.800 align:middle line:90%
+And we'll get the result back.
+
+39
+00:01:46.800 --> 00:01:49.140 align:middle line:84%
+But we don't get the
+result back directly.
+
+40
+00:01:49.140 --> 00:01:53.050 align:middle line:84%
+Instead, we get the
+result back via a Future.
+
+41
+00:01:53.050 --> 00:01:58.000 align:middle line:84%
+And this is kind of a classic
+Java 5 future, not a cool Java
+
+42
+00:01:58.000 --> 00:02:01.980 align:middle line:84%
+CompletableFuture that we
+will be talking about later.
+
+43
+00:02:01.980 --> 00:02:06.600 align:middle line:84%
+Invoke all can be used to run
+all the tasks in the collection
+
+44
+00:02:06.600 --> 00:02:09.300 align:middle line:84%
+and then wait for
+them all to finish.
+
+45
+00:02:09.300 --> 00:02:12.210 align:middle line:84%
+And invoke any
+can be used to run
+
+46
+00:02:12.210 --> 00:02:15.210 align:middle line:84%
+all the task and a collection
+and wait for the first of them
+
+47
+00:02:15.210 --> 00:02:15.960 align:middle line:90%
+to finish.
+
+48
+00:02:15.960 --> 00:02:17.970 align:middle line:84%
+And then the other with
+others will be canceled,
+
+49
+00:02:17.970 --> 00:02:20.113 align:middle line:84%
+and their results
+will be ignored.
+
+50
+00:02:20.113 --> 00:02:21.280 align:middle line:90%
+So that's all well and good.
+
+51
+00:02:21.280 --> 00:02:22.738 align:middle line:84%
+That's kind of a
+summary of what we
+
+52
+00:02:22.738 --> 00:02:25.870 align:middle line:84%
+had talked about in
+our earlier discussions
+
+53
+00:02:25.870 --> 00:02:27.940 align:middle line:84%
+of the concurrent
+object-oriented programming
+
+54
+00:02:27.940 --> 00:02:31.590 align:middle line:84%
+abstractions in the
+Java Executor framework.
+
+55
+00:02:31.590 --> 00:02:33.920 align:middle line:84%
+However, these
+methods don't really
+
+56
+00:02:33.920 --> 00:02:37.460 align:middle line:84%
+leverage the powerful
+ForkJoinPool features.
+
+57
+00:02:37.460 --> 00:02:40.343 align:middle line:84%
+So they don't submit
+ForkJoinTasks,
+
+58
+00:02:40.343 --> 00:02:42.260 align:middle line:84%
+so they can't be doing
+all the cool things you
+
+59
+00:02:42.260 --> 00:02:43.450 align:middle line:90%
+can do with a ForkJoinTask.
+
+60
+00:02:43.450 --> 00:02:45.470 align:middle line:84%
+So we're just going to
+skip over them for now.
+
+61
+00:02:45.470 --> 00:02:47.965 align:middle line:84%
+You can go back and
+watch the earlier videos
+
+62
+00:02:47.965 --> 00:02:49.340 align:middle line:84%
+in the other course
+if you really
+
+63
+00:02:49.340 --> 00:02:51.340 align:middle line:84%
+are interested in knowing
+what the semantics are
+
+64
+00:02:51.340 --> 00:02:53.240 align:middle line:90%
+of these methods.
+
+65
+00:02:53.240 --> 00:02:56.990 align:middle line:84%
+Instead, we're going to
+focus on the key methods
+
+66
+00:02:56.990 --> 00:03:03.980 align:middle line:84%
+that ForkJoinPool provides that
+allows non-ForkJoinTask clients
+
+67
+00:03:03.980 --> 00:03:06.437 align:middle line:90%
+to submit ForkJoinTasks.
+
+68
+00:03:06.437 --> 00:03:08.270 align:middle line:84%
+And again, we'll talk
+a bit more about this,
+
+69
+00:03:08.270 --> 00:03:10.770 align:middle line:84%
+because it's a little hard to
+get your head around at first.
+
+70
+00:03:10.770 --> 00:03:13.550 align:middle line:84%
+But the way to think about
+this is ForkJoinTasks really
+
+71
+00:03:13.550 --> 00:03:17.360 align:middle line:84%
+want to run in the context
+of the ForkJoinPool's worker
+
+72
+00:03:17.360 --> 00:03:18.650 align:middle line:90%
+threads.
+
+73
+00:03:18.650 --> 00:03:21.200 align:middle line:84%
+But somehow we have to get them
+in there in the first place.
+
+74
+00:03:21.200 --> 00:03:23.990 align:middle line:84%
+And these methods are
+kind of the entry point
+
+75
+00:03:23.990 --> 00:03:28.670 align:middle line:84%
+into the world of ForkJoinTask
+running in the ForkJoinPool.
+
+76
+00:03:28.670 --> 00:03:31.220 align:middle line:84%
+So it's how you get
+non-ForkJoinTask clients
+
+77
+00:03:31.220 --> 00:03:34.320 align:middle line:84%
+to submit ForkJoinTasks
+to the pool.
+
+78
+00:03:34.320 --> 00:03:37.170 align:middle line:84%
+And as you can see,
+there are three methods.
+
+79
+00:03:37.170 --> 00:03:40.580 align:middle line:84%
+These methods can
+and do leverage
+
+80
+00:03:40.580 --> 00:03:45.710 align:middle line:84%
+the powerful properties
+of the ForkJoinPool.
+
+81
+00:03:45.710 --> 00:03:49.370 align:middle line:84%
+Let's take a look at
+the execute method.
+
+82
+00:03:49.370 --> 00:03:51.970 align:middle line:84%
+This method is actually
+not that different
+
+83
+00:03:51.970 --> 00:03:55.120 align:middle line:84%
+from the execute method that
+takes a runnable in the sense
+
+84
+00:03:55.120 --> 00:03:57.610 align:middle line:84%
+that it's going to have
+a one-way operation.
+
+85
+00:03:57.610 --> 00:04:01.020 align:middle line:84%
+But it's going to execute
+a ForkJoinTask rather than
+
+86
+00:04:01.020 --> 00:04:01.520 align:middle line:90%
+a runnable.
+
+87
+00:04:01.520 --> 00:04:04.360 align:middle line:90%
+
+
+88
+00:04:04.360 --> 00:04:07.065 align:middle line:84%
+The invoke method is
+kind of interesting.
+
+89
+00:04:07.065 --> 00:04:09.190 align:middle line:84%
+There really, I don't think,
+is quite an equivalent
+
+90
+00:04:09.190 --> 00:04:14.470 align:middle line:84%
+of this in the context of the
+ExecutorService interface.
+
+91
+00:04:14.470 --> 00:04:19.480 align:middle line:84%
+Because invoke is actually
+going to be a two-way call.
+
+92
+00:04:19.480 --> 00:04:24.040 align:middle line:84%
+So when you call invoke,
+it runs the ForkJoinTask,
+
+93
+00:04:24.040 --> 00:04:25.930 align:middle line:84%
+and then it waits
+for that result
+
+94
+00:04:25.930 --> 00:04:28.510 align:middle line:84%
+and gives the result
+back synchronously.
+
+95
+00:04:28.510 --> 00:04:35.120 align:middle line:84%
+So this call will block until
+the ForkJoinTask is done.
+
+96
+00:04:35.120 --> 00:04:37.330 align:middle line:84%
+And then the last
+method here is submit.
+
+97
+00:04:37.330 --> 00:04:40.720 align:middle line:84%
+And submit will pass a
+ForkJoinTask for execution
+
+98
+00:04:40.720 --> 00:04:44.870 align:middle line:84%
+into the fork-join framework,
+but it won't block.
+
+99
+00:04:44.870 --> 00:04:49.310 align:middle line:84%
+It'll return a ForkJoinTask,
+which is a Future.
+
+100
+00:04:49.310 --> 00:04:52.300 align:middle line:84%
+And so we can then go back
+later and join on that
+
+101
+00:04:52.300 --> 00:04:57.667 align:middle line:84%
+and get the results back after
+the Future has completed.
+
+102
+00:04:57.667 --> 00:04:59.250 align:middle line:84%
+Now, one of the
+questions we have here
+
+103
+00:04:59.250 --> 00:05:02.340 align:middle line:90%
+is, how big is a ForkJoinPool?
+
+104
+00:05:02.340 --> 00:05:05.550 align:middle line:84%
+If you create an instance
+of the ForkJoinPool,
+
+105
+00:05:05.550 --> 00:05:09.180 align:middle line:84%
+and you don't do anything
+other than call the default
+
+106
+00:05:09.180 --> 00:05:12.420 align:middle line:84%
+constructor, the size
+of that ForkJoinPool
+
+107
+00:05:12.420 --> 00:05:14.820 align:middle line:84%
+will default to
+the number of cores
+
+108
+00:05:14.820 --> 00:05:19.090 align:middle line:84%
+that are available and known
+to the underlying Java runtime.
+
+109
+00:05:19.090 --> 00:05:21.990 align:middle line:84%
+So if we call this constructor,
+what will happen under the hood
+
+110
+00:05:21.990 --> 00:05:25.105 align:middle line:84%
+is it will use the
+Runtime.getRunti
+
+111
+00:05:25.105 --> 00:05:29.670 align:middle line:84%
+me.availableProcessors
+method, which
+
+112
+00:05:29.670 --> 00:05:31.700 align:middle line:84%
+will return the number
+of processor cores
+
+113
+00:05:31.700 --> 00:05:33.780 align:middle line:84%
+that the Java execution
+environment thinks
+
+114
+00:05:33.780 --> 00:05:36.210 align:middle line:84%
+are configured on
+that platform, which
+
+115
+00:05:36.210 --> 00:05:39.180 align:middle line:84%
+will depend on the number of
+cores and the type of cores.
+
+116
+00:05:39.180 --> 00:05:44.280 align:middle line:84%
+For example, on my quad-core,
+hyper-threaded processor,
+
+117
+00:05:44.280 --> 00:05:46.032 align:middle line:84%
+I get back the
+value 8 from this.
+
+118
+00:05:46.032 --> 00:05:47.240 align:middle line:90%
+Because they're hyper-thread.
+
+119
+00:05:47.240 --> 00:05:50.020 align:middle line:90%
+They're virtual cores.
+
+120
+00:05:50.020 --> 00:05:53.060 align:middle line:84%
+You could also select the
+size programmatically.
+
+121
+00:05:53.060 --> 00:05:55.410 align:middle line:84%
+So you can say, hey,
+I want you to create
+
+122
+00:05:55.410 --> 00:05:58.860 align:middle line:84%
+me a ForkJoinPool
+that is going to have
+
+123
+00:05:58.860 --> 00:06:01.860 align:middle line:90%
+n worker threads running in it.
+
+124
+00:06:01.860 --> 00:06:03.270 align:middle line:90%
+And you can control n.
+
+125
+00:06:03.270 --> 00:06:05.430 align:middle line:84%
+Now, why on earth
+would you ever not
+
+126
+00:06:05.430 --> 00:06:09.350 align:middle line:84%
+just default to the
+available processors?
+
+127
+00:06:09.350 --> 00:06:11.100 align:middle line:84%
+Well, the reason you
+might want to do this
+
+128
+00:06:11.100 --> 00:06:12.328 align:middle line:90%
+would be several fold.
+
+129
+00:06:12.328 --> 00:06:14.370 align:middle line:84%
+First, you might want to
+have a ForkJoinPool that
+
+130
+00:06:14.370 --> 00:06:16.455 align:middle line:84%
+has a lot more threads
+than you have cores,
+
+131
+00:06:16.455 --> 00:06:18.330 align:middle line:84%
+because you know you're
+going to be blocking.
+
+132
+00:06:18.330 --> 00:06:19.702 align:middle line:90%
+So that would be one reason.
+
+133
+00:06:19.702 --> 00:06:21.660 align:middle line:84%
+Another reason to do this
+is you might actually
+
+134
+00:06:21.660 --> 00:06:24.150 align:middle line:84%
+want to restrict
+the number of cores
+
+135
+00:06:24.150 --> 00:06:27.180 align:middle line:84%
+to be fewer than the
+number of available cores
+
+136
+00:06:27.180 --> 00:06:28.122 align:middle line:90%
+on the platform.
+
+137
+00:06:28.122 --> 00:06:29.580 align:middle line:84%
+And that might be
+because you don't
+
+138
+00:06:29.580 --> 00:06:33.990 align:middle line:84%
+want to end up basically
+overtaxing the processing
+
+139
+00:06:33.990 --> 00:06:34.980 align:middle line:90%
+for your application.
+
+140
+00:06:34.980 --> 00:06:37.230 align:middle line:84%
+You want to leave some
+other cores around
+
+141
+00:06:37.230 --> 00:06:41.130 align:middle line:90%
+to do other kinds of stuff.
+
+142
+00:06:41.130 --> 00:06:44.550 align:middle line:84%
+Then, of course, there's
+also the common ForkJoinPool.
+
+143
+00:06:44.550 --> 00:06:48.870 align:middle line:84%
+And this can always be
+accessed via a static method.
+
+144
+00:06:48.870 --> 00:06:50.340 align:middle line:84%
+So if you take a
+look here, you can
+
+145
+00:06:50.340 --> 00:06:56.250 align:middle line:84%
+see that there's a static
+field called common,
+
+146
+00:06:56.250 --> 00:06:57.975 align:middle line:90%
+which is of type ForkJoinPool.
+
+147
+00:06:57.975 --> 00:06:59.100 align:middle line:90%
+And you can see it's final.
+
+148
+00:06:59.100 --> 00:07:02.180 align:middle line:84%
+So it's going to
+get set basically
+
+149
+00:07:02.180 --> 00:07:04.820 align:middle line:90%
+in the constructor for this.
+
+150
+00:07:04.820 --> 00:07:10.980 align:middle line:84%
+And the common pool static
+method simply returns common.
+
+151
+00:07:10.980 --> 00:07:15.210 align:middle line:84%
+So what this says is when the
+constructor for ForkJoinPool
+
+152
+00:07:15.210 --> 00:07:20.750 align:middle line:84%
+is run, then this
+ForkJoinPool static field
+
+153
+00:07:20.750 --> 00:07:22.688 align:middle line:90%
+is going to be set.
+
+154
+00:07:22.688 --> 00:07:24.230 align:middle line:84%
+And now that's
+important to remember,
+
+155
+00:07:24.230 --> 00:07:26.480 align:middle line:84%
+because when we
+talk later about how
+
+156
+00:07:26.480 --> 00:07:31.070 align:middle line:84%
+you can change the size
+of the number of threads
+
+157
+00:07:31.070 --> 00:07:34.388 align:middle line:84%
+in the common ForkJoinPool
+via a system property,
+
+158
+00:07:34.388 --> 00:07:35.930 align:middle line:84%
+you always have to
+make sure that you
+
+159
+00:07:35.930 --> 00:07:40.170 align:middle line:84%
+set that system property
+before the first ForkJoinPool
+
+160
+00:07:40.170 --> 00:07:41.000 align:middle line:90%
+is created.
+
+161
+00:07:41.000 --> 00:07:42.570 align:middle line:84%
+Because once you
+create one of them,
+
+162
+00:07:42.570 --> 00:07:43.820 align:middle line:90%
+you can't reset that size.
+
+163
+00:07:43.820 --> 00:07:48.060 align:middle line:84%
+Because it's only set
+in the constructor.
+
+164
+00:07:48.060 --> 00:07:52.520 align:middle line:84%
+This common pool is
+used by any ForkJoinTask
+
+165
+00:07:52.520 --> 00:07:56.760 align:middle line:84%
+that is not explicitly
+submitted to a specified pool.
+
+166
+00:07:56.760 --> 00:08:00.780 align:middle line:84%
+And obviously, the most
+common way this is used,
+
+167
+00:08:00.780 --> 00:08:04.350 align:middle line:84%
+as far as we are concerned
+in our discussion of Java
+
+168
+00:08:04.350 --> 00:08:06.630 align:middle line:84%
+parallel-functioning
+programming frameworks,
+
+169
+00:08:06.630 --> 00:08:09.840 align:middle line:84%
+is for the parallel streams
+framework, which always
+
+170
+00:08:09.840 --> 00:08:12.630 align:middle line:84%
+uses the common
+pool-- or not always,
+
+171
+00:08:12.630 --> 00:08:14.610 align:middle line:84%
+but effectively,
+always uses it, always
+
+172
+00:08:14.610 --> 00:08:15.840 align:middle line:90%
+should use the common pool.
+
+173
+00:08:15.840 --> 00:08:18.150 align:middle line:84%
+There are various hacks
+to work around this,
+
+174
+00:08:18.150 --> 00:08:23.480 align:middle line:84%
+but they're not really
+guaranteed to be stable.
+
+175
+00:08:23.480 --> 00:08:26.930 align:middle line:84%
+ForkJoinPool, in addition to
+the methods we've talked about,
+
+176
+00:08:26.930 --> 00:08:29.600 align:middle line:84%
+also provides
+various other methods
+
+177
+00:08:29.600 --> 00:08:33.020 align:middle line:84%
+that are used for
+managing the pool
+
+178
+00:08:33.020 --> 00:08:35.809 align:middle line:84%
+and monitoring the
+way it behaves.
+
+179
+00:08:35.809 --> 00:08:38.690 align:middle line:84%
+And believe it or not, we're
+actually going to talk about
+
+180
+00:08:38.690 --> 00:08:41.120 align:middle line:84%
+and showcase some of
+these methods later.
+
+181
+00:08:41.120 --> 00:08:45.020 align:middle line:84%
+So I want to spend a little
+time talking about them now.
+
+182
+00:08:45.020 --> 00:08:49.040 align:middle line:84%
+So getParallelism will return
+the target parallelism level
+
+183
+00:08:49.040 --> 00:08:53.480 align:middle line:84%
+of this pool, which is typically
+either whatever the default was
+
+184
+00:08:53.480 --> 00:08:57.200 align:middle line:84%
+if you used the constructor that
+took no parameters, on the one
+
+185
+00:08:57.200 --> 00:09:01.490 align:middle line:84%
+hand, or it will be whatever
+you passed in when you
+
+186
+00:09:01.490 --> 00:09:05.390 align:middle line:84%
+went ahead and created a
+ForkJoinPool with a designated
+
+187
+00:09:05.390 --> 00:09:08.140 align:middle line:90%
+pool size.
+
+188
+00:09:08.140 --> 00:09:12.490 align:middle line:84%
+getPoolSize returns the
+number of worker threads
+
+189
+00:09:12.490 --> 00:09:15.790 align:middle line:84%
+that have started but
+have not yet terminated.
+
+190
+00:09:15.790 --> 00:09:17.480 align:middle line:90%
+What the heck does that mean?
+
+191
+00:09:17.480 --> 00:09:21.070 align:middle line:84%
+Well, when you start using
+things like the ManagedBlocker
+
+192
+00:09:21.070 --> 00:09:23.620 align:middle line:84%
+interface and the
+managedBlock method that's
+
+193
+00:09:23.620 --> 00:09:25.480 align:middle line:84%
+defined on
+ManagedBlocker, you'll
+
+194
+00:09:25.480 --> 00:09:28.750 align:middle line:84%
+see that it's possible
+for the number of worker
+
+195
+00:09:28.750 --> 00:09:32.860 align:middle line:84%
+threads in the pool to
+automagically increase
+
+196
+00:09:32.860 --> 00:09:35.890 align:middle line:84%
+based on whether or
+not the processing
+
+197
+00:09:35.890 --> 00:09:39.460 align:middle line:84%
+tasks you're giving to it are
+going to be blocking or not.
+
+198
+00:09:39.460 --> 00:09:42.040 align:middle line:84%
+And as the threads
+increase, then you
+
+199
+00:09:42.040 --> 00:09:44.380 align:middle line:84%
+may end up with a point
+where the size of the pool
+
+200
+00:09:44.380 --> 00:09:46.570 align:middle line:84%
+is actually bigger
+than the original size
+
+201
+00:09:46.570 --> 00:09:49.000 align:middle line:84%
+that you specified when
+you created the pool.
+
+202
+00:09:49.000 --> 00:09:50.140 align:middle line:90%
+This is particularly true--
+
+203
+00:09:50.140 --> 00:09:53.020 align:middle line:84%
+this is really, primarily
+true, maybe only true,
+
+204
+00:09:53.020 --> 00:09:55.420 align:middle line:84%
+for the common
+ForkJoinPool, which
+
+205
+00:09:55.420 --> 00:09:59.110 align:middle line:84%
+is the one that has the
+ManagedBlocker mechanism built
+
+206
+00:09:59.110 --> 00:10:00.690 align:middle line:90%
+into it.
+
+207
+00:10:00.690 --> 00:10:02.940 align:middle line:84%
+As it turns out,
+if you have threads
+
+208
+00:10:02.940 --> 00:10:05.872 align:middle line:84%
+that are created via the
+ManagedBlocker mechanism,
+
+209
+00:10:05.872 --> 00:10:07.830 align:middle line:84%
+if they're unused for a
+certain period of time,
+
+210
+00:10:07.830 --> 00:10:10.860 align:middle line:84%
+then they will be automatically
+reclaimed and terminated.
+
+211
+00:10:10.860 --> 00:10:15.570 align:middle line:84%
+So getPoolSize will tell you
+how big the pool has grown.
+
+212
+00:10:15.570 --> 00:10:17.070 align:middle line:84%
+There's another
+helper method called
+
+213
+00:10:17.070 --> 00:10:19.890 align:middle line:84%
+get QueuedSubmissionCount,
+which returns
+
+214
+00:10:19.890 --> 00:10:22.350 align:middle line:84%
+an estimate of the
+number of tasks
+
+215
+00:10:22.350 --> 00:10:25.480 align:middle line:84%
+submitted to the pool that
+haven't started to run yet.
+
+216
+00:10:25.480 --> 00:10:29.868 align:middle line:84%
+So that's kind of like looking
+out the window at a concert
+
+217
+00:10:29.868 --> 00:10:32.160 align:middle line:84%
+and saying, oh, we have lots
+people lined up out front.
+
+218
+00:10:32.160 --> 00:10:33.285 align:middle line:90%
+They haven't gotten in yet.
+
+219
+00:10:33.285 --> 00:10:36.000 align:middle line:84%
+Maybe we should wait
+for the band to start,
+
+220
+00:10:36.000 --> 00:10:37.350 align:middle line:90%
+until everybody's seated.
+
+221
+00:10:37.350 --> 00:10:40.057 align:middle line:84%
+So that's basically how many
+things are in the queue.
+
+222
+00:10:40.057 --> 00:10:42.390 align:middle line:84%
+And then the final method
+we're going to talk about here
+
+223
+00:10:42.390 --> 00:10:43.610 align:middle line:90%
+is really quite interesting.
+
+224
+00:10:43.610 --> 00:10:47.140 align:middle line:84%
+And this will come up later
+in next week's lesson,
+
+225
+00:10:47.140 --> 00:10:50.250 align:middle line:84%
+when we talk about the
+various application
+
+226
+00:10:50.250 --> 00:10:53.820 align:middle line:84%
+styles, various programming
+styles for using
+
+227
+00:10:53.820 --> 00:10:55.330 align:middle line:90%
+the ForkJoinPool.
+
+228
+00:10:55.330 --> 00:10:57.810 align:middle line:84%
+This is the method
+called getStealCount.
+
+229
+00:10:57.810 --> 00:11:01.200 align:middle line:84%
+And it returns an estimate
+of the total number
+
+230
+00:11:01.200 --> 00:11:06.480 align:middle line:84%
+of tasks that have been
+stolen from one thread's work
+
+231
+00:11:06.480 --> 00:11:09.810 align:middle line:84%
+queue, or their deck,
+by another thread.
+
+232
+00:11:09.810 --> 00:11:12.810 align:middle line:84%
+And so you'll see, as we
+talk about different styles
+
+233
+00:11:12.810 --> 00:11:15.030 align:middle line:84%
+for programming with
+the ForkJoinPool,
+
+234
+00:11:15.030 --> 00:11:17.280 align:middle line:84%
+some ways of programming
+with a ForkJoinPool end
+
+235
+00:11:17.280 --> 00:11:20.400 align:middle line:90%
+up with very large steal counts.
+
+236
+00:11:20.400 --> 00:11:22.170 align:middle line:84%
+And one of the
+consequences of having
+
+237
+00:11:22.170 --> 00:11:24.900 align:middle line:84%
+very large steal counts is
+the overhead of stealing
+
+238
+00:11:24.900 --> 00:11:26.490 align:middle line:90%
+is non-trivial.
+
+239
+00:11:26.490 --> 00:11:28.830 align:middle line:84%
+And so your performance
+may degrade.
+
+240
+00:11:28.830 --> 00:11:32.160 align:middle line:84%
+Other ways of programming with
+a ForkJoinPool, as we will see,
+
+241
+00:11:32.160 --> 00:11:34.710 align:middle line:84%
+end up doing something called
+recursive decomposition.
+
+242
+00:11:34.710 --> 00:11:38.220 align:middle line:84%
+And this ends up
+spreading around the tasks
+
+243
+00:11:38.220 --> 00:11:41.430 align:middle line:84%
+in the pool of threads
+more evenly, in which case
+
+244
+00:11:41.430 --> 00:11:43.740 align:middle line:84%
+the steal count
+typically goes way down.
+
+245
+00:11:43.740 --> 00:11:47.640 align:middle line:84%
+Because there's no need to
+steal from other threads' decks,
+
+246
+00:11:47.640 --> 00:11:50.730 align:middle line:84%
+because you've got plenty
+of work in your own deck.
+
+247
+00:11:50.730 --> 00:11:53.790 align:middle line:84%
+So we'll kind of get a sense of
+this when we show, and compare
+
+248
+00:11:53.790 --> 00:11:56.350 align:middle line:84%
+and contrast, the alternative
+programming models.
+
+249
+00:11:56.350 --> 00:11:59.790 align:middle line:84%
+You'll get a better feeling
+for why the steal count matters
+
+250
+00:11:59.790 --> 00:12:02.040 align:middle line:90%
+and what the steal count means.
+
+251
+00:12:02.040 --> 00:12:04.750 align:middle line:84%
+So keep in mind, this
+getStealCount method is there.
+
+252
+00:12:04.750 --> 00:12:06.510 align:middle line:84%
+We'll use it in some
+interesting ways
+
+253
+00:12:06.510 --> 00:12:10.730 align:middle line:84%
+later to explain
+differences in performance.

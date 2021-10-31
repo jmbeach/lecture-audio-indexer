@@ -1,0 +1,747 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:01.040 align:middle line:90%
+
+
+2
+00:00:01.040 --> 00:00:03.830 align:middle line:84%
+We're now going to turn our
+attention to the key methods
+
+3
+00:00:03.830 --> 00:00:06.450 align:middle line:90%
+in the ForkJoinTask.
+
+4
+00:00:06.450 --> 00:00:08.678 align:middle line:84%
+I mentioned before
+the two key methods,
+
+5
+00:00:08.678 --> 00:00:09.720 align:middle line:90%
+which were fork and join.
+
+6
+00:00:09.720 --> 00:00:13.960 align:middle line:84%
+And now we're going to go and
+look at them in more detail.
+
+7
+00:00:13.960 --> 00:00:18.450 align:middle line:84%
+So first, let's start out with
+the structure of ForkJoinTask.
+
+8
+00:00:18.450 --> 00:00:22.530 align:middle line:84%
+ForkJoinTask implements
+future, which
+
+9
+00:00:22.530 --> 00:00:24.910 align:middle line:84%
+means you can use it as
+you would use a future.
+
+10
+00:00:24.910 --> 00:00:29.010 align:middle line:84%
+In fact, as we saw before,
+if you submit a ForkJoinTask
+
+11
+00:00:29.010 --> 00:00:31.020 align:middle line:84%
+via the Submit
+method, you get back
+
+12
+00:00:31.020 --> 00:00:36.130 align:middle line:84%
+a ForkJoinTask which
+could be used as a future.
+
+13
+00:00:36.130 --> 00:00:41.560 align:middle line:84%
+It's not particularly common
+to use the future methods.
+
+14
+00:00:41.560 --> 00:00:46.020 align:middle line:84%
+But it's much more common to use
+the subclass methods that we'll
+
+15
+00:00:46.020 --> 00:00:47.610 align:middle line:90%
+be talking about here shortly--
+
+16
+00:00:47.610 --> 00:00:51.140 align:middle line:84%
+things like compute and
+fork and join and so on.
+
+17
+00:00:51.140 --> 00:00:54.240 align:middle line:90%
+
+
+18
+00:00:54.240 --> 00:00:56.750 align:middle line:84%
+Let's start by
+talking about fork.
+
+19
+00:00:56.750 --> 00:01:00.770 align:middle line:84%
+Fork enables a task
+to create subtasks--
+
+20
+00:01:00.770 --> 00:01:03.260 align:middle line:84%
+or create a subtask,
+one at the time--
+
+21
+00:01:03.260 --> 00:01:07.860 align:middle line:84%
+that can be run in parallel
+inside the ForkJoinPool.
+
+22
+00:01:07.860 --> 00:01:09.180 align:middle line:90%
+Here's what fork looks like.
+
+23
+00:01:09.180 --> 00:01:12.770 align:middle line:84%
+You can see fork
+is going to arrange
+
+24
+00:01:12.770 --> 00:01:15.920 align:middle line:84%
+to execute this
+task asynchronously,
+
+25
+00:01:15.920 --> 00:01:22.220 align:middle line:84%
+either in the current tasks pool
+if it comes from something that
+
+26
+00:01:22.220 --> 00:01:24.980 align:middle line:84%
+is associated with
+a particular pool,
+
+27
+00:01:24.980 --> 00:01:28.250 align:middle line:84%
+or in the ForkJoinPool's
+common pool,
+
+28
+00:01:28.250 --> 00:01:30.740 align:middle line:84%
+if it's not associated
+with any particular pool.
+
+29
+00:01:30.740 --> 00:01:34.870 align:middle line:84%
+So when you fork a task,
+if a task is forked,
+
+30
+00:01:34.870 --> 00:01:39.280 align:middle line:84%
+then it will arrange to
+execute in some pool.
+
+31
+00:01:39.280 --> 00:01:42.500 align:middle line:84%
+Calling fork doesn't
+block the caller.
+
+32
+00:01:42.500 --> 00:01:44.800 align:middle line:84%
+It also doesn't run
+the task immediately.
+
+33
+00:01:44.800 --> 00:01:48.670 align:middle line:84%
+All it does is it goes
+ahead and plops that task
+
+34
+00:01:48.670 --> 00:01:55.253 align:middle line:84%
+into the appropriate deck of
+the calling worker thread.
+
+35
+00:01:55.253 --> 00:01:57.670 align:middle line:84%
+So what happens here-- if you
+take a look at what happens,
+
+36
+00:01:57.670 --> 00:01:59.920 align:middle line:84%
+keep in mind that
+whenever fork is called,
+
+37
+00:01:59.920 --> 00:02:03.070 align:middle line:84%
+fork can only be called in the
+context of a worker thread that
+
+38
+00:02:03.070 --> 00:02:04.540 align:middle line:90%
+is running.
+
+39
+00:02:04.540 --> 00:02:06.850 align:middle line:84%
+And therefore,
+when you call fork
+
+40
+00:02:06.850 --> 00:02:09.100 align:middle line:84%
+in the context of
+that worker thread,
+
+41
+00:02:09.100 --> 00:02:12.220 align:middle line:84%
+that worker thread will
+push the task that's
+
+42
+00:02:12.220 --> 00:02:16.180 align:middle line:84%
+associated with the
+fork call onto the head
+
+43
+00:02:16.180 --> 00:02:20.320 align:middle line:84%
+of the double-ended queue,
+or this deck, work queue,
+
+44
+00:02:20.320 --> 00:02:25.100 align:middle line:84%
+that's owned by the calling
+or the current worker thread.
+
+45
+00:02:25.100 --> 00:02:28.840 align:middle line:84%
+So that's how things get placed
+onto the appropriate work
+
+46
+00:02:28.840 --> 00:02:30.730 align:middle line:90%
+queue or the deck.
+
+47
+00:02:30.730 --> 00:02:32.830 align:middle line:84%
+When you call fork,
+it always takes place
+
+48
+00:02:32.830 --> 00:02:34.750 align:middle line:90%
+in the context of a thread.
+
+49
+00:02:34.750 --> 00:02:39.430 align:middle line:84%
+And that thread then goes
+ahead and pushes the task
+
+50
+00:02:39.430 --> 00:02:42.910 align:middle line:90%
+or the subtask onto its deck.
+
+51
+00:02:42.910 --> 00:02:44.570 align:middle line:90%
+So that's basically fork.
+
+52
+00:02:44.570 --> 00:02:46.070 align:middle line:84%
+And then, as we'll
+see here later,
+
+53
+00:02:46.070 --> 00:02:48.170 align:middle line:84%
+if that worker thread
+doesn't have anything to do,
+
+54
+00:02:48.170 --> 00:02:51.710 align:middle line:84%
+it can go ahead and process
+the work off of its work queue.
+
+55
+00:02:51.710 --> 00:02:53.540 align:middle line:84%
+Or if it is busy
+doing other things,
+
+56
+00:02:53.540 --> 00:02:57.800 align:middle line:84%
+then another thread may come
+along and steal that work off
+
+57
+00:02:57.800 --> 00:02:59.120 align:middle line:90%
+the end of its deck.
+
+58
+00:02:59.120 --> 00:03:02.290 align:middle line:84%
+We'll talk about that
+in just a minute.
+
+59
+00:03:02.290 --> 00:03:05.470 align:middle line:84%
+Join is the other end
+of the spectrum, here.
+
+60
+00:03:05.470 --> 00:03:08.320 align:middle line:84%
+Join is used to
+get the result back
+
+61
+00:03:08.320 --> 00:03:12.890 align:middle line:84%
+of a previously forked
+computation when it's finished.
+
+62
+00:03:12.890 --> 00:03:15.038 align:middle line:84%
+So if you fork
+something, then you
+
+63
+00:03:15.038 --> 00:03:16.330 align:middle line:90%
+go off and do some other stuff.
+
+64
+00:03:16.330 --> 00:03:18.260 align:middle line:84%
+And later, you can
+come back and join it.
+
+65
+00:03:18.260 --> 00:03:19.677 align:middle line:84%
+And when you come
+back to join it,
+
+66
+00:03:19.677 --> 00:03:21.520 align:middle line:84%
+hopefully it's either
+done, in which case
+
+67
+00:03:21.520 --> 00:03:22.960 align:middle line:90%
+you get it right away--
+
+68
+00:03:22.960 --> 00:03:24.670 align:middle line:90%
+get its result right away.
+
+69
+00:03:24.670 --> 00:03:28.150 align:middle line:84%
+Or it may turn out
+that it's not yet done.
+
+70
+00:03:28.150 --> 00:03:30.430 align:middle line:84%
+And so then you end
+up logically blocking.
+
+71
+00:03:30.430 --> 00:03:32.970 align:middle line:90%
+
+
+72
+00:03:32.970 --> 00:03:36.180 align:middle line:84%
+The calling task--
+whoever calls block--
+
+73
+00:03:36.180 --> 00:03:37.560 align:middle line:90%
+that's whoever calls join--
+
+74
+00:03:37.560 --> 00:03:40.350 align:middle line:84%
+will "block"-- and I
+put that in quotes--
+
+75
+00:03:40.350 --> 00:03:43.380 align:middle line:84%
+until the forked
+subtask is done.
+
+76
+00:03:43.380 --> 00:03:45.150 align:middle line:84%
+Now, as I mentioned
+earlier when we
+
+77
+00:03:45.150 --> 00:03:47.910 align:middle line:84%
+were giving an overview
+of ForkJoinTask,
+
+78
+00:03:47.910 --> 00:03:53.820 align:middle line:84%
+calling join on a task doesn't
+actually block the thread.
+
+79
+00:03:53.820 --> 00:03:55.680 align:middle line:84%
+It doesn't actually
+block the worker thread.
+
+80
+00:03:55.680 --> 00:03:59.850 align:middle line:84%
+It just prevents the control
+from going any further
+
+81
+00:03:59.850 --> 00:04:04.973 align:middle line:90%
+until that task's got a result.
+
+82
+00:04:04.973 --> 00:04:06.640 align:middle line:84%
+And what will happen
+instead, typically,
+
+83
+00:04:06.640 --> 00:04:09.820 align:middle line:84%
+is that the call to join
+will cause the worker
+
+84
+00:04:09.820 --> 00:04:14.235 align:middle line:84%
+thread to pitch in and do a
+bunch of other processing.
+
+85
+00:04:14.235 --> 00:04:15.610 align:middle line:84%
+And at some point,
+either it will
+
+86
+00:04:15.610 --> 00:04:17.500 align:middle line:84%
+notice that the
+results have come back
+
+87
+00:04:17.500 --> 00:04:21.760 align:middle line:84%
+from the subtasks or the
+task that's called join,
+
+88
+00:04:21.760 --> 00:04:25.130 align:middle line:84%
+or somebody else will notice
+this and inform that thread.
+
+89
+00:04:25.130 --> 00:04:27.490 align:middle line:84%
+And so at some point,
+it'll get the result back.
+
+90
+00:04:27.490 --> 00:04:31.780 align:middle line:84%
+And then it can return the
+result back to the caller.
+
+91
+00:04:31.780 --> 00:04:34.750 align:middle line:84%
+And then the thread, the worker
+thread, can continue to run.
+
+92
+00:04:34.750 --> 00:04:37.790 align:middle line:84%
+This is a little bit complicated
+to get your head around
+
+93
+00:04:37.790 --> 00:04:41.260 align:middle line:84%
+because it's not quite the
+same semantics as calling, say,
+
+94
+00:04:41.260 --> 00:04:45.550 align:middle line:84%
+join on a Java thread--
+a native Java thread--
+
+95
+00:04:45.550 --> 00:04:48.290 align:middle line:84%
+because that really
+will block the thread.
+
+96
+00:04:48.290 --> 00:04:49.550 align:middle line:90%
+This doesn't block the thread.
+
+97
+00:04:49.550 --> 00:04:51.020 align:middle line:84%
+And the reason it doesn't
+block the worker thread--
+
+98
+00:04:51.020 --> 00:04:53.312 align:middle line:84%
+the reason why this join call
+does not block the worker
+
+99
+00:04:53.312 --> 00:04:53.960 align:middle line:90%
+thread--
+
+100
+00:04:53.960 --> 00:04:56.960 align:middle line:84%
+is because a ForkJoinTask
+is not a thread.
+
+101
+00:04:56.960 --> 00:04:59.090 align:middle line:84%
+Instead, it's a much
+lighter-weight mechanism
+
+102
+00:04:59.090 --> 00:05:03.220 align:middle line:84%
+that works in a more
+collaborative way.
+
+103
+00:05:03.220 --> 00:05:06.010 align:middle line:84%
+Now, that the join call
+defines something known
+
+104
+00:05:06.010 --> 00:05:08.130 align:middle line:90%
+as a synchronization point.
+
+105
+00:05:08.130 --> 00:05:09.700 align:middle line:90%
+And this is very important.
+
+106
+00:05:09.700 --> 00:05:11.440 align:middle line:84%
+And that's because
+the computation
+
+107
+00:05:11.440 --> 00:05:15.112 align:middle line:84%
+that just took place may have
+occurred in some other thread.
+
+108
+00:05:15.112 --> 00:05:16.570 align:middle line:84%
+And we need to be
+able to make sure
+
+109
+00:05:16.570 --> 00:05:18.430 align:middle line:84%
+that when we get
+the result back,
+
+110
+00:05:18.430 --> 00:05:20.068 align:middle line:90%
+we get back the right result--
+
+111
+00:05:20.068 --> 00:05:21.610 align:middle line:84%
+the right result
+being the one that's
+
+112
+00:05:21.610 --> 00:05:25.300 align:middle line:84%
+been pushed through the
+processor caches correctly.
+
+113
+00:05:25.300 --> 00:05:29.170 align:middle line:84%
+And the reason that it defines
+the synchronization point is
+
+114
+00:05:29.170 --> 00:05:32.707 align:middle line:84%
+to ensure that all the
+writes in the worker thread--
+
+115
+00:05:32.707 --> 00:05:34.540 align:middle line:84%
+all the things that are
+doing the processing
+
+116
+00:05:34.540 --> 00:05:40.700 align:middle line:84%
+in the background that
+happened before the join--
+
+117
+00:05:40.700 --> 00:05:43.160 align:middle line:84%
+are made visible
+to other threads--
+
+118
+00:05:43.160 --> 00:05:45.680 align:middle line:84%
+most importantly, the
+thread that called join--
+
+119
+00:05:45.680 --> 00:05:47.870 align:middle line:90%
+after the join returns.
+
+120
+00:05:47.870 --> 00:05:49.880 align:middle line:84%
+And this happens-before
+relationship
+
+121
+00:05:49.880 --> 00:05:53.960 align:middle line:84%
+is a very fascinating
+topic in concurrency.
+
+122
+00:05:53.960 --> 00:05:57.685 align:middle line:84%
+It's a very fascinating topic
+in the Java memory model.
+
+123
+00:05:57.685 --> 00:05:59.060 align:middle line:84%
+And if you're
+curious about it, I
+
+124
+00:05:59.060 --> 00:06:01.165 align:middle line:84%
+recommend you go back
+to my concurrent object
+
+125
+00:06:01.165 --> 00:06:02.540 align:middle line:84%
+oriented programming
+course where
+
+126
+00:06:02.540 --> 00:06:05.210 align:middle line:84%
+I talk about the
+concept of happens
+
+127
+00:06:05.210 --> 00:06:07.940 align:middle line:84%
+before relationships
+in great detail.
+
+128
+00:06:07.940 --> 00:06:11.840 align:middle line:84%
+And so this just illustrates
+that the ForkJoinTask join
+
+129
+00:06:11.840 --> 00:06:14.330 align:middle line:84%
+method is a
+synchronization point
+
+130
+00:06:14.330 --> 00:06:15.890 align:middle line:84%
+to make sure that
+caches are properly
+
+131
+00:06:15.890 --> 00:06:18.260 align:middle line:84%
+flushed from computations
+that are running
+
+132
+00:06:18.260 --> 00:06:20.540 align:middle line:84%
+in the background and
+other worker threads
+
+133
+00:06:20.540 --> 00:06:23.510 align:middle line:90%
+in the ForkJoinPool.
+
+134
+00:06:23.510 --> 00:06:28.100 align:middle line:84%
+The third key method on
+ForkJoinTask is invoke.
+
+135
+00:06:28.100 --> 00:06:32.780 align:middle line:84%
+And what this method does is it
+arranges to invoke and perform
+
+136
+00:06:32.780 --> 00:06:36.930 align:middle line:84%
+the task, awaits the
+completion-- basically joining
+
+137
+00:06:36.930 --> 00:06:37.810 align:middle line:90%
+with it.
+
+138
+00:06:37.810 --> 00:06:40.320 align:middle line:84%
+And, if necessary,
+it returns the result
+
+139
+00:06:40.320 --> 00:06:44.150 align:middle line:84%
+if it's a return-oriented
+operation.
+
+140
+00:06:44.150 --> 00:06:51.510 align:middle line:84%
+So this is basically a
+synchronous two-way call, not
+
+141
+00:06:51.510 --> 00:06:52.800 align:middle line:90%
+an asynchronous two-way call.
+
+142
+00:06:52.800 --> 00:06:54.870 align:middle line:84%
+It's a little confusing
+to say those phrases.
+
+143
+00:06:54.870 --> 00:06:57.510 align:middle line:84%
+So it's a synchronous
+two-way call.
+
+144
+00:06:57.510 --> 00:07:01.472 align:middle line:84%
+And it'll actually
+block the calling thread
+
+145
+00:07:01.472 --> 00:07:02.680 align:middle line:90%
+until we get the result back.
+
+146
+00:07:02.680 --> 00:07:04.510 align:middle line:84%
+Now, again, blocking
+is relative.
+
+147
+00:07:04.510 --> 00:07:07.810 align:middle line:84%
+It'll go ahead and block it
+in the sense that join blocks.
+
+148
+00:07:07.810 --> 00:07:09.590 align:middle line:84%
+It'll do other things
+in the background.
+
+149
+00:07:09.590 --> 00:07:11.440 align:middle line:84%
+But the control
+will not continue
+
+150
+00:07:11.440 --> 00:07:14.830 align:middle line:84%
+until it is able to get
+the result back and return
+
+151
+00:07:14.830 --> 00:07:19.810 align:middle line:84%
+to the caller with
+the result. Obviously,
+
+152
+00:07:19.810 --> 00:07:23.600 align:middle line:84%
+if a runtime exception or an
+error exception is thrown,
+
+153
+00:07:23.600 --> 00:07:26.800 align:middle line:84%
+then it'll pass
+back that exception
+
+154
+00:07:26.800 --> 00:07:31.450 align:middle line:84%
+as normal using the synchronous
+Java exception processing
+
+155
+00:07:31.450 --> 00:07:32.700 align:middle line:90%
+mechanisms.

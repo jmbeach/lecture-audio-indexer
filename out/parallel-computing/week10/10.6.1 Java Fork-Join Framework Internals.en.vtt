@@ -1,0 +1,1106 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.500 align:middle line:90%
+
+
+2
+00:00:00.500 --> 00:00:03.810 align:middle line:84%
+So now that we've talked
+about the ForkJoinPool class,
+
+3
+00:00:03.810 --> 00:00:06.270 align:middle line:84%
+we've talked about the
+ForkJoinTask class,
+
+4
+00:00:06.270 --> 00:00:07.930 align:middle line:84%
+we've talked about
+RecursiveAction,
+
+5
+00:00:07.930 --> 00:00:10.420 align:middle line:84%
+we've talked about
+RecursiveTask,
+
+6
+00:00:10.420 --> 00:00:13.240 align:middle line:84%
+it's time to start
+looking at the internals
+
+7
+00:00:13.240 --> 00:00:15.010 align:middle line:90%
+of the ForkJoinPool.
+
+8
+00:00:15.010 --> 00:00:16.780 align:middle line:84%
+And quite frankly, I
+think that's really
+
+9
+00:00:16.780 --> 00:00:19.360 align:middle line:90%
+where all the cool stuff lurks.
+
+10
+00:00:19.360 --> 00:00:23.170 align:middle line:84%
+That's what makes ForkJoinPool
+and the fork-join framework
+
+11
+00:00:23.170 --> 00:00:24.700 align:middle line:90%
+so cool.
+
+12
+00:00:24.700 --> 00:00:27.080 align:middle line:90%
+So ForkJoinPool is cool.
+
+13
+00:00:27.080 --> 00:00:29.050 align:middle line:84%
+And it's really neat
+because it demonstrates
+
+14
+00:00:29.050 --> 00:00:31.960 align:middle line:84%
+all these powerful features
+that we've talked about.
+
+15
+00:00:31.960 --> 00:00:34.750 align:middle line:84%
+And now we get a chance to
+really look under the hood
+
+16
+00:00:34.750 --> 00:00:37.880 align:middle line:84%
+and see how everything
+applies in practice.
+
+17
+00:00:37.880 --> 00:00:39.880 align:middle line:84%
+So what we're going to
+talk about in this lesson
+
+18
+00:00:39.880 --> 00:00:47.510 align:middle line:84%
+is how the fork-join framework
+implements its worker threads.
+
+19
+00:00:47.510 --> 00:00:50.360 align:middle line:84%
+Now, recall from our
+earlier discussion
+
+20
+00:00:50.360 --> 00:00:56.990 align:middle line:84%
+that non-ForkJoinTask
+clients insert new tasks
+
+21
+00:00:56.990 --> 00:01:01.220 align:middle line:84%
+into the ForkJoinPool's
+shared queue.
+
+22
+00:01:01.220 --> 00:01:02.600 align:middle line:90%
+So a client comes along.
+
+23
+00:01:02.600 --> 00:01:04.849 align:middle line:90%
+It calls execute.
+
+24
+00:01:04.849 --> 00:01:06.110 align:middle line:90%
+It calls submit.
+
+25
+00:01:06.110 --> 00:01:09.140 align:middle line:84%
+It calls invoke--
+whatever it needs to call.
+
+26
+00:01:09.140 --> 00:01:13.280 align:middle line:84%
+And it gives a ForkJoinTask
+to be processed by something
+
+27
+00:01:13.280 --> 00:01:16.710 align:middle line:90%
+in the pool of worker threads.
+
+28
+00:01:16.710 --> 00:01:20.190 align:middle line:84%
+And this, quote,
+"shared queue"--
+
+29
+00:01:20.190 --> 00:01:22.590 align:middle line:84%
+and it's kind of a
+misnomer because it's not
+
+30
+00:01:22.590 --> 00:01:24.690 align:middle line:84%
+shared in the way you
+might think it's shared.
+
+31
+00:01:24.690 --> 00:01:29.430 align:middle line:84%
+It actually is used to feed
+work-stealing queues managed
+
+32
+00:01:29.430 --> 00:01:31.650 align:middle line:90%
+by the worker threads.
+
+33
+00:01:31.650 --> 00:01:34.800 align:middle line:84%
+Now, if you actually take a
+look at the implementation
+
+34
+00:01:34.800 --> 00:01:37.450 align:middle line:84%
+of this code, you'll
+note several things.
+
+35
+00:01:37.450 --> 00:01:41.850 align:middle line:84%
+First of all, it looks like
+it was written by someone who
+
+36
+00:01:41.850 --> 00:01:46.010 align:middle line:90%
+was using Java to write C code.
+
+37
+00:01:46.010 --> 00:01:49.260 align:middle line:84%
+The code is very,
+very low-level.
+
+38
+00:01:49.260 --> 00:02:00.150 align:middle line:84%
+It uses lots of tricks with
+and-ing and or-ing bit fields.
+
+39
+00:02:00.150 --> 00:02:02.070 align:middle line:84%
+And it treats things
+in special ways.
+
+40
+00:02:02.070 --> 00:02:04.980 align:middle line:84%
+And it has lots of
+one-letter variable names.
+
+41
+00:02:04.980 --> 00:02:07.770 align:middle line:84%
+And it's got just about no
+documentation or comments.
+
+42
+00:02:07.770 --> 00:02:10.139 align:middle line:84%
+So it's really
+pretty mysterious.
+
+43
+00:02:10.139 --> 00:02:13.050 align:middle line:84%
+However, there is a
+really nice comment--
+
+44
+00:02:13.050 --> 00:02:15.210 align:middle line:90%
+it's a very long comment--
+
+45
+00:02:15.210 --> 00:02:18.690 align:middle line:84%
+that occurs inside
+the implementation
+
+46
+00:02:18.690 --> 00:02:21.102 align:middle line:90%
+of the ForkJoinPool class.
+
+47
+00:02:21.102 --> 00:02:22.560 align:middle line:84%
+It's not part of
+the documentation.
+
+48
+00:02:22.560 --> 00:02:24.102 align:middle line:84%
+It's just part of
+the implementation.
+
+49
+00:02:24.102 --> 00:02:26.268 align:middle line:84%
+But if you have the source
+code, you can go read it.
+
+50
+00:02:26.268 --> 00:02:27.840 align:middle line:84%
+And it really explains
+how everything
+
+51
+00:02:27.840 --> 00:02:28.715 align:middle line:90%
+works under the hood.
+
+52
+00:02:28.715 --> 00:02:30.930 align:middle line:84%
+And it's really,
+really fascinating.
+
+53
+00:02:30.930 --> 00:02:35.940 align:middle line:84%
+And you can understand why this
+class is used so frequently
+
+54
+00:02:35.940 --> 00:02:39.270 align:middle line:84%
+for lots of other parallel
+computing libraries
+
+55
+00:02:39.270 --> 00:02:41.430 align:middle line:90%
+because someone--
+
+56
+00:02:41.430 --> 00:02:43.740 align:middle line:90%
+largely, my buddy Doug Lee--
+
+57
+00:02:43.740 --> 00:02:45.772 align:middle line:84%
+put a lot of thought
+into making this work.
+
+58
+00:02:45.772 --> 00:02:47.730 align:middle line:84%
+And so what actually
+happens is you've actually
+
+59
+00:02:47.730 --> 00:02:54.060 align:middle line:84%
+got this array of work
+queues, which can be expanded.
+
+60
+00:02:54.060 --> 00:03:00.810 align:middle line:84%
+And the pool of worker
+threads have a certain part
+
+61
+00:03:00.810 --> 00:03:04.980 align:middle line:84%
+of this array of work queues
+that's kind of "their"
+
+62
+00:03:04.980 --> 00:03:07.110 align:middle line:90%
+work cue or their deck.
+
+63
+00:03:07.110 --> 00:03:10.060 align:middle line:84%
+And then they have interposed
+with this in this array
+
+64
+00:03:10.060 --> 00:03:14.310 align:middle line:84%
+these other places where these
+external threads can come along
+
+65
+00:03:14.310 --> 00:03:17.520 align:middle line:84%
+that are
+non-ForkJoinTask clients
+
+66
+00:03:17.520 --> 00:03:22.440 align:middle line:84%
+and insert work into
+the work queues.
+
+67
+00:03:22.440 --> 00:03:24.140 align:middle line:84%
+And what's interesting
+about this is--
+
+68
+00:03:24.140 --> 00:03:26.760 align:middle line:84%
+and when we talk about
+work-stealing here shortly--
+
+69
+00:03:26.760 --> 00:03:28.710 align:middle line:84%
+when the time is right,
+and a thread needs
+
+70
+00:03:28.710 --> 00:03:31.050 align:middle line:84%
+to look for something to
+do because it has nothing
+
+71
+00:03:31.050 --> 00:03:33.090 align:middle line:84%
+in its work queue,
+it can go out and it
+
+72
+00:03:33.090 --> 00:03:36.240 align:middle line:84%
+can steal from anybody's
+queue, including
+
+73
+00:03:36.240 --> 00:03:38.040 align:middle line:84%
+these, quote,
+"shared queues" that
+
+74
+00:03:38.040 --> 00:03:41.580 align:middle line:84%
+are used by the
+non-ForkJoinTask clients
+
+75
+00:03:41.580 --> 00:03:45.810 align:middle line:84%
+to get data into
+the ForkJoinPool.
+
+76
+00:03:45.810 --> 00:03:49.530 align:middle line:84%
+So again, I encourage you
+to go look at the code.
+
+77
+00:03:49.530 --> 00:03:53.920 align:middle line:84%
+Your mind will simply melt.
+But it's pretty darn cool.
+
+78
+00:03:53.920 --> 00:03:56.250 align:middle line:84%
+So the basic idea
+is we're trying
+
+79
+00:03:56.250 --> 00:03:59.250 align:middle line:84%
+to get work into the
+pool of worker threads
+
+80
+00:03:59.250 --> 00:04:02.450 align:middle line:90%
+in the common ForkJoinPool.
+
+81
+00:04:02.450 --> 00:04:05.960 align:middle line:84%
+Now, each worker thread
+in the ForkJoinPool
+
+82
+00:04:05.960 --> 00:04:09.500 align:middle line:84%
+effectively runs a
+loop that continuously
+
+83
+00:04:09.500 --> 00:04:13.340 align:middle line:90%
+scans for things to do.
+
+84
+00:04:13.340 --> 00:04:15.770 align:middle line:84%
+So I like the little
+animation here
+
+85
+00:04:15.770 --> 00:04:18.490 align:middle line:84%
+with the person on
+the gerbil wheel,
+
+86
+00:04:18.490 --> 00:04:21.803 align:middle line:84%
+just working, working, working,
+scanning, scanning, scanning,
+
+87
+00:04:21.803 --> 00:04:22.970 align:middle line:90%
+looking for something to do.
+
+88
+00:04:22.970 --> 00:04:26.110 align:middle line:90%
+They're trying to exercise.
+
+89
+00:04:26.110 --> 00:04:29.070 align:middle line:84%
+And the goal here is to keep
+all these worker threads as busy
+
+90
+00:04:29.070 --> 00:04:30.060 align:middle line:90%
+as possible.
+
+91
+00:04:30.060 --> 00:04:34.830 align:middle line:84%
+Nothing makes a worker
+thread in the ForkJoinPool
+
+92
+00:04:34.830 --> 00:04:38.160 align:middle line:84%
+happier than having
+something to process.
+
+93
+00:04:38.160 --> 00:04:41.820 align:middle line:84%
+So never feel like you have
+to give these worker threads
+
+94
+00:04:41.820 --> 00:04:42.480 align:middle line:90%
+a day off.
+
+95
+00:04:42.480 --> 00:04:45.030 align:middle line:84%
+They always want to
+do nothing but run.
+
+96
+00:04:45.030 --> 00:04:47.460 align:middle line:90%
+They just love it.
+
+97
+00:04:47.460 --> 00:04:48.640 align:middle line:90%
+So how do they do that?
+
+98
+00:04:48.640 --> 00:04:51.810 align:middle line:84%
+Well, it turns out
+that each worker thread
+
+99
+00:04:51.810 --> 00:04:55.440 align:middle line:84%
+in the ForkJoinPool
+is associated
+
+100
+00:04:55.440 --> 00:04:59.270 align:middle line:84%
+with this double-ended
+queue or the "deck."
+
+101
+00:04:59.270 --> 00:05:01.560 align:middle line:84%
+And just to be confusing,
+even though it's implemented
+
+102
+00:05:01.560 --> 00:05:04.860 align:middle line:84%
+as a deck, it's
+called work queue
+
+103
+00:05:04.860 --> 00:05:07.290 align:middle line:84%
+in the source code, which
+is a little confusing.
+
+104
+00:05:07.290 --> 00:05:09.930 align:middle line:84%
+I'll try to call it
+the deck because it
+
+105
+00:05:09.930 --> 00:05:14.310 align:middle line:84%
+will make more sense when we
+talk about the actual behavior
+
+106
+00:05:14.310 --> 00:05:16.950 align:middle line:90%
+of these work queues.
+
+107
+00:05:16.950 --> 00:05:21.490 align:middle line:84%
+And each of these
+work queue decks--
+
+108
+00:05:21.490 --> 00:05:25.810 align:middle line:84%
+one associated per worker
+thread in the ForkJoinPool--
+
+109
+00:05:25.810 --> 00:05:30.610 align:middle line:84%
+will serve as the main source
+of tasks for that worker thread
+
+110
+00:05:30.610 --> 00:05:32.610 align:middle line:90%
+to process.
+
+111
+00:05:32.610 --> 00:05:35.220 align:middle line:84%
+All right, so to think about
+that, look at the picture.
+
+112
+00:05:35.220 --> 00:05:37.270 align:middle line:84%
+Here we have a pool
+of worker threads
+
+113
+00:05:37.270 --> 00:05:40.080 align:middle line:84%
+that has three
+worker threads in it.
+
+114
+00:05:40.080 --> 00:05:42.990 align:middle line:84%
+And each of them is associated
+with a work queue deck.
+
+115
+00:05:42.990 --> 00:05:45.540 align:middle line:84%
+And as you can see,
+some of the decks
+
+116
+00:05:45.540 --> 00:05:48.330 align:middle line:84%
+have work queued up,
+ready to be processed
+
+117
+00:05:48.330 --> 00:05:52.590 align:middle line:84%
+by that thread or a
+thread that steals it.
+
+118
+00:05:52.590 --> 00:05:54.132 align:middle line:84%
+Another work queue
+has nothing in it.
+
+119
+00:05:54.132 --> 00:05:55.923 align:middle line:84%
+And just keep that in
+the back of your mind
+
+120
+00:05:55.923 --> 00:05:58.710 align:middle line:84%
+as we talk about this because
+this is important to understand
+
+121
+00:05:58.710 --> 00:06:02.600 align:middle line:84%
+how work-stealing works and
+how the overall worker thread
+
+122
+00:06:02.600 --> 00:06:04.760 align:middle line:84%
+model is designed
+and implemented
+
+123
+00:06:04.760 --> 00:06:07.930 align:middle line:90%
+in the ForkJoinPool.
+
+124
+00:06:07.930 --> 00:06:10.350 align:middle line:84%
+As I mentioned before,
+the actual deck
+
+125
+00:06:10.350 --> 00:06:13.920 align:middle line:84%
+is implemented by this nested
+class called work queue.
+
+126
+00:06:13.920 --> 00:06:17.850 align:middle line:84%
+This is private inside
+the ForkJoinPool.
+
+127
+00:06:17.850 --> 00:06:20.790 align:middle line:84%
+You can go to the link at
+the bottom of the slide
+
+128
+00:06:20.790 --> 00:06:23.490 align:middle line:84%
+and actually download the
+source code and look at it.
+
+129
+00:06:23.490 --> 00:06:25.150 align:middle line:90%
+It's quite interesting.
+
+130
+00:06:25.150 --> 00:06:27.960 align:middle line:84%
+Now, there's a whole bunch
+of methods in work queue.
+
+131
+00:06:27.960 --> 00:06:30.840 align:middle line:84%
+We care about three
+of those methods
+
+132
+00:06:30.840 --> 00:06:32.700 align:middle line:90%
+quite a bit in our discussion.
+
+133
+00:06:32.700 --> 00:06:38.040 align:middle line:84%
+And those methods are
+push, pop, and pull.
+
+134
+00:06:38.040 --> 00:06:40.128 align:middle line:84%
+So keep those in the
+back of your mind.
+
+135
+00:06:40.128 --> 00:06:41.670 align:middle line:84%
+When we get to the
+next lesson, where
+
+136
+00:06:41.670 --> 00:06:43.770 align:middle line:84%
+we talk about
+work-stealing, we'll
+
+137
+00:06:43.770 --> 00:06:47.190 align:middle line:84%
+get a chance to dive a little
+deeper into the semantics
+
+138
+00:06:47.190 --> 00:06:51.510 align:middle line:90%
+of push, pop, and pull.
+
+139
+00:06:51.510 --> 00:06:54.820 align:middle line:84%
+But for right now, let's
+just focus on push and pop.
+
+140
+00:06:54.820 --> 00:07:00.850 align:middle line:84%
+So if a task that's run in
+the context of a worker thread
+
+141
+00:07:00.850 --> 00:07:06.830 align:middle line:84%
+calls fork, then that new
+task is implicitly pushed--
+
+142
+00:07:06.830 --> 00:07:08.180 align:middle line:90%
+by fork, of course--
+
+143
+00:07:08.180 --> 00:07:14.940 align:middle line:84%
+onto the head of the
+work queue's deck.
+
+144
+00:07:14.940 --> 00:07:15.890 align:middle line:90%
+Work queue is a deck.
+
+145
+00:07:15.890 --> 00:07:16.640 align:middle line:90%
+The worker's deck.
+
+146
+00:07:16.640 --> 00:07:17.940 align:middle line:90%
+Let's just say that.
+
+147
+00:07:17.940 --> 00:07:21.120 align:middle line:84%
+So when fork is called,
+that results in that task
+
+148
+00:07:21.120 --> 00:07:22.340 align:middle line:90%
+being pushed onto the deck.
+
+149
+00:07:22.340 --> 00:07:23.840 align:middle line:84%
+So let's assume for
+sake of argument
+
+150
+00:07:23.840 --> 00:07:28.340 align:middle line:84%
+that the thread we show
+in the middle of the pool
+
+151
+00:07:28.340 --> 00:07:34.160 align:middle line:84%
+has some code that calls fork
+on a ForkJoinTask of some sort.
+
+152
+00:07:34.160 --> 00:07:38.270 align:middle line:84%
+That will end up pushing
+that task or that subtask
+
+153
+00:07:38.270 --> 00:07:43.540 align:middle line:90%
+onto the head of the deck.
+
+154
+00:07:43.540 --> 00:07:46.380 align:middle line:84%
+Now at some point,
+this worker thread
+
+155
+00:07:46.380 --> 00:07:49.140 align:middle line:84%
+will most likely be
+ready to do some work.
+
+156
+00:07:49.140 --> 00:07:52.710 align:middle line:84%
+So it'll go ahead and want
+to process this stuff.
+
+157
+00:07:52.710 --> 00:07:56.190 align:middle line:84%
+Maybe that's going to
+happen when it calls join.
+
+158
+00:07:56.190 --> 00:07:57.870 align:middle line:84%
+So when join is
+called, what will
+
+159
+00:07:57.870 --> 00:08:01.920 align:middle line:84%
+happen is that the thread
+where the join was called
+
+160
+00:08:01.920 --> 00:08:03.930 align:middle line:84%
+will turn around and
+say, hey, is there
+
+161
+00:08:03.930 --> 00:08:06.210 align:middle line:90%
+anything to do in my deck?
+
+162
+00:08:06.210 --> 00:08:09.420 align:middle line:90%
+Do I have any subtasks to run?
+
+163
+00:08:09.420 --> 00:08:12.540 align:middle line:84%
+And it does this by
+trying to pop them off.
+
+164
+00:08:12.540 --> 00:08:16.920 align:middle line:84%
+So it'll turn around
+and pop of a subtask.
+
+165
+00:08:16.920 --> 00:08:19.230 align:middle line:84%
+And then it'll go ahead
+and execute that subtask.
+
+166
+00:08:19.230 --> 00:08:21.930 align:middle line:84%
+Which, as we saw before,
+in the context of something
+
+167
+00:08:21.930 --> 00:08:23.820 align:middle line:84%
+like RecursiveAction
+or RecursiveTask,
+
+168
+00:08:23.820 --> 00:08:26.880 align:middle line:84%
+will end up calling the
+compute hook method in order
+
+169
+00:08:26.880 --> 00:08:28.710 align:middle line:90%
+to do its thing.
+
+170
+00:08:28.710 --> 00:08:30.930 align:middle line:84%
+Now, the key thing to
+note here is not so much
+
+171
+00:08:30.930 --> 00:08:32.730 align:middle line:84%
+what the subtask
+is doing when it's
+
+172
+00:08:32.730 --> 00:08:35.669 align:middle line:84%
+computing-- that's
+interesting, but not essential
+
+173
+00:08:35.669 --> 00:08:36.762 align:middle line:90%
+to the discussion.
+
+174
+00:08:36.762 --> 00:08:38.220 align:middle line:84%
+The interesting
+part here is really
+
+175
+00:08:38.220 --> 00:08:43.799 align:middle line:84%
+the order in which the worker
+thread pushes and pops things
+
+176
+00:08:43.799 --> 00:08:45.270 align:middle line:90%
+onto the deck.
+
+177
+00:08:45.270 --> 00:08:47.670 align:middle line:84%
+And this worker thread
+pushes and pops things
+
+178
+00:08:47.670 --> 00:08:53.070 align:middle line:84%
+onto the deck in last in,
+first out or LIFO, order.
+
+179
+00:08:53.070 --> 00:08:55.700 align:middle line:90%
+
+
+180
+00:08:55.700 --> 00:08:58.420 align:middle line:84%
+What happens in this case is
+that when you pop something
+
+181
+00:08:58.420 --> 00:09:01.510 align:middle line:84%
+from the head of the deck,
+then that worker thread
+
+182
+00:09:01.510 --> 00:09:04.910 align:middle line:90%
+will run that task.
+
+183
+00:09:04.910 --> 00:09:06.880 align:middle line:84%
+It'll compute its value,
+compute its result,
+
+184
+00:09:06.880 --> 00:09:08.650 align:middle line:90%
+and so on to completion.
+
+185
+00:09:08.650 --> 00:09:12.130 align:middle line:84%
+It'll just keep running
+it until it's done.
+
+186
+00:09:12.130 --> 00:09:14.470 align:middle line:84%
+There's no different
+lifecycle states the way
+
+187
+00:09:14.470 --> 00:09:15.970 align:middle line:84%
+there is with a
+regular Java thread.
+
+188
+00:09:15.970 --> 00:09:17.595 align:middle line:84%
+This thing just starts
+to run and keeps
+
+189
+00:09:17.595 --> 00:09:19.090 align:middle line:90%
+running until it finishes.
+
+190
+00:09:19.090 --> 00:09:22.360 align:middle line:84%
+Of course, the underlying worker
+thread has its own lifecycle.
+
+191
+00:09:22.360 --> 00:09:25.090 align:middle line:84%
+So if it runs long enough,
+the operating system scheduler
+
+192
+00:09:25.090 --> 00:09:28.218 align:middle line:84%
+may decide to suspend it,
+let something else run,
+
+193
+00:09:28.218 --> 00:09:29.260 align:middle line:90%
+and then resume it later.
+
+194
+00:09:29.260 --> 00:09:32.725 align:middle line:84%
+But that's outside the scope
+of what the ForkJoinTask is
+
+195
+00:09:32.725 --> 00:09:33.350 align:middle line:90%
+concerned with.
+
+196
+00:09:33.350 --> 00:09:35.860 align:middle line:90%
+
+
+197
+00:09:35.860 --> 00:09:40.480 align:middle line:84%
+As we talked about before when
+we talked about the join method
+
+198
+00:09:40.480 --> 00:09:47.310 align:middle line:84%
+in the ForkJoinTask, join will
+pitch in to pop and execute
+
+199
+00:09:47.310 --> 00:09:48.930 align:middle line:90%
+these subtasks.
+
+200
+00:09:48.930 --> 00:09:52.530 align:middle line:84%
+And so as a result, it
+will either take things out
+
+201
+00:09:52.530 --> 00:09:56.400 align:middle line:84%
+of its deck or, as we'll see
+later in the next lesson,
+
+202
+00:09:56.400 --> 00:09:59.070 align:middle line:84%
+it will try to steal
+work elsewhere.
+
+203
+00:09:59.070 --> 00:10:01.710 align:middle line:84%
+And it'll keep pitching in and
+running these subtasks until it
+
+204
+00:10:01.710 --> 00:10:04.410 align:middle line:84%
+finally gets the
+result that it wants,
+
+205
+00:10:04.410 --> 00:10:06.090 align:middle line:90%
+so that join can return--
+
+206
+00:10:06.090 --> 00:10:09.960 align:middle line:84%
+either return a value if it's
+a RecursiveTask-style join,
+
+207
+00:10:09.960 --> 00:10:12.210 align:middle line:84%
+or just return without
+a value if it's
+
+208
+00:10:12.210 --> 00:10:15.540 align:middle line:90%
+a RecursiveAction-style join.
+
+209
+00:10:15.540 --> 00:10:18.300 align:middle line:84%
+And that's basically the
+collaborative Jiffy Lube model
+
+210
+00:10:18.300 --> 00:10:23.780 align:middle line:84%
+of processing that we
+have talked about earlier.
+
+211
+00:10:23.780 --> 00:10:28.490 align:middle line:84%
+Why does the ForkJoinPool
+use LIFO ordering?
+
+212
+00:10:28.490 --> 00:10:32.070 align:middle line:84%
+It's done to improve the
+locality of reference
+
+213
+00:10:32.070 --> 00:10:35.020 align:middle line:84%
+and the performance
+of the caches.
+
+214
+00:10:35.020 --> 00:10:36.900 align:middle line:84%
+And so what it's
+trying to do is it's
+
+215
+00:10:36.900 --> 00:10:39.150 align:middle line:84%
+trying to make sure
+that the freshest
+
+216
+00:10:39.150 --> 00:10:44.170 align:middle line:84%
+work is done before work that's
+further back in its deck.
+
+217
+00:10:44.170 --> 00:10:46.780 align:middle line:84%
+And so the reason for
+that is that if you
+
+218
+00:10:46.780 --> 00:10:49.690 align:middle line:84%
+work with the freshest
+work, then you're
+
+219
+00:10:49.690 --> 00:10:51.790 align:middle line:84%
+likely to have all
+of the instructions
+
+220
+00:10:51.790 --> 00:10:56.230 align:middle line:84%
+and data for that task already
+in the processor cache.
+
+221
+00:10:56.230 --> 00:10:58.930 align:middle line:84%
+Remember, the processors have
+instruction and data caches
+
+222
+00:10:58.930 --> 00:11:02.290 align:middle line:84%
+that they use to try to
+optimize performance.
+
+223
+00:11:02.290 --> 00:11:04.808 align:middle line:84%
+And they're pretty
+large nowadays.
+
+224
+00:11:04.808 --> 00:11:06.100 align:middle line:90%
+But they'll eventually fill up.
+
+225
+00:11:06.100 --> 00:11:08.392 align:middle line:84%
+And so you're more likely to
+get something in the cache
+
+226
+00:11:08.392 --> 00:11:10.665 align:middle line:84%
+if you get the thing that
+was most recently processed
+
+227
+00:11:10.665 --> 00:11:12.040 align:middle line:84%
+than you are if
+you get something
+
+228
+00:11:12.040 --> 00:11:13.850 align:middle line:90%
+that's been there for a while.
+
+229
+00:11:13.850 --> 00:11:16.930 align:middle line:84%
+So that's why the
+deck is accessed
+
+230
+00:11:16.930 --> 00:11:20.170 align:middle line:84%
+by its owning thread
+in LIFO order--
+
+231
+00:11:20.170 --> 00:11:23.200 align:middle line:84%
+to try to improve locality
+of reference and leverage
+
+232
+00:11:23.200 --> 00:11:25.650 align:middle line:90%
+the caching that's being done.

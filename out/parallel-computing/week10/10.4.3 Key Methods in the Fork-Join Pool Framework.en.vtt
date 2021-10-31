@@ -1,0 +1,734 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.650 align:middle line:90%
+
+
+2
+00:00:00.650 --> 00:00:03.830 align:middle line:84%
+Now that we've talked
+about Fork-Join Task,
+
+3
+00:00:03.830 --> 00:00:06.680 align:middle line:84%
+we're ready to start
+describing the key methods
+
+4
+00:00:06.680 --> 00:00:09.080 align:middle line:84%
+in its subclasses,
+RecursiveAction
+
+5
+00:00:09.080 --> 00:00:11.640 align:middle line:90%
+and RecursiveTask.
+
+6
+00:00:11.640 --> 00:00:14.700 align:middle line:84%
+And we'll see that, as you can
+see from the class diagram,
+
+7
+00:00:14.700 --> 00:00:16.500 align:middle line:84%
+RecursiveAction
+and RecursiveTask
+
+8
+00:00:16.500 --> 00:00:18.900 align:middle line:90%
+extend Fork-Join Task.
+
+9
+00:00:18.900 --> 00:00:21.900 align:middle line:90%
+
+
+10
+00:00:21.900 --> 00:00:24.360 align:middle line:84%
+These two classes
+are differentiated
+
+11
+00:00:24.360 --> 00:00:27.030 align:middle line:90%
+in a very fundamental way.
+
+12
+00:00:27.030 --> 00:00:30.150 align:middle line:84%
+RecursiveAction does
+not return a result,
+
+13
+00:00:30.150 --> 00:00:32.162 align:middle line:90%
+whereas RecursiveTask does.
+
+14
+00:00:32.162 --> 00:00:33.870 align:middle line:84%
+That's the main way
+in which they differ.
+
+15
+00:00:33.870 --> 00:00:36.180 align:middle line:84%
+Otherwise, they're
+pretty much the same.
+
+16
+00:00:36.180 --> 00:00:38.520 align:middle line:84%
+As you can see here,
+RecursiveAction
+
+17
+00:00:38.520 --> 00:00:41.190 align:middle line:90%
+extends Fork-Join Task.
+
+18
+00:00:41.190 --> 00:00:44.468 align:middle line:84%
+But it provides a void
+return type, which is really
+
+19
+00:00:44.468 --> 00:00:45.510 align:middle line:90%
+not a return type at all.
+
+20
+00:00:45.510 --> 00:00:47.620 align:middle line:84%
+It just says I don't
+return anything.
+
+21
+00:00:47.620 --> 00:00:49.650 align:middle line:84%
+And therefore, it does
+not return any values
+
+22
+00:00:49.650 --> 00:00:52.320 align:middle line:90%
+through its compute method.
+
+23
+00:00:52.320 --> 00:00:54.210 align:middle line:84%
+The way that both
+RecursiveAction
+
+24
+00:00:54.210 --> 00:00:57.840 align:middle line:84%
+and RecursiveTask do
+their computations
+
+25
+00:00:57.840 --> 00:01:00.310 align:middle line:84%
+is through a method
+called compute.
+
+26
+00:01:00.310 --> 00:01:03.010 align:middle line:84%
+Again, the main difference
+is that the compute method
+
+27
+00:01:03.010 --> 00:01:05.620 align:middle line:84%
+for RecursiveAction
+returns void,
+
+28
+00:01:05.620 --> 00:01:07.900 align:middle line:84%
+whereas the compute
+method for RecursiveTask
+
+29
+00:01:07.900 --> 00:01:10.360 align:middle line:84%
+returns t, where t
+is the type that's
+
+30
+00:01:10.360 --> 00:01:17.170 align:middle line:84%
+been used to parameterize
+the recursive action.
+
+31
+00:01:17.170 --> 00:01:21.370 align:middle line:84%
+Subclasses override
+compute in order
+
+32
+00:01:21.370 --> 00:01:24.900 align:middle line:84%
+to perform the
+task's computation.
+
+33
+00:01:24.900 --> 00:01:28.415 align:middle line:84%
+So that's where all
+the fun stuff happens.
+
+34
+00:01:28.415 --> 00:01:30.040 align:middle line:84%
+They typically are
+designed as follows.
+
+35
+00:01:30.040 --> 00:01:32.740 align:middle line:84%
+This is going to look very
+familiar to you by now.
+
+36
+00:01:32.740 --> 00:01:35.920 align:middle line:84%
+If the data size is below
+a certain threshold,
+
+37
+00:01:35.920 --> 00:01:40.750 align:middle line:84%
+just do the work directly
+and do it sequentially.
+
+38
+00:01:40.750 --> 00:01:45.110 align:middle line:90%
+Don't bother forking anything.
+
+39
+00:01:45.110 --> 00:01:48.560 align:middle line:84%
+However, if the
+data size is large,
+
+40
+00:01:48.560 --> 00:01:53.910 align:middle line:84%
+split the work up into
+multiple smaller sub-tasks--
+
+41
+00:01:53.910 --> 00:01:56.520 align:middle line:84%
+maybe one, maybe two, maybe n,
+depending on your programming
+
+42
+00:01:56.520 --> 00:01:58.860 align:middle line:90%
+model for Fork-Join Tasks.
+
+43
+00:01:58.860 --> 00:02:04.270 align:middle line:84%
+And then fork those tasks so
+that they can run in parallel.
+
+44
+00:02:04.270 --> 00:02:06.660 align:middle line:84%
+Remember again, fork doesn't
+directly execute them.
+
+45
+00:02:06.660 --> 00:02:09.360 align:middle line:84%
+It arranges to execute
+them by pushing them
+
+46
+00:02:09.360 --> 00:02:15.270 align:middle line:84%
+onto the deck of the
+calling worker thread.
+
+47
+00:02:15.270 --> 00:02:20.650 align:middle line:84%
+As these smaller
+sub-tasks finish,
+
+48
+00:02:20.650 --> 00:02:23.400 align:middle line:90%
+they can be joined together.
+
+49
+00:02:23.400 --> 00:02:26.730 align:middle line:84%
+But keep in mind that because
+RecursiveAction doesn't
+
+50
+00:02:26.730 --> 00:02:29.850 align:middle line:84%
+have return values,
+joining is simply
+
+51
+00:02:29.850 --> 00:02:34.020 align:middle line:84%
+a synchronization point, but
+not a way to get a result back.
+
+52
+00:02:34.020 --> 00:02:36.390 align:middle line:84%
+So how could you possibly
+use this, you may ask?
+
+53
+00:02:36.390 --> 00:02:39.440 align:middle line:84%
+How do you get the results
+back from RecursiveActions that
+
+54
+00:02:39.440 --> 00:02:41.480 align:middle line:90%
+don't actually return values?
+
+55
+00:02:41.480 --> 00:02:45.440 align:middle line:84%
+Well, the secret here is to
+have some other data structure
+
+56
+00:02:45.440 --> 00:02:48.500 align:middle line:84%
+in which the results
+are being stored,
+
+57
+00:02:48.500 --> 00:02:52.070 align:middle line:84%
+such as an array, that's
+visible to the compute method.
+
+58
+00:02:52.070 --> 00:02:53.810 align:middle line:84%
+And so we'll actually
+see a cool example
+
+59
+00:02:53.810 --> 00:02:56.570 align:middle line:84%
+of this in an upcoming
+lesson next week
+
+60
+00:02:56.570 --> 00:02:58.290 align:middle line:90%
+that shows how to do it.
+
+61
+00:02:58.290 --> 00:03:01.790 align:middle line:90%
+It's really, really cool.
+
+62
+00:03:01.790 --> 00:03:05.690 align:middle line:84%
+Under the hood, the
+ForkJoinPool framework
+
+63
+00:03:05.690 --> 00:03:10.310 align:middle line:84%
+calls a protected final
+method known as exec.
+
+64
+00:03:10.310 --> 00:03:12.770 align:middle line:84%
+And this exec method
+is not intended
+
+65
+00:03:12.770 --> 00:03:15.163 align:middle line:84%
+to be called by
+application developers.
+
+66
+00:03:15.163 --> 00:03:16.580 align:middle line:84%
+In fact, the compute
+method is not
+
+67
+00:03:16.580 --> 00:03:18.913 align:middle line:84%
+intended to be called by
+application developers, either.
+
+68
+00:03:18.913 --> 00:03:22.110 align:middle line:84%
+Everything is called
+by the framework.
+
+69
+00:03:22.110 --> 00:03:24.860 align:middle line:84%
+Fork and join can be
+called by applications,
+
+70
+00:03:24.860 --> 00:03:27.920 align:middle line:90%
+but not compute or exec.
+
+71
+00:03:27.920 --> 00:03:30.080 align:middle line:84%
+And instead what
+exec does, is when
+
+72
+00:03:30.080 --> 00:03:32.990 align:middle line:84%
+exec is called by the
+Fork-Join framework,
+
+73
+00:03:32.990 --> 00:03:37.490 align:middle line:84%
+it turns around and dispatches
+the compute hook method
+
+74
+00:03:37.490 --> 00:03:39.350 align:middle line:90%
+to actually execute the task.
+
+75
+00:03:39.350 --> 00:03:44.090 align:middle line:84%
+This is another classic
+example of our good friend
+
+76
+00:03:44.090 --> 00:03:47.030 align:middle line:84%
+the template method pattern
+from the Gang of Four book.
+
+77
+00:03:47.030 --> 00:03:50.650 align:middle line:84%
+So you can see here
+that exec calls compute.
+
+78
+00:03:50.650 --> 00:03:52.940 align:middle line:90%
+Compute can then be overridden.
+
+79
+00:03:52.940 --> 00:03:54.470 align:middle line:90%
+Compute is an abstract method.
+
+80
+00:03:54.470 --> 00:03:55.850 align:middle line:90%
+Exec is a final method.
+
+81
+00:03:55.850 --> 00:03:59.620 align:middle line:90%
+So exec will call to compute.
+
+82
+00:03:59.620 --> 00:04:02.470 align:middle line:84%
+And compute can then
+dictate the actual behavior
+
+83
+00:04:02.470 --> 00:04:06.811 align:middle line:84%
+of our RecursiveAction of our
+subclass of RecursiveAction.
+
+84
+00:04:06.811 --> 00:04:09.460 align:middle line:90%
+
+
+85
+00:04:09.460 --> 00:04:12.490 align:middle line:84%
+So as you can see here, just
+to reiterate that point,
+
+86
+00:04:12.490 --> 00:04:14.260 align:middle line:90%
+exec is a template method.
+
+87
+00:04:14.260 --> 00:04:15.820 align:middle line:90%
+And compute is a hook method.
+
+88
+00:04:15.820 --> 00:04:19.570 align:middle line:84%
+So that's just classic Gang of
+Four template method pattern
+
+89
+00:04:19.570 --> 00:04:21.920 align:middle line:90%
+terminology and structure.
+
+90
+00:04:21.920 --> 00:04:23.500 align:middle line:84%
+I always find it
+very reassuring when
+
+91
+00:04:23.500 --> 00:04:27.360 align:middle line:84%
+I look at production
+frameworks that I know
+
+92
+00:04:27.360 --> 00:04:30.180 align:middle line:84%
+and respect that have
+been in use for decades
+
+93
+00:04:30.180 --> 00:04:32.990 align:middle line:84%
+that use the patterns from
+the Gang of Four book.
+
+94
+00:04:32.990 --> 00:04:34.530 align:middle line:90%
+That's just a good feeling.
+
+95
+00:04:34.530 --> 00:04:41.340 align:middle line:84%
+And keep in mind that the
+Fork-Join Task framework,
+
+96
+00:04:41.340 --> 00:04:44.650 align:middle line:84%
+or Fork-Join framework, was
+added, I believe, in Java 7,
+
+97
+00:04:44.650 --> 00:04:45.720 align:middle line:90%
+which is around 2010.
+
+98
+00:04:45.720 --> 00:04:49.020 align:middle line:90%
+So it's been in use for a while.
+
+99
+00:04:49.020 --> 00:04:50.450 align:middle line:90%
+The result from compute--
+
+100
+00:04:50.450 --> 00:04:51.930 align:middle line:90%
+because there isn't a result--
+
+101
+00:04:51.930 --> 00:04:53.250 align:middle line:90%
+is not stored.
+
+102
+00:04:53.250 --> 00:04:56.290 align:middle line:84%
+So there's no result.
+It's just ignored.
+
+103
+00:04:56.290 --> 00:04:57.750 align:middle line:84%
+There's really
+nothing to ignore.
+
+104
+00:04:57.750 --> 00:05:04.410 align:middle line:84%
+And the method exec returns
+true, saying it worked.
+
+105
+00:05:04.410 --> 00:05:06.800 align:middle line:84%
+Let's now turn our
+attention to the key methods
+
+106
+00:05:06.800 --> 00:05:10.470 align:middle line:90%
+in Java RecursiveTask.
+
+107
+00:05:10.470 --> 00:05:12.870 align:middle line:84%
+As you can see here,
+RecursiveTask also
+
+108
+00:05:12.870 --> 00:05:15.420 align:middle line:90%
+extends Fork-Join Task.
+
+109
+00:05:15.420 --> 00:05:18.540 align:middle line:84%
+And the main difference
+is the compute method
+
+110
+00:05:18.540 --> 00:05:22.770 align:middle line:84%
+for RecursiveTask
+returns a result.
+
+111
+00:05:22.770 --> 00:05:25.050 align:middle line:90%
+So here's how that is defined.
+
+112
+00:05:25.050 --> 00:05:27.720 align:middle line:84%
+You can see compute
+is an abstract method.
+
+113
+00:05:27.720 --> 00:05:32.730 align:middle line:84%
+It returns type v, where
+v is a value that's
+
+114
+00:05:32.730 --> 00:05:37.570 align:middle line:84%
+defined in the RecursiveTask
+generic signature.
+
+115
+00:05:37.570 --> 00:05:40.750 align:middle line:84%
+And this, of course, once
+again will be the place
+
+116
+00:05:40.750 --> 00:05:46.180 align:middle line:84%
+that subclasses will override
+in order to perform their task's
+
+117
+00:05:46.180 --> 00:05:47.740 align:middle line:90%
+computation.
+
+118
+00:05:47.740 --> 00:05:50.110 align:middle line:84%
+So a lot of this discussion
+I'm about to go through
+
+119
+00:05:50.110 --> 00:05:51.850 align:middle line:84%
+will look very
+familiar because it's
+
+120
+00:05:51.850 --> 00:05:54.070 align:middle line:84%
+essentially identical
+to RecursiveAction,
+
+121
+00:05:54.070 --> 00:05:56.200 align:middle line:90%
+with one key difference.
+
+122
+00:05:56.200 --> 00:05:58.500 align:middle line:90%
+We get a result back.
+
+123
+00:05:58.500 --> 00:06:01.800 align:middle line:84%
+As before, you typically
+program compute
+
+124
+00:06:01.800 --> 00:06:04.260 align:middle line:84%
+in such a way, where
+if the data size is
+
+125
+00:06:04.260 --> 00:06:07.350 align:middle line:84%
+below some certain threshold,
+just do the work directly.
+
+126
+00:06:07.350 --> 00:06:10.260 align:middle line:90%
+Do the work synchronously.
+
+127
+00:06:10.260 --> 00:06:13.010 align:middle line:84%
+If the data size is
+big, split the work up
+
+128
+00:06:13.010 --> 00:06:15.630 align:middle line:84%
+into one or more
+sub-tasks and fork
+
+129
+00:06:15.630 --> 00:06:20.300 align:middle line:84%
+them to arrange to
+run them in parallel.
+
+130
+00:06:20.300 --> 00:06:22.490 align:middle line:84%
+And then-- and here's
+where things differ a bit--
+
+131
+00:06:22.490 --> 00:06:26.990 align:middle line:84%
+as the results of these
+sub-tasks complete,
+
+132
+00:06:26.990 --> 00:06:30.530 align:middle line:84%
+the compute method
+will join them together
+
+133
+00:06:30.530 --> 00:06:34.820 align:middle line:84%
+to form a merged result.
+And in this particular case,
+
+134
+00:06:34.820 --> 00:06:38.460 align:middle line:84%
+join actually does
+return a value.
+
+135
+00:06:38.460 --> 00:06:40.550 align:middle line:84%
+So when you join
+the method, you'll
+
+136
+00:06:40.550 --> 00:06:41.900 align:middle line:90%
+get the return value back.
+
+137
+00:06:41.900 --> 00:06:43.490 align:middle line:84%
+And you can do
+something with it.
+
+138
+00:06:43.490 --> 00:06:45.200 align:middle line:84%
+You can concatenate
+it to something.
+
+139
+00:06:45.200 --> 00:06:46.575 align:middle line:84%
+You can add it to
+an accumulator.
+
+140
+00:06:46.575 --> 00:06:48.500 align:middle line:84%
+You can do whatever
+you need to do with it.
+
+141
+00:06:48.500 --> 00:06:53.000 align:middle line:84%
+That's how you get the
+results back from joining.
+
+142
+00:06:53.000 --> 00:06:56.180 align:middle line:84%
+As before, there's
+actually an exec method
+
+143
+00:06:56.180 --> 00:06:58.650 align:middle line:90%
+that does the heavy lifting.
+
+144
+00:06:58.650 --> 00:07:02.210 align:middle line:84%
+This is what's called by
+the Fork-Join pull framework
+
+145
+00:07:02.210 --> 00:07:04.320 align:middle line:90%
+to execute the task.
+
+146
+00:07:04.320 --> 00:07:06.250 align:middle line:84%
+It's a little
+different here, though.
+
+147
+00:07:06.250 --> 00:07:08.010 align:middle line:84%
+As you can see,
+when exec is called,
+
+148
+00:07:08.010 --> 00:07:10.620 align:middle line:84%
+it calls the
+compute hook method.
+
+149
+00:07:10.620 --> 00:07:15.280 align:middle line:84%
+And that stores the result of
+compute into a result field.
+
+150
+00:07:15.280 --> 00:07:18.240 align:middle line:84%
+And then that result field
+can be obtained later
+
+151
+00:07:18.240 --> 00:07:21.450 align:middle line:84%
+when join is called in
+order to get the value back.
+
+152
+00:07:21.450 --> 00:07:24.230 align:middle line:84%
+So this is just ever so
+different from RecursiveAction
+
+153
+00:07:24.230 --> 00:07:26.730 align:middle line:84%
+because we're actually going
+to get a result back this time.
+
+154
+00:07:26.730 --> 00:07:30.540 align:middle line:84%
+And we're not just going to
+use this as a synchronization
+
+155
+00:07:30.540 --> 00:07:32.090 align:middle line:90%
+point.
