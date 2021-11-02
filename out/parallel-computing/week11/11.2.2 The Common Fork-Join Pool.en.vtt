@@ -1,0 +1,586 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.500 align:middle line:90%
+
+
+2
+00:00:00.500 --> 00:00:03.330 align:middle line:84%
+So let's go ahead now and take
+a look at the ManagedBlocker
+
+3
+00:00:03.330 --> 00:00:04.373 align:middle line:90%
+interface.
+
+4
+00:00:04.373 --> 00:00:07.180 align:middle line:84%
+We're going to show how the
+ManagedBlocker interface can
+
+5
+00:00:07.180 --> 00:00:11.770 align:middle line:84%
+be used to help avoid starvation
+and improve performance
+
+6
+00:00:11.770 --> 00:00:15.670 align:middle line:84%
+by allowing more
+computations to take place
+
+7
+00:00:15.670 --> 00:00:17.410 align:middle line:84%
+while some computations
+are blocked
+
+8
+00:00:17.410 --> 00:00:20.860 align:middle line:84%
+waiting for I/O or synchronizers
+or other blocking conditions
+
+9
+00:00:20.860 --> 00:00:23.310 align:middle line:90%
+to abate.
+
+10
+00:00:23.310 --> 00:00:27.470 align:middle line:84%
+So the Java fork-join
+framework was initially
+
+11
+00:00:27.470 --> 00:00:31.820 align:middle line:84%
+designed for tasks that run to
+completion without blocking.
+
+12
+00:00:31.820 --> 00:00:33.680 align:middle line:84%
+And it's somewhat of
+a common misconception
+
+13
+00:00:33.680 --> 00:00:35.510 align:middle line:90%
+that that's all it's good for.
+
+14
+00:00:35.510 --> 00:00:37.170 align:middle line:90%
+That's not really true.
+
+15
+00:00:37.170 --> 00:00:40.370 align:middle line:84%
+If you read the documentation,
+it sort of implies that.
+
+16
+00:00:40.370 --> 00:00:43.290 align:middle line:84%
+But later, they added this
+feature about to talk about,
+
+17
+00:00:43.290 --> 00:00:47.030 align:middle line:84%
+which really makes it possible
+to use the fork-join framework
+
+18
+00:00:47.030 --> 00:00:49.610 align:middle line:84%
+for many different
+things-- not just for run
+
+19
+00:00:49.610 --> 00:00:53.490 align:middle line:84%
+to completion tasks, but
+for blocking tasks as well.
+
+20
+00:00:53.490 --> 00:00:56.960 align:middle line:84%
+And the way this is done is with
+this ManagedBlocker mechanism.
+
+21
+00:00:56.960 --> 00:01:00.140 align:middle line:84%
+And that's used to handle
+various use cases where
+
+22
+00:01:00.140 --> 00:01:03.500 align:middle line:84%
+more worker threads may be
+needed in order to ensure
+
+23
+00:01:03.500 --> 00:01:05.930 align:middle line:84%
+the liveness and
+the responsiveness
+
+24
+00:01:05.930 --> 00:01:08.370 align:middle line:90%
+for these blocking operations.
+
+25
+00:01:08.370 --> 00:01:12.060 align:middle line:84%
+And as I mentioned before, it
+automatically and temporarily
+
+26
+00:01:12.060 --> 00:01:15.690 align:middle line:84%
+increases the size of the
+common fork-joint pool.
+
+27
+00:01:15.690 --> 00:01:19.470 align:middle line:84%
+You can kind of think
+of this like a seasonal
+
+28
+00:01:19.470 --> 00:01:23.910 align:middle line:84%
+at various companies, like
+Amazon or Walmart when
+
+29
+00:01:23.910 --> 00:01:26.760 align:middle line:84%
+it's the holiday season
+and they hire extra workers
+
+30
+00:01:26.760 --> 00:01:29.760 align:middle line:84%
+to deal with the overload
+of customers and requests
+
+31
+00:01:29.760 --> 00:01:30.970 align:middle line:90%
+and orders, and so on.
+
+32
+00:01:30.970 --> 00:01:32.460 align:middle line:84%
+And then after the
+season is over,
+
+33
+00:01:32.460 --> 00:01:34.085 align:middle line:84%
+they go ahead and
+let those workers go.
+
+34
+00:01:34.085 --> 00:01:36.870 align:middle line:84%
+So it temporarily increases
+the pool of workers,
+
+35
+00:01:36.870 --> 00:01:39.750 align:middle line:84%
+much like the way in which the
+ManagedBlocker interface works
+
+36
+00:01:39.750 --> 00:01:41.703 align:middle line:90%
+here.
+
+37
+00:01:41.703 --> 00:01:43.370 align:middle line:84%
+As I mentioned earlier,
+the ForkJoinPool
+
+38
+00:01:43.370 --> 00:01:45.140 align:middle line:84%
+will reclaim the
+threads if they're not
+
+39
+00:01:45.140 --> 00:01:47.240 align:middle line:84%
+used over periods of
+times, and then also
+
+40
+00:01:47.240 --> 00:01:49.810 align:middle line:84%
+makes it possible to reinstate
+them at a later point in time
+
+41
+00:01:49.810 --> 00:01:51.910 align:middle line:90%
+if need be.
+
+42
+00:01:51.910 --> 00:01:54.880 align:middle line:84%
+It also attempts
+to try to create
+
+43
+00:01:54.880 --> 00:01:57.220 align:middle line:84%
+or activate threads to
+ensure that the target
+
+44
+00:01:57.220 --> 00:01:59.930 align:middle line:90%
+level of parallelism is met.
+
+45
+00:01:59.930 --> 00:02:03.027 align:middle line:84%
+So it can use this in order to
+make sure you have a control
+
+46
+00:02:03.027 --> 00:02:05.110 align:middle line:84%
+loop, where you keep things
+more or less where you
+
+47
+00:02:05.110 --> 00:02:08.870 align:middle line:90%
+want the thread levels to be.
+
+48
+00:02:08.870 --> 00:02:10.759 align:middle line:84%
+The actual
+ManagedBlocker interface
+
+49
+00:02:10.759 --> 00:02:13.980 align:middle line:90%
+itself is a very simple API.
+
+50
+00:02:13.980 --> 00:02:16.960 align:middle line:84%
+In fact, it only
+has two methods.
+
+51
+00:02:16.960 --> 00:02:19.590 align:middle line:84%
+One of the methods is
+called isReleasable.
+
+52
+00:02:19.590 --> 00:02:23.970 align:middle line:84%
+And it returns true if
+blocking will be unnecessary,
+
+53
+00:02:23.970 --> 00:02:26.880 align:middle line:84%
+because perhaps we were
+able to acquire a lock
+
+54
+00:02:26.880 --> 00:02:30.190 align:middle line:84%
+or obtain a message without
+having to block at all.
+
+55
+00:02:30.190 --> 00:02:31.440 align:middle line:90%
+So that's always a good thing.
+
+56
+00:02:31.440 --> 00:02:33.357 align:middle line:84%
+That tells us the
+mechanism, no need to-- that
+
+57
+00:02:33.357 --> 00:02:35.550 align:middle line:84%
+tells the ForkJoinPool,
+no need to worry
+
+58
+00:02:35.550 --> 00:02:37.320 align:middle line:90%
+about adding an extra thread.
+
+59
+00:02:37.320 --> 00:02:38.860 align:middle line:90%
+I got what I needed.
+
+60
+00:02:38.860 --> 00:02:40.410 align:middle line:90%
+I'm done.
+
+61
+00:02:40.410 --> 00:02:43.200 align:middle line:84%
+The second method is
+what gets called back
+
+62
+00:02:43.200 --> 00:02:46.210 align:middle line:90%
+if isReleasable returns false.
+
+63
+00:02:46.210 --> 00:02:49.282 align:middle line:84%
+And this will possibly
+block the calling thread.
+
+64
+00:02:49.282 --> 00:02:51.240 align:middle line:84%
+Again, it all depends on
+what the operation is.
+
+65
+00:02:51.240 --> 00:02:53.680 align:middle line:84%
+You might get lucky and it
+might return right away.
+
+66
+00:02:53.680 --> 00:02:55.680 align:middle line:84%
+For example, if you're
+waiting for a lock,
+
+67
+00:02:55.680 --> 00:02:57.480 align:middle line:84%
+that lock might become
+unlocked the minute
+
+68
+00:02:57.480 --> 00:02:58.912 align:middle line:90%
+you try to acquire it.
+
+69
+00:02:58.912 --> 00:03:00.870 align:middle line:84%
+But if you're not lucky,
+you may have to block.
+
+70
+00:03:00.870 --> 00:03:02.430 align:middle line:84%
+Or if you're doing
+I/O operations,
+
+71
+00:03:02.430 --> 00:03:04.350 align:middle line:90%
+they may take a while to run.
+
+72
+00:03:04.350 --> 00:03:07.110 align:middle line:84%
+So it'll wait, essentially,
+in that case for something
+
+73
+00:03:07.110 --> 00:03:10.020 align:middle line:90%
+to finish.
+
+74
+00:03:10.020 --> 00:03:13.090 align:middle line:84%
+It returns true if no additional
+blocking is necessary.
+
+75
+00:03:13.090 --> 00:03:15.630 align:middle line:84%
+So if block returns
+true right away,
+
+76
+00:03:15.630 --> 00:03:18.670 align:middle line:84%
+then the system
+knows, OK, we're done,
+
+77
+00:03:18.670 --> 00:03:21.240 align:middle line:84%
+and basically can
+optimize the way
+
+78
+00:03:21.240 --> 00:03:24.330 align:middle line:84%
+in which the mechanism
+works internal
+
+79
+00:03:24.330 --> 00:03:27.130 align:middle line:90%
+to the common ForkJoinPool.
+
+80
+00:03:27.130 --> 00:03:29.380 align:middle line:84%
+Speaking of the common
+ForkJoinPool, let's take a look
+
+81
+00:03:29.380 --> 00:03:33.070 align:middle line:84%
+and see how the Fork-Join pool
+actually applies the managed
+
+82
+00:03:33.070 --> 00:03:36.260 align:middle line:90%
+blocker in its implementation.
+
+83
+00:03:36.260 --> 00:03:38.620 align:middle line:84%
+So if you were to take
+a look at the source
+
+84
+00:03:38.620 --> 00:03:42.790 align:middle line:84%
+code for the Fork-Join
+pool, which you can obtain
+
+85
+00:03:42.790 --> 00:03:46.540 align:middle line:84%
+from this link here,
+you'll see that it
+
+86
+00:03:46.540 --> 00:03:53.110 align:middle line:84%
+extends abstract ExecutorService
+and defines this static method
+
+87
+00:03:53.110 --> 00:03:56.260 align:middle line:90%
+called managedBlock.
+
+88
+00:03:56.260 --> 00:04:01.730 align:middle line:84%
+And this method is used
+to activate a spare thread
+
+89
+00:04:01.730 --> 00:04:04.340 align:middle line:84%
+to ensure there's sufficient
+levels of parallelism
+
+90
+00:04:04.340 --> 00:04:06.750 align:middle line:84%
+while the calling
+thread is blocked.
+
+91
+00:04:06.750 --> 00:04:08.240 align:middle line:84%
+So you use this
+mechanism when you
+
+92
+00:04:08.240 --> 00:04:10.400 align:middle line:84%
+think you might be
+blocking, and then it
+
+93
+00:04:10.400 --> 00:04:12.770 align:middle line:84%
+keeps track of whether you
+blocked or not and then
+
+94
+00:04:12.770 --> 00:04:14.400 align:middle line:90%
+compensates accordingly.
+
+95
+00:04:14.400 --> 00:04:16.459 align:middle line:84%
+So again, we're looking
+at the actual source
+
+96
+00:04:16.459 --> 00:04:21.290 align:middle line:84%
+code that is part of the
+Fork-Join Pool class.
+
+97
+00:04:21.290 --> 00:04:22.140 align:middle line:90%
+Here's what happens.
+
+98
+00:04:22.140 --> 00:04:23.432 align:middle line:90%
+You can see, it goes in a loop.
+
+99
+00:04:23.432 --> 00:04:27.410 align:middle line:84%
+And while the blocker
+isReleasable is false--
+
+100
+00:04:27.410 --> 00:04:30.350 align:middle line:84%
+in the words, well, we
+haven't got what we want--
+
+101
+00:04:30.350 --> 00:04:33.660 align:middle line:84%
+then the tryCompensate
+method is called.
+
+102
+00:04:33.660 --> 00:04:35.810 align:middle line:84%
+And this is an internal
+private method.
+
+103
+00:04:35.810 --> 00:04:37.850 align:middle line:84%
+You can't call it
+yourself directly.
+
+104
+00:04:37.850 --> 00:04:41.150 align:middle line:84%
+But the implementation of
+ManagedBlock can call it.
+
+105
+00:04:41.150 --> 00:04:43.660 align:middle line:84%
+And this method basically
+says, hey, if there are not
+
+106
+00:04:43.660 --> 00:04:47.180 align:middle line:84%
+enough threads that are running,
+then create or reactivate
+
+107
+00:04:47.180 --> 00:04:51.230 align:middle line:84%
+a spare thread in order to
+compensate for the blocked
+
+108
+00:04:51.230 --> 00:04:54.720 align:middle line:90%
+threads until they unblock.
+
+109
+00:04:54.720 --> 00:04:57.030 align:middle line:84%
+So that kind of sets
+the wheels in motion.
+
+110
+00:04:57.030 --> 00:05:00.450 align:middle line:84%
+And then, you can see
+there's a do while loop here,
+
+111
+00:05:00.450 --> 00:05:02.533 align:middle line:84%
+which will try to
+attempt to acquire
+
+112
+00:05:02.533 --> 00:05:04.950 align:middle line:84%
+the resource without blocking,
+because you could get lucky
+
+113
+00:05:04.950 --> 00:05:06.747 align:middle line:90%
+and just get it right away.
+
+114
+00:05:06.747 --> 00:05:08.580 align:middle line:84%
+But if you're not able
+to get it right away,
+
+115
+00:05:08.580 --> 00:05:11.760 align:middle line:84%
+then the block hook
+method is called back
+
+116
+00:05:11.760 --> 00:05:15.090 align:middle line:90%
+on the blocker parameter.
+
+117
+00:05:15.090 --> 00:05:17.533 align:middle line:84%
+And that may block
+the calling thread.
+
+118
+00:05:17.533 --> 00:05:19.200 align:middle line:84%
+And if it does, that
+of course will then
+
+119
+00:05:19.200 --> 00:05:21.750 align:middle line:84%
+cause the fork-join
+pool to kick off
+
+120
+00:05:21.750 --> 00:05:25.800 align:middle line:84%
+another thread for the common
+fork-join pool in order
+
+121
+00:05:25.800 --> 00:05:28.500 align:middle line:84%
+for the blocking
+to not interfere
+
+122
+00:05:28.500 --> 00:05:32.610 align:middle line:84%
+with the total number of
+threads that we'd like to be
+
+123
+00:05:32.610 --> 00:05:35.780 align:middle line:90%
+using to keep the system alive.

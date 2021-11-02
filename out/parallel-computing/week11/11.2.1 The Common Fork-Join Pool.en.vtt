@@ -1,0 +1,747 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.500 align:middle line:90%
+
+
+2
+00:00:00.500 --> 00:00:04.830 align:middle line:84%
+We'll now continue our coverage
+of the Java fork-join pool.
+
+3
+00:00:04.830 --> 00:00:06.960 align:middle line:84%
+In this part of the
+lesson, I'll explain
+
+4
+00:00:06.960 --> 00:00:09.000 align:middle line:84%
+how the common
+fork-join pool can
+
+5
+00:00:09.000 --> 00:00:13.680 align:middle line:84%
+be used to help maximize
+processor core utilization.
+
+6
+00:00:13.680 --> 00:00:17.470 align:middle line:84%
+A static common pool is
+available and appropriate
+
+7
+00:00:17.470 --> 00:00:20.460 align:middle line:90%
+for most programs.
+
+8
+00:00:20.460 --> 00:00:24.060 align:middle line:84%
+There can only be one
+of these in a process.
+
+9
+00:00:24.060 --> 00:00:25.980 align:middle line:84%
+We've talked about this
+earlier in the context
+
+10
+00:00:25.980 --> 00:00:27.388 align:middle line:90%
+of parallel streams.
+
+11
+00:00:27.388 --> 00:00:29.430 align:middle line:84%
+And now we're going to
+focus on it in the context
+
+12
+00:00:29.430 --> 00:00:32.259 align:middle line:90%
+of the fork-join framework.
+
+13
+00:00:32.259 --> 00:00:34.820 align:middle line:84%
+This pool is used by
+any fork-join task
+
+14
+00:00:34.820 --> 00:00:36.820 align:middle line:84%
+that's not submitted
+to a specified
+
+15
+00:00:36.820 --> 00:00:39.830 align:middle line:90%
+pool within a process.
+
+16
+00:00:39.830 --> 00:00:43.600 align:middle line:84%
+The purpose for doing this
+single common fork-join pool
+
+17
+00:00:43.600 --> 00:00:46.660 align:middle line:84%
+is to help optimize
+research utilization
+
+18
+00:00:46.660 --> 00:00:49.570 align:middle line:84%
+since this common pool
+is aware of all the cores
+
+19
+00:00:49.570 --> 00:00:54.160 align:middle line:84%
+and how they're being used
+globally within a process.
+
+20
+00:00:54.160 --> 00:00:56.000 align:middle line:84%
+The goal, as we've
+mentioned before,
+
+21
+00:00:56.000 --> 00:01:00.160 align:middle line:84%
+is to try to maximize processor
+core utilization by employing
+
+22
+00:01:00.160 --> 00:01:03.847 align:middle line:90%
+the work stealing model.
+
+23
+00:01:03.847 --> 00:01:06.180 align:middle line:84%
+I've also mentioned before
+that this global versus local
+
+24
+00:01:06.180 --> 00:01:10.230 align:middle line:84%
+resource management trade off
+is very common in computing,
+
+25
+00:01:10.230 --> 00:01:12.900 align:middle line:84%
+with things like the
+Java global heap used
+
+26
+00:01:12.900 --> 00:01:14.910 align:middle line:84%
+to try to manage memory
+in a centralized way
+
+27
+00:01:14.910 --> 00:01:17.970 align:middle line:84%
+to give better perspectives on
+how memory is being allocated
+
+28
+00:01:17.970 --> 00:01:21.210 align:middle line:84%
+and how to reclaim
+it effectively.
+
+29
+00:01:21.210 --> 00:01:23.670 align:middle line:84%
+This pool is used by the Java
+parallel streams framework,
+
+30
+00:01:23.670 --> 00:01:24.753 align:middle line:90%
+as we talked about before.
+
+31
+00:01:24.753 --> 00:01:28.470 align:middle line:84%
+But we'll cover a broader
+range of use cases now.
+
+32
+00:01:28.470 --> 00:01:30.210 align:middle line:84%
+By default, the
+common fork-join pool
+
+33
+00:01:30.210 --> 00:01:32.490 align:middle line:84%
+has one less thread
+than the number
+
+34
+00:01:32.490 --> 00:01:37.430 align:middle line:84%
+of cores that are known to the
+Java execution environment.
+
+35
+00:01:37.430 --> 00:01:41.720 align:middle line:84%
+So for example, if we had
+a quad core processor,
+
+36
+00:01:41.720 --> 00:01:45.370 align:middle line:84%
+then parallelism, this field
+that we're setting here,
+
+37
+00:01:45.370 --> 00:01:48.800 align:middle line:90%
+would be equal to 3.
+
+38
+00:01:48.800 --> 00:01:53.180 align:middle line:84%
+If you call the ForkJoinPool.get
+CommonPoolParallelism method,
+
+39
+00:01:53.180 --> 00:01:56.090 align:middle line:84%
+it'll return the number
+of cores minus one.
+
+40
+00:01:56.090 --> 00:01:57.570 align:middle line:84%
+Again, assuming
+we had four cores,
+
+41
+00:01:57.570 --> 00:02:01.610 align:middle line:84%
+this would return three
+on a quad core processor.
+
+42
+00:02:01.610 --> 00:02:03.680 align:middle line:84%
+The reason that
+it's done this way
+
+43
+00:02:03.680 --> 00:02:06.470 align:middle line:84%
+is because the invoking
+thread is temporarily
+
+44
+00:02:06.470 --> 00:02:09.092 align:middle line:90%
+included as part of the pool.
+
+45
+00:02:09.092 --> 00:02:11.300 align:middle line:84%
+That invoking thread could
+be the main user interface
+
+46
+00:02:11.300 --> 00:02:12.218 align:middle line:90%
+thread, for example.
+
+47
+00:02:12.218 --> 00:02:13.760 align:middle line:84%
+Or it could be some
+other thread that
+
+48
+00:02:13.760 --> 00:02:15.500 align:middle line:90%
+starts the wheels in motion.
+
+49
+00:02:15.500 --> 00:02:18.750 align:middle line:84%
+So as a result, the actual
+use of fork-join pool
+
+50
+00:02:18.750 --> 00:02:20.930 align:middle line:84%
+in practice, the
+common fork-join pool,
+
+51
+00:02:20.930 --> 00:02:24.080 align:middle line:84%
+will end up being the number
+of processor cores known
+
+52
+00:02:24.080 --> 00:02:26.302 align:middle line:84%
+to the job execution
+environment.
+
+53
+00:02:26.302 --> 00:02:28.010 align:middle line:84%
+It's also worth noting
+that if you create
+
+54
+00:02:28.010 --> 00:02:30.980 align:middle line:84%
+your own fork-join pool,
+and you give it a value,
+
+55
+00:02:30.980 --> 00:02:32.700 align:middle line:84%
+or if you create a
+default fork-join
+
+56
+00:02:32.700 --> 00:02:36.680 align:middle line:84%
+pool other than the common
+fork-join pool, that
+
+57
+00:02:36.680 --> 00:02:40.340 align:middle line:84%
+will be set to the number of
+cores known to the underlying
+
+58
+00:02:40.340 --> 00:02:42.380 align:middle line:84%
+Java execution
+environment, as opposed
+
+59
+00:02:42.380 --> 00:02:46.170 align:middle line:84%
+to the fork-join pool,
+which is one less than that.
+
+60
+00:02:46.170 --> 00:02:48.240 align:middle line:84%
+There are cases, however,
+where the default
+
+61
+00:02:48.240 --> 00:02:50.400 align:middle line:84%
+number of threads in the
+common fork-join pool
+
+62
+00:02:50.400 --> 00:02:52.650 align:middle line:90%
+may be inadequate.
+
+63
+00:02:52.650 --> 00:02:55.770 align:middle line:84%
+And this typically arises,
+this problem arises,
+
+64
+00:02:55.770 --> 00:02:57.923 align:middle line:90%
+if you have blocking operations.
+
+65
+00:02:57.923 --> 00:02:59.340 align:middle line:84%
+For example, if
+you have something
+
+66
+00:02:59.340 --> 00:03:01.530 align:middle line:84%
+like our image
+stream gang program
+
+67
+00:03:01.530 --> 00:03:03.140 align:middle line:84%
+that we talked
+about before, where
+
+68
+00:03:03.140 --> 00:03:06.180 align:middle line:84%
+you're downloading images and
+processing them and so on.
+
+69
+00:03:06.180 --> 00:03:09.060 align:middle line:84%
+In that particular case where
+the operations may block,
+
+70
+00:03:09.060 --> 00:03:11.700 align:middle line:84%
+you probably want to have
+more than the default
+
+71
+00:03:11.700 --> 00:03:15.030 align:middle line:84%
+number of cores
+in order to ensure
+
+72
+00:03:15.030 --> 00:03:18.150 align:middle line:84%
+you get proper utilization
+of the underlying hardware
+
+73
+00:03:18.150 --> 00:03:18.780 align:middle line:90%
+resources.
+
+74
+00:03:18.780 --> 00:03:20.280 align:middle line:84%
+There are some other
+subtle problems
+
+75
+00:03:20.280 --> 00:03:23.190 align:middle line:84%
+that can arise if you only
+have a fixed number of course
+
+76
+00:03:23.190 --> 00:03:24.180 align:middle line:90%
+regarding deadlock.
+
+77
+00:03:24.180 --> 00:03:27.560 align:middle line:84%
+But I won't talk about
+that at this point.
+
+78
+00:03:27.560 --> 00:03:32.920 align:middle line:84%
+So as a result of these issues,
+the Java fork-join framework
+
+79
+00:03:32.920 --> 00:03:35.860 align:middle line:84%
+makes it possible to
+expand and contract
+
+80
+00:03:35.860 --> 00:03:39.280 align:middle line:84%
+the common fork-join
+pool programmatically.
+
+81
+00:03:39.280 --> 00:03:41.720 align:middle line:84%
+And there's a couple of
+different ways to do this.
+
+82
+00:03:41.720 --> 00:03:45.140 align:middle line:84%
+One way is by modifying
+a system property.
+
+83
+00:03:45.140 --> 00:03:48.490 align:middle line:84%
+So you can see here that you can
+modify this rather long-winded
+
+84
+00:03:48.490 --> 00:03:51.145 align:middle line:84%
+system property called
+java.util.concur
+
+85
+00:03:51.145 --> 00:03:54.880 align:middle line:90%
+rent.ForkJoinPool.parallelism.
+
+86
+00:03:54.880 --> 00:03:57.538 align:middle line:84%
+And you can set that to the
+desired number of threads.
+
+87
+00:03:57.538 --> 00:03:59.330 align:middle line:84%
+But there's a couple
+of tricky points here.
+
+88
+00:03:59.330 --> 00:04:03.240 align:middle line:84%
+First, it's kind of hard to
+know how many threads to set
+
+89
+00:04:03.240 --> 00:04:05.920 align:middle line:90%
+in the common fork-join pool.
+
+90
+00:04:05.920 --> 00:04:07.720 align:middle line:84%
+Moreover, modifying
+this process will
+
+91
+00:04:07.720 --> 00:04:10.960 align:middle line:84%
+affect all the usage of
+the common fork-join pool
+
+92
+00:04:10.960 --> 00:04:11.655 align:middle line:90%
+in a process.
+
+93
+00:04:11.655 --> 00:04:14.155 align:middle line:84%
+It's something that has a global
+effect within that process.
+
+94
+00:04:14.155 --> 00:04:17.160 align:middle line:90%
+So it's got a ripple impact.
+
+95
+00:04:17.160 --> 00:04:20.640 align:middle line:84%
+Moreover, and this is actually
+a somewhat bizarre problem,
+
+96
+00:04:20.640 --> 00:04:22.530 align:middle line:84%
+this property can
+only be changed
+
+97
+00:04:22.530 --> 00:04:26.070 align:middle line:84%
+before the common fork-join
+pool is initially created.
+
+98
+00:04:26.070 --> 00:04:30.750 align:middle line:84%
+And that occurs the first time
+a fork-join pool is created.
+
+99
+00:04:30.750 --> 00:04:33.540 align:middle line:84%
+The way it works under the hood,
+if you look at the source code,
+
+100
+00:04:33.540 --> 00:04:37.450 align:middle line:84%
+is it's initialized on demand
+the first time it's used.
+
+101
+00:04:37.450 --> 00:04:39.900 align:middle line:84%
+And after it's initialized,
+you can't reset this property.
+
+102
+00:04:39.900 --> 00:04:41.980 align:middle line:84%
+It will have no effect
+you can reset it.
+
+103
+00:04:41.980 --> 00:04:44.210 align:middle line:90%
+But it will have no effect.
+
+104
+00:04:44.210 --> 00:04:48.970 align:middle line:84%
+Therefore, we need another more
+flexible, more dynamic approach
+
+105
+00:04:48.970 --> 00:04:52.630 align:middle line:84%
+to increase the fork-join
+pool size automatically.
+
+106
+00:04:52.630 --> 00:04:55.990 align:middle line:84%
+And the way that that works
+in the common fork-join pool
+
+107
+00:04:55.990 --> 00:05:00.990 align:middle line:84%
+is by using a mechanism
+known as the managed blocker.
+
+108
+00:05:00.990 --> 00:05:03.730 align:middle line:84%
+The managed blocker
+is an interface
+
+109
+00:05:03.730 --> 00:05:07.360 align:middle line:84%
+and an API that's exposed
+via a static method
+
+110
+00:05:07.360 --> 00:05:09.820 align:middle line:84%
+on the common
+fork-join pool that
+
+111
+00:05:09.820 --> 00:05:12.130 align:middle line:84%
+allows the common
+fork-join pool to add
+
+112
+00:05:12.130 --> 00:05:16.860 align:middle line:84%
+worker threads temporarily as
+needed as things may block.
+
+113
+00:05:16.860 --> 00:05:18.700 align:middle line:84%
+And it's particularly
+useful when
+
+114
+00:05:18.700 --> 00:05:23.170 align:middle line:84%
+a task will block on I/O, for
+example, downloading an image
+
+115
+00:05:23.170 --> 00:05:27.360 align:middle line:84%
+or writing to a file, writing
+a large file out to disk
+
+116
+00:05:27.360 --> 00:05:30.160 align:middle line:84%
+or out to flash
+memory or whatnot,
+
+117
+00:05:30.160 --> 00:05:32.620 align:middle line:84%
+or if you're going to be
+blocking on synchronizers
+
+118
+00:05:32.620 --> 00:05:35.680 align:middle line:84%
+or blocking on blocking
+cues, lots of situations
+
+119
+00:05:35.680 --> 00:05:36.640 align:middle line:90%
+where you might block.
+
+120
+00:05:36.640 --> 00:05:40.150 align:middle line:84%
+So if you're going to block,
+then using a managed blocker
+
+121
+00:05:40.150 --> 00:05:40.700 align:middle line:90%
+is important.
+
+122
+00:05:40.700 --> 00:05:42.430 align:middle line:84%
+Because it helps
+tell the underlying
+
+123
+00:05:42.430 --> 00:05:45.160 align:middle line:84%
+common fork-join pool to
+expand the number of threads
+
+124
+00:05:45.160 --> 00:05:47.860 align:middle line:84%
+so that other threads
+are available to run
+
+125
+00:05:47.860 --> 00:05:52.720 align:middle line:84%
+while a given thread blocks, or
+a set of given threads block.
+
+126
+00:05:52.720 --> 00:05:54.910 align:middle line:84%
+Managed blockers
+can only be used
+
+127
+00:05:54.910 --> 00:05:56.230 align:middle line:90%
+with the common fork-join pool.
+
+128
+00:05:56.230 --> 00:05:59.700 align:middle line:84%
+You can't use them with
+just a regular, user-created
+
+129
+00:05:59.700 --> 00:06:02.480 align:middle line:90%
+fork-join pool.
+
+130
+00:06:02.480 --> 00:06:05.900 align:middle line:84%
+It also turns out to be
+very helpful to encapsulate
+
+131
+00:06:05.900 --> 00:06:09.860 align:middle line:84%
+the managed blocker mechanism
+within some kind of wrapper
+
+132
+00:06:09.860 --> 00:06:10.820 align:middle line:90%
+class.
+
+133
+00:06:10.820 --> 00:06:13.370 align:middle line:84%
+And when we talk about
+how to apply the managed
+
+134
+00:06:13.370 --> 00:06:15.170 align:middle line:84%
+blocker interface
+a little bit later,
+
+135
+00:06:15.170 --> 00:06:18.680 align:middle line:84%
+I'll show you an example of
+a very cool wrapper called
+
+136
+00:06:18.680 --> 00:06:21.890 align:middle line:84%
+blocking task, which makes
+it a lot easier to program
+
+137
+00:06:21.890 --> 00:06:24.440 align:middle line:90%
+with this mechanism.
+
+138
+00:06:24.440 --> 00:06:29.000 align:middle line:84%
+As threads are created, if
+they're not used continuously,
+
+139
+00:06:29.000 --> 00:06:31.820 align:middle line:84%
+then after some
+period of non-use
+
+140
+00:06:31.820 --> 00:06:34.770 align:middle line:84%
+the fork-join pool can
+reclaim these threads
+
+141
+00:06:34.770 --> 00:06:36.950 align:middle line:84%
+and terminate them
+so that they're not
+
+142
+00:06:36.950 --> 00:06:38.540 align:middle line:90%
+taking up system resources.
+
+143
+00:06:38.540 --> 00:06:41.000 align:middle line:84%
+So this is a nice
+adaptive model,
+
+144
+00:06:41.000 --> 00:06:43.850 align:middle line:84%
+not unlike the cached
+thread pool mechanisms
+
+145
+00:06:43.850 --> 00:06:47.390 align:middle line:84%
+we talked about in our course
+on concurrent object-oriented
+
+146
+00:06:47.390 --> 00:06:51.090 align:middle line:84%
+programming in the section
+on the executor framework.
+
+147
+00:06:51.090 --> 00:06:53.040 align:middle line:90%
+So it's sort of the same idea.
+
+148
+00:06:53.040 --> 00:06:55.460 align:middle line:84%
+But of course, you have
+less control over it.
+
+149
+00:06:55.460 --> 00:06:58.580 align:middle line:84%
+Because the fork-join pool
+gives you little or no knobs
+
+150
+00:06:58.580 --> 00:07:01.760 align:middle line:84%
+to control these things, whereas
+with the cache thread pool,
+
+151
+00:07:01.760 --> 00:07:05.150 align:middle line:84%
+there are knobs you
+can change to determine
+
+152
+00:07:05.150 --> 00:07:08.570 align:middle line:84%
+how long idle threads
+remain active before they're
+
+153
+00:07:08.570 --> 00:07:09.260 align:middle line:90%
+terminated.
+
+154
+00:07:09.260 --> 00:07:13.010 align:middle line:84%
+Fork-join pool takes
+matters into its own hands
+
+155
+00:07:13.010 --> 00:07:16.210 align:middle line:84%
+and makes these
+decisions on your behalf.

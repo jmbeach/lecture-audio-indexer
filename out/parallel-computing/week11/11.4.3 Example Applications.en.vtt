@@ -1,0 +1,1113 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:01.010 align:middle line:90%
+
+
+2
+00:00:01.010 --> 00:00:04.850 align:middle line:84%
+So now that we've talked
+about the applyAllItr method
+
+3
+00:00:04.850 --> 00:00:07.748 align:middle line:84%
+and showed how that
+is implemented,
+
+4
+00:00:07.748 --> 00:00:09.290 align:middle line:84%
+let's go ahead and
+turn our attention
+
+5
+00:00:09.290 --> 00:00:14.990 align:middle line:84%
+to a another way of implementing
+the Fork-Join pool programming
+
+6
+00:00:14.990 --> 00:00:16.222 align:middle line:90%
+abstraction.
+
+7
+00:00:16.222 --> 00:00:17.930 align:middle line:84%
+And this is something
+we're going to call
+
+8
+00:00:17.930 --> 00:00:21.380 align:middle line:90%
+the applyAllSplit method.
+
+9
+00:00:21.380 --> 00:00:24.630 align:middle line:90%
+
+
+10
+00:00:24.630 --> 00:00:30.270 align:middle line:84%
+This particular approach has the
+same behavior as applyAllItr.
+
+11
+00:00:30.270 --> 00:00:31.800 align:middle line:84%
+Basically what
+it's going to do is
+
+12
+00:00:31.800 --> 00:00:35.250 align:middle line:84%
+it's going to apply
+an op function
+
+13
+00:00:35.250 --> 00:00:37.110 align:middle line:90%
+to all items in a list.
+
+14
+00:00:37.110 --> 00:00:39.540 align:middle line:84%
+Except this time
+instead of doing
+
+15
+00:00:39.540 --> 00:00:42.870 align:middle line:84%
+this sort of iterative approach
+where we throw everything
+
+16
+00:00:42.870 --> 00:00:45.750 align:middle line:84%
+into one deck in a
+worker pool and then let
+
+17
+00:00:45.750 --> 00:00:50.310 align:middle line:84%
+other threads steal, we're
+going to recursively split up
+
+18
+00:00:50.310 --> 00:00:55.970 align:middle line:84%
+the input by using
+recursive decomposition.
+
+19
+00:00:55.970 --> 00:00:57.840 align:middle line:84%
+So let's take a look
+and see how this works.
+
+20
+00:00:57.840 --> 00:00:59.215 align:middle line:84%
+So to make this
+work, we're going
+
+21
+00:00:59.215 --> 00:01:04.319 align:middle line:84%
+to have to define a nested
+class called SplitterTask.
+
+22
+00:01:04.319 --> 00:01:09.170 align:middle line:84%
+And as you can see, SplitterTask
+is a recursive task that
+
+23
+00:01:09.170 --> 00:01:12.750 align:middle line:84%
+is going to be parameterized
+with a list of T.
+
+24
+00:01:12.750 --> 00:01:15.830 align:middle line:84%
+And the way that SplitterTask
+will work, as you see here,
+
+25
+00:01:15.830 --> 00:01:19.280 align:middle line:84%
+shortly, is it will
+recursively partition the list
+
+26
+00:01:19.280 --> 00:01:24.350 align:middle line:84%
+and run each half
+in a fork-join task.
+
+27
+00:01:24.350 --> 00:01:27.260 align:middle line:84%
+This use case I'm about
+to show you is just
+
+28
+00:01:27.260 --> 00:01:31.853 align:middle line:84%
+the cat's pajamas,
+or the bee's knees,
+
+29
+00:01:31.853 --> 00:01:33.020 align:middle line:90%
+or whatever you like to say.
+
+30
+00:01:33.020 --> 00:01:37.280 align:middle line:84%
+It's an ideal application
+of the fork-join framework.
+
+31
+00:01:37.280 --> 00:01:38.810 align:middle line:84%
+And we'll talk
+about how to make it
+
+32
+00:01:38.810 --> 00:01:42.070 align:middle line:90%
+even better in our next lesson.
+
+33
+00:01:42.070 --> 00:01:43.800 align:middle line:84%
+What we do here is
+we create ourselves
+
+34
+00:01:43.800 --> 00:01:49.440 align:middle line:84%
+a new SplitterTask passing
+in the entire initial list.
+
+35
+00:01:49.440 --> 00:01:54.900 align:middle line:84%
+And this new SplitterTask will
+start with the entire list,
+
+36
+00:01:54.900 --> 00:01:57.600 align:middle line:84%
+and then will split
+it up recursively.
+
+37
+00:01:57.600 --> 00:02:00.630 align:middle line:84%
+As you can see, we're going
+to go ahead and pass this
+
+38
+00:02:00.630 --> 00:02:05.160 align:middle line:84%
+to the Invoke method on
+ForkJoinPool, which, again,
+
+39
+00:02:05.160 --> 00:02:09.030 align:middle line:84%
+as we've talked about before,
+has the property that it goes
+
+40
+00:02:09.030 --> 00:02:13.380 align:middle line:84%
+ahead and takes this
+SplitterTask, which
+
+41
+00:02:13.380 --> 00:02:17.310 align:middle line:84%
+is a fork-join task, from
+a non-ForkJoin client,
+
+42
+00:02:17.310 --> 00:02:20.270 align:middle line:84%
+and then invokes it
+in the ForkJoinPool.
+
+43
+00:02:20.270 --> 00:02:25.500 align:middle line:84%
+And then blocks and waits until
+the computations are done.
+
+44
+00:02:25.500 --> 00:02:27.928 align:middle line:84%
+Let's take a look at how
+SplitterTask is defined.
+
+45
+00:02:27.928 --> 00:02:29.720 align:middle line:84%
+And I'll break this up
+into a couple parts,
+
+46
+00:02:29.720 --> 00:02:33.590 align:middle line:84%
+because it would otherwise
+overrun the screen.
+
+47
+00:02:33.590 --> 00:02:36.350 align:middle line:84%
+So you can see here that
+the SplitterTask extends
+
+48
+00:02:36.350 --> 00:02:38.810 align:middle line:84%
+recursive task,
+and the purpose is
+
+49
+00:02:38.810 --> 00:02:43.640 align:middle line:84%
+to split the list evenly in
+half, and then copy the data,
+
+50
+00:02:43.640 --> 00:02:45.590 align:middle line:84%
+and then go ahead
+and fork to work
+
+51
+00:02:45.590 --> 00:02:49.240 align:middle line:84%
+on the half with
+the copied data.
+
+52
+00:02:49.240 --> 00:02:51.610 align:middle line:84%
+There's a field that's
+defined in SplitterTask
+
+53
+00:02:51.610 --> 00:02:53.290 align:middle line:90%
+which is called mList.
+
+54
+00:02:53.290 --> 00:02:57.850 align:middle line:84%
+And this is going to store
+a reference to a portion
+
+55
+00:02:57.850 --> 00:02:59.300 align:middle line:90%
+of the original list.
+
+56
+00:02:59.300 --> 00:03:03.700 align:middle line:84%
+So we're going to basically use
+this thing recursively to keep
+
+57
+00:03:03.700 --> 00:03:05.620 align:middle line:84%
+splitting the list
+up piece by piece
+
+58
+00:03:05.620 --> 00:03:07.600 align:middle line:84%
+until we end up
+with list items that
+
+59
+00:03:07.600 --> 00:03:10.730 align:middle line:90%
+are only one element in length.
+
+60
+00:03:10.730 --> 00:03:13.060 align:middle line:84%
+And then we're going to
+process those sequentially.
+
+61
+00:03:13.060 --> 00:03:14.643 align:middle line:84%
+But before we get
+to that point, let's
+
+62
+00:03:14.643 --> 00:03:17.033 align:middle line:84%
+just look at the constructor,
+which just stashes away
+
+63
+00:03:17.033 --> 00:03:19.450 align:middle line:84%
+the list parameter that we're
+passed, which will initially
+
+64
+00:03:19.450 --> 00:03:21.075 align:middle line:84%
+be the entire list,
+but then after that
+
+65
+00:03:21.075 --> 00:03:23.590 align:middle line:90%
+will be the sublists.
+
+66
+00:03:23.590 --> 00:03:25.160 align:middle line:90%
+Here's the compute method.
+
+67
+00:03:25.160 --> 00:03:28.420 align:middle line:84%
+And again, we'll kind of break
+this up into a couple parts.
+
+68
+00:03:28.420 --> 00:03:31.950 align:middle line:84%
+So compute is going
+to recursively perform
+
+69
+00:03:31.950 --> 00:03:37.903 align:middle line:84%
+the computations in parallel
+on a subset of the list.
+
+70
+00:03:37.903 --> 00:03:39.320 align:middle line:84%
+So as you can see
+here, what we do
+
+71
+00:03:39.320 --> 00:03:42.350 align:middle line:84%
+is-- remember how we always
+talk about recursive task
+
+72
+00:03:42.350 --> 00:03:43.640 align:middle line:90%
+and recursive action?
+
+73
+00:03:43.640 --> 00:03:46.893 align:middle line:84%
+They first check to
+see, is the elements--
+
+74
+00:03:46.893 --> 00:03:48.560 align:middle line:84%
+or are the elements
+small enough that we
+
+75
+00:03:48.560 --> 00:03:51.050 align:middle line:90%
+can do things sequentially?
+
+76
+00:03:51.050 --> 00:03:53.820 align:middle line:84%
+And if the answer is yes,
+we go ahead and do that.
+
+77
+00:03:53.820 --> 00:03:56.000 align:middle line:84%
+So you can basically think
+of this if statement here
+
+78
+00:03:56.000 --> 00:03:58.905 align:middle line:84%
+as handling the base
+case for the recursion.
+
+79
+00:03:58.905 --> 00:04:01.280 align:middle line:84%
+This is the thing that will
+cause the recursion to bottom
+
+80
+00:04:01.280 --> 00:04:02.390 align:middle line:90%
+out.
+
+81
+00:04:02.390 --> 00:04:06.050 align:middle line:84%
+And it'll bottom out if
+the list size is less than
+
+82
+00:04:06.050 --> 00:04:07.070 align:middle line:90%
+or equal to 1.
+
+83
+00:04:07.070 --> 00:04:09.560 align:middle line:84%
+It should be equal
+to 1 unless there's
+
+84
+00:04:09.560 --> 00:04:11.055 align:middle line:90%
+something weird going on.
+
+85
+00:04:11.055 --> 00:04:13.430 align:middle line:84%
+But we just did less than 1,
+less than or equal to 1 just
+
+86
+00:04:13.430 --> 00:04:14.670 align:middle line:90%
+to be safe.
+
+87
+00:04:14.670 --> 00:04:18.230 align:middle line:84%
+So if we have a list
+with an element in it,
+
+88
+00:04:18.230 --> 00:04:20.209 align:middle line:84%
+we go ahead and
+make a new result
+
+89
+00:04:20.209 --> 00:04:22.940 align:middle line:90%
+item, which is an array list.
+
+90
+00:04:22.940 --> 00:04:25.190 align:middle line:84%
+And then we go
+ahead and we iterate
+
+91
+00:04:25.190 --> 00:04:26.990 align:middle line:84%
+through the mList,
+which really should just
+
+92
+00:04:26.990 --> 00:04:28.610 align:middle line:90%
+have one item at this point.
+
+93
+00:04:28.610 --> 00:04:35.150 align:middle line:84%
+And we go ahead and we apply
+the function on that item.
+
+94
+00:04:35.150 --> 00:04:38.440 align:middle line:84%
+And when we're done with that,
+when that computation finishes,
+
+95
+00:04:38.440 --> 00:04:42.670 align:middle line:84%
+when we finish reducing and
+multiplying the big fraction,
+
+96
+00:04:42.670 --> 00:04:47.262 align:middle line:84%
+we then add the result
+to the result list.
+
+97
+00:04:47.262 --> 00:04:49.720 align:middle line:84%
+And then the last thing we do
+is we return the result list.
+
+98
+00:04:49.720 --> 00:04:51.970 align:middle line:84%
+So we're really returning
+a list with one item in it.
+
+99
+00:04:51.970 --> 00:04:57.490 align:middle line:84%
+That's what we need as the
+base case for the recursion.
+
+100
+00:04:57.490 --> 00:05:00.580 align:middle line:84%
+Here's the other part of
+the recursive algorithm.
+
+101
+00:05:00.580 --> 00:05:02.710 align:middle line:84%
+This is the part where we
+don't have an item that's
+
+102
+00:05:02.710 --> 00:05:04.220 align:middle line:90%
+only got one element in it.
+
+103
+00:05:04.220 --> 00:05:07.770 align:middle line:84%
+Instead, we have a list that
+is more than one element long.
+
+104
+00:05:07.770 --> 00:05:10.710 align:middle line:84%
+So what we do now is we figure
+out the midpoint of the list,
+
+105
+00:05:10.710 --> 00:05:13.860 align:middle line:84%
+because, of course, our
+goal with any kind of divide
+
+106
+00:05:13.860 --> 00:05:16.620 align:middle line:84%
+and conquer
+fork-join style model
+
+107
+00:05:16.620 --> 00:05:19.470 align:middle line:84%
+is to try to break things
+evenly and efficiently.
+
+108
+00:05:19.470 --> 00:05:21.220 align:middle line:84%
+So we figure out the
+midpoint of the list,
+
+109
+00:05:21.220 --> 00:05:24.360 align:middle line:84%
+which is just the size
+of the list divided by 2.
+
+110
+00:05:24.360 --> 00:05:27.870 align:middle line:84%
+And then we go ahead
+and we create a sublist.
+
+111
+00:05:27.870 --> 00:05:31.350 align:middle line:84%
+And this is going to
+be the left-hand side.
+
+112
+00:05:31.350 --> 00:05:33.780 align:middle line:84%
+And the left-hand
+side of the sublist
+
+113
+00:05:33.780 --> 00:05:35.340 align:middle line:84%
+is going to start
+from the beginning
+
+114
+00:05:35.340 --> 00:05:39.300 align:middle line:84%
+of the list to the midpoint
+that we just computed.
+
+115
+00:05:39.300 --> 00:05:42.500 align:middle line:84%
+And we're going to make
+ourselves a new sublist.
+
+116
+00:05:42.500 --> 00:05:47.180 align:middle line:84%
+And we're going to go ahead and
+pass that into the constructor
+
+117
+00:05:47.180 --> 00:05:49.210 align:middle line:90%
+SplitterTask.
+
+118
+00:05:49.210 --> 00:05:52.550 align:middle line:84%
+And then we're going to go
+ahead and fork that new object.
+
+119
+00:05:52.550 --> 00:05:54.050 align:middle line:84%
+And we're going to
+fork that object.
+
+120
+00:05:54.050 --> 00:05:57.460 align:middle line:84%
+And we're going to store it
+in a ForkJoinTask variable we
+
+121
+00:05:57.460 --> 00:06:00.350 align:middle line:90%
+call lt for left task.
+
+122
+00:06:00.350 --> 00:06:00.850 align:middle line:90%
+OK.
+
+123
+00:06:00.850 --> 00:06:02.530 align:middle line:84%
+So now we've gone
+ahead and basically
+
+124
+00:06:02.530 --> 00:06:09.100 align:middle line:84%
+arranged to execute this
+SplitterTask on some thread
+
+125
+00:06:09.100 --> 00:06:10.690 align:middle line:90%
+in the worker pool.
+
+126
+00:06:10.690 --> 00:06:12.790 align:middle line:84%
+And we've given
+it half the list--
+
+127
+00:06:12.790 --> 00:06:15.790 align:middle line:84%
+the left-hand side of
+the list to process.
+
+128
+00:06:15.790 --> 00:06:18.310 align:middle line:84%
+What we do then is we
+take the current list,
+
+129
+00:06:18.310 --> 00:06:21.730 align:middle line:84%
+because this is our list, the
+right-hand side, if you will,
+
+130
+00:06:21.730 --> 00:06:25.030 align:middle line:84%
+and we go ahead and we
+update it in place--
+
+131
+00:06:25.030 --> 00:06:26.510 align:middle line:84%
+or actually, we
+create a new list,
+
+132
+00:06:26.510 --> 00:06:31.240 align:middle line:84%
+and update the old list to be
+a sublist from the midpoint
+
+133
+00:06:31.240 --> 00:06:32.510 align:middle line:90%
+to the end of the list.
+
+134
+00:06:32.510 --> 00:06:35.840 align:middle line:84%
+So that's the right-hand
+side of the list.
+
+135
+00:06:35.840 --> 00:06:37.880 align:middle line:84%
+So we take the right-hand
+side of the list.
+
+136
+00:06:37.880 --> 00:06:40.490 align:middle line:84%
+We overwrite the
+original reference.
+
+137
+00:06:40.490 --> 00:06:42.440 align:middle line:84%
+And then we go ahead
+and we say, hey,
+
+138
+00:06:42.440 --> 00:06:48.190 align:middle line:84%
+please compute the algorithm
+for this right-hand side
+
+139
+00:06:48.190 --> 00:06:50.060 align:middle line:90%
+that we've just updated.
+
+140
+00:06:50.060 --> 00:06:52.490 align:middle line:84%
+And I should
+probably also mention
+
+141
+00:06:52.490 --> 00:06:55.420 align:middle line:84%
+on the previous approach
+where we fork off
+
+142
+00:06:55.420 --> 00:06:59.530 align:middle line:84%
+the new left-hand
+side, this approach
+
+143
+00:06:59.530 --> 00:07:03.100 align:middle line:84%
+will disperse the task
+to other worker threads.
+
+144
+00:07:03.100 --> 00:07:05.290 align:middle line:84%
+When we fork this,
+it's undoubtedly--
+
+145
+00:07:05.290 --> 00:07:09.200 align:middle line:84%
+it'll go to our queue, but that
+will be stolen very quickly.
+
+146
+00:07:09.200 --> 00:07:12.620 align:middle line:84%
+What we do here is we stay
+in our current thread.
+
+147
+00:07:12.620 --> 00:07:15.520 align:middle line:84%
+And we go ahead and
+we update the list
+
+148
+00:07:15.520 --> 00:07:17.510 align:middle line:84%
+to just have the
+right-hand side.
+
+149
+00:07:17.510 --> 00:07:19.310 align:middle line:84%
+And then we call
+the compute method.
+
+150
+00:07:19.310 --> 00:07:22.440 align:middle line:84%
+And note that this
+is a call to compute,
+
+151
+00:07:22.440 --> 00:07:26.370 align:middle line:84%
+which is in the same thread
+as we were in before,
+
+152
+00:07:26.370 --> 00:07:28.770 align:middle line:84%
+except we're going to call
+ourselves recursively.
+
+153
+00:07:28.770 --> 00:07:32.840 align:middle line:84%
+So compute will run in the
+same task as its parent
+
+154
+00:07:32.840 --> 00:07:34.640 align:middle line:84%
+in order to minimize
+context switching.
+
+155
+00:07:34.640 --> 00:07:38.000 align:middle line:84%
+There's really no need to create
+yet another task by forking it.
+
+156
+00:07:38.000 --> 00:07:40.880 align:middle line:84%
+We're just going to stay
+in this particular task.
+
+157
+00:07:40.880 --> 00:07:43.400 align:middle line:84%
+Now, while we're running
+compute in this task,
+
+158
+00:07:43.400 --> 00:07:47.390 align:middle line:84%
+undoubtedly, another
+thread has stolen the task
+
+159
+00:07:47.390 --> 00:07:51.020 align:middle line:84%
+that we forked shortly
+before we computed.
+
+160
+00:07:51.020 --> 00:07:55.290 align:middle line:84%
+And those things will then
+start running in parallel.
+
+161
+00:07:55.290 --> 00:07:57.510 align:middle line:84%
+What we do now when
+compute returns
+
+162
+00:07:57.510 --> 00:08:00.990 align:middle line:84%
+for our task, the
+current task, is we go
+
+163
+00:08:00.990 --> 00:08:03.990 align:middle line:84%
+and we say, hey,
+left-hand task, I'd
+
+164
+00:08:03.990 --> 00:08:06.400 align:middle line:84%
+like to join with you to
+get your result, which will,
+
+165
+00:08:06.400 --> 00:08:08.280 align:middle line:90%
+of course, come back as a list.
+
+166
+00:08:08.280 --> 00:08:11.130 align:middle line:84%
+And the join call
+will either return
+
+167
+00:08:11.130 --> 00:08:16.350 align:middle line:84%
+right away if the other
+tasks that we forked is done,
+
+168
+00:08:16.350 --> 00:08:21.580 align:middle line:84%
+or it will block, logically,
+until that task has finished.
+
+169
+00:08:21.580 --> 00:08:25.170 align:middle line:84%
+And remember, when it blocks,
+it pitches in and will
+
+170
+00:08:25.170 --> 00:08:27.360 align:middle line:90%
+do other task processing.
+
+171
+00:08:27.360 --> 00:08:29.760 align:middle line:84%
+It's very important to
+remember that compute
+
+172
+00:08:29.760 --> 00:08:32.039 align:middle line:84%
+must be called before
+join, because we
+
+173
+00:08:32.039 --> 00:08:34.200 align:middle line:84%
+want to do our work
+before we try to join
+
+174
+00:08:34.200 --> 00:08:35.200 align:middle line:90%
+with the left-hand side.
+
+175
+00:08:35.200 --> 00:08:37.320 align:middle line:84%
+Otherwise, we will
+completely defeat the point
+
+176
+00:08:37.320 --> 00:08:40.059 align:middle line:90%
+of doing parallel processing.
+
+177
+00:08:40.059 --> 00:08:43.659 align:middle line:84%
+When join returns, we now
+have the right-hand result,
+
+178
+00:08:43.659 --> 00:08:46.330 align:middle line:84%
+which we got from
+the call to compute,
+
+179
+00:08:46.330 --> 00:08:49.910 align:middle line:84%
+and we have the left-hand
+result, which we got from join,
+
+180
+00:08:49.910 --> 00:08:53.300 align:middle line:84%
+and then we go ahead and we
+add those back together again.
+
+181
+00:08:53.300 --> 00:08:56.320 align:middle line:84%
+So now we have a
+single joined result,
+
+182
+00:08:56.320 --> 00:09:00.280 align:middle line:84%
+which we stick into left result,
+just because it makes sense
+
+183
+00:09:00.280 --> 00:09:01.460 align:middle line:90%
+to concatenate it like that.
+
+184
+00:09:01.460 --> 00:09:03.310 align:middle line:90%
+There's no need to make a copy.
+
+185
+00:09:03.310 --> 00:09:05.640 align:middle line:84%
+And we'll end up going
+ahead and combining
+
+186
+00:09:05.640 --> 00:09:07.390 align:middle line:84%
+the left-hand side and
+the right-hand side
+
+187
+00:09:07.390 --> 00:09:09.320 align:middle line:90%
+and returning the results.
+
+188
+00:09:09.320 --> 00:09:11.270 align:middle line:84%
+Now, the data might
+actually be copied here
+
+189
+00:09:11.270 --> 00:09:13.270 align:middle line:84%
+since the lists are
+implemented as an ArrayList.
+
+190
+00:09:13.270 --> 00:09:15.100 align:middle line:84%
+But if we were smart,
+we could always
+
+191
+00:09:15.100 --> 00:09:19.690 align:middle line:84%
+make the ArrayList be
+big enough to compensate
+
+192
+00:09:19.690 --> 00:09:21.670 align:middle line:90%
+for any size we needed to have.
+
+193
+00:09:21.670 --> 00:09:24.350 align:middle line:84%
+That's left as an
+exercise for you
+
+194
+00:09:24.350 --> 00:09:27.930 align:middle line:84%
+to figure out how to
+do that optimization.
+
+195
+00:09:27.930 --> 00:09:31.020 align:middle line:84%
+Now, I think you'll agree that
+this implementation is harder
+
+196
+00:09:31.020 --> 00:09:33.930 align:middle line:84%
+to program, and it's also
+harder to understand,
+
+197
+00:09:33.930 --> 00:09:36.180 align:middle line:84%
+because it's
+inherently recursive.
+
+198
+00:09:36.180 --> 00:09:39.400 align:middle line:84%
+But as we'll see, it's
+also a lot more efficient.
+
+199
+00:09:39.400 --> 00:09:42.460 align:middle line:84%
+So let's take a few minutes
+to visualize this approach.
+
+200
+00:09:42.460 --> 00:09:45.250 align:middle line:84%
+So in this model,
+the invoke method,
+
+201
+00:09:45.250 --> 00:09:48.360 align:middle line:84%
+once again, sticks
+a ForkJoinTask
+
+202
+00:09:48.360 --> 00:09:51.660 align:middle line:84%
+into the shared queue
+in the ForkJoinPool.
+
+203
+00:09:51.660 --> 00:09:55.620 align:middle line:84%
+And the invoke method lets
+the non-ForkJoinTask client
+
+204
+00:09:55.620 --> 00:09:58.090 align:middle line:90%
+insert that task.
+
+205
+00:09:58.090 --> 00:10:04.300 align:middle line:84%
+Then at this point, the subtasks
+will be recursively decomposed
+
+206
+00:10:04.300 --> 00:10:06.667 align:middle line:84%
+onto the worker
+threads in the pool.
+
+207
+00:10:06.667 --> 00:10:09.250 align:middle line:84%
+And that's because we're going
+to do these things recursively.
+
+208
+00:10:09.250 --> 00:10:12.850 align:middle line:84%
+And so unlike the
+approach that we
+
+209
+00:10:12.850 --> 00:10:15.370 align:middle line:84%
+had that was the
+applyAllItr approach, which
+
+210
+00:10:15.370 --> 00:10:20.050 align:middle line:84%
+stuck everything into
+one worker thread's deck,
+
+211
+00:10:20.050 --> 00:10:24.430 align:middle line:84%
+this will more evenly
+distribute the subtasks
+
+212
+00:10:24.430 --> 00:10:27.850 align:middle line:84%
+into the decks of multiple
+threads in the pool.
+
+213
+00:10:27.850 --> 00:10:30.250 align:middle line:84%
+So as a consequence, the
+work stealing overhead
+
+214
+00:10:30.250 --> 00:10:33.310 align:middle line:84%
+will be much lower, but
+the copying and memory call
+
+215
+00:10:33.310 --> 00:10:35.800 align:middle line:84%
+overhead will be a bit higher,
+because we have to copy data
+
+216
+00:10:35.800 --> 00:10:39.590 align:middle line:90%
+when we do these sublist calls.
+
+217
+00:10:39.590 --> 00:10:43.370 align:middle line:84%
+As before, forking and
+computing will run in parallel.
+
+218
+00:10:43.370 --> 00:10:46.130 align:middle line:84%
+And as I mentioned, it's
+usually a good practice
+
+219
+00:10:46.130 --> 00:10:49.940 align:middle line:84%
+to do compute on the right-hand
+side in the same task
+
+220
+00:10:49.940 --> 00:10:52.640 align:middle line:84%
+as the parent in
+order to optimize
+
+221
+00:10:52.640 --> 00:10:55.160 align:middle line:84%
+performance and minimize the
+amount of context switching
+
+222
+00:10:55.160 --> 00:10:58.000 align:middle line:90%
+that's going on.
+
+223
+00:10:58.000 --> 00:11:00.340 align:middle line:84%
+Join will return a result.
+As you can see here,
+
+224
+00:11:00.340 --> 00:11:02.710 align:middle line:84%
+there's a nice balance
+tree of join calls.
+
+225
+00:11:02.710 --> 00:11:06.580 align:middle line:84%
+And that's going to scale a
+lot better than the applyAllItr
+
+226
+00:11:06.580 --> 00:11:09.280 align:middle line:84%
+call, where everything
+had to get factored back
+
+227
+00:11:09.280 --> 00:11:12.130 align:middle line:84%
+or filtered back
+into a single thread
+
+228
+00:11:12.130 --> 00:11:13.700 align:middle line:84%
+to wait for
+everything to finish.
+
+229
+00:11:13.700 --> 00:11:15.490 align:middle line:84%
+So this will allow
+things to join
+
+230
+00:11:15.490 --> 00:11:18.720 align:middle line:84%
+in parallel, which will be
+a lot faster, as we'll see.

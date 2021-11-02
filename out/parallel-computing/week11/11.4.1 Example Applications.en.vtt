@@ -1,0 +1,1129 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.500 align:middle line:90%
+
+
+2
+00:00:00.500 --> 00:00:03.350 align:middle line:84%
+So now that we've talked a bit
+about how the fork-join pool is
+
+3
+00:00:03.350 --> 00:00:06.410 align:middle line:84%
+structured, we'll spend the
+bulk of our time talking
+
+4
+00:00:06.410 --> 00:00:10.590 align:middle line:84%
+about some example applications
+of the fork-join pool.
+
+5
+00:00:10.590 --> 00:00:12.560 align:middle line:84%
+And what we're going to
+use these applications
+
+6
+00:00:12.560 --> 00:00:17.450 align:middle line:84%
+or these functions to do
+is to compare and contrast
+
+7
+00:00:17.450 --> 00:00:21.160 align:middle line:84%
+different fork-join
+pool programming models.
+
+8
+00:00:21.160 --> 00:00:23.990 align:middle line:84%
+As you can see, there's going to
+be through three primary models
+
+9
+00:00:23.990 --> 00:00:26.620 align:middle line:84%
+that we're going
+to look at here.
+
+10
+00:00:26.620 --> 00:00:29.790 align:middle line:84%
+So what we're going to do is
+we're going our program a bunch
+
+11
+00:00:29.790 --> 00:00:37.397 align:middle line:84%
+of different ways of using the
+fork-join, fork-join pool and--
+
+12
+00:00:37.397 --> 00:00:39.230 align:middle line:84%
+we're going to make our
+own fork-join pools.
+
+13
+00:00:39.230 --> 00:00:41.700 align:middle line:84%
+Now, we're not going to rely
+on the common fork-join pool.
+
+14
+00:00:41.700 --> 00:00:44.140 align:middle line:84%
+But we're all going to apply
+these different programming
+
+15
+00:00:44.140 --> 00:00:47.620 align:middle line:90%
+models on a common data set.
+
+16
+00:00:47.620 --> 00:00:50.920 align:middle line:84%
+And the reason we do this is so
+we can get a really nice apples
+
+17
+00:00:50.920 --> 00:00:53.830 align:middle line:84%
+to apples comparison
+between the performance
+
+18
+00:00:53.830 --> 00:00:56.910 align:middle line:90%
+of the various mechanisms.
+
+19
+00:00:56.910 --> 00:01:00.650 align:middle line:84%
+And each of these models have
+different performance pros
+
+20
+00:01:00.650 --> 00:01:01.610 align:middle line:90%
+and cons.
+
+21
+00:01:01.610 --> 00:01:05.390 align:middle line:84%
+And you can see, when
+you run the test program,
+
+22
+00:01:05.390 --> 00:01:07.580 align:middle line:84%
+which we'll talk
+more about here,
+
+23
+00:01:07.580 --> 00:01:09.557 align:middle line:90%
+we'll get different results.
+
+24
+00:01:09.557 --> 00:01:11.390 align:middle line:84%
+The test program is
+going to go ahead and do
+
+25
+00:01:11.390 --> 00:01:15.090 align:middle line:84%
+a bunch of operations on
+so-called big fractions.
+
+26
+00:01:15.090 --> 00:01:17.090 align:middle line:84%
+And we're going to
+time how long it
+
+27
+00:01:17.090 --> 00:01:20.810 align:middle line:90%
+takes to run those operations.
+
+28
+00:01:20.810 --> 00:01:23.780 align:middle line:84%
+And you'll see, if you kind
+of zoom in on the performance
+
+29
+00:01:23.780 --> 00:01:27.330 align:middle line:84%
+statistics that get printed
+at the end of the program,
+
+30
+00:01:27.330 --> 00:01:31.280 align:middle line:84%
+there are some diagnostic
+information printed.
+
+31
+00:01:31.280 --> 00:01:33.320 align:middle line:84%
+So for each of the
+different approaches,
+
+32
+00:01:33.320 --> 00:01:36.890 align:middle line:84%
+we will print out
+the steal count,
+
+33
+00:01:36.890 --> 00:01:41.570 align:middle line:84%
+which is the number of times
+that a thread stole a task
+
+34
+00:01:41.570 --> 00:01:44.030 align:middle line:90%
+from another thread's deck.
+
+35
+00:01:44.030 --> 00:01:46.130 align:middle line:84%
+And you can see that some
+of the approaches we'll
+
+36
+00:01:46.130 --> 00:01:48.950 align:middle line:84%
+talk about have very
+high steal counts
+
+37
+00:01:48.950 --> 00:01:51.890 align:middle line:84%
+whereas other approaches
+have much lower steal counts.
+
+38
+00:01:51.890 --> 00:01:54.410 align:middle line:84%
+And then we also go ahead
+and show the performance
+
+39
+00:01:54.410 --> 00:01:56.090 align:middle line:90%
+of the various approaches.
+
+40
+00:01:56.090 --> 00:01:59.060 align:middle line:84%
+And without spoiling
+the surprise too much,
+
+41
+00:01:59.060 --> 00:02:00.560 align:middle line:84%
+one of the things
+you'll notice here
+
+42
+00:02:00.560 --> 00:02:03.950 align:middle line:84%
+is that the approaches that
+have higher steal counts
+
+43
+00:02:03.950 --> 00:02:05.240 align:middle line:90%
+tend to perform worse.
+
+44
+00:02:05.240 --> 00:02:07.220 align:middle line:90%
+And I'll talk about why that is.
+
+45
+00:02:07.220 --> 00:02:09.949 align:middle line:84%
+Now, it turns out that there's
+a number of different dimensions
+
+46
+00:02:09.949 --> 00:02:15.160 align:middle line:84%
+we're going to evaluate these
+different approaches on.
+
+47
+00:02:15.160 --> 00:02:16.850 align:middle line:90%
+Steal count is one.
+
+48
+00:02:16.850 --> 00:02:19.530 align:middle line:84%
+Some approaches copy
+more data than others.
+
+49
+00:02:19.530 --> 00:02:22.370 align:middle line:84%
+Some approaches make more method
+calls, especially recursive
+
+50
+00:02:22.370 --> 00:02:23.990 align:middle line:90%
+method calls, than others.
+
+51
+00:02:23.990 --> 00:02:25.610 align:middle line:84%
+And so all of those
+different factors
+
+52
+00:02:25.610 --> 00:02:28.700 align:middle line:84%
+will figure into how
+long it takes in order
+
+53
+00:02:28.700 --> 00:02:31.820 align:middle line:84%
+to have the
+different algorithms,
+
+54
+00:02:31.820 --> 00:02:33.830 align:middle line:84%
+different techniques,
+work and execute
+
+55
+00:02:33.830 --> 00:02:37.460 align:middle line:90%
+within a certain period of time.
+
+56
+00:02:37.460 --> 00:02:40.980 align:middle line:84%
+To make things just a little
+cleaner for our test program,
+
+57
+00:02:40.980 --> 00:02:43.350 align:middle line:84%
+we're going to use some
+functional programming
+
+58
+00:02:43.350 --> 00:02:47.990 align:middle line:84%
+features like Lambda expressions
+and method references
+
+59
+00:02:47.990 --> 00:02:50.960 align:middle line:84%
+as well as sequential
+streams in order
+
+60
+00:02:50.960 --> 00:02:53.000 align:middle line:90%
+to simplify the test code.
+
+61
+00:02:53.000 --> 00:02:55.940 align:middle line:84%
+Keep in mind, of course,
+that the fork-join framework
+
+62
+00:02:55.940 --> 00:02:59.750 align:middle line:84%
+is really a Java 7 feature,
+so it doesn't really
+
+63
+00:02:59.750 --> 00:03:01.400 align:middle line:84%
+come with a lot of
+functional features.
+
+64
+00:03:01.400 --> 00:03:03.620 align:middle line:84%
+It come with no functional
+features itself.
+
+65
+00:03:03.620 --> 00:03:08.330 align:middle line:84%
+But it works nicely with the
+functional programming features
+
+66
+00:03:08.330 --> 00:03:10.647 align:middle line:84%
+that have been added
+in Java 8 and beyond.
+
+67
+00:03:10.647 --> 00:03:12.980 align:middle line:84%
+And so just to make things a
+little bit cleaner and more
+
+68
+00:03:12.980 --> 00:03:15.650 align:middle line:84%
+concise, that's the approach
+we're going to use here.
+
+69
+00:03:15.650 --> 00:03:18.620 align:middle line:84%
+So we're going to be combining
+functional programming
+
+70
+00:03:18.620 --> 00:03:22.480 align:middle line:84%
+with the object-oriented
+fork-join pool APIs.
+
+71
+00:03:22.480 --> 00:03:25.350 align:middle line:90%
+
+
+72
+00:03:25.350 --> 00:03:28.440 align:middle line:84%
+The fork-join program models
+we're going to showcase
+
+73
+00:03:28.440 --> 00:03:31.860 align:middle line:84%
+here all end up
+performing the same set
+
+74
+00:03:31.860 --> 00:03:36.087 align:middle line:90%
+of operations on big fractions.
+
+75
+00:03:36.087 --> 00:03:37.170 align:middle line:90%
+So what is a big fraction?
+
+76
+00:03:37.170 --> 00:03:40.650 align:middle line:84%
+Well, first of all, big fraction
+is an open source framework
+
+77
+00:03:40.650 --> 00:03:44.100 align:middle line:84%
+that you can get here
+at my GitHub repository
+
+78
+00:03:44.100 --> 00:03:48.090 align:middle line:84%
+at this particular
+folder, the x22 folder.
+
+79
+00:03:48.090 --> 00:03:51.480 align:middle line:84%
+And basically, what they
+provide are arbitrary
+
+80
+00:03:51.480 --> 00:03:54.280 align:middle line:90%
+precision fractions.
+
+81
+00:03:54.280 --> 00:03:57.120 align:middle line:84%
+And the way that they get to
+be arbitrary precision is they
+
+82
+00:03:57.120 --> 00:04:01.080 align:middle line:84%
+utilize big integers
+for the numerator
+
+83
+00:04:01.080 --> 00:04:03.090 align:middle line:84%
+and the denominator
+of the big fractions.
+
+84
+00:04:03.090 --> 00:04:06.510 align:middle line:84%
+So these things can
+be arbitrarily big.
+
+85
+00:04:06.510 --> 00:04:08.730 align:middle line:84%
+There's a number of
+factoring methods defined
+
+86
+00:04:08.730 --> 00:04:13.830 align:middle line:84%
+on big fraction that can be used
+to create reduced fractions.
+
+87
+00:04:13.830 --> 00:04:17.279 align:middle line:84%
+So what you can do here
+is you can give values
+
+88
+00:04:17.279 --> 00:04:22.140 align:middle line:84%
+here, strings, and other ways
+of expressing the big fraction.
+
+89
+00:04:22.140 --> 00:04:27.930 align:middle line:84%
+And if, for example, if you
+give a string that says 44/55,
+
+90
+00:04:27.930 --> 00:04:29.040 align:middle line:90%
+that will be--
+
+91
+00:04:29.040 --> 00:04:35.850 align:middle line:84%
+could be automatically reduced
+to 4/5, just like 12/24 is 1/2,
+
+92
+00:04:35.850 --> 00:04:39.960 align:middle line:90%
+or 144/216 is 2/3, right.
+
+93
+00:04:39.960 --> 00:04:44.110 align:middle line:84%
+That's the concept of
+reducing fractions.
+
+94
+00:04:44.110 --> 00:04:45.940 align:middle line:84%
+There's also other
+factor methods,
+
+95
+00:04:45.940 --> 00:04:48.550 align:middle line:84%
+which we'll use in
+our examples, that
+
+96
+00:04:48.550 --> 00:04:51.520 align:middle line:84%
+allow us to create
+non-reduced fractions
+
+97
+00:04:51.520 --> 00:04:52.680 align:middle line:90%
+and then reduce them later.
+
+98
+00:04:52.680 --> 00:04:54.680 align:middle line:84%
+And that's because reduction
+can take some time.
+
+99
+00:04:54.680 --> 00:04:57.370 align:middle line:84%
+So we might actually
+want to do the reduction
+
+100
+00:04:57.370 --> 00:05:02.120 align:middle line:84%
+in some kind of background
+thread or background task.
+
+101
+00:05:02.120 --> 00:05:06.140 align:middle line:84%
+You can use the big fraction
+mechanisms and methods
+
+102
+00:05:06.140 --> 00:05:09.620 align:middle line:84%
+to perform arbitrary
+precision fraction arithmetic,
+
+103
+00:05:09.620 --> 00:05:12.480 align:middle line:84%
+doing things like adding,
+subtracting, multiplying,
+
+104
+00:05:12.480 --> 00:05:14.820 align:middle line:90%
+dividing big fractions.
+
+105
+00:05:14.820 --> 00:05:16.610 align:middle line:90%
+So here's a very simple example.
+
+106
+00:05:16.610 --> 00:05:20.960 align:middle line:90%
+18/4 times 2/3 equals 3.
+
+107
+00:05:20.960 --> 00:05:23.480 align:middle line:84%
+And if you go back to your
+sixth great math class,
+
+108
+00:05:23.480 --> 00:05:26.198 align:middle line:84%
+you probably remember how to
+do the fraction multiplication.
+
+109
+00:05:26.198 --> 00:05:28.490 align:middle line:84%
+Or you can just go ahead and
+use the big fraction class
+
+110
+00:05:28.490 --> 00:05:32.010 align:middle line:84%
+and not have to remember how
+to do fraction multiplication.
+
+111
+00:05:32.010 --> 00:05:34.290 align:middle line:84%
+One of the other things you
+can do with a big fraction
+
+112
+00:05:34.290 --> 00:05:37.470 align:middle line:84%
+is you can create a
+so-called mixed fraction
+
+113
+00:05:37.470 --> 00:05:39.910 align:middle line:90%
+from an improper fraction.
+
+114
+00:05:39.910 --> 00:05:43.110 align:middle line:84%
+So a fraction like 18/4,
+for various reasons,
+
+115
+00:05:43.110 --> 00:05:45.150 align:middle line:90%
+is called an improper fraction.
+
+116
+00:05:45.150 --> 00:05:50.490 align:middle line:84%
+And if you perform the two
+mixed string operation,
+
+117
+00:05:50.490 --> 00:05:54.360 align:middle line:84%
+then it will go ahead and
+convert this improper fraction
+
+118
+00:05:54.360 --> 00:05:56.592 align:middle line:84%
+into a mixed fraction
+by, basically, I
+
+119
+00:05:56.592 --> 00:05:58.050 align:middle line:84%
+guess, making it
+a proper fraction.
+
+120
+00:05:58.050 --> 00:06:02.460 align:middle line:84%
+So 4 and 1/2 is the
+mixed fraction mechanism
+
+121
+00:06:02.460 --> 00:06:07.010 align:middle line:84%
+or mixed fraction
+result for 18/4.
+
+122
+00:06:07.010 --> 00:06:11.300 align:middle line:84%
+So armed with the knowledge
+of big fractions, now let's
+
+123
+00:06:11.300 --> 00:06:15.080 align:middle line:84%
+go ahead and take a look
+at the main driver program
+
+124
+00:06:15.080 --> 00:06:19.340 align:middle line:84%
+that we use to
+reduce and multiply
+
+125
+00:06:19.340 --> 00:06:24.050 align:middle line:84%
+lots of very large random
+big fractions using
+
+126
+00:06:24.050 --> 00:06:27.860 align:middle line:84%
+the Java fork-join framework
+and, in particular, using
+
+127
+00:06:27.860 --> 00:06:31.730 align:middle line:84%
+a bunch of different techniques
+and programming styles
+
+128
+00:06:31.730 --> 00:06:35.232 align:middle line:84%
+for using the
+fork-join framework.
+
+129
+00:06:35.232 --> 00:06:36.940 align:middle line:84%
+So the first thing
+we're going to do here
+
+130
+00:06:36.940 --> 00:06:39.820 align:middle line:84%
+is we're going to go ahead
+and use the stream generate
+
+131
+00:06:39.820 --> 00:06:47.380 align:middle line:84%
+factory method to make a stream
+of random large big fractions.
+
+132
+00:06:47.380 --> 00:06:50.260 align:middle line:84%
+And of course, generate will
+go on forever, if we let it.
+
+133
+00:06:50.260 --> 00:06:56.200 align:middle line:84%
+But we're going to limit it to
+the sMAX fractions constant.
+
+134
+00:06:56.200 --> 00:06:58.240 align:middle line:84%
+So we're only going to
+generate up to that many.
+
+135
+00:06:58.240 --> 00:07:02.350 align:middle line:84%
+Now, the test program is
+actually going to be--
+
+136
+00:07:02.350 --> 00:07:04.120 align:middle line:84%
+I think it's
+billions of fractions
+
+137
+00:07:04.120 --> 00:07:05.240 align:middle line:84%
+or hundreds of
+millions of fractions,
+
+138
+00:07:05.240 --> 00:07:06.157 align:middle line:90%
+lots of big fractions.
+
+139
+00:07:06.157 --> 00:07:09.020 align:middle line:84%
+So it's a large number that
+we're going to work on.
+
+140
+00:07:09.020 --> 00:07:11.690 align:middle line:84%
+This code here is,
+really, the primary use
+
+141
+00:07:11.690 --> 00:07:13.130 align:middle line:90%
+of streams in this example.
+
+142
+00:07:13.130 --> 00:07:15.320 align:middle line:84%
+We don't get a
+chance to use streams
+
+143
+00:07:15.320 --> 00:07:19.340 align:middle line:84%
+in the actual programming
+of the Java fork-join task
+
+144
+00:07:19.340 --> 00:07:21.000 align:middle line:84%
+because, as we
+talked about before,
+
+145
+00:07:21.000 --> 00:07:25.850 align:middle line:84%
+those are Java 7 features that
+use object-oriented techniques,
+
+146
+00:07:25.850 --> 00:07:27.860 align:middle line:84%
+not the functional
+programming techniques that
+
+147
+00:07:27.860 --> 00:07:30.290 align:middle line:90%
+were added in Java 8.
+
+148
+00:07:30.290 --> 00:07:35.560 align:middle line:84%
+And then we take this stream
+of large random big fractions.
+
+149
+00:07:35.560 --> 00:07:39.010 align:middle line:84%
+And we turn it into a
+list of big fractions
+
+150
+00:07:39.010 --> 00:07:41.060 align:middle line:90%
+we call fraction list.
+
+151
+00:07:41.060 --> 00:07:46.700 align:middle line:84%
+Here's the factory method that
+creates a large and random
+
+152
+00:07:46.700 --> 00:07:48.440 align:middle line:90%
+big fraction.
+
+153
+00:07:48.440 --> 00:07:52.430 align:middle line:84%
+So you can see it's passed
+a random number generator
+
+154
+00:07:52.430 --> 00:07:57.650 align:middle line:84%
+and a Boolean called reduced,
+and it goes ahead and creates
+
+155
+00:07:57.650 --> 00:07:59.550 align:middle line:90%
+a big integer.
+
+156
+00:07:59.550 --> 00:08:03.573 align:middle line:84%
+And here you can see you have a
+very large random number we're
+
+157
+00:08:03.573 --> 00:08:04.740 align:middle line:90%
+going to be generating over.
+
+158
+00:08:04.740 --> 00:08:11.360 align:middle line:84%
+So it'll be from the range
+0 to 2 to the 15,000--
+
+159
+00:08:11.360 --> 00:08:13.880 align:middle line:90%
+no, no, 150,000 minus 1.
+
+160
+00:08:13.880 --> 00:08:16.260 align:middle line:90%
+That's a pretty darn big number.
+
+161
+00:08:16.260 --> 00:08:19.130 align:middle line:84%
+And so we're going to generate
+a big random, big integer
+
+162
+00:08:19.130 --> 00:08:20.960 align:middle line:90%
+over a huge range.
+
+163
+00:08:20.960 --> 00:08:23.780 align:middle line:84%
+And then we're going to go
+ahead and make a denominator
+
+164
+00:08:23.780 --> 00:08:27.200 align:middle line:84%
+by dividing the giant numerator
+by a random number between 1
+
+165
+00:08:27.200 --> 00:08:27.810 align:middle line:90%
+and 10.
+
+166
+00:08:27.810 --> 00:08:30.260 align:middle line:84%
+So we'll end up with a
+smaller denominator but also
+
+167
+00:08:30.260 --> 00:08:32.570 align:middle line:90%
+a random denominator.
+
+168
+00:08:32.570 --> 00:08:36.409 align:middle line:84%
+And then we take that random
+lead generated numerator
+
+169
+00:08:36.409 --> 00:08:39.350 align:middle line:84%
+and that randomly
+generated denominator.
+
+170
+00:08:39.350 --> 00:08:42.169 align:middle line:84%
+And we'd return a
+big fraction that
+
+171
+00:08:42.169 --> 00:08:44.190 align:middle line:90%
+combines those things together.
+
+172
+00:08:44.190 --> 00:08:47.240 align:middle line:84%
+And we also pass
+in the flag reduced
+
+173
+00:08:47.240 --> 00:08:50.245 align:middle line:84%
+to indicate whether we want to
+reduce the big fraction or not.
+
+174
+00:08:50.245 --> 00:08:51.620 align:middle line:84%
+And if you go back
+over here, you
+
+175
+00:08:51.620 --> 00:08:53.780 align:middle line:84%
+can see that the
+parameter passed
+
+176
+00:08:53.780 --> 00:08:58.430 align:middle line:84%
+in as the second parameter to
+make a big fraction factory
+
+177
+00:08:58.430 --> 00:09:00.300 align:middle line:90%
+is the value false.
+
+178
+00:09:00.300 --> 00:09:03.530 align:middle line:84%
+So what that's saying is don't
+reduce this big fraction.
+
+179
+00:09:03.530 --> 00:09:05.690 align:middle line:84%
+And the reason we don't
+want to reduce it is we're
+
+180
+00:09:05.690 --> 00:09:10.130 align:middle line:84%
+going to reduce it in parallel
+using the fork-join poll
+
+181
+00:09:10.130 --> 00:09:13.560 align:middle line:84%
+because it could take a
+while to do the reduction.
+
+182
+00:09:13.560 --> 00:09:17.010 align:middle line:84%
+So now that we've got this
+list of big fractions,
+
+183
+00:09:17.010 --> 00:09:23.610 align:middle line:84%
+we can then turn around
+and create a function using
+
+184
+00:09:23.610 --> 00:09:26.970 align:middle line:84%
+a function interface
+called function, which
+
+185
+00:09:26.970 --> 00:09:32.940 align:middle line:84%
+is going to end up doing the
+logic to reduce and multiply
+
+186
+00:09:32.940 --> 00:09:34.620 align:middle line:90%
+a big fraction.
+
+187
+00:09:34.620 --> 00:09:37.470 align:middle line:84%
+And so you can basically
+see here the way
+
+188
+00:09:37.470 --> 00:09:40.470 align:middle line:84%
+that this works is
+we are going to say,
+
+189
+00:09:40.470 --> 00:09:45.130 align:middle line:84%
+big fraction reduce the
+random big fraction,
+
+190
+00:09:45.130 --> 00:09:46.800 align:middle line:90%
+which could take some time.
+
+191
+00:09:46.800 --> 00:09:49.830 align:middle line:84%
+And then go ahead and multiply
+the reduced big fraction
+
+192
+00:09:49.830 --> 00:09:54.010 align:middle line:90%
+by a constant value.
+
+193
+00:09:54.010 --> 00:09:56.910 align:middle line:84%
+And this function
+that we have here
+
+194
+00:09:56.910 --> 00:09:58.680 align:middle line:84%
+takes a surprisingly
+long time to run
+
+195
+00:09:58.680 --> 00:10:00.930 align:middle line:84%
+because, if the big fractions
+are big enough, which they will
+
+196
+00:10:00.930 --> 00:10:02.472 align:middle line:84%
+be in this case--
+as you saw, they're
+
+197
+00:10:02.472 --> 00:10:05.490 align:middle line:84%
+massive numbers-- it takes a
+while to do the big fraction
+
+198
+00:10:05.490 --> 00:10:07.180 align:middle line:90%
+reduction and multiplication.
+
+199
+00:10:07.180 --> 00:10:09.720 align:middle line:84%
+So this is going to end
+up burning up a lot of CPU
+
+200
+00:10:09.720 --> 00:10:12.270 align:middle line:90%
+time, intentionally.
+
+201
+00:10:12.270 --> 00:10:15.360 align:middle line:84%
+And the final thing we do is
+we call all these test methods
+
+202
+00:10:15.360 --> 00:10:18.900 align:middle line:84%
+to test the various programming
+models for programming
+
+203
+00:10:18.900 --> 00:10:21.720 align:middle line:90%
+with the fork-join framework.
+
+204
+00:10:21.720 --> 00:10:25.230 align:middle line:84%
+Now, we'll just take a quick
+look at these helper methods.
+
+205
+00:10:25.230 --> 00:10:27.930 align:middle line:84%
+As you can see, they test
+the different styles,
+
+206
+00:10:27.930 --> 00:10:31.440 align:middle line:84%
+testApplyAllIter,
+testApplyAllSplit,
+
+207
+00:10:31.440 --> 00:10:33.990 align:middle line:90%
+and testApplyAllSplitIndex.
+
+208
+00:10:33.990 --> 00:10:36.145 align:middle line:84%
+And I'll talk about
+the differences.
+
+209
+00:10:36.145 --> 00:10:37.770 align:middle line:84%
+And we'll look at
+the code in a second.
+
+210
+00:10:37.770 --> 00:10:41.070 align:middle line:84%
+But just real quickly, each
+of these helper methods
+
+211
+00:10:41.070 --> 00:10:43.440 align:middle line:84%
+uses a different
+technique for applying
+
+212
+00:10:43.440 --> 00:10:45.300 align:middle line:90%
+the fork-join framework.
+
+213
+00:10:45.300 --> 00:10:47.760 align:middle line:84%
+This one uses a
+work stealing model
+
+214
+00:10:47.760 --> 00:10:50.550 align:middle line:84%
+to disperse tasks
+to worker threads.
+
+215
+00:10:50.550 --> 00:10:54.000 align:middle line:84%
+So it'll turn out to have
+a fairly high work stealing
+
+216
+00:10:54.000 --> 00:10:54.690 align:middle line:90%
+level.
+
+217
+00:10:54.690 --> 00:10:57.210 align:middle line:84%
+And we'll talk about that
+in an upcoming lesson.
+
+218
+00:10:57.210 --> 00:11:00.090 align:middle line:84%
+This model uses
+recursive decomposition
+
+219
+00:11:00.090 --> 00:11:01.830 align:middle line:84%
+to disperse tasks
+to worker threads.
+
+220
+00:11:01.830 --> 00:11:04.470 align:middle line:84%
+And we'll talk about that
+in an upcoming lesson.
+
+221
+00:11:04.470 --> 00:11:08.135 align:middle line:84%
+And then this model uses
+an optimized recursive
+
+222
+00:11:08.135 --> 00:11:11.580 align:middle line:84%
+decomposition model to disperse
+the task to the worker threads.
+
+223
+00:11:11.580 --> 00:11:16.480 align:middle line:84%
+And we'll talk about that in
+also in an upcoming lesson.
+
+224
+00:11:16.480 --> 00:11:19.960 align:middle line:84%
+Each of the helper methods
+gets its own fork-join pool
+
+225
+00:11:19.960 --> 00:11:23.590 align:middle line:84%
+that's sized by default the
+number of processor cores.
+
+226
+00:11:23.590 --> 00:11:25.090 align:middle line:84%
+And that's where
+it's going to stay.
+
+227
+00:11:25.090 --> 00:11:26.882 align:middle line:84%
+We're not using the
+common fork-join pools.
+
+228
+00:11:26.882 --> 00:11:29.560 align:middle line:90%
+So things won't grow or shrink.
+
+229
+00:11:29.560 --> 00:11:32.410 align:middle line:84%
+And number two, because
+we're using a special pool,
+
+230
+00:11:32.410 --> 00:11:33.910 align:middle line:84%
+we're using our own
+designated pool,
+
+231
+00:11:33.910 --> 00:11:36.010 align:middle line:84%
+things won't shrink or
+grow because that's not
+
+232
+00:11:36.010 --> 00:11:37.490 align:middle line:90%
+how those pools work.
+
+233
+00:11:37.490 --> 00:11:40.060 align:middle line:84%
+And number two, these
+are compute bound jobs.
+
+234
+00:11:40.060 --> 00:11:42.250 align:middle line:84%
+So there would be
+no reason to worry
+
+235
+00:11:42.250 --> 00:11:43.680 align:middle line:90%
+about having managed blockers.
+
+236
+00:11:43.680 --> 00:11:48.150 align:middle line:84%
+So all the manage blocker stuff
+won't be applied at this point.

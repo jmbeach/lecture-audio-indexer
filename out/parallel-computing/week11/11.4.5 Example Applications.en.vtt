@@ -1,0 +1,788 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.640 align:middle line:90%
+
+
+2
+00:00:00.640 --> 00:00:03.370 align:middle line:84%
+So now that I've shown
+you several different ways
+
+3
+00:00:03.370 --> 00:00:06.610 align:middle line:84%
+of programming with the
+Java Fork-Join pool,
+
+4
+00:00:06.610 --> 00:00:11.350 align:middle line:84%
+let's take a step back and
+evaluate what we've seen.
+
+5
+00:00:11.350 --> 00:00:14.190 align:middle line:84%
+So there's obviously going to
+be pros and cons to what we've
+
+6
+00:00:14.190 --> 00:00:15.540 align:middle line:90%
+looked at here.
+
+7
+00:00:15.540 --> 00:00:20.200 align:middle line:84%
+I think it's fair to say that
+the iterative Fork-Join model,
+
+8
+00:00:20.200 --> 00:00:23.490 align:middle line:84%
+the one that was shown in
+the apply all iter method,
+
+9
+00:00:23.490 --> 00:00:26.250 align:middle line:84%
+is very simple to
+program, relatively
+
+10
+00:00:26.250 --> 00:00:29.020 align:middle line:84%
+simple to understand once you
+understand what fork and join
+
+11
+00:00:29.020 --> 00:00:29.520 align:middle line:90%
+does.
+
+12
+00:00:29.520 --> 00:00:31.810 align:middle line:84%
+So that's a very
+simple approach.
+
+13
+00:00:31.810 --> 00:00:35.095 align:middle line:84%
+However, it also incurs
+more work stealing.
+
+14
+00:00:35.095 --> 00:00:37.470 align:middle line:84%
+If you take a look at the
+different work stealing counts,
+
+15
+00:00:37.470 --> 00:00:39.500 align:middle line:84%
+its work stealing
+count is much higher
+
+16
+00:00:39.500 --> 00:00:41.940 align:middle line:84%
+than everybody else's,
+pretty much double some
+
+17
+00:00:41.940 --> 00:00:43.380 align:middle line:90%
+of the other ones.
+
+18
+00:00:43.380 --> 00:00:47.040 align:middle line:84%
+These tests were all
+conducted on my six core hyper
+
+19
+00:00:47.040 --> 00:00:52.350 align:middle line:84%
+threaded Windows laptop
+with 64 megabytes of RAM.
+
+20
+00:00:52.350 --> 00:00:55.850 align:middle line:84%
+And actually, it's
+not megabytes.
+
+21
+00:00:55.850 --> 00:00:58.760 align:middle line:90%
+I think it's gigabytes.
+
+22
+00:00:58.760 --> 00:01:03.770 align:middle line:84%
+So this basically goes ahead
+and has lots of steals.
+
+23
+00:01:03.770 --> 00:01:07.910 align:middle line:84%
+As a consequence, the
+performance isn't very good.
+
+24
+00:01:07.910 --> 00:01:11.920 align:middle line:84%
+So that's the downside
+with using this approach.
+
+25
+00:01:11.920 --> 00:01:14.420 align:middle line:84%
+It's easy to program, but it
+doesn't perform as well as some
+
+26
+00:01:14.420 --> 00:01:16.470 align:middle line:90%
+of the other approaches.
+
+27
+00:01:16.470 --> 00:01:20.430 align:middle line:84%
+In contrast, the approaches that
+used recursive decomposition
+
+28
+00:01:20.430 --> 00:01:22.830 align:middle line:90%
+incur fewer steals.
+
+29
+00:01:22.830 --> 00:01:25.080 align:middle line:84%
+So they don't steal as much,
+because they recursively
+
+30
+00:01:25.080 --> 00:01:30.360 align:middle line:84%
+decompose, and you end up with
+a much better balanced tree
+
+31
+00:01:30.360 --> 00:01:35.580 align:middle line:84%
+of tasks in the
+forking and joining.
+
+32
+00:01:35.580 --> 00:01:37.560 align:middle line:84%
+And as a consequence,
+no surprise,
+
+33
+00:01:37.560 --> 00:01:40.028 align:middle line:90%
+the performance is better.
+
+34
+00:01:40.028 --> 00:01:41.820 align:middle line:84%
+And obviously, there
+are other factors here
+
+35
+00:01:41.820 --> 00:01:43.290 align:middle line:90%
+that also improve performance.
+
+36
+00:01:43.290 --> 00:01:48.850 align:middle line:84%
+For example, the apply all split
+index and apply all split index
+
+37
+00:01:48.850 --> 00:01:52.500 align:middle line:90%
+EX methods do much less copy.
+
+38
+00:01:52.500 --> 00:01:55.380 align:middle line:84%
+In fact, the apply all
+split index EX method,
+
+39
+00:01:55.380 --> 00:01:58.680 align:middle line:84%
+that's the one that
+we pass the array
+
+40
+00:01:58.680 --> 00:02:02.760 align:middle line:84%
+as a final parameter, a fourth
+parameter, to the method.
+
+41
+00:02:02.760 --> 00:02:04.570 align:middle line:90%
+That one is the fastest.
+
+42
+00:02:04.570 --> 00:02:07.980 align:middle line:84%
+So going to be
+less data copying,
+
+43
+00:02:07.980 --> 00:02:10.320 align:middle line:84%
+still some recursive
+calls, but in general, you
+
+44
+00:02:10.320 --> 00:02:13.260 align:middle line:84%
+can see that those overheads
+really do, in fact,
+
+45
+00:02:13.260 --> 00:02:18.150 align:middle line:84%
+matter when we take a look
+at which one runs the best.
+
+46
+00:02:18.150 --> 00:02:21.260 align:middle line:84%
+However, these approaches are
+more complicated to program.
+
+47
+00:02:21.260 --> 00:02:23.330 align:middle line:84%
+So you kind of have
+to pick your poison.
+
+48
+00:02:23.330 --> 00:02:25.800 align:middle line:84%
+You either get
+simplicity of programming
+
+49
+00:02:25.800 --> 00:02:31.410 align:middle line:84%
+with less performance or you
+get more complicated programming
+
+50
+00:02:31.410 --> 00:02:32.850 align:middle line:90%
+with higher performance.
+
+51
+00:02:32.850 --> 00:02:35.430 align:middle line:84%
+And you might think
+to yourself, gosh,
+
+52
+00:02:35.430 --> 00:02:36.750 align:middle line:90%
+is there any other way to go?
+
+53
+00:02:36.750 --> 00:02:40.170 align:middle line:84%
+And we'll talk about another
+way to go in a second.
+
+54
+00:02:40.170 --> 00:02:43.430 align:middle line:84%
+And it's also fair to say that
+the recursive decomposition
+
+55
+00:02:43.430 --> 00:02:45.530 align:middle line:84%
+approach ends up with
+more method calls,
+
+56
+00:02:45.530 --> 00:02:49.410 align:middle line:84%
+because it's recursive, so
+you've got to do extra work.
+
+57
+00:02:49.410 --> 00:02:52.470 align:middle line:84%
+Another thing to note is that
+the recursive actions overhead
+
+58
+00:02:52.470 --> 00:02:54.895 align:middle line:84%
+is lower than the
+recursive tasks overhead.
+
+59
+00:02:54.895 --> 00:02:56.520 align:middle line:84%
+And that, again, is
+because of the fact
+
+60
+00:02:56.520 --> 00:02:59.100 align:middle line:84%
+that we're kind of
+passing in this array
+
+61
+00:02:59.100 --> 00:03:01.080 align:middle line:84%
+or using this array
+in order to be
+
+62
+00:03:01.080 --> 00:03:03.060 align:middle line:84%
+able to store the
+results directly
+
+63
+00:03:03.060 --> 00:03:05.370 align:middle line:84%
+rather than having to
+join things together
+
+64
+00:03:05.370 --> 00:03:06.960 align:middle line:90%
+through sub lists.
+
+65
+00:03:06.960 --> 00:03:12.680 align:middle line:84%
+So that will also give you a bit
+of a performance boost as well.
+
+66
+00:03:12.680 --> 00:03:14.810 align:middle line:84%
+However, the recursive
+action approach
+
+67
+00:03:14.810 --> 00:03:17.590 align:middle line:84%
+is pretty idiosyncratic,
+especially
+
+68
+00:03:17.590 --> 00:03:20.230 align:middle line:90%
+when we deal with generic code.
+
+69
+00:03:20.230 --> 00:03:22.480 align:middle line:84%
+So it took me a little
+while to figure out
+
+70
+00:03:22.480 --> 00:03:25.910 align:middle line:84%
+the magic to make this
+particular method work.
+
+71
+00:03:25.910 --> 00:03:30.420 align:middle line:84%
+That's why I ended up devising
+the apply all split index
+
+72
+00:03:30.420 --> 00:03:33.910 align:middle line:84%
+EX version, because I was
+like, this is just too hideous.
+
+73
+00:03:33.910 --> 00:03:35.920 align:middle line:90%
+But it does kind of work.
+
+74
+00:03:35.920 --> 00:03:39.510 align:middle line:90%
+It's just pretty ugly.
+
+75
+00:03:39.510 --> 00:03:43.200 align:middle line:84%
+Changing the API, as we saw,
+can help reduce the complexity.
+
+76
+00:03:43.200 --> 00:03:45.150 align:middle line:84%
+So we passed in an
+array of results
+
+77
+00:03:45.150 --> 00:03:47.610 align:middle line:84%
+rather than having
+to fish things
+
+78
+00:03:47.610 --> 00:03:52.430 align:middle line:84%
+out using Java Reflection
+in this goofy idiom here.
+
+79
+00:03:52.430 --> 00:03:54.220 align:middle line:84%
+Now, the ironic
+part of all this,
+
+80
+00:03:54.220 --> 00:03:55.970 align:middle line:84%
+after going through
+all of the discussions
+
+81
+00:03:55.970 --> 00:04:01.640 align:middle line:84%
+about the Fork-Join pool and the
+different models and recursive
+
+82
+00:04:01.640 --> 00:04:04.430 align:middle line:84%
+decomposition versus
+iterative work stealing,
+
+83
+00:04:04.430 --> 00:04:08.660 align:middle line:84%
+blah, blah, blah, it turns out
+that the most concise solution
+
+84
+00:04:08.660 --> 00:04:12.980 align:middle line:84%
+to this problem simply involves
+the use of our good friend
+
+85
+00:04:12.980 --> 00:04:16.079 align:middle line:84%
+parallel streams, which
+we've talked about before.
+
+86
+00:04:16.079 --> 00:04:19.040 align:middle line:84%
+So just for kicks, I wrote yet
+another implementation, which
+
+87
+00:04:19.040 --> 00:04:21.589 align:middle line:84%
+I'm going to walk
+through here now,
+
+88
+00:04:21.589 --> 00:04:24.590 align:middle line:90%
+called apply parallel stream.
+
+89
+00:04:24.590 --> 00:04:28.618 align:middle line:84%
+And you can see it
+takes a list and an op.
+
+90
+00:04:28.618 --> 00:04:30.410 align:middle line:84%
+Obviously it doesn't
+take a Fork-Join pool,
+
+91
+00:04:30.410 --> 00:04:33.590 align:middle line:84%
+because it doesn't get a chance
+to do anything other than use
+
+92
+00:04:33.590 --> 00:04:36.340 align:middle line:90%
+the common Fork-Join pool.
+
+93
+00:04:36.340 --> 00:04:39.570 align:middle line:90%
+So here's what it does.
+
+94
+00:04:39.570 --> 00:04:42.870 align:middle line:84%
+It goes ahead and converts the
+list into a parallel stream.
+
+95
+00:04:42.870 --> 00:04:44.040 align:middle line:90%
+So we pass in the list.
+
+96
+00:04:44.040 --> 00:04:46.770 align:middle line:84%
+We say, hey, make this
+a parallel stream.
+
+97
+00:04:46.770 --> 00:04:49.560 align:middle line:84%
+Nothing else really to do
+to make parallelism work.
+
+98
+00:04:49.560 --> 00:04:53.820 align:middle line:84%
+We then go ahead and call the
+map intermediate operation
+
+99
+00:04:53.820 --> 00:04:56.040 align:middle line:90%
+passing in the op function.
+
+100
+00:04:56.040 --> 00:04:58.260 align:middle line:84%
+And of course, that
+will then apply the op
+
+101
+00:04:58.260 --> 00:05:02.230 align:middle line:84%
+to every element in
+the stream in parallel.
+
+102
+00:05:02.230 --> 00:05:05.100 align:middle line:84%
+And then we go ahead and
+we collect all those items
+
+103
+00:05:05.100 --> 00:05:09.180 align:middle line:84%
+together into an array
+list and return that
+
+104
+00:05:09.180 --> 00:05:14.727 align:middle line:84%
+as the result of the apply
+parallel stream method.
+
+105
+00:05:14.727 --> 00:05:15.810 align:middle line:90%
+Pretty interesting, right?
+
+106
+00:05:15.810 --> 00:05:19.800 align:middle line:84%
+That sure looks a
+lot more concise.
+
+107
+00:05:19.800 --> 00:05:22.500 align:middle line:84%
+If you understand
+parallel streams,
+
+108
+00:05:22.500 --> 00:05:24.510 align:middle line:84%
+it probably takes
+you about 10 seconds
+
+109
+00:05:24.510 --> 00:05:28.470 align:middle line:84%
+to figure out what's going on,
+whereas taking a look at code
+
+110
+00:05:28.470 --> 00:05:32.200 align:middle line:84%
+like this or the code like
+that, you're like, hm,
+
+111
+00:05:32.200 --> 00:05:33.780 align:middle line:90%
+what the heck is going on here?
+
+112
+00:05:33.780 --> 00:05:35.130 align:middle line:90%
+You could write this code.
+
+113
+00:05:35.130 --> 00:05:36.720 align:middle line:84%
+Maybe you can read
+this code maybe,
+
+114
+00:05:36.720 --> 00:05:38.883 align:middle line:84%
+but it sure takes a
+while to get your head
+
+115
+00:05:38.883 --> 00:05:40.550 align:middle line:84%
+around what it's
+trying to do and trying
+
+116
+00:05:40.550 --> 00:05:42.430 align:middle line:90%
+to debug it and so on.
+
+117
+00:05:42.430 --> 00:05:47.150 align:middle line:84%
+Whereas this approach here is
+really, really straightforward.
+
+118
+00:05:47.150 --> 00:05:49.480 align:middle line:84%
+Now, the proof is in
+the pudding, right?
+
+119
+00:05:49.480 --> 00:05:52.670 align:middle line:84%
+What is the consequence
+of doing this?
+
+120
+00:05:52.670 --> 00:05:55.180 align:middle line:84%
+And so when you run
+this code, you'll
+
+121
+00:05:55.180 --> 00:05:57.500 align:middle line:84%
+notice a couple of
+interesting things.
+
+122
+00:05:57.500 --> 00:06:00.220 align:middle line:84%
+First of all, you'll
+notice that the steal count
+
+123
+00:06:00.220 --> 00:06:01.900 align:middle line:84%
+for the parallel
+stream version is
+
+124
+00:06:01.900 --> 00:06:04.630 align:middle line:84%
+pretty much on par
+with the steal count
+
+125
+00:06:04.630 --> 00:06:08.800 align:middle line:84%
+for the other recursive
+decomposition versions, which
+
+126
+00:06:08.800 --> 00:06:12.280 align:middle line:84%
+is no real surprise, because
+obviously, parallel streams
+
+127
+00:06:12.280 --> 00:06:17.110 align:middle line:84%
+works by recursive decomposition
+just like our various apply
+
+128
+00:06:17.110 --> 00:06:20.403 align:middle line:90%
+all split methods do.
+
+129
+00:06:20.403 --> 00:06:22.070 align:middle line:84%
+And then if you look
+at the performance,
+
+130
+00:06:22.070 --> 00:06:24.810 align:middle line:90%
+it's really not that far off.
+
+131
+00:06:24.810 --> 00:06:29.360 align:middle line:84%
+So it's not as fast
+as the apply all
+
+132
+00:06:29.360 --> 00:06:32.090 align:middle line:84%
+split index EX
+method, which does
+
+133
+00:06:32.090 --> 00:06:34.040 align:middle line:84%
+sort of the super
+optimized approach.
+
+134
+00:06:34.040 --> 00:06:38.150 align:middle line:84%
+But it's only roughly about
+100 milliseconds slower.
+
+135
+00:06:38.150 --> 00:06:41.150 align:middle line:84%
+So it's not a factor
+of two slower.
+
+136
+00:06:41.150 --> 00:06:44.030 align:middle line:84%
+And it is definitely
+faster than the apply
+
+137
+00:06:44.030 --> 00:06:47.600 align:middle line:84%
+all iter approach, which
+executes the slowest
+
+138
+00:06:47.600 --> 00:06:49.290 align:middle line:90%
+of these approaches.
+
+139
+00:06:49.290 --> 00:06:54.050 align:middle line:84%
+So I think the way to take this
+is that in many, many use cases
+
+140
+00:06:54.050 --> 00:06:59.900 align:middle line:84%
+nowadays, using parallel streams
+will perform quite well, quite
+
+141
+00:06:59.900 --> 00:07:02.900 align:middle line:84%
+competitive, with
+alternative approaches.
+
+142
+00:07:02.900 --> 00:07:05.120 align:middle line:84%
+And I think it's no
+question that it's
+
+143
+00:07:05.120 --> 00:07:07.760 align:middle line:90%
+much, much easier to program.
+
+144
+00:07:07.760 --> 00:07:10.730 align:middle line:84%
+So this is actually no
+surprise, because if you
+
+145
+00:07:10.730 --> 00:07:14.660 align:middle line:84%
+stop to think about it, one
+of the reasons why the Java 8
+
+146
+00:07:14.660 --> 00:07:19.250 align:middle line:84%
+development team added streams
+and parallel streams to Java
+
+147
+00:07:19.250 --> 00:07:24.020 align:middle line:84%
+was to provide this much more
+concise, much more convenient
+
+148
+00:07:24.020 --> 00:07:27.530 align:middle line:84%
+functional programming
+wrapper around
+
+149
+00:07:27.530 --> 00:07:32.810 align:middle line:84%
+the powerful and scalable but
+somewhat hard to program object
+
+150
+00:07:32.810 --> 00:07:37.480 align:middle line:84%
+oriented Fork-Join pool that
+had been added in Java 7.
+
+151
+00:07:37.480 --> 00:07:40.160 align:middle line:84%
+And I think this example
+really demonstrates
+
+152
+00:07:40.160 --> 00:07:41.840 align:middle line:84%
+why that was a
+win, because we can
+
+153
+00:07:41.840 --> 00:07:45.500 align:middle line:84%
+get pretty much comparative
+performance at a fraction
+
+154
+00:07:45.500 --> 00:07:46.910 align:middle line:90%
+of the programming effort.
+
+155
+00:07:46.910 --> 00:07:49.760 align:middle line:84%
+So unlike our earlier discussion
+where we were like, well,
+
+156
+00:07:49.760 --> 00:07:53.660 align:middle line:84%
+we gotta pick our poison when we
+do Fork-Join pool programming.
+
+157
+00:07:53.660 --> 00:07:57.800 align:middle line:84%
+Do we make it easy to program
+but slower or harder to program
+
+158
+00:07:57.800 --> 00:07:58.970 align:middle line:90%
+and faster?
+
+159
+00:07:58.970 --> 00:08:02.725 align:middle line:84%
+With parallel streams, you
+just write the parallel stream.
+
+160
+00:08:02.725 --> 00:08:04.100 align:middle line:84%
+And as you can
+see, the framework
+
+161
+00:08:04.100 --> 00:08:07.130 align:middle line:84%
+does a pretty darn good
+job of optimizing things
+
+162
+00:08:07.130 --> 00:08:08.330 align:middle line:90%
+under the hood.
+
+163
+00:08:08.330 --> 00:08:11.510 align:middle line:84%
+And so we end up with
+comparative performance
+
+164
+00:08:11.510 --> 00:08:17.230 align:middle line:84%
+at a fraction of the effort to
+develop, understand, and make.

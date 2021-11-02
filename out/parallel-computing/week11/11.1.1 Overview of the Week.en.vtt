@@ -1,0 +1,278 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.550 align:middle line:90%
+
+
+2
+00:00:00.550 --> 00:00:02.230 align:middle line:84%
+Welcome to the next
+week of our course
+
+3
+00:00:02.230 --> 00:00:05.280 align:middle line:84%
+on parallel functional
+programming with Java.
+
+4
+00:00:05.280 --> 00:00:07.560 align:middle line:84%
+Now that we've described the
+structure, functionality,
+
+5
+00:00:07.560 --> 00:00:10.830 align:middle line:84%
+and APIs of the Java
+fork-join framework,
+
+6
+00:00:10.830 --> 00:00:14.040 align:middle line:84%
+we can turn our attention to
+the common ForkJoinPool, which
+
+7
+00:00:14.040 --> 00:00:17.380 align:middle line:84%
+is the default pool
+used by any ForkJoinTask
+
+8
+00:00:17.380 --> 00:00:21.420 align:middle line:84%
+that's not submitted to a
+specific pool within a process.
+
+9
+00:00:21.420 --> 00:00:24.600 align:middle line:84%
+This common pool helps to
+optimize resource utilization,
+
+10
+00:00:24.600 --> 00:00:26.790 align:middle line:84%
+since it's aware of which
+cores are use globally
+
+11
+00:00:26.790 --> 00:00:30.580 align:middle line:84%
+within a process, thereby
+maximizing process core
+
+12
+00:00:30.580 --> 00:00:33.480 align:middle line:84%
+utilization via work-stealing
+from a centralized pool
+
+13
+00:00:33.480 --> 00:00:35.260 align:middle line:90%
+of threads.
+
+14
+00:00:35.260 --> 00:00:37.750 align:middle line:84%
+It's also the pool that's used
+by the Java parallel streams
+
+15
+00:00:37.750 --> 00:00:40.240 align:middle line:84%
+framework, covered
+in prior weeks,
+
+16
+00:00:40.240 --> 00:00:41.770 align:middle line:84%
+as well as the
+default pool that's
+
+17
+00:00:41.770 --> 00:00:44.800 align:middle line:84%
+used by the Java completable
+future framework, covered
+
+18
+00:00:44.800 --> 00:00:46.797 align:middle line:90%
+in upcoming weeks.
+
+19
+00:00:46.797 --> 00:00:48.380 align:middle line:84%
+Although the default
+number of threads
+
+20
+00:00:48.380 --> 00:00:51.500 align:middle line:84%
+in the common ForkJoinPool is
+one less than the total number
+
+21
+00:00:51.500 --> 00:00:54.980 align:middle line:84%
+of processor cores known to
+the Java execution environment,
+
+22
+00:00:54.980 --> 00:00:57.800 align:middle line:84%
+a program using the common
+ForkJoinPool actually
+
+23
+00:00:57.800 --> 00:01:01.130 align:middle line:84%
+uses all available cores
+since the calling thread
+
+24
+00:01:01.130 --> 00:01:04.650 align:middle line:84%
+is borrowed and used
+temporarily as part of the pool.
+
+25
+00:01:04.650 --> 00:01:07.430 align:middle line:84%
+However, this default number
+of threads may be inadequate
+
+26
+00:01:07.430 --> 00:01:10.850 align:middle line:84%
+for some programs such as
+I/O-bound apps that download
+
+27
+00:01:10.850 --> 00:01:13.740 align:middle line:84%
+and process content
+from the web.
+
+28
+00:01:13.740 --> 00:01:15.630 align:middle line:84%
+Therefore, the common
+ForkJoinPool size
+
+29
+00:01:15.630 --> 00:01:18.960 align:middle line:84%
+can be expanded and
+contracted programmatically
+
+30
+00:01:18.960 --> 00:01:24.307 align:middle line:84%
+by various means we describe in
+detail in this week's lessons.
+
+31
+00:01:24.307 --> 00:01:26.140 align:middle line:84%
+Although the size of
+the common ForkJoinPool
+
+32
+00:01:26.140 --> 00:01:29.110 align:middle line:84%
+can be set by modifying
+a system property,
+
+33
+00:01:29.110 --> 00:01:32.590 align:middle line:84%
+this approach is inflexible
+since this property can only
+
+34
+00:01:32.590 --> 00:01:35.770 align:middle line:84%
+be set once before the
+common ForkJoinPool is first
+
+35
+00:01:35.770 --> 00:01:37.210 align:middle line:90%
+initialized.
+
+36
+00:01:37.210 --> 00:01:40.180 align:middle line:84%
+Moreover, it's often hard to
+estimate the number of threads
+
+37
+00:01:40.180 --> 00:01:42.750 align:middle line:90%
+set by this approach.
+
+38
+00:01:42.750 --> 00:01:44.180 align:middle line:84%
+Therefore, the
+fork-join framework
+
+39
+00:01:44.180 --> 00:01:47.720 align:middle line:84%
+also supports a so-called
+ManagedBlocker mechanism,
+
+40
+00:01:47.720 --> 00:01:49.790 align:middle line:84%
+which temporarily
+adds worker threads
+
+41
+00:01:49.790 --> 00:01:52.710 align:middle line:84%
+to the common
+ForkJoinPool on demand,
+
+42
+00:01:52.710 --> 00:01:54.830 align:middle line:84%
+such as when a task
+blocks on I/O operations
+
+43
+00:01:54.830 --> 00:01:56.840 align:middle line:90%
+or synchronizers.
+
+44
+00:01:56.840 --> 00:01:59.390 align:middle line:84%
+We explain how to program
+the ManagedBlocker mechanism
+
+45
+00:01:59.390 --> 00:02:02.270 align:middle line:84%
+and also show how to
+encapsulate this mechanism
+
+46
+00:02:02.270 --> 00:02:05.108 align:middle line:90%
+in a convenient wrapper class.
+
+47
+00:02:05.108 --> 00:02:07.400 align:middle line:84%
+The bulk of this week's
+lessons describe an application
+
+48
+00:02:07.400 --> 00:02:09.800 align:middle line:84%
+that applies different Java
+ForkJoinPool programming
+
+49
+00:02:09.800 --> 00:02:14.180 align:middle line:84%
+models on a common data set, and
+then quantifies the trade-offs
+
+50
+00:02:14.180 --> 00:02:16.360 align:middle line:90%
+between these models.
+
+51
+00:02:16.360 --> 00:02:18.430 align:middle line:84%
+These programming models
+evaluate the performance
+
+52
+00:02:18.430 --> 00:02:21.910 align:middle line:84%
+of using work stealing the
+dispersed tasks to worker
+
+53
+00:02:21.910 --> 00:02:25.900 align:middle line:84%
+threads, compared with using
+recursive decomposition
+
+54
+00:02:25.900 --> 00:02:29.790 align:middle line:84%
+to basically disperse
+tasks to worker threads.
+
+55
+00:02:29.790 --> 00:02:31.520 align:middle line:84%
+We end this week's
+lessons by comparing
+
+56
+00:02:31.520 --> 00:02:34.740 align:middle line:84%
+a ForkJoinPool-based solutions
+with a parallel streams-based
+
+57
+00:02:34.740 --> 00:02:39.260 align:middle line:84%
+solution to underscore the pros
+and cons of each framework.

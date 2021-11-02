@@ -1,0 +1,606 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.560 align:middle line:90%
+
+
+2
+00:00:00.560 --> 00:00:03.180 align:middle line:84%
+So now that I've talked about
+the ManagedBlocker interface
+
+3
+00:00:03.180 --> 00:00:06.150 align:middle line:84%
+which, as you can see, is
+kind of ridiculously simple,
+
+4
+00:00:06.150 --> 00:00:09.150 align:middle line:84%
+and how it's used in
+the implementation
+
+5
+00:00:09.150 --> 00:00:13.230 align:middle line:84%
+of the ManagedBlock method
+in the Fork-Join Pool,
+
+6
+00:00:13.230 --> 00:00:15.820 align:middle line:84%
+let's go ahead and talk about
+how to apply it in practice.
+
+7
+00:00:15.820 --> 00:00:17.820 align:middle line:84%
+And I'll show you a couple
+of different examples
+
+8
+00:00:17.820 --> 00:00:20.080 align:middle line:84%
+from a couple of
+different perspectives.
+
+9
+00:00:20.080 --> 00:00:22.530 align:middle line:84%
+So this particular
+discussion will
+
+10
+00:00:22.530 --> 00:00:25.680 align:middle line:84%
+show how to apply
+the ManagedBlocker
+
+11
+00:00:25.680 --> 00:00:30.390 align:middle line:84%
+interface on blocking
+synchronizers and blocking
+
+12
+00:00:30.390 --> 00:00:32.700 align:middle line:90%
+cues.
+
+13
+00:00:32.700 --> 00:00:36.720 align:middle line:84%
+So if you take a look at
+the Java documentation
+
+14
+00:00:36.720 --> 00:00:41.073 align:middle line:84%
+for ManagedBlocker, you will
+see that the following examples
+
+15
+00:00:41.073 --> 00:00:42.990 align:middle line:84%
+except that the examples
+don't go into as much
+
+16
+00:00:42.990 --> 00:00:44.710 align:middle line:84%
+detail as I'm about
+to go through.
+
+17
+00:00:44.710 --> 00:00:47.160 align:middle line:84%
+So take a look at those
+examples and then you
+
+18
+00:00:47.160 --> 00:00:50.280 align:middle line:84%
+can watch the video and learn
+exactly what they're doing.
+
+19
+00:00:50.280 --> 00:00:52.410 align:middle line:84%
+So as you can see, the
+first example we see here
+
+20
+00:00:52.410 --> 00:00:54.850 align:middle line:90%
+is called the ManagedLocker.
+
+21
+00:00:54.850 --> 00:00:58.530 align:middle line:84%
+And the ManagedLocker
+implements ManagedBlocker
+
+22
+00:00:58.530 --> 00:01:02.800 align:middle line:84%
+and it's intended to be used to
+handle a blocking synchronizer.
+
+23
+00:01:02.800 --> 00:01:04.530 align:middle line:84%
+In this particular
+case, the type
+
+24
+00:01:04.530 --> 00:01:08.190 align:middle line:84%
+of blocking synchronizer
+we're concerned with
+
+25
+00:01:08.190 --> 00:01:12.570 align:middle line:84%
+will be a ReentrantLock
+which is an example of a mute
+
+26
+00:01:12.570 --> 00:01:17.040 align:middle line:84%
+text or a mutual exclusion
+mechanism where you can attempt
+
+27
+00:01:17.040 --> 00:01:19.020 align:middle line:90%
+to acquire the lock.
+
+28
+00:01:19.020 --> 00:01:23.310 align:middle line:84%
+And if the lock is free, you get
+it right away and you lock it.
+
+29
+00:01:23.310 --> 00:01:25.590 align:middle line:84%
+If the lock is
+not free, then you
+
+30
+00:01:25.590 --> 00:01:29.070 align:middle line:84%
+have to wait until whoever
+owns the lock releases it.
+
+31
+00:01:29.070 --> 00:01:32.100 align:middle line:84%
+We talked extensively
+about ReentrantLock
+
+32
+00:01:32.100 --> 00:01:34.830 align:middle line:84%
+in my concurrent object-oriented
+programming course,
+
+33
+00:01:34.830 --> 00:01:38.730 align:middle line:84%
+so that's a good place to go to
+learn more about how it works.
+
+34
+00:01:38.730 --> 00:01:42.660 align:middle line:84%
+As you can see here, the
+constructor of ManagedLocker
+
+35
+00:01:42.660 --> 00:01:47.670 align:middle line:84%
+goes ahead and stores the
+lock in the mLock field.
+
+36
+00:01:47.670 --> 00:01:49.290 align:middle line:84%
+So it goes out and
+stashes that away
+
+37
+00:01:49.290 --> 00:01:53.790 align:middle line:84%
+because it's going to be used
+in other methods in the class.
+
+38
+00:01:53.790 --> 00:01:56.940 align:middle line:84%
+One of the methods, which
+of course is implemented
+
+39
+00:01:56.940 --> 00:02:02.340 align:middle line:84%
+by the corresponding hook method
+in the ManagedBlocker interface
+
+40
+00:02:02.340 --> 00:02:04.373 align:middle line:90%
+is the isReleasable method.
+
+41
+00:02:04.373 --> 00:02:05.790 align:middle line:84%
+And you can see,
+what this does is
+
+42
+00:02:05.790 --> 00:02:09.660 align:middle line:84%
+it checks this boolean
+flag called HasLock
+
+43
+00:02:09.660 --> 00:02:13.780 align:middle line:84%
+and if HasLock is
+true, then we return.
+
+44
+00:02:13.780 --> 00:02:16.650 align:middle line:84%
+Otherwise, we go
+ahead and attempt
+
+45
+00:02:16.650 --> 00:02:21.570 align:middle line:84%
+to acquire the lock
+using the tryLock method.
+
+46
+00:02:21.570 --> 00:02:25.490 align:middle line:84%
+And the tryLock method is a
+so-called non-blocking method.
+
+47
+00:02:25.490 --> 00:02:27.810 align:middle line:84%
+And what that does
+is it checks to see
+
+48
+00:02:27.810 --> 00:02:29.010 align:middle line:90%
+if the lock is available.
+
+49
+00:02:29.010 --> 00:02:32.730 align:middle line:84%
+If so, it acquires it
+and we get back true.
+
+50
+00:02:32.730 --> 00:02:36.000 align:middle line:84%
+But if it's not currently
+available, we don't block.
+
+51
+00:02:36.000 --> 00:02:37.773 align:middle line:90%
+We just return false.
+
+52
+00:02:37.773 --> 00:02:40.440 align:middle line:84%
+So we're going to take a shot at
+trying to see if we can do this
+
+53
+00:02:40.440 --> 00:02:41.520 align:middle line:90%
+without blocking.
+
+54
+00:02:41.520 --> 00:02:43.900 align:middle line:84%
+And if we succeed,
+no need to block.
+
+55
+00:02:43.900 --> 00:02:45.720 align:middle line:90%
+No need to spawn extra threads.
+
+56
+00:02:45.720 --> 00:02:46.630 align:middle line:90%
+We're done.
+
+57
+00:02:46.630 --> 00:02:50.640 align:middle line:84%
+But if we don't succeed, then
+the underlying ManagedBlock
+
+58
+00:02:50.640 --> 00:02:53.490 align:middle line:84%
+method in the Fork-Join
+Pool will have
+
+59
+00:02:53.490 --> 00:02:56.110 align:middle line:90%
+to call the BlockedHook method.
+
+60
+00:02:56.110 --> 00:02:58.830 align:middle line:84%
+And as you can see, the
+BlockedHook method, once again,
+
+61
+00:02:58.830 --> 00:03:01.290 align:middle line:84%
+check to see if
+we've got the lock.
+
+62
+00:03:01.290 --> 00:03:05.820 align:middle line:84%
+And if not, then we go
+ahead and call mLock.lock.
+
+63
+00:03:05.820 --> 00:03:09.687 align:middle line:84%
+And that actually performs
+a blocking lock operation.
+
+64
+00:03:09.687 --> 00:03:11.520 align:middle line:84%
+So that will end up
+blocking, and of course,
+
+65
+00:03:11.520 --> 00:03:13.830 align:middle line:84%
+if it blocks for an
+extended period of time,
+
+66
+00:03:13.830 --> 00:03:15.660 align:middle line:84%
+that will cause
+the Fork-Join Pool
+
+67
+00:03:15.660 --> 00:03:18.690 align:middle line:84%
+to compensate by
+creating another thread
+
+68
+00:03:18.690 --> 00:03:22.500 align:middle line:84%
+to make up for the fact
+that this one is locked.
+
+69
+00:03:22.500 --> 00:03:26.190 align:middle line:84%
+Let's take a different look at
+a different blocking mechanism
+
+70
+00:03:26.190 --> 00:03:28.650 align:middle line:84%
+and see how that could
+be implemented using
+
+71
+00:03:28.650 --> 00:03:30.880 align:middle line:90%
+the ManagedBlocker interface.
+
+72
+00:03:30.880 --> 00:03:34.500 align:middle line:84%
+So this approach is
+called QueueTaker.
+
+73
+00:03:34.500 --> 00:03:37.980 align:middle line:84%
+And it also implements
+ManagedBlocker.
+
+74
+00:03:37.980 --> 00:03:41.340 align:middle line:84%
+And as you can see, the
+constructor queue taker
+
+75
+00:03:41.340 --> 00:03:45.990 align:middle line:84%
+is past the blocking queue,
+and we go ahead and initialize
+
+76
+00:03:45.990 --> 00:03:50.880 align:middle line:84%
+the mQueue field with whatever
+the queue that's passed to it
+
+77
+00:03:50.880 --> 00:03:51.680 align:middle line:90%
+is.
+
+78
+00:03:51.680 --> 00:03:53.580 align:middle line:84%
+And the BlockingQueue,
+as you may also
+
+79
+00:03:53.580 --> 00:03:56.520 align:middle line:84%
+recall if you've seen my
+concurrent object-oriented
+
+80
+00:03:56.520 --> 00:04:01.140 align:middle line:84%
+programming lectures, is
+essentially a bounded buffer
+
+81
+00:04:01.140 --> 00:04:02.940 align:middle line:90%
+that's thread safe.
+
+82
+00:04:02.940 --> 00:04:04.890 align:middle line:84%
+And the way it works
+would be if someone
+
+83
+00:04:04.890 --> 00:04:07.710 align:middle line:84%
+tries to remove an item
+from a bounded queue
+
+84
+00:04:07.710 --> 00:04:10.290 align:middle line:84%
+and the queue is empty,
+then that will block
+
+85
+00:04:10.290 --> 00:04:11.950 align:middle line:90%
+until the queue is not empty.
+
+86
+00:04:11.950 --> 00:04:16.260 align:middle line:84%
+And if someone tries to insert
+an item into a blocking queue
+
+87
+00:04:16.260 --> 00:04:18.860 align:middle line:84%
+and the queue is full, then
+that will block into the queue
+
+88
+00:04:18.860 --> 00:04:20.420 align:middle line:90%
+as not full.
+
+89
+00:04:20.420 --> 00:04:22.730 align:middle line:84%
+Good examples of
+BlockingQueue implementations
+
+90
+00:04:22.730 --> 00:04:24.330 align:middle line:84%
+that you may be
+familiar with is,
+
+91
+00:04:24.330 --> 00:04:26.450 align:middle line:84%
+or would be the
+ArrayBlockingQueue
+
+92
+00:04:26.450 --> 00:04:28.400 align:middle line:90%
+and the LinkedBlockingQueue.
+
+93
+00:04:28.400 --> 00:04:30.410 align:middle line:84%
+ArrayBlockingQueue
+using an array list,
+
+94
+00:04:30.410 --> 00:04:33.840 align:middle line:84%
+and LinkBlockingQueue
+using a linked list.
+
+95
+00:04:33.840 --> 00:04:36.760 align:middle line:84%
+So in either case, we're
+going to stash aside
+
+96
+00:04:36.760 --> 00:04:40.700 align:middle line:84%
+the BlockingQueue
+into a local field.
+
+97
+00:04:40.700 --> 00:04:42.220 align:middle line:90%
+Here's the isReleasable method.
+
+98
+00:04:42.220 --> 00:04:45.910 align:middle line:84%
+We see whether or not
+we've got an item already.
+
+99
+00:04:45.910 --> 00:04:48.100 align:middle line:90%
+If we have an item, we're done.
+
+100
+00:04:48.100 --> 00:04:50.350 align:middle line:84%
+Otherwise if we don't have
+an item, then we go ahead
+
+101
+00:04:50.350 --> 00:04:52.720 align:middle line:90%
+and we pull the queue.
+
+102
+00:04:52.720 --> 00:04:56.060 align:middle line:84%
+And pull is a
+non-blocking operation.
+
+103
+00:04:56.060 --> 00:04:59.750 align:middle line:84%
+So if there is an item
+fresh and ready to go,
+
+104
+00:04:59.750 --> 00:05:02.740 align:middle line:84%
+then pull will remove it
+and return it and store it
+
+105
+00:05:02.740 --> 00:05:04.360 align:middle line:90%
+in an item.
+
+106
+00:05:04.360 --> 00:05:08.320 align:middle line:84%
+If there is no item in the queue
+currently, pull will not block.
+
+107
+00:05:08.320 --> 00:05:10.505 align:middle line:90%
+It will just return null.
+
+108
+00:05:10.505 --> 00:05:12.130 align:middle line:84%
+So we're going to
+give a shot at trying
+
+109
+00:05:12.130 --> 00:05:15.850 align:middle line:84%
+to get the non-blocking
+item off the queue.
+
+110
+00:05:15.850 --> 00:05:18.910 align:middle line:84%
+But if it fails,
+then again, we have
+
+111
+00:05:18.910 --> 00:05:20.770 align:middle line:90%
+to have the blocking called.
+
+112
+00:05:20.770 --> 00:05:22.450 align:middle line:84%
+So in this case,
+what will happen
+
+113
+00:05:22.450 --> 00:05:26.860 align:middle line:84%
+is if we still have a
+null item for m item, then
+
+114
+00:05:26.860 --> 00:05:29.260 align:middle line:84%
+we call the take
+method on the queue.
+
+115
+00:05:29.260 --> 00:05:33.550 align:middle line:84%
+And take will block until an
+item is put onto the queue.
+
+116
+00:05:33.550 --> 00:05:35.320 align:middle line:84%
+So even if the queue
+is empty, it'll
+
+117
+00:05:35.320 --> 00:05:38.110 align:middle line:84%
+just wait and block
+the calling thread
+
+118
+00:05:38.110 --> 00:05:39.960 align:middle line:90%
+until an item is available.
+
+119
+00:05:39.960 --> 00:05:42.460 align:middle line:84%
+And as you can see, when the
+item finally becomes available,
+
+120
+00:05:42.460 --> 00:05:46.750 align:middle line:84%
+we return the item and
+store it in the mItem field.
+
+121
+00:05:46.750 --> 00:05:49.630 align:middle line:84%
+Now, we need to find some way
+of getting access to that item
+
+122
+00:05:49.630 --> 00:05:52.570 align:middle line:84%
+when all is said and done, and
+so we define a little helper
+
+123
+00:05:52.570 --> 00:05:55.810 align:middle line:84%
+method called getItem, which
+is an accessor method that
+
+124
+00:05:55.810 --> 00:05:57.760 align:middle line:90%
+returns mItem.
+
+125
+00:05:57.760 --> 00:06:00.970 align:middle line:84%
+And of course you
+would call getItem
+
+126
+00:06:00.970 --> 00:06:05.850 align:middle line:84%
+after ManageBlock completes
+in order to get the result.

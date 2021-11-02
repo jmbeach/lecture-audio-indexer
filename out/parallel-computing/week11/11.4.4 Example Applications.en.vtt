@@ -1,0 +1,540 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.600 align:middle line:90%
+
+
+2
+00:00:00.600 --> 00:00:03.930 align:middle line:84%
+The third and final method we're
+going to look at here in detail
+
+3
+00:00:03.930 --> 00:00:07.470 align:middle line:84%
+is the applyAllSplitIndex
+method.
+
+4
+00:00:07.470 --> 00:00:09.540 align:middle line:84%
+And you'll see that
+this has basically
+
+5
+00:00:09.540 --> 00:00:13.710 align:middle line:84%
+an optimization approach applied
+to the applyAllSplit method we
+
+6
+00:00:13.710 --> 00:00:15.145 align:middle line:90%
+just looked at.
+
+7
+00:00:15.145 --> 00:00:16.520 align:middle line:84%
+So let's take a
+look at this one.
+
+8
+00:00:16.520 --> 00:00:19.370 align:middle line:84%
+This is actually very clever,
+maybe too clever in some ways,
+
+9
+00:00:19.370 --> 00:00:20.910 align:middle line:90%
+but it's pretty cool.
+
+10
+00:00:20.910 --> 00:00:26.600 align:middle line:84%
+What it does is it is
+going to create an array
+
+11
+00:00:26.600 --> 00:00:28.640 align:middle line:90%
+to hold the results.
+
+12
+00:00:28.640 --> 00:00:33.690 align:middle line:84%
+And this array is created inside
+the applyAllSplitIndex method.
+
+13
+00:00:33.690 --> 00:00:37.670 align:middle line:84%
+And as you can see here, it
+uses this totally insane Java
+
+14
+00:00:37.670 --> 00:00:42.872 align:middle line:84%
+Reflection technique to figure
+out the type of the list
+
+15
+00:00:42.872 --> 00:00:44.330 align:middle line:84%
+and then to create
+a new array that
+
+16
+00:00:44.330 --> 00:00:49.040 align:middle line:84%
+is as big as that item
+of the size of the list.
+
+17
+00:00:49.040 --> 00:00:50.810 align:middle line:90%
+And, yes, it's ugly.
+
+18
+00:00:50.810 --> 00:00:53.427 align:middle line:84%
+No, there's no other way
+to do this that's portable.
+
+19
+00:00:53.427 --> 00:00:55.010 align:middle line:84%
+Please read the Stack
+Overflow article
+
+20
+00:00:55.010 --> 00:00:57.385 align:middle line:84%
+for more about why you need
+to do crazy things like this.
+
+21
+00:00:57.385 --> 00:01:00.320 align:middle line:84%
+This all comes down to
+the fact that generics
+
+22
+00:01:00.320 --> 00:01:02.540 align:middle line:84%
+are kind of bolted on
+to Java in some ways
+
+23
+00:01:02.540 --> 00:01:06.150 align:middle line:84%
+and are a little bit harder to
+work with than we might want.
+
+24
+00:01:06.150 --> 00:01:10.140 align:middle line:84%
+Then what we do is we have a new
+splitter task, except this time
+
+25
+00:01:10.140 --> 00:01:13.890 align:middle line:84%
+it extends recursive
+action not recursive task.
+
+26
+00:01:13.890 --> 00:01:16.860 align:middle line:84%
+So as a result, the
+joins return no value.
+
+27
+00:01:16.860 --> 00:01:20.060 align:middle line:84%
+And you'll see why that's
+the case in just a moment.
+
+28
+00:01:20.060 --> 00:01:23.940 align:middle line:84%
+We then go ahead and
+invoke the splitter task.
+
+29
+00:01:23.940 --> 00:01:26.130 align:middle line:84%
+And the whole idea here
+is that rather than
+
+30
+00:01:26.130 --> 00:01:30.480 align:middle line:84%
+making copies of subsets
+of the list or sublists;
+
+31
+00:01:30.480 --> 00:01:34.020 align:middle line:84%
+instead, we're going to
+keep everything in the list
+
+32
+00:01:34.020 --> 00:01:34.583 align:middle line:90%
+as it was.
+
+33
+00:01:34.583 --> 00:01:36.000 align:middle line:84%
+And we're going
+to keep everything
+
+34
+00:01:36.000 --> 00:01:38.160 align:middle line:90%
+in the results array.
+
+35
+00:01:38.160 --> 00:01:41.430 align:middle line:84%
+And we're going to
+simply be passing indices
+
+36
+00:01:41.430 --> 00:01:42.760 align:middle line:90%
+into the splitter task.
+
+37
+00:01:42.760 --> 00:01:44.730 align:middle line:84%
+So we're not going to
+have to copy any data
+
+38
+00:01:44.730 --> 00:01:47.010 align:middle line:90%
+or split up the lists.
+
+39
+00:01:47.010 --> 00:01:50.160 align:middle line:84%
+As before, invoke waits for
+the splitter task to finish.
+
+40
+00:01:50.160 --> 00:01:53.790 align:middle line:84%
+And when it's all done, it goes
+ahead and takes the results
+
+41
+00:01:53.790 --> 00:01:56.550 align:middle line:84%
+array, which is where all
+the results have been placed
+
+42
+00:01:56.550 --> 00:01:59.190 align:middle line:84%
+by the splitter
+task recursion, it
+
+43
+00:01:59.190 --> 00:02:02.250 align:middle line:84%
+converts that back into a
+list, and then returns it back
+
+44
+00:02:02.250 --> 00:02:03.942 align:middle line:90%
+to the caller.
+
+45
+00:02:03.942 --> 00:02:06.150 align:middle line:84%
+And obviously, these
+conversions to and from the list
+
+46
+00:02:06.150 --> 00:02:09.840 align:middle line:84%
+to array to the list
+will incur some overhead.
+
+47
+00:02:09.840 --> 00:02:12.030 align:middle line:84%
+Now, if we want to get
+around some of the overheads
+
+48
+00:02:12.030 --> 00:02:18.720 align:middle line:84%
+here, what we can do is pass
+in the array as a parameter
+
+49
+00:02:18.720 --> 00:02:20.260 align:middle line:90%
+to the function.
+
+50
+00:02:20.260 --> 00:02:23.340 align:middle line:84%
+And that's a much more elegant
+and efficient way to do things,
+
+51
+00:02:23.340 --> 00:02:26.118 align:middle line:84%
+because then we don't have
+to do all these conversions.
+
+52
+00:02:26.118 --> 00:02:27.660 align:middle line:84%
+We're not going to
+show this example,
+
+53
+00:02:27.660 --> 00:02:30.150 align:middle line:84%
+but it would be a way
+to make it faster,
+
+54
+00:02:30.150 --> 00:02:31.800 align:middle line:84%
+just changes the
+signature a bit.
+
+55
+00:02:31.800 --> 00:02:36.525 align:middle line:84%
+So it's a bit more obtrusive,
+but it's cleaner, for sure.
+
+56
+00:02:36.525 --> 00:02:38.400 align:middle line:84%
+So let's take a quick
+look at how this works.
+
+57
+00:02:38.400 --> 00:02:41.400 align:middle line:84%
+Splitter task extends
+recursive action.
+
+58
+00:02:41.400 --> 00:02:43.830 align:middle line:84%
+The bulk of this code is going
+to look very much the same
+
+59
+00:02:43.830 --> 00:02:44.440 align:middle line:90%
+as before.
+
+60
+00:02:44.440 --> 00:02:47.880 align:middle line:84%
+The difference is we
+pass indices for the low
+
+61
+00:02:47.880 --> 00:02:51.930 align:middle line:84%
+and the high bounds of the list,
+rather than passing in the list
+
+62
+00:02:51.930 --> 00:02:54.230 align:middle line:90%
+and then having to split it.
+
+63
+00:02:54.230 --> 00:02:56.410 align:middle line:84%
+So the compute
+method looks similar.
+
+64
+00:02:56.410 --> 00:02:58.090 align:middle line:84%
+We compute the
+midpoint because we
+
+65
+00:02:58.090 --> 00:02:59.950 align:middle line:90%
+want to split things in half.
+
+66
+00:02:59.950 --> 00:03:01.690 align:middle line:84%
+And now, what we're
+going to do is
+
+67
+00:03:01.690 --> 00:03:05.140 align:middle line:84%
+rather than working on a
+list; instead, we simply
+
+68
+00:03:05.140 --> 00:03:11.320 align:middle line:84%
+apply the operation on the mlo
+element in the original list
+
+69
+00:03:11.320 --> 00:03:15.640 align:middle line:84%
+parameter and then store it into
+the results array at the mlo
+
+70
+00:03:15.640 --> 00:03:17.310 align:middle line:90%
+location.
+
+71
+00:03:17.310 --> 00:03:19.330 align:middle line:90%
+So this is pretty clever.
+
+72
+00:03:19.330 --> 00:03:22.020 align:middle line:84%
+And then you can see that
+the else part is actually
+
+73
+00:03:22.020 --> 00:03:24.480 align:middle line:84%
+quite a bit more
+concise, where we're
+
+74
+00:03:24.480 --> 00:03:29.190 align:middle line:84%
+going to go ahead and create
+a new left task, which will be
+
+75
+00:03:29.190 --> 00:03:32.560 align:middle line:90%
+handling mlo to the midpoint.
+
+76
+00:03:32.560 --> 00:03:35.610 align:middle line:84%
+So we get the left
+hand and we fork that.
+
+77
+00:03:35.610 --> 00:03:38.200 align:middle line:84%
+We then compute the
+right-hand portion,
+
+78
+00:03:38.200 --> 00:03:40.560 align:middle line:84%
+because we've updated
+mlo to be mid.
+
+79
+00:03:40.560 --> 00:03:43.560 align:middle line:84%
+You can see we updated
+mlo to be mid here.
+
+80
+00:03:43.560 --> 00:03:45.690 align:middle line:90%
+We run the compute method.
+
+81
+00:03:45.690 --> 00:03:48.450 align:middle line:84%
+And that again runs in the
+same task as the parent
+
+82
+00:03:48.450 --> 00:03:50.550 align:middle line:90%
+to minimize contact switching.
+
+83
+00:03:50.550 --> 00:03:53.670 align:middle line:84%
+And then when we're done,
+we simply say lt.join.
+
+84
+00:03:53.670 --> 00:03:57.210 align:middle line:84%
+And there is no value
+coming back from join,
+
+85
+00:03:57.210 --> 00:04:00.450 align:middle line:84%
+because this is a recursive
+action, not a recursive task.
+
+86
+00:04:00.450 --> 00:04:03.870 align:middle line:84%
+So join simply works
+as a synchronization
+
+87
+00:04:03.870 --> 00:04:08.160 align:middle line:84%
+point to make sure we block
+until the left-hand side has
+
+88
+00:04:08.160 --> 00:04:09.067 align:middle line:90%
+finished.
+
+89
+00:04:09.067 --> 00:04:10.650 align:middle line:84%
+And it also makes
+sure that the memory
+
+90
+00:04:10.650 --> 00:04:13.920 align:middle line:84%
+is visible to all the threads,
+because it's a synchronization
+
+91
+00:04:13.920 --> 00:04:16.170 align:middle line:90%
+point.
+
+92
+00:04:16.170 --> 00:04:18.790 align:middle line:84%
+There's no need to merge
+the left and right items,
+
+93
+00:04:18.790 --> 00:04:20.750 align:middle line:84%
+since they've already
+been stored directly
+
+94
+00:04:20.750 --> 00:04:22.010 align:middle line:90%
+into the results array.
+
+95
+00:04:22.010 --> 00:04:25.040 align:middle line:90%
+So that's much cooler.
+
+96
+00:04:25.040 --> 00:04:28.580 align:middle line:84%
+This implementation is also
+arguably harder to program
+
+97
+00:04:28.580 --> 00:04:32.960 align:middle line:84%
+and understand than the
+apply all inter version
+
+98
+00:04:32.960 --> 00:04:35.320 align:middle line:90%
+since it's recursive.
+
+99
+00:04:35.320 --> 00:04:37.030 align:middle line:84%
+Let's quickly
+visualize this method.
+
+100
+00:04:37.030 --> 00:04:42.550 align:middle line:84%
+It basically runs visually
+the same as applyAllSplit.
+
+101
+00:04:42.550 --> 00:04:45.400 align:middle line:84%
+We have the non-fork
+join task client,
+
+102
+00:04:45.400 --> 00:04:50.870 align:middle line:84%
+put in a new splitter task for
+the entire range of the list.
+
+103
+00:04:50.870 --> 00:04:54.040 align:middle line:84%
+And then we recursively
+decompose everything,
+
+104
+00:04:54.040 --> 00:04:56.680 align:middle line:84%
+so that the threads in
+the pool will end up
+
+105
+00:04:56.680 --> 00:05:00.260 align:middle line:84%
+being able to work on a
+more balanced set of tasks.
+
+106
+00:05:00.260 --> 00:05:03.070 align:middle line:84%
+So again, work stealing,
+overhead is low.
+
+107
+00:05:03.070 --> 00:05:04.987 align:middle line:90%
+Copying overhead is low.
+
+108
+00:05:04.987 --> 00:05:06.820 align:middle line:84%
+But there's still all
+those recursive method
+
+109
+00:05:06.820 --> 00:05:11.130 align:middle line:84%
+calls, which are pretty fast,
+but there is some cost to them.
+
+110
+00:05:11.130 --> 00:05:14.370 align:middle line:84%
+Once again, we fork and
+compute in parallel.
+
+111
+00:05:14.370 --> 00:05:17.310 align:middle line:84%
+And join is just this
+synchronization point.
+
+112
+00:05:17.310 --> 00:05:19.920 align:middle line:84%
+It doesn't return a new value,
+because we've stored everything
+
+113
+00:05:19.920 --> 00:05:22.040 align:middle line:90%
+into the results array.
