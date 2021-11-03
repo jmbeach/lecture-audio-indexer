@@ -1,0 +1,621 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.500 align:middle line:90%
+
+
+2
+00:00:00.500 --> 00:00:03.960 align:middle line:84%
+So now I've talked a bit about
+what reactive programming is
+
+3
+00:00:03.960 --> 00:00:07.530 align:middle line:84%
+and I've given you an overview
+of Java completable futures,
+
+4
+00:00:07.530 --> 00:00:10.950 align:middle line:84%
+let's go ahead and describe
+how Java's completable futures
+
+5
+00:00:10.950 --> 00:00:14.310 align:middle line:84%
+framework maps onto
+these key principles
+
+6
+00:00:14.310 --> 00:00:18.060 align:middle line:90%
+of reactive programming.
+
+7
+00:00:18.060 --> 00:00:20.700 align:middle line:84%
+As you can see here, the
+completable futures model
+
+8
+00:00:20.700 --> 00:00:23.340 align:middle line:84%
+maps quite nicely onto the
+key reactive programming
+
+9
+00:00:23.340 --> 00:00:24.300 align:middle line:90%
+principles.
+
+10
+00:00:24.300 --> 00:00:27.240 align:middle line:90%
+Let's start with responsive.
+
+11
+00:00:27.240 --> 00:00:29.340 align:middle line:84%
+Responsiveness in
+completable futures
+
+12
+00:00:29.340 --> 00:00:34.560 align:middle line:84%
+is done by avoiding blocking
+in user code or more
+
+13
+00:00:34.560 --> 00:00:37.560 align:middle line:84%
+specifically in
+user interface code.
+
+14
+00:00:37.560 --> 00:00:39.960 align:middle line:84%
+So we want to try
+to avoid blocking
+
+15
+00:00:39.960 --> 00:00:42.900 align:middle line:84%
+if at all possible in
+this code because blocking
+
+16
+00:00:42.900 --> 00:00:46.290 align:middle line:84%
+ends up underutilizing
+the processor cores.
+
+17
+00:00:46.290 --> 00:00:48.420 align:middle line:84%
+It impedes the
+inherent parallelism
+
+18
+00:00:48.420 --> 00:00:51.390 align:middle line:84%
+on a platform on a system
+with the hardware and software
+
+19
+00:00:51.390 --> 00:00:52.930 align:middle line:90%
+stacks and so on.
+
+20
+00:00:52.930 --> 00:00:55.390 align:middle line:84%
+And it also has a tendency to
+complicate program structure
+
+21
+00:00:55.390 --> 00:00:58.030 align:middle line:90%
+if you're not very careful.
+
+22
+00:00:58.030 --> 00:01:01.150 align:middle line:84%
+The way this is done
+in completable futures
+
+23
+00:01:01.150 --> 00:01:04.569 align:middle line:84%
+is through a set of
+methods that it defines.
+
+24
+00:01:04.569 --> 00:01:06.610 align:middle line:84%
+It has methods called
+factoring methods
+
+25
+00:01:06.610 --> 00:01:09.820 align:middle line:84%
+that create completable
+futures and run operations
+
+26
+00:01:09.820 --> 00:01:11.020 align:middle line:90%
+asynchronously.
+
+27
+00:01:11.020 --> 00:01:14.230 align:middle line:84%
+It has something called
+completion stage methods,
+
+28
+00:01:14.230 --> 00:01:16.690 align:middle line:84%
+which are used to
+handle the results
+
+29
+00:01:16.690 --> 00:01:20.620 align:middle line:84%
+of previous completable future
+processes that have finished
+
+30
+00:01:20.620 --> 00:01:23.740 align:middle line:84%
+running when they're done
+running asynchronously
+
+31
+00:01:23.740 --> 00:01:25.920 align:middle line:84%
+as well as something
+called arbitrary
+
+32
+00:01:25.920 --> 00:01:27.430 align:middle line:84%
+error team methods,
+which are ways
+
+33
+00:01:27.430 --> 00:01:30.110 align:middle line:84%
+of taking groups of
+completable futures
+
+34
+00:01:30.110 --> 00:01:33.300 align:middle line:84%
+and then having a single way
+to wait for them all to finish.
+
+35
+00:01:33.300 --> 00:01:35.920 align:middle line:84%
+And by using these, you can
+avoid having to block threads.
+
+36
+00:01:35.920 --> 00:01:38.320 align:middle line:84%
+In fact, if you're writing
+certain kinds of applications,
+
+37
+00:01:38.320 --> 00:01:40.120 align:middle line:84%
+you'd never have
+to block at all.
+
+38
+00:01:40.120 --> 00:01:43.630 align:middle line:84%
+Other applications you have
+to block sparingly in order
+
+39
+00:01:43.630 --> 00:01:46.640 align:middle line:84%
+to get the result back before
+feeding it to the user,
+
+40
+00:01:46.640 --> 00:01:48.450 align:middle line:90%
+for instance.
+
+41
+00:01:48.450 --> 00:01:50.340 align:middle line:84%
+Another way you can
+be more responsive
+
+42
+00:01:50.340 --> 00:01:53.580 align:middle line:84%
+in completable futures is by
+programming in a manner that
+
+43
+00:01:53.580 --> 00:01:56.040 align:middle line:90%
+avoids changing threads.
+
+44
+00:01:56.040 --> 00:01:58.230 align:middle line:84%
+It turns out that
+changing threads
+
+45
+00:01:58.230 --> 00:02:00.840 align:middle line:84%
+moving one computation
+from one thread
+
+46
+00:02:00.840 --> 00:02:02.880 align:middle line:84%
+and passing it to
+another thread actually
+
+47
+00:02:02.880 --> 00:02:04.800 align:middle line:84%
+can incur a fair
+amount of overhead
+
+48
+00:02:04.800 --> 00:02:07.890 align:middle line:84%
+in terms of synchronization
+overhead, context switching
+
+49
+00:02:07.890 --> 00:02:11.520 align:middle line:84%
+overhead, memory management
+overhead, and cache management
+
+50
+00:02:11.520 --> 00:02:14.500 align:middle line:84%
+overhead-- processor
+cache management overhead.
+
+51
+00:02:14.500 --> 00:02:16.020 align:middle line:84%
+So wherever possible,
+we might want
+
+52
+00:02:16.020 --> 00:02:19.500 align:middle line:84%
+to avoid that just to increase
+the performance of the system,
+
+53
+00:02:19.500 --> 00:02:21.450 align:middle line:84%
+take better advantage
+of parallelism,
+
+54
+00:02:21.450 --> 00:02:23.990 align:middle line:90%
+and be more responsive.
+
+55
+00:02:23.990 --> 00:02:27.800 align:middle line:84%
+The way this works is by
+using the Java fork-join pool,
+
+56
+00:02:27.800 --> 00:02:30.440 align:middle line:84%
+which as we've seen in
+previous weeks' lessons,
+
+57
+00:02:30.440 --> 00:02:34.700 align:middle line:84%
+gives us this wonderful ability
+to run lots of computations
+
+58
+00:02:34.700 --> 00:02:37.850 align:middle line:84%
+efficiently and scalably
+on multiple cores,
+
+59
+00:02:37.850 --> 00:02:40.870 align:middle line:84%
+maximizing utilization
+through work stealing.
+
+60
+00:02:40.870 --> 00:02:46.310 align:middle line:84%
+And there's also a set of
+so-called non-async methods
+
+61
+00:02:46.310 --> 00:02:48.680 align:middle line:84%
+that are part of
+the completion stage
+
+62
+00:02:48.680 --> 00:02:50.840 align:middle line:90%
+API of completable futures.
+
+63
+00:02:50.840 --> 00:02:53.630 align:middle line:84%
+And these methods also
+avoid changing threads,
+
+64
+00:02:53.630 --> 00:02:55.700 align:middle line:84%
+and we'll talk more
+about these subtleties
+
+65
+00:02:55.700 --> 00:02:57.410 align:middle line:84%
+as we get further
+into the discussion.
+
+66
+00:02:57.410 --> 00:03:00.570 align:middle line:84%
+But I just want to
+outline it here.
+
+67
+00:03:00.570 --> 00:03:02.245 align:middle line:84%
+Another key property
+that we have,
+
+68
+00:03:02.245 --> 00:03:03.870 align:middle line:84%
+key principle for
+reactive programming,
+
+69
+00:03:03.870 --> 00:03:05.520 align:middle line:90%
+is being resilient.
+
+70
+00:03:05.520 --> 00:03:09.540 align:middle line:84%
+And the way that completable
+futures handles this property
+
+71
+00:03:09.540 --> 00:03:12.060 align:middle line:84%
+is by having exception
+methods, which
+
+72
+00:03:12.060 --> 00:03:14.940 align:middle line:84%
+are a variant of
+completion stage methods
+
+73
+00:03:14.940 --> 00:03:20.080 align:middle line:84%
+that help to make a program more
+resilient to partial failures.
+
+74
+00:03:20.080 --> 00:03:25.260 align:middle line:84%
+So if a asynchronous operation
+goes awry and happens to fail,
+
+75
+00:03:25.260 --> 00:03:28.980 align:middle line:84%
+then the exception methods that
+are built into the completion
+
+76
+00:03:28.980 --> 00:03:33.480 align:middle line:84%
+stage API will allow
+the overall program
+
+77
+00:03:33.480 --> 00:03:36.090 align:middle line:84%
+to continue to
+execute and allow us
+
+78
+00:03:36.090 --> 00:03:39.240 align:middle line:84%
+to gracefully catch those
+asynchronous exceptions
+
+79
+00:03:39.240 --> 00:03:44.310 align:middle line:84%
+and handle them, thereby
+decoupling the error processing
+
+80
+00:03:44.310 --> 00:03:49.100 align:middle line:84%
+path from the normal
+operation processing path.
+
+81
+00:03:49.100 --> 00:03:51.350 align:middle line:84%
+As we'll see here,
+completable futures
+
+82
+00:03:51.350 --> 00:03:53.810 align:middle line:84%
+are localized to
+a single process
+
+83
+00:03:53.810 --> 00:03:55.760 align:middle line:90%
+just like parallel streams.
+
+84
+00:03:55.760 --> 00:03:58.880 align:middle line:84%
+They don't run in a
+networked cluster.
+
+85
+00:03:58.880 --> 00:04:01.090 align:middle line:84%
+So just keep that
+in mind we're going
+
+86
+00:04:01.090 --> 00:04:03.500 align:middle line:84%
+to be resilient to
+failures of operations,
+
+87
+00:04:03.500 --> 00:04:05.510 align:middle line:90%
+not failures of nodes here.
+
+88
+00:04:05.510 --> 00:04:07.820 align:middle line:84%
+If you want resilience
+with failures of nodes,
+
+89
+00:04:07.820 --> 00:04:11.240 align:middle line:84%
+you have to use a broader
+middleware technology
+
+90
+00:04:11.240 --> 00:04:14.300 align:middle line:90%
+like Hadoop or Sparks.
+
+91
+00:04:14.300 --> 00:04:16.430 align:middle line:84%
+The third key reactive
+programming principle
+
+92
+00:04:16.430 --> 00:04:21.320 align:middle line:84%
+that completable future supports
+is the notion of elasticity.
+
+93
+00:04:21.320 --> 00:04:23.030 align:middle line:84%
+And basically the
+idea here is you
+
+94
+00:04:23.030 --> 00:04:26.750 align:middle line:84%
+want asynchronous computations
+to be able to run scalably
+
+95
+00:04:26.750 --> 00:04:30.150 align:middle line:84%
+in a pool of threads
+that are multiplexed
+
+96
+00:04:30.150 --> 00:04:33.080 align:middle line:90%
+on top a set of cores.
+
+97
+00:04:33.080 --> 00:04:34.580 align:middle line:84%
+And the way this
+works, of course,
+
+98
+00:04:34.580 --> 00:04:37.520 align:middle line:84%
+with the completable
+futures is you can either
+
+99
+00:04:37.520 --> 00:04:40.790 align:middle line:84%
+use a common fork-join
+pool, which is the default,
+
+100
+00:04:40.790 --> 00:04:43.910 align:middle line:84%
+some user defined
+fork-join pool,
+
+101
+00:04:43.910 --> 00:04:46.940 align:middle line:84%
+or various predefined or
+user-defined thread pools.
+
+102
+00:04:46.940 --> 00:04:49.170 align:middle line:84%
+So you can pick
+the pools you want,
+
+103
+00:04:49.170 --> 00:04:54.360 align:middle line:84%
+and that can be used to help
+run your code more elastically.
+
+104
+00:04:54.360 --> 00:04:57.870 align:middle line:84%
+And then the final principle
+that reactive programming
+
+105
+00:04:57.870 --> 00:05:01.270 align:middle line:84%
+espouses is the concept
+of being message driven.
+
+106
+00:05:01.270 --> 00:05:04.980 align:middle line:84%
+As I said before, that's really
+more of a implementation detail
+
+107
+00:05:04.980 --> 00:05:08.190 align:middle line:84%
+than a real quality
+of service dimension.
+
+108
+00:05:08.190 --> 00:05:11.580 align:middle line:84%
+But with Java's
+thread pools, they
+
+109
+00:05:11.580 --> 00:05:13.080 align:middle line:84%
+support message
+passing internally.
+
+110
+00:05:13.080 --> 00:05:14.455 align:middle line:84%
+That's the way
+thread pools work.
+
+111
+00:05:14.455 --> 00:05:16.530 align:middle line:84%
+They pass messages
+between threads.
+
+112
+00:05:16.530 --> 00:05:19.650 align:middle line:84%
+Obviously if you think about
+the fork-join pool for sure,
+
+113
+00:05:19.650 --> 00:05:23.190 align:middle line:84%
+it supports work stealing of
+tasks, which are basically
+
+114
+00:05:23.190 --> 00:05:26.760 align:middle line:84%
+messages, which are passed back
+and forth between the decks
+
+115
+00:05:26.760 --> 00:05:28.380 align:middle line:90%
+in the fork-join pool.
+
+116
+00:05:28.380 --> 00:05:30.720 align:middle line:84%
+And as we look more into
+the internal workings
+
+117
+00:05:30.720 --> 00:05:32.670 align:middle line:84%
+of the completable
+future framework itself,
+
+118
+00:05:32.670 --> 00:05:35.130 align:middle line:84%
+you'll see that they
+pass messages around
+
+119
+00:05:35.130 --> 00:05:38.700 align:middle line:84%
+in order to be able to enqueue
+the asynchronous operations
+
+120
+00:05:38.700 --> 00:05:43.260 align:middle line:84%
+to run in the appropriate
+worker thread in whatever thread
+
+121
+00:05:43.260 --> 00:05:44.850 align:middle line:90%
+pool we happen to be using.
+
+122
+00:05:44.850 --> 00:05:47.550 align:middle line:84%
+So messages are used
+quite extensively
+
+123
+00:05:47.550 --> 00:05:50.190 align:middle line:84%
+throughout the completable
+futures framework
+
+124
+00:05:50.190 --> 00:05:53.340 align:middle line:84%
+even though the API it
+offers to programmers
+
+125
+00:05:53.340 --> 00:05:56.580 align:middle line:90%
+is a method call oriented API.
+
+126
+00:05:56.580 --> 00:05:59.130 align:middle line:84%
+So it's really a method
+call oriented API which
+
+127
+00:05:59.130 --> 00:06:03.600 align:middle line:84%
+provides a facade
+atop a message passing
+
+128
+00:06:03.600 --> 00:06:06.050 align:middle line:90%
+engine underneath the hood.

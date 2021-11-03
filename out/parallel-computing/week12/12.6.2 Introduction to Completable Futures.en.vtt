@@ -1,0 +1,974 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.308 align:middle line:90%
+
+
+2
+00:00:00.308 --> 00:00:02.850 align:middle line:84%
+So now that I've given you an
+overview of completable futures
+
+3
+00:00:02.850 --> 00:00:05.340 align:middle line:84%
+and shown how they address
+some of the limitations
+
+4
+00:00:05.340 --> 00:00:08.610 align:middle line:84%
+with classic futures,
+let's give an overview
+
+5
+00:00:08.610 --> 00:00:10.375 align:middle line:90%
+of the completable future API.
+
+6
+00:00:10.375 --> 00:00:12.750 align:middle line:84%
+And we're really going to talk
+here at a high level about
+
+7
+00:00:12.750 --> 00:00:15.342 align:middle line:90%
+how these different methods--
+
+8
+00:00:15.342 --> 00:00:17.550 align:middle line:84%
+and there are lots of them
+as we'll see in a moment--
+
+9
+00:00:17.550 --> 00:00:19.175 align:middle line:84%
+can be grouped together
+in a way that's
+
+10
+00:00:19.175 --> 00:00:21.630 align:middle line:90%
+a little easier to understand.
+
+11
+00:00:21.630 --> 00:00:23.590 align:middle line:84%
+Well, first of all, why
+do we need to do this?
+
+12
+00:00:23.590 --> 00:00:25.090 align:middle line:84%
+It turns out that
+if you take a look
+
+13
+00:00:25.090 --> 00:00:29.580 align:middle line:84%
+at the completable future
+class, the public API
+
+14
+00:00:29.580 --> 00:00:32.637 align:middle line:84%
+has over 60 methods,
+and these methods
+
+15
+00:00:32.637 --> 00:00:34.470 align:middle line:84%
+keep growing with every
+new release of Java.
+
+16
+00:00:34.470 --> 00:00:36.780 align:middle line:84%
+So there's a lot of
+methods, and a lot of them
+
+17
+00:00:36.780 --> 00:00:41.278 align:middle line:84%
+are a little bit intimidating
+to understand at first glance.
+
+18
+00:00:41.278 --> 00:00:43.320 align:middle line:84%
+If you were to take a look
+at the implementation,
+
+19
+00:00:43.320 --> 00:00:46.920 align:middle line:84%
+if you get the source code and
+peek at the way it's actually
+
+20
+00:00:46.920 --> 00:00:48.360 align:middle line:84%
+implemented under
+the hood, you'll
+
+21
+00:00:48.360 --> 00:00:50.110 align:middle line:84%
+be even more flabbergasted
+because there's
+
+22
+00:00:50.110 --> 00:00:53.040 align:middle line:84%
+about two dozen different
+nested classes that
+
+23
+00:00:53.040 --> 00:00:55.020 align:middle line:84%
+are really convoluted
+and complicated
+
+24
+00:00:55.020 --> 00:00:56.380 align:middle line:90%
+and do lots of work.
+
+25
+00:00:56.380 --> 00:00:58.860 align:middle line:84%
+So even though the
+completable future framework
+
+26
+00:00:58.860 --> 00:01:02.400 align:middle line:84%
+has a lot of methods
+in its public API,
+
+27
+00:01:02.400 --> 00:01:04.709 align:middle line:84%
+it's really implementing
+the facade pattern
+
+28
+00:01:04.709 --> 00:01:09.120 align:middle line:84%
+to hide you from even more
+complex details lurking
+
+29
+00:01:09.120 --> 00:01:11.700 align:middle line:84%
+in the implementation of
+the completable futures
+
+30
+00:01:11.700 --> 00:01:16.220 align:middle line:84%
+framework, which is really quite
+daunting to the uninitiated.
+
+31
+00:01:16.220 --> 00:01:18.170 align:middle line:84%
+So therefore it
+really helps to have
+
+32
+00:01:18.170 --> 00:01:22.610 align:middle line:84%
+a bird's eye view of this
+highly method intensive class.
+
+33
+00:01:22.610 --> 00:01:25.310 align:middle line:84%
+So we want to see
+things, step back
+
+34
+00:01:25.310 --> 00:01:28.700 align:middle line:84%
+and look at it from a distance,
+and see how it all shapes out.
+
+35
+00:01:28.700 --> 00:01:32.940 align:middle line:84%
+And I found this classic photo--
+this is from one of the Apollo
+
+36
+00:01:32.940 --> 00:01:33.440 align:middle line:90%
+missions.
+
+37
+00:01:33.440 --> 00:01:34.520 align:middle line:90%
+It's called Earthrise.
+
+38
+00:01:34.520 --> 00:01:37.640 align:middle line:84%
+It was a picture of the
+earth from the moon-- well,
+
+39
+00:01:37.640 --> 00:01:40.132 align:middle line:84%
+from the lunar module
+circling the moon.
+
+40
+00:01:40.132 --> 00:01:41.590 align:middle line:84%
+And if you take a
+close look at it,
+
+41
+00:01:41.590 --> 00:01:43.250 align:middle line:84%
+it looks like what
+we're showing here.
+
+42
+00:01:43.250 --> 00:01:46.700 align:middle line:84%
+It's showing the completion
+stage method part of the earth
+
+43
+00:01:46.700 --> 00:01:48.760 align:middle line:90%
+if you will.
+
+44
+00:01:48.760 --> 00:01:52.740 align:middle line:84%
+Some of the completable
+future methods are very basic.
+
+45
+00:01:52.740 --> 00:01:55.230 align:middle line:84%
+In fact, they're
+really not much more
+
+46
+00:01:55.230 --> 00:02:00.810 align:middle line:84%
+than what you get from the
+underlying Java future API.
+
+47
+00:02:00.810 --> 00:02:04.170 align:middle line:84%
+So this API is basically
+the Java futures
+
+48
+00:02:04.170 --> 00:02:09.039 align:middle line:84%
+plus a few enhancements just
+to make it a little better.
+
+49
+00:02:09.039 --> 00:02:11.580 align:middle line:84%
+This is only slightly better
+than the conventional future
+
+50
+00:02:11.580 --> 00:02:14.880 align:middle line:84%
+API, so obviously, if that's
+all we got, we just stop.
+
+51
+00:02:14.880 --> 00:02:17.560 align:middle line:84%
+There'd be no point in
+talking any further.
+
+52
+00:02:17.560 --> 00:02:20.870 align:middle line:84%
+What's interesting, of course,
+are the more advanced methods.
+
+53
+00:02:20.870 --> 00:02:22.870 align:middle line:84%
+And these are the ones
+that are really cool.
+
+54
+00:02:22.870 --> 00:02:26.632 align:middle line:84%
+These include factory methods,
+completion stage methods,
+
+55
+00:02:26.632 --> 00:02:28.090 align:middle line:84%
+exception methods,
+which are really
+
+56
+00:02:28.090 --> 00:02:30.220 align:middle line:84%
+a variant of completion
+stage methods,
+
+57
+00:02:30.220 --> 00:02:32.737 align:middle line:90%
+and arbitrary arity methods.
+
+58
+00:02:32.737 --> 00:02:34.570 align:middle line:84%
+So what I'd like to do
+here is just give you
+
+59
+00:02:34.570 --> 00:02:36.940 align:middle line:84%
+a little sense of what
+these methods are.
+
+60
+00:02:36.940 --> 00:02:40.240 align:middle line:84%
+We're not going to talk about
+them in gory detail yet.
+
+61
+00:02:40.240 --> 00:02:43.520 align:middle line:84%
+That will appear in
+upcoming lessons.
+
+62
+00:02:43.520 --> 00:02:46.030 align:middle line:84%
+So the first category of
+methods we want to talk about--
+
+63
+00:02:46.030 --> 00:02:47.490 align:middle line:84%
+or really the good
+starting point--
+
+64
+00:02:47.490 --> 00:02:49.480 align:middle line:84%
+and these are the
+factory methods.
+
+65
+00:02:49.480 --> 00:02:52.680 align:middle line:84%
+And the factory methods
+are used to initiate
+
+66
+00:02:52.680 --> 00:02:57.010 align:middle line:84%
+asynchronous one-way or two-way
+computations without using
+
+67
+00:02:57.010 --> 00:02:59.380 align:middle line:90%
+threads explicitly.
+
+68
+00:02:59.380 --> 00:03:03.910 align:middle line:84%
+And as we'll see here,
+there's four of these methods,
+
+69
+00:03:03.910 --> 00:03:05.890 align:middle line:84%
+and they have a bunch of
+interesting properties
+
+70
+00:03:05.890 --> 00:03:08.950 align:middle line:84%
+that we'll talk about in more
+detail as we get further along.
+
+71
+00:03:08.950 --> 00:03:12.160 align:middle line:84%
+The most important one
+or most important ones
+
+72
+00:03:12.160 --> 00:03:15.730 align:middle line:84%
+are the methods
+called supply async.
+
+73
+00:03:15.730 --> 00:03:17.500 align:middle line:84%
+And what these
+methods do is they
+
+74
+00:03:17.500 --> 00:03:21.610 align:middle line:84%
+help to make asynchronous
+programs more elastic
+
+75
+00:03:21.610 --> 00:03:24.070 align:middle line:84%
+by leveraging a pool
+of worker threads.
+
+76
+00:03:24.070 --> 00:03:25.900 align:middle line:84%
+So this is, again,
+just thinking back
+
+77
+00:03:25.900 --> 00:03:28.950 align:middle line:84%
+to the reactive
+programming principles,
+
+78
+00:03:28.950 --> 00:03:32.490 align:middle line:84%
+the factory methods can be used
+to make programs more elastic
+
+79
+00:03:32.490 --> 00:03:36.850 align:middle line:84%
+by having things run
+in a pool of threads.
+
+80
+00:03:36.850 --> 00:03:38.650 align:middle line:84%
+The next category
+of methods, which
+
+81
+00:03:38.650 --> 00:03:41.890 align:middle line:84%
+are by far the vast majority
+of the methods or about 2/3
+
+82
+00:03:41.890 --> 00:03:45.010 align:middle line:84%
+of the methods in the
+completable future API,
+
+83
+00:03:45.010 --> 00:03:48.140 align:middle line:84%
+are the so-called
+completion stage methods.
+
+84
+00:03:48.140 --> 00:03:52.270 align:middle line:84%
+And these methods chained
+together dependent actions
+
+85
+00:03:52.270 --> 00:03:58.180 align:middle line:84%
+that perform asynchronous result
+processing when asynchronous
+
+86
+00:03:58.180 --> 00:03:59.770 align:middle line:90%
+computations finish.
+
+87
+00:03:59.770 --> 00:04:03.580 align:middle line:84%
+So when a computation finishes,
+then the completion stage
+
+88
+00:04:03.580 --> 00:04:05.860 align:middle line:84%
+methods will arrange to
+automatically dispatch
+
+89
+00:04:05.860 --> 00:04:09.010 align:middle line:84%
+these dependent actions,
+which can do something
+
+90
+00:04:09.010 --> 00:04:10.960 align:middle line:84%
+and then typically
+kick off something else
+
+91
+00:04:10.960 --> 00:04:12.277 align:middle line:90%
+to run asynchronously.
+
+92
+00:04:12.277 --> 00:04:14.860 align:middle line:84%
+Something else you can do with
+completion stage methods that's
+
+93
+00:04:14.860 --> 00:04:17.079 align:middle line:90%
+very important is composition.
+
+94
+00:04:17.079 --> 00:04:20.170 align:middle line:84%
+So you can have an
+operation, a completion stage
+
+95
+00:04:20.170 --> 00:04:22.089 align:middle line:84%
+method that only
+gets triggered when
+
+96
+00:04:22.089 --> 00:04:24.310 align:middle line:90%
+two previous stages finish.
+
+97
+00:04:24.310 --> 00:04:26.830 align:middle line:84%
+So you can compose the
+results of two complete-- two
+
+98
+00:04:26.830 --> 00:04:28.880 align:middle line:90%
+previous stages.
+
+99
+00:04:28.880 --> 00:04:33.200 align:middle line:84%
+These methods come from the
+completion stage interface.
+
+100
+00:04:33.200 --> 00:04:35.420 align:middle line:84%
+And I strongly recommend
+you take a look
+
+101
+00:04:35.420 --> 00:04:36.920 align:middle line:84%
+at the completion
+stage interface
+
+102
+00:04:36.920 --> 00:04:38.660 align:middle line:90%
+and read the documentation.
+
+103
+00:04:38.660 --> 00:04:42.350 align:middle line:84%
+It's very enlightening to
+explain what these methods do
+
+104
+00:04:42.350 --> 00:04:43.208 align:middle line:90%
+and how they work.
+
+105
+00:04:43.208 --> 00:04:44.750 align:middle line:84%
+Naturally we'll talk
+about them, too,
+
+106
+00:04:44.750 --> 00:04:48.050 align:middle line:90%
+but it's good as a reference.
+
+107
+00:04:48.050 --> 00:04:49.590 align:middle line:84%
+The completion
+stage methods help
+
+108
+00:04:49.590 --> 00:04:54.120 align:middle line:84%
+to make programs more responsive
+by not blocking the user code,
+
+109
+00:04:54.120 --> 00:04:57.150 align:middle line:84%
+not blocking the client
+code, the caller code.
+
+110
+00:04:57.150 --> 00:04:59.920 align:middle line:84%
+So you can basically have things
+that go run in the background,
+
+111
+00:04:59.920 --> 00:05:01.790 align:middle line:84%
+and you don't have
+to bother the user
+
+112
+00:05:01.790 --> 00:05:03.420 align:middle line:84%
+or you'd have to
+bother the client
+
+113
+00:05:03.420 --> 00:05:08.600 align:middle line:84%
+until after the computations
+are completely done.
+
+114
+00:05:08.600 --> 00:05:10.940 align:middle line:84%
+Yet another category
+of methods are
+
+115
+00:05:10.940 --> 00:05:13.920 align:middle line:84%
+these so-called
+arbitrary arity methods.
+
+116
+00:05:13.920 --> 00:05:16.170 align:middle line:84%
+That's a funny name,
+arbitrary arity.
+
+117
+00:05:16.170 --> 00:05:21.330 align:middle line:84%
+Arity is just a fancy word that
+means number of parameters.
+
+118
+00:05:21.330 --> 00:05:25.550 align:middle line:84%
+So we talk about binary,
+that's a two-arity method,
+
+119
+00:05:25.550 --> 00:05:26.750 align:middle line:90%
+takes two things.
+
+120
+00:05:26.750 --> 00:05:28.230 align:middle line:90%
+You might have a unary method.
+
+121
+00:05:28.230 --> 00:05:30.200 align:middle line:90%
+It takes one parameter.
+
+122
+00:05:30.200 --> 00:05:33.950 align:middle line:84%
+So an arbitrary arity method
+will take essentially an array
+
+123
+00:05:33.950 --> 00:05:36.110 align:middle line:90%
+of parameters.
+
+124
+00:05:36.110 --> 00:05:37.700 align:middle line:84%
+And what it does
+is it can be used
+
+125
+00:05:37.700 --> 00:05:41.330 align:middle line:84%
+to process completable
+futures in bulk
+
+126
+00:05:41.330 --> 00:05:43.790 align:middle line:84%
+by combining
+multiple completable
+
+127
+00:05:43.790 --> 00:05:48.740 align:middle line:84%
+futures into a single completed
+a future that will be triggered
+
+128
+00:05:48.740 --> 00:05:51.380 align:middle line:84%
+only when all the computations
+in the multiple completable
+
+129
+00:05:51.380 --> 00:05:56.130 align:middle line:84%
+futures are done or when
+the first one is done.
+
+130
+00:05:56.130 --> 00:06:00.060 align:middle line:84%
+And this approach also makes
+programs more responsive
+
+131
+00:06:00.060 --> 00:06:01.890 align:middle line:90%
+by not blocking user code.
+
+132
+00:06:01.890 --> 00:06:04.650 align:middle line:84%
+So you can go ahead and start
+a whole bunch of computations
+
+133
+00:06:04.650 --> 00:06:08.450 align:middle line:84%
+to run asynchronously, put
+their completable futures
+
+134
+00:06:08.450 --> 00:06:12.140 align:middle line:84%
+into an array, pass that array
+to one of the arbitrary arity
+
+135
+00:06:12.140 --> 00:06:16.192 align:middle line:84%
+methods, and then get back a
+single completable future that
+
+136
+00:06:16.192 --> 00:06:17.900 align:middle line:84%
+will be triggered when
+everything is done
+
+137
+00:06:17.900 --> 00:06:19.970 align:middle line:90%
+or the first thing is done.
+
+138
+00:06:19.970 --> 00:06:22.470 align:middle line:84%
+And as you can see, there's
+only a handful of these methods.
+
+139
+00:06:22.470 --> 00:06:26.090 align:middle line:84%
+They're, in fact, two of
+them, all of and any of.
+
+140
+00:06:26.090 --> 00:06:28.880 align:middle line:84%
+And we'll talk more about
+their meaning and semantics
+
+141
+00:06:28.880 --> 00:06:30.710 align:middle line:84%
+and how to program
+with them more
+
+142
+00:06:30.710 --> 00:06:34.900 align:middle line:90%
+conveniently in a later lesson.
+
+143
+00:06:34.900 --> 00:06:36.700 align:middle line:84%
+And in the final
+types of methods
+
+144
+00:06:36.700 --> 00:06:39.640 align:middle line:84%
+we're going to distinguish here
+are called exception methods.
+
+145
+00:06:39.640 --> 00:06:43.480 align:middle line:84%
+They're actually a variant of
+the completion stage methods.
+
+146
+00:06:43.480 --> 00:06:46.870 align:middle line:84%
+And they are used to handle
+exceptional conditions
+
+147
+00:06:46.870 --> 00:06:48.310 align:middle line:90%
+at runtime.
+
+148
+00:06:48.310 --> 00:06:50.170 align:middle line:90%
+And there's a bunch of them.
+
+149
+00:06:50.170 --> 00:06:51.440 align:middle line:90%
+There's not a whole lot.
+
+150
+00:06:51.440 --> 00:06:53.500 align:middle line:84%
+There's three of them
+basically, and they
+
+151
+00:06:53.500 --> 00:06:56.800 align:middle line:84%
+can be used to basically catch
+exceptions and do something
+
+152
+00:06:56.800 --> 00:06:58.300 align:middle line:90%
+with the exceptions.
+
+153
+00:06:58.300 --> 00:07:01.000 align:middle line:84%
+Some of the methods can be
+used to swallow the exceptions
+
+154
+00:07:01.000 --> 00:07:02.577 align:middle line:90%
+to keep them from propagating.
+
+155
+00:07:02.577 --> 00:07:04.660 align:middle line:84%
+Other of the methods can
+be used to note something
+
+156
+00:07:04.660 --> 00:07:07.998 align:middle line:84%
+about the program state,
+maybe change the behavior,
+
+157
+00:07:07.998 --> 00:07:09.790 align:middle line:84%
+maybe swallow them,
+maybe not swallow them.
+
+158
+00:07:09.790 --> 00:07:11.890 align:middle line:84%
+Some of the methods can't
+swallow the exceptions.
+
+159
+00:07:11.890 --> 00:07:13.307 align:middle line:84%
+They just note
+something's happen,
+
+160
+00:07:13.307 --> 00:07:16.480 align:middle line:84%
+and then they continue to
+propagate up the chain.
+
+161
+00:07:16.480 --> 00:07:18.310 align:middle line:84%
+But this is a very
+important feature
+
+162
+00:07:18.310 --> 00:07:21.820 align:middle line:84%
+because it allows us
+to handle exceptions
+
+163
+00:07:21.820 --> 00:07:24.430 align:middle line:84%
+that occur in asynchronous
+computations, which
+
+164
+00:07:24.430 --> 00:07:28.360 align:middle line:84%
+are otherwise difficult to
+deal with because the context
+
+165
+00:07:28.360 --> 00:07:31.420 align:middle line:84%
+in which you started the
+asynchronous computation is
+
+166
+00:07:31.420 --> 00:07:34.870 align:middle line:84%
+typically not where you're going
+to be handling the exception.
+
+167
+00:07:34.870 --> 00:07:38.680 align:middle line:84%
+And that's quite different
+from classic Java synchronous
+
+168
+00:07:38.680 --> 00:07:43.270 align:middle line:84%
+exceptions, which we handle with
+conventional try catch blocks
+
+169
+00:07:43.270 --> 00:07:46.450 align:middle line:84%
+where it, in fact, is a
+synchronous situation.
+
+170
+00:07:46.450 --> 00:07:48.010 align:middle line:90%
+You do a try.
+
+171
+00:07:48.010 --> 00:07:49.060 align:middle line:90%
+You do a bunch of calls.
+
+172
+00:07:49.060 --> 00:07:50.477 align:middle line:84%
+If a call throws
+an exception, you
+
+173
+00:07:50.477 --> 00:07:53.710 align:middle line:84%
+catch it synchronously in
+the context of the caller.
+
+174
+00:07:53.710 --> 00:07:56.740 align:middle line:84%
+So the exception methods in
+the completable future API
+
+175
+00:07:56.740 --> 00:07:59.530 align:middle line:84%
+are designed to handle
+the asynchronous model
+
+176
+00:07:59.530 --> 00:08:03.140 align:middle line:90%
+of computation that it supports.
+
+177
+00:08:03.140 --> 00:08:06.860 align:middle line:84%
+This feature helps to make
+programs more resilient
+
+178
+00:08:06.860 --> 00:08:10.040 align:middle line:84%
+by handling erroneous
+computations gracefully or more
+
+179
+00:08:10.040 --> 00:08:13.760 align:middle line:84%
+specifically handling erroneous
+asynchronous computations more
+
+180
+00:08:13.760 --> 00:08:15.770 align:middle line:90%
+gracefully.
+
+181
+00:08:15.770 --> 00:08:20.030 align:middle line:84%
+And, of course, just to
+round out our mapping
+
+182
+00:08:20.030 --> 00:08:23.150 align:middle line:84%
+on to the reactive
+programming principles
+
+183
+00:08:23.150 --> 00:08:25.850 align:middle line:84%
+that we've been talking about
+on and off throughout these
+
+184
+00:08:25.850 --> 00:08:29.590 align:middle line:84%
+lessons so far, all of the
+methods we've described
+
+185
+00:08:29.590 --> 00:08:32.480 align:middle line:84%
+are all internally
+implemented using
+
+186
+00:08:32.480 --> 00:08:35.659 align:middle line:84%
+message passing that will
+ultimately be connected
+
+187
+00:08:35.659 --> 00:08:38.400 align:middle line:90%
+to Java's thread pools.
+
+188
+00:08:38.400 --> 00:08:42.380 align:middle line:84%
+And so this technique helps
+make things loosely coupled.
+
+189
+00:08:42.380 --> 00:08:45.560 align:middle line:84%
+The work can run on any
+thread in the thread pool.
+
+190
+00:08:45.560 --> 00:08:47.240 align:middle line:84%
+It helps to isolate
+the processing.
+
+191
+00:08:47.240 --> 00:08:48.900 align:middle line:84%
+It makes its
+location transparent.
+
+192
+00:08:48.900 --> 00:08:51.830 align:middle line:84%
+You don't know or
+don't care what thread
+
+193
+00:08:51.830 --> 00:08:53.210 align:middle line:90%
+the computation runs in.
+
+194
+00:08:53.210 --> 00:08:55.970 align:middle line:84%
+You just need to know it ran
+and you get a result back
+
+195
+00:08:55.970 --> 00:08:58.140 align:middle line:84%
+and you do something
+with the result.
+
+196
+00:08:58.140 --> 00:09:01.640 align:middle line:84%
+So this just shows how all
+the different API elements
+
+197
+00:09:01.640 --> 00:09:05.270 align:middle line:84%
+map to specific principles
+from the reactive programming
+
+198
+00:09:05.270 --> 00:09:08.870 align:middle line:84%
+paradigm thereby underscoring
+the fact that you can consider
+
+199
+00:09:08.870 --> 00:09:11.660 align:middle line:84%
+Java completable
+futures as a realization
+
+200
+00:09:11.660 --> 00:09:13.430 align:middle line:84%
+of the reactive
+programming model
+
+201
+00:09:13.430 --> 00:09:16.190 align:middle line:84%
+although by no means
+the only realization
+
+202
+00:09:16.190 --> 00:09:19.090 align:middle line:90%
+available in the Java platform.

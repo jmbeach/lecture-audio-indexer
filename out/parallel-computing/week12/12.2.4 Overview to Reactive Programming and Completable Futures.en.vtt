@@ -1,0 +1,520 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.700 align:middle line:90%
+
+
+2
+00:00:00.700 --> 00:00:04.000 align:middle line:84%
+The last introductory
+part I want to cover here
+
+3
+00:00:04.000 --> 00:00:07.660 align:middle line:84%
+is comparing reactive programs
+and reactive programming
+
+4
+00:00:07.660 --> 00:00:13.700 align:middle line:84%
+with another framework
+called Java Reactive Streams.
+
+5
+00:00:13.700 --> 00:00:16.910 align:middle line:84%
+Java Reactive Streams
+was added to Java
+
+6
+00:00:16.910 --> 00:00:20.270 align:middle line:90%
+starting in the Java 9 release.
+
+7
+00:00:20.270 --> 00:00:23.595 align:middle line:84%
+And this is supported by
+something called the Flow API.
+
+8
+00:00:23.595 --> 00:00:25.220 align:middle line:84%
+So if you take a look
+at Java 9, you'll
+
+9
+00:00:25.220 --> 00:00:27.800 align:middle line:84%
+see that there are
+these set of interfaces
+
+10
+00:00:27.800 --> 00:00:33.740 align:middle line:84%
+that are part of the Flow
+API in class Flow and so on.
+
+11
+00:00:33.740 --> 00:00:37.640 align:middle line:84%
+This added support
+for stream-oriented
+
+12
+00:00:37.640 --> 00:00:41.240 align:middle line:84%
+publisher/subscriber,
+or pub/sub, patterns.
+
+13
+00:00:41.240 --> 00:00:46.160 align:middle line:84%
+And in particular, the
+Reactive Streams model in Java
+
+14
+00:00:46.160 --> 00:00:47.900 align:middle line:84%
+combines two
+patterns that you're
+
+15
+00:00:47.900 --> 00:00:51.320 align:middle line:84%
+undoubtedly familiar with
+from the Gang of Four book.
+
+16
+00:00:51.320 --> 00:00:53.940 align:middle line:84%
+We've covered them
+before in other courses,
+
+17
+00:00:53.940 --> 00:00:56.630 align:middle line:84%
+such as the Principles of--
+the Foundations of Software
+
+18
+00:00:56.630 --> 00:00:58.440 align:middle line:90%
+Engineering course.
+
+19
+00:00:58.440 --> 00:01:00.600 align:middle line:84%
+One of the patterns is
+the iterator pattern,
+
+20
+00:01:00.600 --> 00:01:06.150 align:middle line:84%
+which applies a pull model where
+applications, subscribers, pull
+
+21
+00:01:06.150 --> 00:01:09.020 align:middle line:84%
+items from a source,
+from a publisher.
+
+22
+00:01:09.020 --> 00:01:11.760 align:middle line:84%
+And the other model is the
+observer model, their observer
+
+23
+00:01:11.760 --> 00:01:17.910 align:middle line:84%
+pattern, in which the publisher
+pushes events or emits
+
+24
+00:01:17.910 --> 00:01:23.290 align:middle line:84%
+events when an item is pushed
+from a source to a subscriber.
+
+25
+00:01:23.290 --> 00:01:25.380 align:middle line:84%
+So basically, these
+are the two patterns
+
+26
+00:01:25.380 --> 00:01:29.300 align:middle line:84%
+that are used very heavily
+throughout the Reactive Streams
+
+27
+00:01:29.300 --> 00:01:33.320 align:middle line:90%
+model that's part of Java 9.
+
+28
+00:01:33.320 --> 00:01:36.140 align:middle line:84%
+Interestingly enough,
+the Java Flow API
+
+29
+00:01:36.140 --> 00:01:39.240 align:middle line:84%
+is really nothing more than
+a bunch of interfaces--
+
+30
+00:01:39.240 --> 00:01:42.240 align:middle line:84%
+like a publisher interface,
+a subscriber interface,
+
+31
+00:01:42.240 --> 00:01:44.270 align:middle line:84%
+a subscription interface,
+a processor interface,
+
+32
+00:01:44.270 --> 00:01:45.140 align:middle line:90%
+and so on--
+
+33
+00:01:45.140 --> 00:01:48.110 align:middle line:84%
+that must be implemented
+in order to give life
+
+34
+00:01:48.110 --> 00:01:49.440 align:middle line:90%
+to this abstraction.
+
+35
+00:01:49.440 --> 00:01:52.880 align:middle line:84%
+So it's actually not really
+that usable in practice
+
+36
+00:01:52.880 --> 00:01:55.970 align:middle line:84%
+as it comes out of
+the box in Java 9.
+
+37
+00:01:55.970 --> 00:01:59.630 align:middle line:84%
+Instead, it's really designed
+as an interoperable foundation
+
+38
+00:01:59.630 --> 00:02:03.740 align:middle line:84%
+that's implemented by other
+popular reactive programming
+
+39
+00:02:03.740 --> 00:02:09.270 align:middle line:84%
+frameworks, such
+as RxJava and Akka.
+
+40
+00:02:09.270 --> 00:02:10.973 align:middle line:84%
+So it's really not
+actually something
+
+41
+00:02:10.973 --> 00:02:13.140 align:middle line:84%
+that you can use without
+doing a lot of programming.
+
+42
+00:02:13.140 --> 00:02:16.470 align:middle line:84%
+And in fact, if you go and read
+the documentation for Java 9
+
+43
+00:02:16.470 --> 00:02:17.970 align:middle line:84%
+and look at the
+examples, you'll see
+
+44
+00:02:17.970 --> 00:02:21.030 align:middle line:84%
+that they end up either
+just punting and saying,
+
+45
+00:02:21.030 --> 00:02:22.500 align:middle line:90%
+go use our x Java.
+
+46
+00:02:22.500 --> 00:02:25.655 align:middle line:84%
+Or they show you some convoluted
+code you have to write.
+
+47
+00:02:25.655 --> 00:02:27.030 align:middle line:84%
+So it's not really
+something like
+
+48
+00:02:27.030 --> 00:02:29.640 align:middle line:84%
+the parallel streams framework
+or the completable futures
+
+49
+00:02:29.640 --> 00:02:31.920 align:middle line:84%
+framework where it's
+just falling off
+
+50
+00:02:31.920 --> 00:02:34.140 align:middle line:90%
+the shelf fully baked.
+
+51
+00:02:34.140 --> 00:02:35.880 align:middle line:84%
+You have to do a lot
+of baking yourself.
+
+52
+00:02:35.880 --> 00:02:38.640 align:middle line:84%
+Or you have to use these
+other reactive programming
+
+53
+00:02:38.640 --> 00:02:40.670 align:middle line:90%
+frameworks.
+
+54
+00:02:40.670 --> 00:02:42.760 align:middle line:84%
+So here's a diagram
+that tries to show
+
+55
+00:02:42.760 --> 00:02:45.910 align:middle line:84%
+all the different pieces and
+how they compare and contrast
+
+56
+00:02:45.910 --> 00:02:48.250 align:middle line:84%
+with respect to different
+Java programming
+
+57
+00:02:48.250 --> 00:02:50.560 align:middle line:84%
+paradigms in terms
+of the dimensions
+
+58
+00:02:50.560 --> 00:02:52.180 align:middle line:90%
+we've been discussing.
+
+59
+00:02:52.180 --> 00:02:54.700 align:middle line:84%
+So starting with
+the old school way
+
+60
+00:02:54.700 --> 00:02:58.630 align:middle line:84%
+of doing things, if you
+look at classic Java objects
+
+61
+00:02:58.630 --> 00:03:00.760 align:middle line:84%
+where you just make
+method calls on them,
+
+62
+00:03:00.760 --> 00:03:04.600 align:middle line:84%
+those are good examples
+of synchronous calls.
+
+63
+00:03:04.600 --> 00:03:07.810 align:middle line:84%
+You say-- if you have a
+concurrent hash map, you say,
+
+64
+00:03:07.810 --> 00:03:09.490 align:middle line:90%
+put or get.
+
+65
+00:03:09.490 --> 00:03:12.910 align:middle line:84%
+And the objects that are
+involved are single value.
+
+66
+00:03:12.910 --> 00:03:14.050 align:middle line:90%
+You call put.
+
+67
+00:03:14.050 --> 00:03:16.170 align:middle line:90%
+Or rather you call get.
+
+68
+00:03:16.170 --> 00:03:17.360 align:middle line:90%
+And you get back a value.
+
+69
+00:03:17.360 --> 00:03:20.250 align:middle line:90%
+You get back one value.
+
+70
+00:03:20.250 --> 00:03:26.130 align:middle line:84%
+If you go up the box and look
+at the multiple values axis
+
+71
+00:03:26.130 --> 00:03:29.260 align:middle line:84%
+or multiple values
+point on the y-axis,
+
+72
+00:03:29.260 --> 00:03:31.200 align:middle line:84%
+you'll see that there
+are some examples
+
+73
+00:03:31.200 --> 00:03:34.110 align:middle line:84%
+like streams and
+parallel streams
+
+74
+00:03:34.110 --> 00:03:37.560 align:middle line:84%
+that provide
+synchronous operations
+
+75
+00:03:37.560 --> 00:03:39.120 align:middle line:90%
+with multiple values.
+
+76
+00:03:39.120 --> 00:03:41.910 align:middle line:84%
+So you can think of
+a stream as providing
+
+77
+00:03:41.910 --> 00:03:44.850 align:middle line:84%
+a bunch of values, the data
+elements in the stream.
+
+78
+00:03:44.850 --> 00:03:46.440 align:middle line:84%
+But all the calls
+are synchronous.
+
+79
+00:03:46.440 --> 00:03:50.952 align:middle line:84%
+In other words, they block until
+they're done with their work.
+
+80
+00:03:50.952 --> 00:03:52.410 align:middle line:84%
+If you look on the
+right-hand side,
+
+81
+00:03:52.410 --> 00:03:55.710 align:middle line:84%
+you see that we have a new
+dimension called asynchronous.
+
+82
+00:03:55.710 --> 00:03:59.580 align:middle line:84%
+And completable futures, as
+we'll describe initially,
+
+83
+00:03:59.580 --> 00:04:04.350 align:middle line:84%
+are good examples of
+asynchronous, single value
+
+84
+00:04:04.350 --> 00:04:05.630 align:middle line:90%
+abstractions.
+
+85
+00:04:05.630 --> 00:04:08.130 align:middle line:84%
+So they're asynchronous in that
+things run in the background
+
+86
+00:04:08.130 --> 00:04:10.200 align:middle line:90%
+without blocking the caller.
+
+87
+00:04:10.200 --> 00:04:11.980 align:middle line:84%
+But they only return
+a single value,
+
+88
+00:04:11.980 --> 00:04:15.250 align:middle line:84%
+which is the result of
+the completable future.
+
+89
+00:04:15.250 --> 00:04:18.500 align:middle line:84%
+If you look in the upper
+right-hand corner of the table,
+
+90
+00:04:18.500 --> 00:04:20.110 align:middle line:84%
+you'll see that
+other abstractions
+
+91
+00:04:20.110 --> 00:04:25.600 align:middle line:84%
+like reactive streams, which we
+just outlined, and Java streams
+
+92
+00:04:25.600 --> 00:04:28.300 align:middle line:84%
+plus completable
+futures gives us
+
+93
+00:04:28.300 --> 00:04:35.240 align:middle line:84%
+a more powerful paradigm where
+we have asynchronous operations
+
+94
+00:04:35.240 --> 00:04:38.180 align:middle line:90%
+with multiple values.
+
+95
+00:04:38.180 --> 00:04:40.630 align:middle line:84%
+All of the parts that we
+have on the right-hand side
+
+96
+00:04:40.630 --> 00:04:42.730 align:middle line:84%
+can be considered
+reactive programming.
+
+97
+00:04:42.730 --> 00:04:45.410 align:middle line:84%
+The stuff towards
+the top is more
+
+98
+00:04:45.410 --> 00:04:47.990 align:middle line:84%
+what we consider to be
+full-fledged reactive
+
+99
+00:04:47.990 --> 00:04:48.950 align:middle line:90%
+programming.
+
+100
+00:04:48.950 --> 00:04:52.010 align:middle line:84%
+But be comfortable in
+knowing that as we cover
+
+101
+00:04:52.010 --> 00:04:54.620 align:middle line:84%
+these examples as we go
+through this material,
+
+102
+00:04:54.620 --> 00:04:57.620 align:middle line:84%
+we'll show you both the single
+value completable futures
+
+103
+00:04:57.620 --> 00:05:00.890 align:middle line:84%
+model as well as the multiple
+values completable futures
+
+104
+00:05:00.890 --> 00:05:04.920 align:middle line:84%
+model where we combine it with
+streams, which is really cool
+
+105
+00:05:04.920 --> 00:05:08.510 align:middle line:84%
+and in my mind gives you
+many of the powerful features
+
+106
+00:05:08.510 --> 00:05:10.220 align:middle line:84%
+that you get with
+reactive streams
+
+107
+00:05:10.220 --> 00:05:11.660 align:middle line:84%
+without all the
+other complexities
+
+108
+00:05:11.660 --> 00:05:13.720 align:middle line:90%
+you have to deal with.

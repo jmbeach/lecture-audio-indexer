@@ -1,0 +1,669 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.390 align:middle line:90%
+
+
+2
+00:00:00.390 --> 00:00:01.848 align:middle line:84%
+Now that we've had
+a chance to give
+
+3
+00:00:01.848 --> 00:00:04.050 align:middle line:84%
+an overview of the
+reactive programming model,
+
+4
+00:00:04.050 --> 00:00:07.234 align:middle line:84%
+let's talk about the Java
+CompletableFutures framework.
+
+5
+00:00:07.234 --> 00:00:09.900 align:middle line:90%
+
+
+6
+00:00:09.900 --> 00:00:13.220 align:middle line:84%
+This framework provides an
+asynchronous and reactive
+
+7
+00:00:13.220 --> 00:00:16.630 align:middle line:90%
+concurrent programming model.
+
+8
+00:00:16.630 --> 00:00:19.390 align:middle line:84%
+It supports dependent
+actions that
+
+9
+00:00:19.390 --> 00:00:23.710 align:middle line:84%
+are triggered when asynchronous
+operations complete.
+
+10
+00:00:23.710 --> 00:00:26.950 align:middle line:84%
+And we could often represent
+this type of a model
+
+11
+00:00:26.950 --> 00:00:29.510 align:middle line:90%
+by showing a data-flow diagram.
+
+12
+00:00:29.510 --> 00:00:30.940 align:middle line:84%
+This data-flow
+diagram is actually
+
+13
+00:00:30.940 --> 00:00:34.330 align:middle line:84%
+something we'll talk about
+later in this particular part
+
+14
+00:00:34.330 --> 00:00:37.210 align:middle line:84%
+of the course, when we
+talk about the design
+
+15
+00:00:37.210 --> 00:00:42.040 align:middle line:84%
+and implementation of our image
+crawler application case study.
+
+16
+00:00:42.040 --> 00:00:44.110 align:middle line:84%
+And I'll just give you
+a quick synopsis of this
+
+17
+00:00:44.110 --> 00:00:47.110 align:middle line:84%
+here, just to kind of
+show the concept of data
+
+18
+00:00:47.110 --> 00:00:49.160 align:middle line:90%
+dependencies and data flow.
+
+19
+00:00:49.160 --> 00:00:52.120 align:middle line:84%
+So in this particular
+approach, we would start by--
+
+20
+00:00:52.120 --> 00:00:55.300 align:middle line:84%
+we would start our web crawl
+for looking for the images that
+
+21
+00:00:55.300 --> 00:00:58.750 align:middle line:84%
+are available through some
+routed URL by getting a start
+
+22
+00:00:58.750 --> 00:01:00.850 align:middle line:90%
+page asynchronously.
+
+23
+00:01:00.850 --> 00:01:02.180 align:middle line:90%
+So we take some URL.
+
+24
+00:01:02.180 --> 00:01:05.590 align:middle line:84%
+We go ahead and asynchronously
+find the contents of that page.
+
+25
+00:01:05.590 --> 00:01:07.830 align:middle line:90%
+That's Task 1.
+
+26
+00:01:07.830 --> 00:01:12.510 align:middle line:84%
+Task 2 and 3 then depend on
+the successful completion
+
+27
+00:01:12.510 --> 00:01:13.800 align:middle line:90%
+of Task 1.
+
+28
+00:01:13.800 --> 00:01:18.210 align:middle line:84%
+So when Task 1 completes, when
+we get our start-page content,
+
+29
+00:01:18.210 --> 00:01:21.090 align:middle line:84%
+or HTML content,
+at that point, we
+
+30
+00:01:21.090 --> 00:01:25.010 align:middle line:84%
+can fork off Task 2 and
+Task 3 to run in parallel.
+
+31
+00:01:25.010 --> 00:01:29.040 align:middle line:84%
+And Task 2 will go ahead and
+count the number of images
+
+32
+00:01:29.040 --> 00:01:32.160 align:middle line:90%
+on that page asynchronously.
+
+33
+00:01:32.160 --> 00:01:35.070 align:middle line:84%
+And Task 3 will count
+the images on any
+
+34
+00:01:35.070 --> 00:01:37.440 align:middle line:84%
+and all hyperlinked
+pages reachable
+
+35
+00:01:37.440 --> 00:01:40.200 align:middle line:90%
+from this page asynchronously.
+
+36
+00:01:40.200 --> 00:01:43.170 align:middle line:84%
+And both of those tasks
+could run in parallel.
+
+37
+00:01:43.170 --> 00:01:47.820 align:middle line:84%
+And then Task 4 represents
+joining the results
+
+38
+00:01:47.820 --> 00:01:49.950 align:middle line:90%
+of Task 2 and Task 3.
+
+39
+00:01:49.950 --> 00:01:53.040 align:middle line:84%
+So when Tasks 2 and
+3 complete, Task 4
+
+40
+00:01:53.040 --> 00:01:56.910 align:middle line:84%
+will combine the results
+to create the total.
+
+41
+00:01:56.910 --> 00:01:59.040 align:middle line:84%
+And that will, of course,
+also be done, or could
+
+42
+00:01:59.040 --> 00:02:00.940 align:middle line:90%
+be done, asynchronously.
+
+43
+00:02:00.940 --> 00:02:03.510 align:middle line:84%
+So that's an example of a
+data-flow diagram showing
+
+44
+00:02:03.510 --> 00:02:06.810 align:middle line:84%
+how we'd do asynchronous
+tasks, how we can fork them,
+
+45
+00:02:06.810 --> 00:02:09.000 align:middle line:84%
+how we can compute
+them in parallel,
+
+46
+00:02:09.000 --> 00:02:12.830 align:middle line:84%
+and how we can join them back
+together to get the results.
+
+47
+00:02:12.830 --> 00:02:15.440 align:middle line:84%
+Here's a pseudo-code
+representation
+
+48
+00:02:15.440 --> 00:02:19.250 align:middle line:84%
+of how you could represent
+this data-flow diagram
+
+49
+00:02:19.250 --> 00:02:22.100 align:middle line:84%
+in the context of Java
+CompletableFutures.
+
+50
+00:02:22.100 --> 00:02:23.600 align:middle line:84%
+So as you can see
+up here, and we'll
+
+51
+00:02:23.600 --> 00:02:27.440 align:middle line:84%
+talk about the icons and
+the nomenclature as we go,
+
+52
+00:02:27.440 --> 00:02:31.310 align:middle line:84%
+we have Task 1, which is get
+the start page asynchronously.
+
+53
+00:02:31.310 --> 00:02:34.550 align:middle line:84%
+And we do that by calling
+the supplyAsync method, which
+
+54
+00:02:34.550 --> 00:02:36.410 align:middle line:84%
+is one of the factory
+methods defined
+
+55
+00:02:36.410 --> 00:02:39.050 align:middle line:90%
+on the CompletableFuture class.
+
+56
+00:02:39.050 --> 00:02:41.150 align:middle line:84%
+And we give it a start
+page, and it asynchronously
+
+57
+00:02:41.150 --> 00:02:43.100 align:middle line:90%
+downloads that start page.
+
+58
+00:02:43.100 --> 00:02:46.420 align:middle line:84%
+What supplyAsync
+returns is a Future.
+
+59
+00:02:46.420 --> 00:02:49.280 align:middle line:84%
+And I show this is as
+a little table tent
+
+60
+00:02:49.280 --> 00:02:52.130 align:middle line:90%
+number with the value 8 in it.
+
+61
+00:02:52.130 --> 00:02:56.480 align:middle line:84%
+And that Future is then
+used for Tasks 2 and 3.
+
+62
+00:02:56.480 --> 00:02:59.000 align:middle line:84%
+You can see that that
+little table tent number 8
+
+63
+00:02:59.000 --> 00:03:03.680 align:middle line:84%
+is used to initiate what
+are known as CompletionStage
+
+64
+00:03:03.680 --> 00:03:07.580 align:middle line:84%
+methods, like thenApplyAsync
+or thenComposeAsync.
+
+65
+00:03:07.580 --> 00:03:09.890 align:middle line:84%
+And these methods
+start to run only
+
+66
+00:03:09.890 --> 00:03:13.010 align:middle line:84%
+when the Future, the
+CompletableFuture,
+
+67
+00:03:13.010 --> 00:03:18.230 align:middle line:84%
+represented by that table tent
+number 8 completes Task 1.
+
+68
+00:03:18.230 --> 00:03:22.850 align:middle line:84%
+So when Task 1 completes,
+then the various other tasks,
+
+69
+00:03:22.850 --> 00:03:27.395 align:middle line:84%
+Tasks 2 and 3, can be forked
+off, and they can start to run.
+
+70
+00:03:27.395 --> 00:03:30.020 align:middle line:84%
+So you can see that they will go
+ahead and asynchronously count
+
+71
+00:03:30.020 --> 00:03:32.060 align:middle line:84%
+the number of images
+on a given page, which
+
+72
+00:03:32.060 --> 00:03:33.620 align:middle line:90%
+is what Task 2 does.
+
+73
+00:03:33.620 --> 00:03:37.790 align:middle line:84%
+Task 3 will asynchronously
+compute the number of images
+
+74
+00:03:37.790 --> 00:03:39.980 align:middle line:90%
+reachable from this page.
+
+75
+00:03:39.980 --> 00:03:42.860 align:middle line:84%
+And both of those
+asynchronous tasks
+
+76
+00:03:42.860 --> 00:03:46.250 align:middle line:84%
+also return CompletableFutures,
+which I represent
+
+77
+00:03:46.250 --> 00:03:49.460 align:middle line:90%
+as table tent numbers 1 and 26.
+
+78
+00:03:49.460 --> 00:03:52.310 align:middle line:84%
+And then you can
+see Task 4 below
+
+79
+00:03:52.310 --> 00:03:58.910 align:middle line:84%
+gets to run when both Task 2
+completes and Task 3 completes.
+
+80
+00:03:58.910 --> 00:04:02.020 align:middle line:84%
+So when the CompletableFuture
+represented by table tent
+
+81
+00:04:02.020 --> 00:04:07.610 align:middle line:84%
+number 1 is done and the
+CompletableFuture represented
+
+82
+00:04:07.610 --> 00:04:11.870 align:middle line:84%
+by table tent
+number 26 completes,
+
+83
+00:04:11.870 --> 00:04:16.610 align:middle line:84%
+then we can combine the results
+from the number of images
+
+84
+00:04:16.610 --> 00:04:19.470 align:middle line:84%
+on the page and the number of
+images reachable on the page.
+
+85
+00:04:19.470 --> 00:04:23.620 align:middle line:84%
+And we can sum them together
+to get our final result.
+
+86
+00:04:23.620 --> 00:04:26.490 align:middle line:84%
+So this is just kind of a
+high-level pseudo-code-like way
+
+87
+00:04:26.490 --> 00:04:28.740 align:middle line:84%
+of showing how these
+asynchronous operations can
+
+88
+00:04:28.740 --> 00:04:32.512 align:middle line:84%
+be forked, chained
+together, and joined.
+
+89
+00:04:32.512 --> 00:04:34.470 align:middle line:84%
+And obviously, we'll talk
+a lot more about this
+
+90
+00:04:34.470 --> 00:04:37.542 align:middle line:84%
+as we go through the
+rest of this material.
+
+91
+00:04:37.542 --> 00:04:39.000 align:middle line:84%
+Something else to
+note here is that
+
+92
+00:04:39.000 --> 00:04:42.600 align:middle line:84%
+the asynchronous operations that
+are going to be running here
+
+93
+00:04:42.600 --> 00:04:47.040 align:middle line:84%
+can execute in parallel
+in thread pools.
+
+94
+00:04:47.040 --> 00:04:49.740 align:middle line:84%
+And the thread pool
+that's used can either
+
+95
+00:04:49.740 --> 00:04:53.940 align:middle line:84%
+be the common ForkJoinPool,
+which is the default,
+
+96
+00:04:53.940 --> 00:04:58.170 align:middle line:84%
+some other ForkJoinPool that
+you might define yourself,
+
+97
+00:04:58.170 --> 00:05:01.800 align:middle line:84%
+or various types of predefined
+or user-defined thread
+
+98
+00:05:01.800 --> 00:05:04.650 align:middle line:84%
+pools-- for example, a
+fixed-size thread pool, a cache
+
+99
+00:05:04.650 --> 00:05:06.720 align:middle line:84%
+thread pool, or any
+type of threat pool
+
+100
+00:05:06.720 --> 00:05:10.710 align:middle line:84%
+you might create using the
+ThreadPoolExecutor class
+
+101
+00:05:10.710 --> 00:05:13.270 align:middle line:84%
+or some other mechanism
+you cook up yourself.
+
+102
+00:05:13.270 --> 00:05:16.320 align:middle line:84%
+So this gives us a
+lot of flexibility.
+
+103
+00:05:16.320 --> 00:05:18.870 align:middle line:84%
+Keep in mind, of course, that
+the parallel streams framework
+
+104
+00:05:18.870 --> 00:05:20.610 align:middle line:84%
+didn't give us this
+much flexibility.
+
+105
+00:05:20.610 --> 00:05:25.335 align:middle line:84%
+We only could use the
+common ForkJoinPool.
+
+106
+00:05:25.335 --> 00:05:26.710 align:middle line:84%
+Something else
+I'll mention here,
+
+107
+00:05:26.710 --> 00:05:28.270 align:middle line:84%
+and we'll cover
+this in more detail
+
+108
+00:05:28.270 --> 00:05:30.580 align:middle line:84%
+towards the end of
+the course, it's
+
+109
+00:05:30.580 --> 00:05:33.610 align:middle line:84%
+possible to combine
+CompletableFutures,
+
+110
+00:05:33.610 --> 00:05:36.760 align:middle line:84%
+sequential streams, and
+Java's functional programming
+
+111
+00:05:36.760 --> 00:05:38.980 align:middle line:84%
+features in order to
+be able to provide
+
+112
+00:05:38.980 --> 00:05:42.130 align:middle line:84%
+very powerful reactive
+programming abstractions,
+
+113
+00:05:42.130 --> 00:05:45.460 align:middle line:84%
+where the streams are used
+to manage the overall control
+
+114
+00:05:45.460 --> 00:05:47.680 align:middle line:84%
+flow, the
+CompletableFutures are used
+
+115
+00:05:47.680 --> 00:05:50.885 align:middle line:84%
+to run the operations
+efficiently in parallel,
+
+116
+00:05:50.885 --> 00:05:52.510 align:middle line:84%
+and the functional
+programming features
+
+117
+00:05:52.510 --> 00:05:57.310 align:middle line:84%
+are used to simplify the
+use of various actions
+
+118
+00:05:57.310 --> 00:06:01.870 align:middle line:84%
+in the form of method references
+or lambda expressions.
+
+119
+00:06:01.870 --> 00:06:03.940 align:middle line:84%
+Another nice property
+of CompletableFutures
+
+120
+00:06:03.940 --> 00:06:07.330 align:middle line:84%
+is there's often no need to do
+any explicit synchronization
+
+121
+00:06:07.330 --> 00:06:08.740 align:middle line:90%
+in your code.
+
+122
+00:06:08.740 --> 00:06:11.642 align:middle line:84%
+And there's often no need to
+have to do any multi-threading.
+
+123
+00:06:11.642 --> 00:06:13.600 align:middle line:84%
+You don't have to worry
+about spawning threads,
+
+124
+00:06:13.600 --> 00:06:16.870 align:middle line:84%
+starting threads, synchronizing
+threads, and so on.
+
+125
+00:06:16.870 --> 00:06:20.020 align:middle line:84%
+So much as was the case
+with parallel streams,
+
+126
+00:06:20.020 --> 00:06:24.610 align:middle line:84%
+this abstraction away from
+these low-level details
+
+127
+00:06:24.610 --> 00:06:29.110 align:middle line:84%
+alleviates many accidental
+and inherent complexities
+
+128
+00:06:29.110 --> 00:06:32.590 align:middle line:84%
+of concurrent and
+parallel programming.
+
+129
+00:06:32.590 --> 00:06:35.680 align:middle line:84%
+If you do need to protect
+the various elements
+
+130
+00:06:35.680 --> 00:06:37.270 align:middle line:84%
+from corruption
+and race conditions
+
+131
+00:06:37.270 --> 00:06:40.540 align:middle line:84%
+and so on, then you're
+often well-advised to use
+
+132
+00:06:40.540 --> 00:06:42.550 align:middle line:84%
+various Java class
+libraries, which
+
+133
+00:06:42.550 --> 00:06:45.340 align:middle line:84%
+will handle all the locking
+that's needed to protect
+
+134
+00:06:45.340 --> 00:06:46.600 align:middle line:90%
+shared readable state.
+
+135
+00:06:46.600 --> 00:06:49.480 align:middle line:84%
+A good example would be
+things like the I/O classes
+
+136
+00:06:49.480 --> 00:06:53.020 align:middle line:84%
+for working with files
+or the concurrent HashMap
+
+137
+00:06:53.020 --> 00:06:55.930 align:middle line:84%
+in order to be able to
+access concurrent collections
+
+138
+00:06:55.930 --> 00:06:58.560 align:middle line:90%
+in a thread-safe way.

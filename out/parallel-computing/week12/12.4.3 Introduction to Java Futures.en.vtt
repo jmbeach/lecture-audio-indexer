@@ -1,0 +1,829 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.300 align:middle line:90%
+
+
+2
+00:00:00.300 --> 00:00:02.430 align:middle line:84%
+So now that we've talked
+about asynchrony and now
+
+3
+00:00:02.430 --> 00:00:05.010 align:middle line:84%
+we've talked a bit about the
+completable futures framework,
+
+4
+00:00:05.010 --> 00:00:08.310 align:middle line:84%
+let's kind of take a tour
+through the history of Java
+
+5
+00:00:08.310 --> 00:00:09.810 align:middle line:84%
+and start by
+discussing something
+
+6
+00:00:09.810 --> 00:00:12.097 align:middle line:90%
+known as Java futures.
+
+7
+00:00:12.097 --> 00:00:14.430 align:middle line:84%
+And so what we're going to
+do in this part of the lesson
+
+8
+00:00:14.430 --> 00:00:18.060 align:middle line:84%
+is begin to explain how
+Java futures provide
+
+9
+00:00:18.060 --> 00:00:21.060 align:middle line:84%
+the foundation for the
+completable futures
+
+10
+00:00:21.060 --> 00:00:24.750 align:middle line:84%
+framework that's available
+in later versions of Java.
+
+11
+00:00:24.750 --> 00:00:28.600 align:middle line:84%
+And this is really kind of a
+history lesson in some ways.
+
+12
+00:00:28.600 --> 00:00:31.600 align:middle line:84%
+We'll also show you a
+fun, human-known use
+
+13
+00:00:31.600 --> 00:00:35.020 align:middle line:84%
+of Java futures, which I love to
+use to explain these concepts.
+
+14
+00:00:35.020 --> 00:00:39.760 align:middle line:84%
+I typically find I learn best if
+I can sort of get an intuitive
+
+15
+00:00:39.760 --> 00:00:44.095 align:middle line:84%
+analogy or a metaphor for some
+abstruse computing concept.
+
+16
+00:00:44.095 --> 00:00:45.718 align:middle line:84%
+It just makes me
+feel a little better.
+
+17
+00:00:45.718 --> 00:00:47.260 align:middle line:84%
+And I think I found
+a really good one
+
+18
+00:00:47.260 --> 00:00:49.480 align:middle line:84%
+to help make you understand
+futures in a way you
+
+19
+00:00:49.480 --> 00:00:50.860 align:middle line:90%
+can probably relate to--
+
+20
+00:00:50.860 --> 00:00:52.990 align:middle line:90%
+perhaps all too well.
+
+21
+00:00:52.990 --> 00:00:55.000 align:middle line:84%
+We'll also talk briefly
+about the methods
+
+22
+00:00:55.000 --> 00:00:57.970 align:middle line:84%
+in the future interface,
+which, as you can see,
+
+23
+00:00:57.970 --> 00:00:59.470 align:middle line:84%
+there are just a
+handful of methods.
+
+24
+00:00:59.470 --> 00:01:02.760 align:middle line:84%
+But they have some
+interesting properties.
+
+25
+00:01:02.760 --> 00:01:05.510 align:middle line:84%
+So let's start by talking
+about a human-known use of Java
+
+26
+00:01:05.510 --> 00:01:07.250 align:middle line:84%
+futures before I
+start to bore you
+
+27
+00:01:07.250 --> 00:01:10.310 align:middle line:84%
+with all the low-level
+technical details.
+
+28
+00:01:10.310 --> 00:01:13.910 align:middle line:84%
+So a future is
+essentially a proxy
+
+29
+00:01:13.910 --> 00:01:18.020 align:middle line:84%
+that represents the results of
+some asynchronous computation
+
+30
+00:01:18.020 --> 00:01:20.470 align:middle line:90%
+or asynchronous call.
+
+31
+00:01:20.470 --> 00:01:23.290 align:middle line:84%
+So typically, what
+happens is you initiate
+
+32
+00:01:23.290 --> 00:01:25.000 align:middle line:90%
+some asynchronous call.
+
+33
+00:01:25.000 --> 00:01:26.830 align:middle line:84%
+That call will then
+go ahead and run
+
+34
+00:01:26.830 --> 00:01:28.600 align:middle line:84%
+in some kind of
+background thread
+
+35
+00:01:28.600 --> 00:01:32.230 align:middle line:84%
+like a service thread, or
+a pool thread, or whatnot.
+
+36
+00:01:32.230 --> 00:01:35.930 align:middle line:84%
+And you get back a
+future right away.
+
+37
+00:01:35.930 --> 00:01:39.230 align:middle line:84%
+And the results of that
+asynchronous computation
+
+38
+00:01:39.230 --> 00:01:42.650 align:middle line:84%
+can only be obtained
+through that future
+
+39
+00:01:42.650 --> 00:01:45.650 align:middle line:84%
+after the asynchronous
+computation completes.
+
+40
+00:01:45.650 --> 00:01:47.230 align:middle line:90%
+So that's the basic model.
+
+41
+00:01:47.230 --> 00:01:50.000 align:middle line:84%
+But what else kind
+of looks like that?
+
+42
+00:01:50.000 --> 00:01:52.105 align:middle line:84%
+Well, if you go to
+fast food restaurants--
+
+43
+00:01:52.105 --> 00:01:54.230 align:middle line:84%
+actually, if you go at
+almost any restaurant that's
+
+44
+00:01:54.230 --> 00:01:56.300 align:middle line:84%
+not a sit-down
+restaurant where you're
+
+45
+00:01:56.300 --> 00:01:59.810 align:middle line:84%
+waited on by a waiter,
+what you'll end up with
+
+46
+00:01:59.810 --> 00:02:02.307 align:middle line:84%
+is something that's a
+great example of futures.
+
+47
+00:02:02.307 --> 00:02:03.140 align:middle line:90%
+And it's just funny.
+
+48
+00:02:03.140 --> 00:02:04.973 align:middle line:84%
+You typically don't
+think about it this way.
+
+49
+00:02:04.973 --> 00:02:06.690 align:middle line:90%
+But it's really what's going on.
+
+50
+00:02:06.690 --> 00:02:08.840 align:middle line:84%
+So if you go into a
+fast food restaurant--
+
+51
+00:02:08.840 --> 00:02:10.138 align:middle line:90%
+let's say you go to a Wendy's.
+
+52
+00:02:10.138 --> 00:02:11.930 align:middle line:84%
+Wendy's is my favorite
+example because they
+
+53
+00:02:11.930 --> 00:02:15.320 align:middle line:84%
+were kind of the ones to
+pioneer this decades ago.
+
+54
+00:02:15.320 --> 00:02:19.340 align:middle line:84%
+Back in the day, most fast food
+restaurants-- say, McDonald's--
+
+55
+00:02:19.340 --> 00:02:21.440 align:middle line:90%
+would pre-cook all their food.
+
+56
+00:02:21.440 --> 00:02:23.210 align:middle line:84%
+So they'd ore-cook
+a bunch of Big Macs.
+
+57
+00:02:23.210 --> 00:02:24.830 align:middle line:84%
+They'd pre-cook
+a bunch of fries.
+
+58
+00:02:24.830 --> 00:02:28.527 align:middle line:84%
+They'd pre-pour a
+bunch of drinks.
+
+59
+00:02:28.527 --> 00:02:30.110 align:middle line:84%
+And when you went
+into the restaurant,
+
+60
+00:02:30.110 --> 00:02:31.640 align:middle line:90%
+you'd walk up to the counter.
+
+61
+00:02:31.640 --> 00:02:35.210 align:middle line:84%
+You'd say, I want a Big
+Mac with fries with a Coke.
+
+62
+00:02:35.210 --> 00:02:38.870 align:middle line:84%
+And you would wait synchronously
+at the cash register.
+
+63
+00:02:38.870 --> 00:02:41.390 align:middle line:84%
+And the person would reach
+back to the heat lamp,
+
+64
+00:02:41.390 --> 00:02:45.140 align:middle line:84%
+pull out the Big Mac, pull out
+the fries, pull out the Coke,
+
+65
+00:02:45.140 --> 00:02:47.890 align:middle line:84%
+give it back you, take your
+money, transaction done--
+
+66
+00:02:47.890 --> 00:02:49.090 align:middle line:90%
+synchronously.
+
+67
+00:02:49.090 --> 00:02:51.590 align:middle line:84%
+The problem was the food wasn't
+really very tasty because it
+
+68
+00:02:51.590 --> 00:02:54.900 align:middle line:84%
+had been sitting there in the
+heat lamp warming for a while.
+
+69
+00:02:54.900 --> 00:02:57.258 align:middle line:84%
+So Wendy's-- which was
+another fast food restaurant--
+
+70
+00:02:57.258 --> 00:02:59.550 align:middle line:84%
+came along and said, we've
+got a better way to do this.
+
+71
+00:02:59.550 --> 00:03:01.807 align:middle line:84%
+We're going to cook
+your meal to-order.
+
+72
+00:03:01.807 --> 00:03:03.390 align:middle line:84%
+So when you would
+go into Wendy's, you
+
+73
+00:03:03.390 --> 00:03:04.765 align:middle line:84%
+would go up to
+the cash register.
+
+74
+00:03:04.765 --> 00:03:08.250 align:middle line:84%
+You'd say, I want a Dave Thomas
+burger, and some special fries,
+
+75
+00:03:08.250 --> 00:03:09.260 align:middle line:90%
+and a drink.
+
+76
+00:03:09.260 --> 00:03:11.480 align:middle line:84%
+And what they would
+do is rather than make
+
+77
+00:03:11.480 --> 00:03:15.767 align:middle line:84%
+you wait synchronously
+at the cash register,
+
+78
+00:03:15.767 --> 00:03:17.600 align:middle line:84%
+they would take your
+order, take your money,
+
+79
+00:03:17.600 --> 00:03:19.497 align:middle line:84%
+and give you a table
+tent number which
+
+80
+00:03:19.497 --> 00:03:21.080 align:middle line:84%
+looks like what you
+see on the screen,
+
+81
+00:03:21.080 --> 00:03:26.090 align:middle line:84%
+like a plastic number with
+a tent-like form factor.
+
+82
+00:03:26.090 --> 00:03:26.960 align:middle line:90%
+That's a future.
+
+83
+00:03:26.960 --> 00:03:28.460 align:middle line:84%
+And then you would
+take your future.
+
+84
+00:03:28.460 --> 00:03:29.960 align:middle line:90%
+You would go sit down.
+
+85
+00:03:29.960 --> 00:03:31.783 align:middle line:84%
+You might chat
+with your friends.
+
+86
+00:03:31.783 --> 00:03:33.200 align:middle line:84%
+Back in those days,
+we didn't even
+
+87
+00:03:33.200 --> 00:03:35.900 align:middle line:84%
+have phones to waste our
+time with social media.
+
+88
+00:03:35.900 --> 00:03:39.580 align:middle line:84%
+But you'd read the paper, maybe
+you might talk to somebody.
+
+89
+00:03:39.580 --> 00:03:40.860 align:middle line:90%
+You'd do something.
+
+90
+00:03:40.860 --> 00:03:42.980 align:middle line:84%
+And then when your
+food was cooked,
+
+91
+00:03:42.980 --> 00:03:44.940 align:middle line:90%
+your future would be triggered.
+
+92
+00:03:44.940 --> 00:03:46.400 align:middle line:84%
+So you could either
+go pick it up
+
+93
+00:03:46.400 --> 00:03:49.560 align:middle line:84%
+at the pickup window, which
+is a polling-based approach.
+
+94
+00:03:49.560 --> 00:03:51.650 align:middle line:84%
+Or they might bring it
+out to your table, which
+
+95
+00:03:51.650 --> 00:03:53.870 align:middle line:90%
+is a callback-based approach.
+
+96
+00:03:53.870 --> 00:03:55.730 align:middle line:84%
+In either case, you
+would get your result.
+
+97
+00:03:55.730 --> 00:03:58.310 align:middle line:84%
+And the future was
+the way that whoever
+
+98
+00:03:58.310 --> 00:04:01.490 align:middle line:84%
+was running the restaurant
+could deliver your food cooked
+
+99
+00:04:01.490 --> 00:04:04.310 align:middle line:90%
+to-order to the right location.
+
+100
+00:04:04.310 --> 00:04:05.760 align:middle line:90%
+So that's basically the idea.
+
+101
+00:04:05.760 --> 00:04:08.218 align:middle line:84%
+And so the way to think about
+this in the back of your mind
+
+102
+00:04:08.218 --> 00:04:10.130 align:middle line:84%
+is that synchronous
+communication is
+
+103
+00:04:10.130 --> 00:04:12.390 align:middle line:84%
+like the old school
+McDonald's way of doing things
+
+104
+00:04:12.390 --> 00:04:15.290 align:middle line:84%
+where you pre-cash
+and pre-cook and wait.
+
+105
+00:04:15.290 --> 00:04:18.170 align:middle line:84%
+Whereas the Wendy's model
+of preparing fast food
+
+106
+00:04:18.170 --> 00:04:19.850 align:middle line:90%
+uses futures.
+
+107
+00:04:19.850 --> 00:04:22.130 align:middle line:84%
+Nowadays, just to be
+fair, McDonald's will also
+
+108
+00:04:22.130 --> 00:04:23.902 align:middle line:84%
+cook your meals to
+order, which means
+
+109
+00:04:23.902 --> 00:04:26.360 align:middle line:84%
+they'll give you, typically,
+a piece of paper with a number
+
+110
+00:04:26.360 --> 00:04:26.860 align:middle line:90%
+on it.
+
+111
+00:04:26.860 --> 00:04:29.180 align:middle line:84%
+And then you go redeem your
+future when it's ready.
+
+112
+00:04:29.180 --> 00:04:32.440 align:middle line:84%
+But back in the day,
+it was different.
+
+113
+00:04:32.440 --> 00:04:35.860 align:middle line:84%
+So hopefully, that will help you
+understand a bit about futures
+
+114
+00:04:35.860 --> 00:04:37.747 align:middle line:84%
+and how this works with
+the computing models
+
+115
+00:04:37.747 --> 00:04:38.830 align:middle line:90%
+we're about to talk about.
+
+116
+00:04:38.830 --> 00:04:41.830 align:middle line:84%
+It's really the same thing,
+just with computers and not
+
+117
+00:04:41.830 --> 00:04:44.250 align:middle line:90%
+fast food restaurants.
+
+118
+00:04:44.250 --> 00:04:46.830 align:middle line:84%
+So now that you know a bit
+more about the metaphor
+
+119
+00:04:46.830 --> 00:04:49.240 align:middle line:84%
+to help give you the
+bigger-picture view,
+
+120
+00:04:49.240 --> 00:04:54.030 align:middle line:84%
+let's start to talk about
+the Java future API.
+
+121
+00:04:54.030 --> 00:04:57.090 align:middle line:84%
+Futures were added
+to Java 5, which
+
+122
+00:04:57.090 --> 00:04:59.130 align:middle line:90%
+came out in the 2004 timeframe.
+
+123
+00:04:59.130 --> 00:05:01.780 align:middle line:84%
+So it's been about
+15 years or so.
+
+124
+00:05:01.780 --> 00:05:04.790 align:middle line:84%
+And they were added to provide
+asynchronous call support
+
+125
+00:05:04.790 --> 00:05:06.240 align:middle line:90%
+to Java.
+
+126
+00:05:06.240 --> 00:05:09.360 align:middle line:84%
+And basically, the way
+this works is a Java future
+
+127
+00:05:09.360 --> 00:05:11.160 align:middle line:84%
+provides you with
+a bunch of methods
+
+128
+00:05:11.160 --> 00:05:14.880 align:middle line:84%
+that can manage the
+lifecycle of a task
+
+129
+00:05:14.880 --> 00:05:17.250 align:middle line:84%
+after it's submitted
+to run asynchronously,
+
+130
+00:05:17.250 --> 00:05:20.110 align:middle line:90%
+typically in a thread pool.
+
+131
+00:05:20.110 --> 00:05:21.660 align:middle line:84%
+So let's take a
+look at an example
+
+132
+00:05:21.660 --> 00:05:24.355 align:middle line:84%
+and see if we can kind of
+make it all come together.
+
+133
+00:05:24.355 --> 00:05:25.980 align:middle line:84%
+So the idea here is
+we're going to have
+
+134
+00:05:25.980 --> 00:05:31.080 align:middle line:84%
+somebody submit a task that
+will run in a thread pool.
+
+135
+00:05:31.080 --> 00:05:33.800 align:middle line:84%
+And what happens is that right
+away when you submit the task,
+
+136
+00:05:33.800 --> 00:05:36.160 align:middle line:84%
+you get a future
+back immediately.
+
+137
+00:05:36.160 --> 00:05:40.150 align:middle line:84%
+And you can then use that
+future for various things
+
+138
+00:05:40.150 --> 00:05:42.660 align:middle line:84%
+while the computation is
+running in the background.
+
+139
+00:05:42.660 --> 00:05:44.160 align:middle line:84%
+One thing you can
+do with the future
+
+140
+00:05:44.160 --> 00:05:47.470 align:middle line:84%
+is as a future owner is
+you can test the future
+
+141
+00:05:47.470 --> 00:05:48.890 align:middle line:90%
+to see if it's completed.
+
+142
+00:05:48.890 --> 00:05:51.260 align:middle line:90%
+So you can say, are you done?
+
+143
+00:05:51.260 --> 00:05:52.850 align:middle line:90%
+Yes or no.
+
+144
+00:05:52.850 --> 00:05:56.790 align:middle line:84%
+You could also see if
+you've been canceled.
+
+145
+00:05:56.790 --> 00:05:58.490 align:middle line:84%
+And if you have
+not been canceled,
+
+146
+00:05:58.490 --> 00:06:01.268 align:middle line:84%
+you can choose to
+cancel the future.
+
+147
+00:06:01.268 --> 00:06:02.810 align:middle line:84%
+So you can say, have
+I been canceled?
+
+148
+00:06:02.810 --> 00:06:03.990 align:middle line:90%
+Is it canceled?
+
+149
+00:06:03.990 --> 00:06:06.145 align:middle line:90%
+And if not, you can say, cancel.
+
+150
+00:06:06.145 --> 00:06:07.520 align:middle line:84%
+So what that will
+do is that will
+
+151
+00:06:07.520 --> 00:06:09.470 align:middle line:84%
+go ahead and tell the
+asynchronous computation
+
+152
+00:06:09.470 --> 00:06:10.790 align:middle line:90%
+to stop running.
+
+153
+00:06:10.790 --> 00:06:14.620 align:middle line:84%
+It will request the asynchronous
+operation to stop running.
+
+154
+00:06:14.620 --> 00:06:15.920 align:middle line:90%
+It'll interrupt it.
+
+155
+00:06:15.920 --> 00:06:19.680 align:middle line:84%
+And then the result
+will be ignored.
+
+156
+00:06:19.680 --> 00:06:21.950 align:middle line:84%
+Now, as we all know,
+if you watch the videos
+
+157
+00:06:21.950 --> 00:06:25.425 align:middle line:84%
+on thread interrupts like a
+computable object-oriented
+
+158
+00:06:25.425 --> 00:06:27.050 align:middle line:84%
+programming course,
+you know that these
+
+159
+00:06:27.050 --> 00:06:29.900 align:middle line:84%
+are voluntary requests
+for cancellation.
+
+160
+00:06:29.900 --> 00:06:32.930 align:middle line:84%
+But the long and the short of
+it is once you cancel a future,
+
+161
+00:06:32.930 --> 00:06:36.128 align:middle line:84%
+there will be no value coming
+back to you at any point.
+
+162
+00:06:36.128 --> 00:06:38.420 align:middle line:84%
+And of course, the other
+thing you can do with a future
+
+163
+00:06:38.420 --> 00:06:41.090 align:middle line:84%
+is you can use it
+to redeem the result
+
+164
+00:06:41.090 --> 00:06:42.950 align:middle line:90%
+of the asynchronous computation.
+
+165
+00:06:42.950 --> 00:06:45.080 align:middle line:84%
+So when an asynchronous
+computation is done,
+
+166
+00:06:45.080 --> 00:06:47.910 align:middle line:84%
+you can get the
+result by calling get.
+
+167
+00:06:47.910 --> 00:06:51.500 align:middle line:84%
+Now, if you end up calling
+get and the future has not yet
+
+168
+00:06:51.500 --> 00:06:54.290 align:middle line:84%
+been triggered because the
+asynchronous operation hasn't
+
+169
+00:06:54.290 --> 00:06:58.230 align:middle line:84%
+completed, then you can
+block as we show here.
+
+170
+00:06:58.230 --> 00:07:01.760 align:middle line:84%
+Or there is also a timed version
+of this where you can either
+
+171
+00:07:01.760 --> 00:07:04.073 align:middle line:84%
+return immediately by polling
+if you give it a zero.
+
+172
+00:07:04.073 --> 00:07:05.990 align:middle line:84%
+Or you can wait up to a
+certain amount of time
+
+173
+00:07:05.990 --> 00:07:08.110 align:middle line:90%
+to get a result back.

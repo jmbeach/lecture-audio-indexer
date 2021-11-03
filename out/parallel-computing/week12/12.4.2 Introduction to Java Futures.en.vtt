@@ -1,0 +1,1307 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.500 align:middle line:90%
+
+
+2
+00:00:00.500 --> 00:00:04.190 align:middle line:84%
+So now that we've talked about
+the pros and cons of synchrony,
+
+3
+00:00:04.190 --> 00:00:06.200 align:middle line:84%
+let's turn the tables
+and talk about the pros
+
+4
+00:00:06.200 --> 00:00:08.840 align:middle line:90%
+and cons of asynchrony.
+
+5
+00:00:08.840 --> 00:00:11.000 align:middle line:84%
+And we're going to use
+this to help motivate
+
+6
+00:00:11.000 --> 00:00:14.900 align:middle line:84%
+the need for concepts
+like Java Futures and Java
+
+7
+00:00:14.900 --> 00:00:17.690 align:middle line:84%
+CompletableFutures by
+explaining what asynchrony is
+
+8
+00:00:17.690 --> 00:00:22.370 align:middle line:84%
+and how it can be used
+for benefiting programs.
+
+9
+00:00:22.370 --> 00:00:24.860 align:middle line:84%
+So asynchrony is a means
+of concurrent programming
+
+10
+00:00:24.860 --> 00:00:30.080 align:middle line:84%
+where the caller doesn't block
+waiting for the called code
+
+11
+00:00:30.080 --> 00:00:31.380 align:middle line:90%
+to complete.
+
+12
+00:00:31.380 --> 00:00:33.455 align:middle line:84%
+So it's kind of like
+mailing a letter.
+
+13
+00:00:33.455 --> 00:00:36.800 align:middle line:84%
+If you go mail a letter to a
+friend, or to your credit card
+
+14
+00:00:36.800 --> 00:00:38.960 align:middle line:84%
+company or whomever,
+chances are you
+
+15
+00:00:38.960 --> 00:00:40.755 align:middle line:84%
+don't drop the
+letter in the mailbox
+
+16
+00:00:40.755 --> 00:00:43.130 align:middle line:84%
+and then sit there waiting
+for the response to come back.
+
+17
+00:00:43.130 --> 00:00:46.100 align:middle line:84%
+You go off and live your
+life and do other things
+
+18
+00:00:46.100 --> 00:00:47.730 align:middle line:84%
+while you're waiting
+for a response,
+
+19
+00:00:47.730 --> 00:00:50.290 align:middle line:90%
+if you even need a response.
+
+20
+00:00:50.290 --> 00:00:51.820 align:middle line:84%
+Instead, the way
+that asynchronous
+
+21
+00:00:51.820 --> 00:00:55.480 align:middle line:84%
+calls work is that they
+immediately return something
+
+22
+00:00:55.480 --> 00:00:58.780 align:middle line:84%
+called a Future, and
+then they continue
+
+23
+00:00:58.780 --> 00:01:01.520 align:middle line:84%
+running the computation
+in the background.
+
+24
+00:01:01.520 --> 00:01:03.970 align:middle line:84%
+So you can see here, when
+we invoke these operations,
+
+25
+00:01:03.970 --> 00:01:05.980 align:middle line:84%
+like if you had an
+asynchronous model
+
+26
+00:01:05.980 --> 00:01:08.455 align:middle line:84%
+you'd say search for
+word, and it would
+
+27
+00:01:08.455 --> 00:01:09.580 align:middle line:90%
+return a Future right away.
+
+28
+00:01:09.580 --> 00:01:10.990 align:middle line:84%
+And then we'd go ahead
+and search for the word.
+
+29
+00:01:10.990 --> 00:01:13.570 align:middle line:84%
+And then you could immediately
+call another invocation
+
+30
+00:01:13.570 --> 00:01:15.970 align:middle line:84%
+of search for word,
+get back a Future,
+
+31
+00:01:15.970 --> 00:01:17.680 align:middle line:84%
+and then keep running
+in the background.
+
+32
+00:01:17.680 --> 00:01:19.180 align:middle line:84%
+And at some point,
+of course, you'll
+
+33
+00:01:19.180 --> 00:01:20.620 align:middle line:90%
+have to get the results back.
+
+34
+00:01:20.620 --> 00:01:24.210 align:middle line:84%
+But that's for a
+later discussion.
+
+35
+00:01:24.210 --> 00:01:27.210 align:middle line:84%
+A Future is considered
+to be triggered
+
+36
+00:01:27.210 --> 00:01:31.405 align:middle line:84%
+when the asynchronous call
+it's associated with completes.
+
+37
+00:01:31.405 --> 00:01:33.030 align:middle line:84%
+So if you look at
+this particular model
+
+38
+00:01:33.030 --> 00:01:36.810 align:middle line:84%
+here, which we'll talk about in
+a lot more detail very shortly,
+
+39
+00:01:36.810 --> 00:01:39.370 align:middle line:84%
+we first invoke an
+asynchronous call.
+
+40
+00:01:39.370 --> 00:01:42.930 align:middle line:84%
+And it runs in some kind of
+background service thread.
+
+41
+00:01:42.930 --> 00:01:46.480 align:middle line:84%
+We get back a
+Future of some sort.
+
+42
+00:01:46.480 --> 00:01:49.830 align:middle line:84%
+And then the client
+can obtain the result
+
+43
+00:01:49.830 --> 00:01:53.760 align:middle line:84%
+after the asynchronous
+computation completes.
+
+44
+00:01:53.760 --> 00:01:55.733 align:middle line:84%
+So when the asynchronous
+call finishes,
+
+45
+00:01:55.733 --> 00:01:57.150 align:middle line:84%
+then the Future
+becomes triggered.
+
+46
+00:01:57.150 --> 00:01:58.290 align:middle line:90%
+And we can get the result back.
+
+47
+00:01:58.290 --> 00:02:00.123 align:middle line:84%
+And we'll see there's
+lots of different ways
+
+48
+00:02:00.123 --> 00:02:05.090 align:middle line:84%
+to do this with the various
+Java asynchronous approaches.
+
+49
+00:02:05.090 --> 00:02:08.750 align:middle line:84%
+One example of an
+asynchronous model
+
+50
+00:02:08.750 --> 00:02:12.170 align:middle line:84%
+is something provided by Android
+with its Asynchronous Task
+
+51
+00:02:12.170 --> 00:02:13.250 align:middle line:90%
+framework.
+
+52
+00:02:13.250 --> 00:02:16.370 align:middle line:84%
+And again, if you go
+back and watch the videos
+
+53
+00:02:16.370 --> 00:02:18.470 align:middle line:84%
+for my concurrent
+object-oriented programming
+
+54
+00:02:18.470 --> 00:02:21.380 align:middle line:84%
+course, you'll see I
+have a whole lesson where
+
+55
+00:02:21.380 --> 00:02:23.830 align:middle line:84%
+we talk about the
+Asynchronous Task framework.
+
+56
+00:02:23.830 --> 00:02:25.580 align:middle line:84%
+I think it's actually
+sort of a whole week
+
+57
+00:02:25.580 --> 00:02:28.080 align:middle line:84%
+where we talk about
+Asynchronous Task.
+
+58
+00:02:28.080 --> 00:02:29.630 align:middle line:84%
+And Asynchronous
+Task framework can
+
+59
+00:02:29.630 --> 00:02:33.890 align:middle line:84%
+be used to perform background
+operations asynchronously
+
+60
+00:02:33.890 --> 00:02:35.450 align:middle line:90%
+in a pool of threads.
+
+61
+00:02:35.450 --> 00:02:38.060 align:middle line:84%
+And it then can
+publish the results
+
+62
+00:02:38.060 --> 00:02:40.970 align:middle line:84%
+of those asynchronous
+computations back to the user
+
+63
+00:02:40.970 --> 00:02:43.310 align:middle line:84%
+interface thread
+without requiring
+
+64
+00:02:43.310 --> 00:02:46.550 align:middle line:84%
+application developers to
+have to manipulate threads
+
+65
+00:02:46.550 --> 00:02:50.450 align:middle line:84%
+or handlers or runnables, or
+other kinds of low-level things
+
+66
+00:02:50.450 --> 00:02:56.620 align:middle line:84%
+that are otherwise needed to
+program concurrency on Android.
+
+67
+00:02:56.620 --> 00:02:59.150 align:middle line:84%
+The Asynchronous Task,
+when you execute it,
+
+68
+00:02:59.150 --> 00:03:01.925 align:middle line:84%
+it runs long-duration
+operations.
+
+69
+00:03:01.925 --> 00:03:03.800 align:middle line:84%
+Because that's typically
+what you use it for.
+
+70
+00:03:03.800 --> 00:03:07.280 align:middle line:84%
+Those are run asynchronously in
+one or more background threads.
+
+71
+00:03:07.280 --> 00:03:10.850 align:middle line:84%
+The threads in the
+background can block,
+
+72
+00:03:10.850 --> 00:03:14.300 align:middle line:84%
+but they don't block the calling
+thread, which is typically
+
+73
+00:03:14.300 --> 00:03:15.540 align:middle line:90%
+the user interface thread.
+
+74
+00:03:15.540 --> 00:03:18.698 align:middle line:84%
+So the calling thread could
+run and do other things
+
+75
+00:03:18.698 --> 00:03:20.990 align:middle line:84%
+while the background threads
+are doing their processing
+
+76
+00:03:20.990 --> 00:03:24.710 align:middle line:84%
+asynchronously, hence
+the term AsyncTask.
+
+77
+00:03:24.710 --> 00:03:29.930 align:middle line:84%
+And when the background thread
+either completes the operation
+
+78
+00:03:29.930 --> 00:03:36.603 align:middle line:84%
+or it fails, or it wants to
+report its progress, the client
+
+79
+00:03:36.603 --> 00:03:38.020 align:middle line:84%
+thread, the user
+interface thread,
+
+80
+00:03:38.020 --> 00:03:42.200 align:middle line:84%
+the calling thread can be
+automatically notified.
+
+81
+00:03:42.200 --> 00:03:44.100 align:middle line:84%
+And one of the cool
+things about this model
+
+82
+00:03:44.100 --> 00:03:47.280 align:middle line:84%
+is it shields the client code
+from the details of programming
+
+83
+00:03:47.280 --> 00:03:48.090 align:middle line:90%
+Futures.
+
+84
+00:03:48.090 --> 00:03:49.650 align:middle line:84%
+Under the hood,
+there's some Futures
+
+85
+00:03:49.650 --> 00:03:52.585 align:middle line:84%
+going on in the asynchronous
+task implementation.
+
+86
+00:03:52.585 --> 00:03:54.210 align:middle line:84%
+In particular, there's
+something called
+
+87
+00:03:54.210 --> 00:03:56.760 align:middle line:90%
+FutureTask, which is a Future.
+
+88
+00:03:56.760 --> 00:03:59.290 align:middle line:84%
+But the programming
+abstraction shields you
+
+89
+00:03:59.290 --> 00:04:01.290 align:middle line:84%
+from the knowledge of
+what's actually happening.
+
+90
+00:04:01.290 --> 00:04:04.050 align:middle line:90%
+So that's pretty cool.
+
+91
+00:04:04.050 --> 00:04:07.580 align:middle line:84%
+So let's talk about
+the pros of asynchrony.
+
+92
+00:04:07.580 --> 00:04:09.500 align:middle line:84%
+One of the pros,
+which goes right back
+
+93
+00:04:09.500 --> 00:04:13.400 align:middle line:84%
+to our discussion of reactive
+programming principles,
+
+94
+00:04:13.400 --> 00:04:15.160 align:middle line:90%
+is responsiveness.
+
+95
+00:04:15.160 --> 00:04:18.860 align:middle line:84%
+A calling thread
+needn't block waiting
+
+96
+00:04:18.860 --> 00:04:22.920 align:middle line:84%
+for the asynchronous operation
+it's requested to complete.
+
+97
+00:04:22.920 --> 00:04:24.380 align:middle line:84%
+So as a result,
+the calling thread
+
+98
+00:04:24.380 --> 00:04:28.510 align:middle line:84%
+can go off and do other things,
+like be responsive to users.
+
+99
+00:04:28.510 --> 00:04:29.960 align:middle line:84%
+And what this often
+means is we're
+
+100
+00:04:29.960 --> 00:04:32.030 align:middle line:84%
+better able to leverage
+the parallelism that's
+
+101
+00:04:32.030 --> 00:04:33.590 align:middle line:90%
+available in multi-core systems.
+
+102
+00:04:33.590 --> 00:04:35.465 align:middle line:84%
+Because we can have all
+these threads running
+
+103
+00:04:35.465 --> 00:04:38.030 align:middle line:84%
+in the background, doing
+their thing, using cores,
+
+104
+00:04:38.030 --> 00:04:40.820 align:middle line:84%
+and yet we can still be
+responsive and reactive
+
+105
+00:04:40.820 --> 00:04:44.510 align:middle line:84%
+to our users, who don't
+want to sit there and look
+
+106
+00:04:44.510 --> 00:04:47.920 align:middle line:84%
+at an hourglass saying, oh,
+the user interface is frozen.
+
+107
+00:04:47.920 --> 00:04:51.920 align:middle line:84%
+I can't get a result. I can't
+interact with the system.
+
+108
+00:04:51.920 --> 00:04:53.900 align:middle line:84%
+Another benefit of
+elasticity, which also,
+
+109
+00:04:53.900 --> 00:04:58.000 align:middle line:84%
+of course, is one of the
+four key reactive programming
+
+110
+00:04:58.000 --> 00:05:00.760 align:middle line:90%
+principles, is elasticity.
+
+111
+00:05:00.760 --> 00:05:04.330 align:middle line:84%
+You can take those
+requests that you provide
+
+112
+00:05:04.330 --> 00:05:08.620 align:middle line:84%
+and then run them scalably and
+concurrently on multiple cores.
+
+113
+00:05:08.620 --> 00:05:11.470 align:middle line:84%
+So you don't have to, basically,
+only run on a handful of cores.
+
+114
+00:05:11.470 --> 00:05:13.460 align:middle line:90%
+You can have a pool of cores.
+
+115
+00:05:13.460 --> 00:05:15.050 align:middle line:84%
+And then, as the
+workload increases,
+
+116
+00:05:15.050 --> 00:05:17.680 align:middle line:84%
+you can use more
+cores, and hopefully
+
+117
+00:05:17.680 --> 00:05:21.880 align:middle line:84%
+be able to get more work
+done per unit time, which is
+
+118
+00:05:21.880 --> 00:05:24.550 align:middle line:90%
+basically a throughput measure.
+
+119
+00:05:24.550 --> 00:05:27.400 align:middle line:84%
+You may also be able to get
+results back faster, which
+
+120
+00:05:27.400 --> 00:05:28.690 align:middle line:90%
+is a latency measure.
+
+121
+00:05:28.690 --> 00:05:30.400 align:middle line:84%
+So elasticity is
+basically the way
+
+122
+00:05:30.400 --> 00:05:34.110 align:middle line:90%
+to improve system performance.
+
+123
+00:05:34.110 --> 00:05:36.870 align:middle line:84%
+Elasticity is
+particularly useful
+
+124
+00:05:36.870 --> 00:05:41.070 align:middle line:84%
+to auto-scale computations in
+cloud computing environments.
+
+125
+00:05:41.070 --> 00:05:43.860 align:middle line:84%
+Now, as I've said
+before, the mechanisms
+
+126
+00:05:43.860 --> 00:05:47.430 align:middle line:84%
+available in the
+CompletableFutures framework
+
+127
+00:05:47.430 --> 00:05:50.340 align:middle line:84%
+are not going to take
+advantage of cloud-
+
+128
+00:05:50.340 --> 00:05:52.530 align:middle line:90%
+and cluster-style programming.
+
+129
+00:05:52.530 --> 00:05:54.450 align:middle line:84%
+But you can still
+auto-scale on the cores
+
+130
+00:05:54.450 --> 00:05:59.160 align:middle line:84%
+that are available to you on
+your single-processor platform.
+
+131
+00:05:59.160 --> 00:06:01.620 align:middle line:84%
+And of course, you could
+also use CompletableFutures
+
+132
+00:06:01.620 --> 00:06:05.045 align:middle line:84%
+in a cloud or cluster
+programming framework
+
+133
+00:06:05.045 --> 00:06:06.420 align:middle line:84%
+in order to take
+better advantage
+
+134
+00:06:06.420 --> 00:06:12.110 align:middle line:84%
+of the multi-core processing
+on a given node in the cluster.
+
+135
+00:06:12.110 --> 00:06:15.200 align:middle line:84%
+Of course, it's not all
+unicorns and rainbows.
+
+136
+00:06:15.200 --> 00:06:18.940 align:middle line:84%
+So there are some
+downsides to asynchrony.
+
+137
+00:06:18.940 --> 00:06:21.670 align:middle line:84%
+One of the tricky parts is
+you end up with a system
+
+138
+00:06:21.670 --> 00:06:24.070 align:middle line:90%
+that's often more unpredictable.
+
+139
+00:06:24.070 --> 00:06:27.220 align:middle line:84%
+And even though things
+may be responsive,
+
+140
+00:06:27.220 --> 00:06:30.430 align:middle line:84%
+the response times may be
+somewhat unpredictable due
+
+141
+00:06:30.430 --> 00:06:34.030 align:middle line:84%
+to the inherent non-determinism
+of asynchronous operations.
+
+142
+00:06:34.030 --> 00:06:36.010 align:middle line:84%
+The whole point of
+asynchrony is to run things
+
+143
+00:06:36.010 --> 00:06:39.640 align:middle line:84%
+in the background, and we're not
+trying to do them in lock-step,
+
+144
+00:06:39.640 --> 00:06:41.980 align:middle line:90%
+in a fully synchronous way.
+
+145
+00:06:41.980 --> 00:06:43.960 align:middle line:84%
+So you may end up
+getting results
+
+146
+00:06:43.960 --> 00:06:45.620 align:middle line:90%
+that occur at different times.
+
+147
+00:06:45.620 --> 00:06:48.645 align:middle line:84%
+Now, this isn't really just
+a problem with asynchrony.
+
+148
+00:06:48.645 --> 00:06:50.270 align:middle line:84%
+It's really a problem
+with concurrency.
+
+149
+00:06:50.270 --> 00:06:52.270 align:middle line:90%
+It's a problem with parallelism.
+
+150
+00:06:52.270 --> 00:06:55.630 align:middle line:84%
+But it's something that may
+become more obvious if you
+
+151
+00:06:55.630 --> 00:06:57.250 align:middle line:84%
+start running things
+asynchronously,
+
+152
+00:06:57.250 --> 00:06:58.793 align:middle line:84%
+because they don't
+occur, and they
+
+153
+00:06:58.793 --> 00:07:00.460 align:middle line:84%
+don't show up, in
+exactly the same order
+
+154
+00:07:00.460 --> 00:07:03.360 align:middle line:90%
+that you may have expected.
+
+155
+00:07:03.360 --> 00:07:06.960 align:middle line:84%
+In particular, the results
+may occur in a different order
+
+156
+00:07:06.960 --> 00:07:09.360 align:middle line:84%
+than the original
+calls were made.
+
+157
+00:07:09.360 --> 00:07:12.840 align:middle line:84%
+And if you need to
+rearrange the order somehow,
+
+158
+00:07:12.840 --> 00:07:15.870 align:middle line:84%
+to put them back in,
+say, the encounter order,
+
+159
+00:07:15.870 --> 00:07:18.240 align:middle line:84%
+as we talked about
+with parallel streams,
+
+160
+00:07:18.240 --> 00:07:21.193 align:middle line:84%
+then additional time and
+effort may be required.
+
+161
+00:07:21.193 --> 00:07:22.860 align:middle line:84%
+And if you think back
+to our discussions
+
+162
+00:07:22.860 --> 00:07:25.830 align:middle line:84%
+about parallel streams,
+we talked about ordering.
+
+163
+00:07:25.830 --> 00:07:30.480 align:middle line:84%
+We talked about some operations,
+some terminal operations,
+
+164
+00:07:30.480 --> 00:07:33.630 align:middle line:84%
+some intermediate operations
+enforcing ordering,
+
+165
+00:07:33.630 --> 00:07:36.690 align:middle line:84%
+some intermediate operations,
+some terminal operations
+
+166
+00:07:36.690 --> 00:07:38.220 align:middle line:90%
+not enforcing ordering.
+
+167
+00:07:38.220 --> 00:07:40.710 align:middle line:84%
+And as a general rule, if
+you don't enforce ordering,
+
+168
+00:07:40.710 --> 00:07:42.480 align:middle line:90%
+you'll get things done faster.
+
+169
+00:07:42.480 --> 00:07:45.540 align:middle line:84%
+If you do enforce ordering, you
+can still run them in parallel,
+
+170
+00:07:45.540 --> 00:07:48.210 align:middle line:84%
+but it'll take a longer
+time to stitch them
+
+171
+00:07:48.210 --> 00:07:52.270 align:middle line:84%
+all back together again in
+the proper encounter order.
+
+172
+00:07:52.270 --> 00:07:54.460 align:middle line:84%
+So as a rule of thumb,
+you're better off
+
+173
+00:07:54.460 --> 00:07:57.340 align:middle line:84%
+if you can live with
+out-of-order responses
+
+174
+00:07:57.340 --> 00:07:59.290 align:middle line:84%
+in an asynchronous
+world and just deal
+
+175
+00:07:59.290 --> 00:08:03.200 align:middle line:84%
+with the unpredictability
+that's implied by that.
+
+176
+00:08:03.200 --> 00:08:05.630 align:middle line:84%
+Another property of asynchrony
+that gets a little tricky
+
+177
+00:08:05.630 --> 00:08:08.810 align:middle line:84%
+is it is often harder to
+program a synchronous apps.
+
+178
+00:08:08.810 --> 00:08:11.722 align:middle line:84%
+And it's often
+harder to debug them.
+
+179
+00:08:11.722 --> 00:08:14.180 align:middle line:84%
+One reason for this, and we'll
+see this over and over again
+
+180
+00:08:14.180 --> 00:08:18.050 align:middle line:84%
+as we walk through
+the next few weeks,
+
+181
+00:08:18.050 --> 00:08:20.390 align:middle line:84%
+is that the patterns
+and best practices
+
+182
+00:08:20.390 --> 00:08:22.820 align:middle line:84%
+of asynchronous programming
+are typically not
+
+183
+00:08:22.820 --> 00:08:26.120 align:middle line:84%
+as well-understood as the
+patterns and practices
+
+184
+00:08:26.120 --> 00:08:28.820 align:middle line:84%
+of synchronous programming,
+mostly because people
+
+185
+00:08:28.820 --> 00:08:33.047 align:middle line:84%
+have a lot longer time
+behind the wheel doing
+
+186
+00:08:33.047 --> 00:08:35.630 align:middle line:84%
+synchronous programming, because
+that's typically how we learn
+
+187
+00:08:35.630 --> 00:08:37.971 align:middle line:90%
+to do computing from day one.
+
+188
+00:08:37.971 --> 00:08:39.679 align:middle line:84%
+And we just don't have
+as much experience
+
+189
+00:08:39.679 --> 00:08:40.940 align:middle line:90%
+with asynchronous programming.
+
+190
+00:08:40.940 --> 00:08:43.580 align:middle line:84%
+Moreover, a lot of the
+asynchronous programming models
+
+191
+00:08:43.580 --> 00:08:47.270 align:middle line:84%
+are very crufty and weird
+and hard to work with.
+
+192
+00:08:47.270 --> 00:08:51.150 align:middle line:84%
+So that doesn't make
+anything any better.
+
+193
+00:08:51.150 --> 00:08:53.160 align:middle line:84%
+In particular,
+asynchronous programming
+
+194
+00:08:53.160 --> 00:08:55.380 align:middle line:84%
+is very tricky without
+proper abstractions.
+
+195
+00:08:55.380 --> 00:08:57.780 align:middle line:84%
+Anybody who's tried
+to program with some
+
+196
+00:08:57.780 --> 00:09:02.097 align:middle line:84%
+of the early JavaScript
+Promises and Futures mechanisms
+
+197
+00:09:02.097 --> 00:09:03.930 align:middle line:84%
+know that you could get
+into something known
+
+198
+00:09:03.930 --> 00:09:06.368 align:middle line:90%
+as callback hell very quickly.
+
+199
+00:09:06.368 --> 00:09:08.160 align:middle line:84%
+And you can read this
+article to learn more
+
+200
+00:09:08.160 --> 00:09:09.900 align:middle line:90%
+about what callback hell is.
+
+201
+00:09:09.900 --> 00:09:11.070 align:middle line:90%
+I love this diagram.
+
+202
+00:09:11.070 --> 00:09:13.500 align:middle line:84%
+It looks like this poor
+guy's being crushed
+
+203
+00:09:13.500 --> 00:09:16.630 align:middle line:90%
+by a wave of callback hell.
+
+204
+00:09:16.630 --> 00:09:21.720 align:middle line:84%
+And the good news is that the
+way that CompletableFutures
+
+205
+00:09:21.720 --> 00:09:24.840 align:middle line:84%
+work eliminate the
+need for callback hell,
+
+206
+00:09:24.840 --> 00:09:27.000 align:middle line:84%
+and in fact, in many
+cases, can actually
+
+207
+00:09:27.000 --> 00:09:30.090 align:middle line:84%
+make asynchronous
+programming appear very much
+
+208
+00:09:30.090 --> 00:09:32.400 align:middle line:84%
+like synchronous programming
+while still leveraging
+
+209
+00:09:32.400 --> 00:09:36.160 align:middle line:90%
+all the benefits of asynchrony.
+
+210
+00:09:36.160 --> 00:09:39.520 align:middle line:84%
+Another tricky part about
+asynchronous programming
+
+211
+00:09:39.520 --> 00:09:42.310 align:middle line:84%
+is it can be hard to
+track down errors,
+
+212
+00:09:42.310 --> 00:09:45.010 align:middle line:84%
+because things are occurring
+at different pieces of time.
+
+213
+00:09:45.010 --> 00:09:48.190 align:middle line:84%
+And so unpredictability
+and nondeterminism
+
+214
+00:09:48.190 --> 00:09:50.545 align:middle line:84%
+means you may get
+different results when
+
+215
+00:09:50.545 --> 00:09:52.420 align:middle line:84%
+you run your code in
+the debugger versus when
+
+216
+00:09:52.420 --> 00:09:54.100 align:middle line:90%
+you run the code live.
+
+217
+00:09:54.100 --> 00:09:56.560 align:middle line:84%
+And that will tend to
+throw you for a loop
+
+218
+00:09:56.560 --> 00:09:58.600 align:middle line:90%
+if you're not careful.
+
+219
+00:09:58.600 --> 00:10:04.000 align:middle line:84%
+Again, this is not really a
+problem with just asynchrony.
+
+220
+00:10:04.000 --> 00:10:06.340 align:middle line:84%
+It's just a general problem
+with concurrent processing.
+
+221
+00:10:06.340 --> 00:10:09.520 align:middle line:84%
+If things run in parallel,
+if things run concurrently,
+
+222
+00:10:09.520 --> 00:10:11.140 align:middle line:90%
+they'll be nondeterministic.
+
+223
+00:10:11.140 --> 00:10:16.430 align:middle line:84%
+And as a consequence,
+they're harder to debug.
+
+224
+00:10:16.430 --> 00:10:18.617 align:middle line:84%
+So now that we've
+talked about asynchrony
+
+225
+00:10:18.617 --> 00:10:20.200 align:middle line:84%
+and looked at the
+pros and cons, let's
+
+226
+00:10:20.200 --> 00:10:24.260 align:middle line:84%
+kind of weigh them and
+see what we come out with.
+
+227
+00:10:24.260 --> 00:10:28.570 align:middle line:84%
+So two things are necessary
+for the pros of asynchrony
+
+228
+00:10:28.570 --> 00:10:30.940 align:middle line:84%
+to outweigh the
+cons of asynchrony.
+
+229
+00:10:30.940 --> 00:10:34.000 align:middle line:84%
+Number one, if you're going
+to go to all this trouble,
+
+230
+00:10:34.000 --> 00:10:37.360 align:middle line:84%
+you really want to see a
+speed-up in performance.
+
+231
+00:10:37.360 --> 00:10:39.940 align:middle line:84%
+There's no point in
+standing on your head
+
+232
+00:10:39.940 --> 00:10:42.250 align:middle line:84%
+and learning patterns
+and best practices
+
+233
+00:10:42.250 --> 00:10:45.700 align:middle line:84%
+and programming APIs for
+asynchronous programming
+
+234
+00:10:45.700 --> 00:10:48.460 align:middle line:84%
+if you end up with slower code
+than if you did something else,
+
+235
+00:10:48.460 --> 00:10:51.300 align:middle line:90%
+like use parallel streams.
+
+236
+00:10:51.300 --> 00:10:53.533 align:middle line:84%
+And if you take a look,
+especially at some
+
+237
+00:10:53.533 --> 00:10:54.950 align:middle line:84%
+of the examples
+we'll cover later,
+
+238
+00:10:54.950 --> 00:10:58.220 align:middle line:84%
+like our CompletableFutures
+version of the image stream
+
+239
+00:10:58.220 --> 00:11:01.410 align:middle line:84%
+Gang case study, which
+we covered earlier
+
+240
+00:11:01.410 --> 00:11:04.440 align:middle line:84%
+for parallel streams, you'll see
+that, in fact, it is worth it.
+
+241
+00:11:04.440 --> 00:11:07.160 align:middle line:84%
+You do get a faster
+performance boost
+
+242
+00:11:07.160 --> 00:11:09.530 align:middle line:84%
+by taking the time to
+master the complexity
+
+243
+00:11:09.530 --> 00:11:12.027 align:middle line:84%
+of asynchronous programming
+with CompletableFutures.
+
+244
+00:11:12.027 --> 00:11:12.860 align:middle line:90%
+So that's one thing.
+
+245
+00:11:12.860 --> 00:11:15.100 align:middle line:84%
+You've got to get a
+win for all this pain.
+
+246
+00:11:15.100 --> 00:11:17.810 align:middle line:84%
+You've got to get a
+gain for the pain.
+
+247
+00:11:17.810 --> 00:11:20.150 align:middle line:84%
+And of course, another
+thing that is necessary
+
+248
+00:11:20.150 --> 00:11:23.060 align:middle line:84%
+is that the asynchronous
+programming model
+
+249
+00:11:23.060 --> 00:11:24.710 align:middle line:84%
+should reflect
+the key principles
+
+250
+00:11:24.710 --> 00:11:27.750 align:middle line:84%
+of the reactive
+programming paradigm.
+
+251
+00:11:27.750 --> 00:11:30.230 align:middle line:84%
+So it should be responsive,
+resilient, elastic,
+
+252
+00:11:30.230 --> 00:11:31.590 align:middle line:90%
+message-driven, and so on.
+
+253
+00:11:31.590 --> 00:11:33.590 align:middle line:84%
+And once again, we're
+very fortunate that that's
+
+254
+00:11:33.590 --> 00:11:35.930 align:middle line:84%
+precisely what the
+CompletableFutures
+
+255
+00:11:35.930 --> 00:11:38.220 align:middle line:90%
+framework does.
+
+256
+00:11:38.220 --> 00:11:39.780 align:middle line:84%
+So the competing
+futures framework
+
+257
+00:11:39.780 --> 00:11:41.970 align:middle line:84%
+provides a very
+nice asynchronous,
+
+258
+00:11:41.970 --> 00:11:43.470 align:middle line:84%
+concurrent, and
+parallel programming
+
+259
+00:11:43.470 --> 00:11:47.370 align:middle line:84%
+model that performs
+very well and supports
+
+260
+00:11:47.370 --> 00:11:48.900 align:middle line:90%
+the reactive paradigm.
+
+261
+00:11:48.900 --> 00:11:50.550 align:middle line:84%
+And that's good
+news, because that
+
+262
+00:11:50.550 --> 00:11:52.380 align:middle line:84%
+means that all the
+discussion we're
+
+263
+00:11:52.380 --> 00:11:54.480 align:middle line:84%
+about to go through
+over the next few weeks
+
+264
+00:11:54.480 --> 00:11:56.860 align:middle line:90%
+will not waste your time.
+
+265
+00:11:56.860 --> 00:11:58.800 align:middle line:84%
+But by the time you
+master this paradigm,
+
+266
+00:11:58.800 --> 00:12:00.300 align:middle line:84%
+and you'll get a
+chance to master it
+
+267
+00:12:00.300 --> 00:12:03.402 align:middle line:84%
+through several means,
+you'll be way ahead
+
+268
+00:12:03.402 --> 00:12:04.860 align:middle line:84%
+of the game in
+terms of knowing how
+
+269
+00:12:04.860 --> 00:12:08.430 align:middle line:84%
+to make very effective, very
+productive, and very efficient
+
+270
+00:12:08.430 --> 00:12:11.660 align:middle line:84%
+solutions using the
+CompletableFutures framework.

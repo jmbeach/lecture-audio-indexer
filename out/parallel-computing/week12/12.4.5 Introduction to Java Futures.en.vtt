@@ -1,0 +1,420 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.500 align:middle line:90%
+
+
+2
+00:00:00.500 --> 00:00:04.593 align:middle line:84%
+So now that we've talked about
+the Future model a bit more,
+
+3
+00:00:04.593 --> 00:00:06.510 align:middle line:84%
+and I've shown you sort
+of the steps involved,
+
+4
+00:00:06.510 --> 00:00:09.060 align:middle line:84%
+and I've talked more about
+how the methods get triggered,
+
+5
+00:00:09.060 --> 00:00:11.600 align:middle line:84%
+let's actually show a complete
+example that illustrates how
+
+6
+00:00:11.600 --> 00:00:14.760 align:middle line:90%
+a program with Futures.
+
+7
+00:00:14.760 --> 00:00:18.100 align:middle line:84%
+And this particular example
+will bring back our good friend,
+
+8
+00:00:18.100 --> 00:00:21.840 align:middle line:84%
+the BigInteger
+object in order to be
+
+9
+00:00:21.840 --> 00:00:26.250 align:middle line:84%
+able to program
+multiplications of big integers
+
+10
+00:00:26.250 --> 00:00:30.300 align:middle line:84%
+and big fractions
+using Java Futures.
+
+11
+00:00:30.300 --> 00:00:32.850 align:middle line:84%
+So if you recall,
+a big fraction is
+
+12
+00:00:32.850 --> 00:00:37.140 align:middle line:84%
+a class that uses big integers,
+and we have various things
+
+13
+00:00:37.140 --> 00:00:39.660 align:middle line:84%
+we can do with this that
+supports arbitrary precision
+
+14
+00:00:39.660 --> 00:00:43.230 align:middle line:84%
+fractions, utilizing big
+integers for numerator
+
+15
+00:00:43.230 --> 00:00:45.172 align:middle line:90%
+and denominators.
+
+16
+00:00:45.172 --> 00:00:47.630 align:middle line:84%
+As we said earlier-- so I'll
+kind of go through this pretty
+
+17
+00:00:47.630 --> 00:00:48.500 align:middle line:90%
+fast--
+
+18
+00:00:48.500 --> 00:00:51.590 align:middle line:84%
+the factory methods
+available in BigFraction
+
+19
+00:00:51.590 --> 00:00:54.770 align:middle line:84%
+could be used to create
+reduced fractions.
+
+20
+00:00:54.770 --> 00:00:57.470 align:middle line:84%
+We can use these to create
+non-reduced fractions,
+
+21
+00:00:57.470 --> 00:01:02.240 align:middle line:84%
+and then later reduce them, we
+can perform arbitrary precision
+
+22
+00:01:02.240 --> 00:01:06.390 align:middle line:84%
+fraction arithmetic, and we can
+also create a mixed fraction
+
+23
+00:01:06.390 --> 00:01:08.290 align:middle line:90%
+from an improper fraction.
+
+24
+00:01:08.290 --> 00:01:10.543 align:middle line:84%
+So I've covered this
+material earlier
+
+25
+00:01:10.543 --> 00:01:12.460 align:middle line:84%
+when we were talking
+about other abstractions,
+
+26
+00:01:12.460 --> 00:01:14.890 align:middle line:84%
+so I won't spend a lot of
+time talking about it here.
+
+27
+00:01:14.890 --> 00:01:16.410 align:middle line:84%
+But this is what
+we covered when we
+
+28
+00:01:16.410 --> 00:01:20.670 align:middle line:84%
+were talking about the fork-join
+pool examples, where we were
+
+29
+00:01:20.670 --> 00:01:24.810 align:middle line:84%
+multiplying random, large,
+big fractions together,
+
+30
+00:01:24.810 --> 00:01:26.790 align:middle line:84%
+and then reducing them
+and multiplying them
+
+31
+00:01:26.790 --> 00:01:29.450 align:middle line:90%
+with other stuff.
+
+32
+00:01:29.450 --> 00:01:31.270 align:middle line:84%
+So let's show an
+example of how we
+
+33
+00:01:31.270 --> 00:01:36.010 align:middle line:84%
+could use the Future
+API via a Callable
+
+34
+00:01:36.010 --> 00:01:38.470 align:middle line:90%
+and the common fork-join pool.
+
+35
+00:01:38.470 --> 00:01:41.660 align:middle line:84%
+And so as you can see, in
+this particular example,
+
+36
+00:01:41.660 --> 00:01:44.020 align:middle line:84%
+we're going to use Futures
+to go ahead and kick things
+
+37
+00:01:44.020 --> 00:01:45.790 align:middle line:90%
+off and run them.
+
+38
+00:01:45.790 --> 00:01:48.640 align:middle line:84%
+The particular processing
+we're going to do here
+
+39
+00:01:48.640 --> 00:01:52.020 align:middle line:84%
+is just a more detailed
+example we talked about before.
+
+40
+00:01:52.020 --> 00:01:54.010 align:middle line:84%
+We're going to create
+a Callable, which
+
+41
+00:01:54.010 --> 00:01:58.450 align:middle line:84%
+will be at a task that will
+be a lambda expression.
+
+42
+00:01:58.450 --> 00:02:01.810 align:middle line:84%
+And this supplier
+lambda, which conforms
+
+43
+00:02:01.810 --> 00:02:04.090 align:middle line:84%
+to the signature
+expected by a Callable,
+
+44
+00:02:04.090 --> 00:02:08.350 align:middle line:84%
+will create two BigFractions
+and multiply them together.
+
+45
+00:02:08.350 --> 00:02:11.130 align:middle line:84%
+That'll obviously take
+place in the background.
+
+46
+00:02:11.130 --> 00:02:13.470 align:middle line:84%
+We can pass parameters
+into this lambda
+
+47
+00:02:13.470 --> 00:02:18.490 align:middle line:84%
+by using so-called effectively
+final variables so f1 and f2,
+
+48
+00:02:18.490 --> 00:02:23.430 align:middle line:84%
+which represent our big
+fractions as strings will
+
+49
+00:02:23.430 --> 00:02:26.035 align:middle line:84%
+be capable of being passed
+into that supplier lambda
+
+50
+00:02:26.035 --> 00:02:28.410 align:middle line:84%
+because they aren't changed
+after the point where they're
+
+51
+00:02:28.410 --> 00:02:30.180 align:middle line:90%
+initialized.
+
+52
+00:02:30.180 --> 00:02:35.970 align:middle line:84%
+Then we go ahead and we submit
+the task using the common pool
+
+53
+00:02:35.970 --> 00:02:37.770 align:middle line:90%
+of the fork-join pool.
+
+54
+00:02:37.770 --> 00:02:40.200 align:middle line:84%
+And we submit this
+task, that you
+
+55
+00:02:40.200 --> 00:02:42.630 align:middle line:84%
+can submit a task that
+you can submit Callables
+
+56
+00:02:42.630 --> 00:02:43.880 align:middle line:90%
+to the fork-join pool.
+
+57
+00:02:43.880 --> 00:02:47.320 align:middle line:84%
+A fork-join pool
+returns a Future task,
+
+58
+00:02:47.320 --> 00:02:51.290 align:middle line:84%
+but a Future task implements
+the Future interface.
+
+59
+00:02:51.290 --> 00:02:53.040 align:middle line:84%
+And therefore, we can
+simply get this back
+
+60
+00:02:53.040 --> 00:02:56.230 align:middle line:84%
+and store it as a Future,
+which is pretty cool.
+
+61
+00:02:56.230 --> 00:02:59.400 align:middle line:84%
+So we're submitting this to
+the common fork joint pool
+
+62
+00:02:59.400 --> 00:03:03.300 align:middle line:84%
+as a Callable and
+getting back a Future.
+
+63
+00:03:03.300 --> 00:03:06.270 align:middle line:84%
+That Future can be used
+to represent the pending
+
+64
+00:03:06.270 --> 00:03:08.470 align:middle line:90%
+results of the task.
+
+65
+00:03:08.470 --> 00:03:13.210 align:middle line:84%
+And other code can then run
+where I put the dot dot dot,
+
+66
+00:03:13.210 --> 00:03:16.120 align:middle line:84%
+and that will run concurrently
+with the task that's
+
+67
+00:03:16.120 --> 00:03:18.190 align:middle line:90%
+executing in the background.
+
+68
+00:03:18.190 --> 00:03:20.170 align:middle line:84%
+So the task that's
+running there will
+
+69
+00:03:20.170 --> 00:03:24.370 align:middle line:84%
+be running in some thread
+in the fork-join pool,
+
+70
+00:03:24.370 --> 00:03:26.740 align:middle line:84%
+and we can be doing
+other code here.
+
+71
+00:03:26.740 --> 00:03:29.260 align:middle line:84%
+And at some point, we might
+want to go ahead and get
+
+72
+00:03:29.260 --> 00:03:30.770 align:middle line:90%
+the results.
+
+73
+00:03:30.770 --> 00:03:34.103 align:middle line:84%
+And so in this case, we call the
+version of get that will block,
+
+74
+00:03:34.103 --> 00:03:35.770 align:middle line:84%
+waiting for the
+asynchronous computation
+
+75
+00:03:35.770 --> 00:03:39.310 align:middle line:84%
+to complete, and then
+get the result back.
+
+76
+00:03:39.310 --> 00:03:42.190 align:middle line:84%
+We can also pass in a
+time value here, which
+
+77
+00:03:42.190 --> 00:03:44.110 align:middle line:84%
+could be 0 if we
+just want to pull it,
+
+78
+00:03:44.110 --> 00:03:45.820 align:middle line:84%
+or it could be some
+value greater than 0
+
+79
+00:03:45.820 --> 00:03:48.170 align:middle line:84%
+if we want to wait up
+to that amount of time.
+
+80
+00:03:48.170 --> 00:03:50.560 align:middle line:84%
+Now, if we pass in a 0
+and there's nothing there,
+
+81
+00:03:50.560 --> 00:03:52.660 align:middle line:84%
+it'll return null,
+indicating that we
+
+82
+00:03:52.660 --> 00:03:54.102 align:middle line:90%
+don't have the result yet.
+
+83
+00:03:54.102 --> 00:03:55.810 align:middle line:84%
+If we give a value
+that's greater than 0,
+
+84
+00:03:55.810 --> 00:03:59.182 align:middle line:84%
+like 10, it'll wait
+up to 10 seconds.
+
+85
+00:03:59.182 --> 00:04:00.640 align:middle line:84%
+If it gets the
+result in that time,
+
+86
+00:04:00.640 --> 00:04:01.750 align:middle line:90%
+we'll get the result back.
+
+87
+00:04:01.750 --> 00:04:04.990 align:middle line:84%
+If we don't get the result,
+we'll get back a null.

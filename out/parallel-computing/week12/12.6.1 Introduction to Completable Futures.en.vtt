@@ -1,0 +1,573 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.860 align:middle line:90%
+
+
+2
+00:00:00.860 --> 00:00:03.245 align:middle line:84%
+So now that I've told you
+all the bad things and all
+
+3
+00:00:03.245 --> 00:00:05.730 align:middle line:84%
+the limitations
+with Java futures,
+
+4
+00:00:05.730 --> 00:00:07.340 align:middle line:84%
+let's start our
+discussion to see
+
+5
+00:00:07.340 --> 00:00:10.460 align:middle line:84%
+how Java is completable futures
+and the completable futures
+
+6
+00:00:10.460 --> 00:00:13.163 align:middle line:84%
+framework will fix these
+particular problems.
+
+7
+00:00:13.163 --> 00:00:15.080 align:middle line:84%
+So what we're going to
+talk about in this part
+
+8
+00:00:15.080 --> 00:00:18.830 align:middle line:84%
+of the lesson is to
+show, at a high level,
+
+9
+00:00:18.830 --> 00:00:20.960 align:middle line:84%
+how the completable
+futures framework overcomes
+
+10
+00:00:20.960 --> 00:00:22.940 align:middle line:84%
+the limitations
+with Java futures.
+
+11
+00:00:22.940 --> 00:00:26.030 align:middle line:84%
+Now, I realize we haven't
+talked at length about the Java
+
+12
+00:00:26.030 --> 00:00:29.030 align:middle line:84%
+computable futures framework
+to really understand everything
+
+13
+00:00:29.030 --> 00:00:30.950 align:middle line:84%
+we're going to cover
+in detail, but I just
+
+14
+00:00:30.950 --> 00:00:33.440 align:middle line:84%
+want to give you kind
+of a teaser for what
+
+15
+00:00:33.440 --> 00:00:38.070 align:middle line:84%
+we'll be talking about through
+the rest of this course.
+
+16
+00:00:38.070 --> 00:00:39.710 align:middle line:84%
+So the compatible
+futures framework
+
+17
+00:00:39.710 --> 00:00:43.220 align:middle line:84%
+is intentionally designed
+to overcome the limitations
+
+18
+00:00:43.220 --> 00:00:44.750 align:middle line:90%
+with Java futures.
+
+19
+00:00:44.750 --> 00:00:47.510 align:middle line:84%
+Here are some of the
+things that are easy to do
+
+20
+00:00:47.510 --> 00:00:49.940 align:middle line:84%
+or can be done with
+completable futures
+
+21
+00:00:49.940 --> 00:00:51.620 align:middle line:84%
+that either are
+hard to do or can't
+
+22
+00:00:51.620 --> 00:00:54.410 align:middle line:90%
+be done with Java futures.
+
+23
+00:00:54.410 --> 00:00:58.580 align:middle line:84%
+One thing you can do is you can
+complete a completable future
+
+24
+00:00:58.580 --> 00:01:00.300 align:middle line:90%
+explicitly.
+
+25
+00:01:00.300 --> 00:01:01.770 align:middle line:84%
+So here's a simple
+example, which
+
+26
+00:01:01.770 --> 00:01:03.510 align:middle line:84%
+we'll look at in
+more detail later,
+
+27
+00:01:03.510 --> 00:01:07.750 align:middle line:84%
+where we create a
+completable future--
+
+28
+00:01:07.750 --> 00:01:10.480 align:middle line:90%
+don't give it anything to do.
+
+29
+00:01:10.480 --> 00:01:13.430 align:middle line:90%
+We then spawn a thread.
+
+30
+00:01:13.430 --> 00:01:15.700 align:middle line:84%
+And then in that
+thread, we do some work
+
+31
+00:01:15.700 --> 00:01:19.180 align:middle line:84%
+and we say, future.complete
+to provide a result.
+
+32
+00:01:19.180 --> 00:01:21.910 align:middle line:84%
+Let's assume that that result
+came from the processing that
+
+33
+00:01:21.910 --> 00:01:23.750 align:middle line:90%
+was done in that thread.
+
+34
+00:01:23.750 --> 00:01:25.270 align:middle line:84%
+So we create a
+thread and start it.
+
+35
+00:01:25.270 --> 00:01:26.860 align:middle line:90%
+It does some computation.
+
+36
+00:01:26.860 --> 00:01:30.730 align:middle line:84%
+At some point, that future
+is explicitly completed,
+
+37
+00:01:30.730 --> 00:01:33.610 align:middle line:84%
+and that means that anybody
+who's called the future.join
+
+38
+00:01:33.610 --> 00:01:34.130 align:middle line:90%
+method--
+
+39
+00:01:34.130 --> 00:01:37.390 align:middle line:84%
+which is kind of like
+get, but cooler--
+
+40
+00:01:37.390 --> 00:01:41.230 align:middle line:84%
+will end up getting the result
+when the future is explicitly
+
+41
+00:01:41.230 --> 00:01:42.420 align:middle line:90%
+completed.
+
+42
+00:01:42.420 --> 00:01:44.920 align:middle line:84%
+So that's something you really
+can't do with regular futures
+
+43
+00:01:44.920 --> 00:01:48.690 align:middle line:84%
+without using other
+mechanisms like futureTask.
+
+44
+00:01:48.690 --> 00:01:50.940 align:middle line:84%
+Some other things you can
+do with completable futures
+
+45
+00:01:50.940 --> 00:01:52.890 align:middle line:84%
+that you can't do
+it all with futures
+
+46
+00:01:52.890 --> 00:01:57.090 align:middle line:84%
+is you can chain them
+together so that you can
+
+47
+00:01:57.090 --> 00:02:00.180 align:middle line:90%
+have stages where one method--
+
+48
+00:02:00.180 --> 00:02:01.980 align:middle line:84%
+one dependent action--
+is called back
+
+49
+00:02:01.980 --> 00:02:06.280 align:middle line:84%
+when a previous stage finishes
+running asynchronously.
+
+50
+00:02:06.280 --> 00:02:09.210 align:middle line:84%
+So here's a simple example that
+we will also take a closer look
+
+51
+00:02:09.210 --> 00:02:13.560 align:middle line:84%
+at later, where we start up
+the asynchronous reduction
+
+52
+00:02:13.560 --> 00:02:16.450 align:middle line:84%
+of a fraction--
+like a BigFraction--
+
+53
+00:02:16.450 --> 00:02:18.550 align:middle line:90%
+get back a completable future.
+
+54
+00:02:18.550 --> 00:02:22.900 align:middle line:84%
+When that's finished, we then
+apply a BigFraction method
+
+55
+00:02:22.900 --> 00:02:26.590 align:middle line:84%
+to convert the reduced
+fraction to a mixed string.
+
+56
+00:02:26.590 --> 00:02:28.660 align:middle line:84%
+And then when that's
+done, we go ahead
+
+57
+00:02:28.660 --> 00:02:33.790 align:middle line:84%
+and accept that reduced
+BigFraction-- that mixed
+
+58
+00:02:33.790 --> 00:02:35.723 align:middle line:90%
+BigFraction, a proper fraction.
+
+59
+00:02:35.723 --> 00:02:37.390 align:middle line:84%
+We're going to go
+ahead and print it out
+
+60
+00:02:37.390 --> 00:02:39.070 align:middle line:90%
+to the standard output.
+
+61
+00:02:39.070 --> 00:02:41.710 align:middle line:84%
+And the action of
+each of these stages
+
+62
+00:02:41.710 --> 00:02:44.710 align:middle line:84%
+will be triggered when the
+future from the previous stage
+
+63
+00:02:44.710 --> 00:02:48.040 align:middle line:84%
+completes-- when the completable
+future from the previous stage
+
+64
+00:02:48.040 --> 00:02:51.450 align:middle line:84%
+completes after it's done
+running asynchronously.
+
+65
+00:02:51.450 --> 00:02:55.342 align:middle line:84%
+And this is what's often known
+as a fluent interface style.
+
+66
+00:02:55.342 --> 00:02:56.800 align:middle line:84%
+And the cool thing
+about this is it
+
+67
+00:02:56.800 --> 00:02:59.770 align:middle line:84%
+allows you to write
+asynchronous code that
+
+68
+00:02:59.770 --> 00:03:02.440 align:middle line:84%
+looks very much like
+synchronous code
+
+69
+00:03:02.440 --> 00:03:06.333 align:middle line:84%
+because it looks like you
+say, run this operation,
+
+70
+00:03:06.333 --> 00:03:08.250 align:middle line:84%
+then apply this thing,
+then accept that thing.
+
+71
+00:03:08.250 --> 00:03:09.667 align:middle line:84%
+It's almost like
+you're just going
+
+72
+00:03:09.667 --> 00:03:11.120 align:middle line:90%
+in lockstep synchronicity.
+
+73
+00:03:11.120 --> 00:03:13.620 align:middle line:84%
+But in fact, this is all
+taking place asynchronously.
+
+74
+00:03:13.620 --> 00:03:18.320 align:middle line:84%
+So it's much more efficient,
+much more responsive, much more
+
+75
+00:03:18.320 --> 00:03:22.758 align:middle line:84%
+elastic, but pretty much equally
+easy to program as anything
+
+76
+00:03:22.758 --> 00:03:23.925 align:middle line:90%
+that uses fluent interfaces.
+
+77
+00:03:23.925 --> 00:03:26.752 align:middle line:90%
+So that's a really cool feature.
+
+78
+00:03:26.752 --> 00:03:28.210 align:middle line:84%
+Yet another thing
+you can do is you
+
+79
+00:03:28.210 --> 00:03:32.500 align:middle line:84%
+can create a collection
+of completable futures
+
+80
+00:03:32.500 --> 00:03:34.995 align:middle line:84%
+that can be
+triggered reactively.
+
+81
+00:03:34.995 --> 00:03:37.370 align:middle line:84%
+So what we're doing here--
+and we'll look at this example
+
+82
+00:03:37.370 --> 00:03:39.250 align:middle line:84%
+in a lot more detail
+later as well--
+
+83
+00:03:39.250 --> 00:03:41.110 align:middle line:84%
+we're going to go
+ahead and generate
+
+84
+00:03:41.110 --> 00:03:43.160 align:middle line:90%
+a bunch of BigFractions.
+
+85
+00:03:43.160 --> 00:03:47.470 align:middle line:84%
+We're going to reduce and
+multiply those BigFractions.
+
+86
+00:03:47.470 --> 00:03:50.292 align:middle line:84%
+So we'll have lots
+and lots of operations
+
+87
+00:03:50.292 --> 00:03:51.250 align:middle line:90%
+running asynchronously.
+
+88
+00:03:51.250 --> 00:03:54.310 align:middle line:84%
+Let's say we have 1,000
+BigFractions that we're
+
+89
+00:03:54.310 --> 00:03:57.250 align:middle line:84%
+operating on, and we're
+reducing, and multiplying them
+
+90
+00:03:57.250 --> 00:03:58.990 align:middle line:90%
+all in the background threads.
+
+91
+00:03:58.990 --> 00:04:01.420 align:middle line:84%
+And then we can collect
+them all together
+
+92
+00:04:01.420 --> 00:04:05.890 align:middle line:84%
+to a single, completable
+future that will only
+
+93
+00:04:05.890 --> 00:04:08.440 align:middle line:84%
+trigger when that
+large collection
+
+94
+00:04:08.440 --> 00:04:10.925 align:middle line:84%
+of asynchronous
+operations finishes.
+
+95
+00:04:10.925 --> 00:04:12.550 align:middle line:84%
+And when that all
+finishes, we can then
+
+96
+00:04:12.550 --> 00:04:16.899 align:middle line:84%
+go ahead and print the results
+after everything has been done.
+
+97
+00:04:16.899 --> 00:04:18.850 align:middle line:84%
+This approach is
+particularly cool
+
+98
+00:04:18.850 --> 00:04:21.459 align:middle line:84%
+because it's one of
+our first examples
+
+99
+00:04:21.459 --> 00:04:24.850 align:middle line:84%
+of really demonstrating
+the value of combining
+
+100
+00:04:24.850 --> 00:04:28.840 align:middle line:84%
+completable futures with
+Java sequential streams.
+
+101
+00:04:28.840 --> 00:04:31.510 align:middle line:84%
+So you'll see here we're
+using stream operations
+
+102
+00:04:31.510 --> 00:04:33.440 align:middle line:90%
+to generate data.
+
+103
+00:04:33.440 --> 00:04:35.770 align:middle line:84%
+We're then going to go
+ahead and kind of limit
+
+104
+00:04:35.770 --> 00:04:38.320 align:middle line:84%
+the amount of data
+that's generated.
+
+105
+00:04:38.320 --> 00:04:40.690 align:middle line:84%
+We're going to apply
+asynchronous operations
+
+106
+00:04:40.690 --> 00:04:42.570 align:middle line:84%
+to reduce and multiply
+the fractions,
+
+107
+00:04:42.570 --> 00:04:44.950 align:middle line:84%
+and then we're going to
+use the collect terminal
+
+108
+00:04:44.950 --> 00:04:48.430 align:middle line:84%
+operation and the
+FuturesCollector collector
+
+109
+00:04:48.430 --> 00:04:51.880 align:middle line:84%
+class in order to be able
+to create a single future--
+
+110
+00:04:51.880 --> 00:04:54.370 align:middle line:84%
+signal completable future--
+that waits for everything else
+
+111
+00:04:54.370 --> 00:04:55.575 align:middle line:90%
+will be done.
+
+112
+00:04:55.575 --> 00:04:56.950 align:middle line:84%
+So this is really
+cool because we
+
+113
+00:04:56.950 --> 00:05:00.970 align:middle line:84%
+use streams to guide the
+overall flow of the program
+
+114
+00:05:00.970 --> 00:05:03.100 align:middle line:84%
+in a convenient
+and intuitive way,
+
+115
+00:05:03.100 --> 00:05:05.560 align:middle line:84%
+but we use completable
+futures to run everything
+
+116
+00:05:05.560 --> 00:05:08.250 align:middle line:90%
+asynchronously.
+
+117
+00:05:08.250 --> 00:05:10.280 align:middle line:84%
+So that really demonstrates
+some of the power
+
+118
+00:05:10.280 --> 00:05:13.490 align:middle line:84%
+of completable futures and how
+it fixes all those limitations
+
+119
+00:05:13.490 --> 00:05:17.680 align:middle line:84%
+with the more traditional,
+conventional futures in Java.

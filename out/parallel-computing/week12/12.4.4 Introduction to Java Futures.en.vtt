@@ -1,0 +1,395 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:01.170 align:middle line:90%
+
+
+2
+00:00:01.170 --> 00:00:04.800 align:middle line:84%
+So now that I have given you a
+quick overview of Java futures
+
+3
+00:00:04.800 --> 00:00:08.780 align:middle line:84%
+as a concept, as an
+analogy, and as an API,
+
+4
+00:00:08.780 --> 00:00:12.330 align:middle line:84%
+let's start talking about how
+to visualize the use of Java
+
+5
+00:00:12.330 --> 00:00:15.870 align:middle line:90%
+futures in action.
+
+6
+00:00:15.870 --> 00:00:21.090 align:middle line:84%
+So a Java asynchronous call
+immediately returns a future
+
+7
+00:00:21.090 --> 00:00:24.660 align:middle line:84%
+and then continues to run the
+computation asynchronously
+
+8
+00:00:24.660 --> 00:00:25.777 align:middle line:90%
+in a background thread.
+
+9
+00:00:25.777 --> 00:00:28.110 align:middle line:84%
+So this goes back to the
+example we talked about before.
+
+10
+00:00:28.110 --> 00:00:31.790 align:middle line:84%
+You can make an asynchronous
+call, get a future back,
+
+11
+00:00:31.790 --> 00:00:32.995 align:middle line:90%
+the call keeps running.
+
+12
+00:00:32.995 --> 00:00:34.620 align:middle line:84%
+You can make another
+asynchronous call,
+
+13
+00:00:34.620 --> 00:00:36.360 align:middle line:84%
+get a future right
+back, the call
+
+14
+00:00:36.360 --> 00:00:38.380 align:middle line:84%
+keeps running, and
+so on and so forth.
+
+15
+00:00:38.380 --> 00:00:40.630 align:middle line:84%
+And then at some point,
+you've got a bunch of futures,
+
+16
+00:00:40.630 --> 00:00:42.500 align:middle line:84%
+and you have to decide
+what to do with them.
+
+17
+00:00:42.500 --> 00:00:45.820 align:middle line:84%
+One way to do this-- one way to
+initiate an asynchronous call
+
+18
+00:00:45.820 --> 00:00:50.770 align:middle line:84%
+in Java is to use the submit
+method defined by the executor
+
+19
+00:00:50.770 --> 00:00:51.977 align:middle line:90%
+service interface.
+
+20
+00:00:51.977 --> 00:00:54.310 align:middle line:84%
+So assuming you've got an
+implementation of the executor
+
+21
+00:00:54.310 --> 00:00:57.520 align:middle line:84%
+service like a
+ThreadPoolExecutor or so on,
+
+22
+00:00:57.520 --> 00:01:02.290 align:middle line:84%
+you can go ahead and submit
+an asynchronous call in Java.
+
+23
+00:01:02.290 --> 00:01:04.959 align:middle line:84%
+So when a call is
+submitted, what happens
+
+24
+00:01:04.959 --> 00:01:07.720 align:middle line:84%
+is that it has to run
+in the thread pool.
+
+25
+00:01:07.720 --> 00:01:09.220 align:middle line:84%
+So let's assume for
+sake of argument
+
+26
+00:01:09.220 --> 00:01:11.270 align:middle line:84%
+that we have created
+a thread pool.
+
+27
+00:01:11.270 --> 00:01:12.880 align:middle line:84%
+So here's a little
+snippet of code
+
+28
+00:01:12.880 --> 00:01:16.060 align:middle line:84%
+where we're going to use
+the executor's utility
+
+29
+00:01:16.060 --> 00:01:21.460 align:middle line:84%
+class to create a thread pool
+where we're going to have
+
+30
+00:01:21.460 --> 00:01:23.260 align:middle line:90%
+a maximum number of threads--
+
+31
+00:01:23.260 --> 00:01:25.330 align:middle line:90%
+let's say 4 just for fun--
+
+32
+00:01:25.330 --> 00:01:31.780 align:middle line:84%
+and we get back a reference
+to an executor service object.
+
+33
+00:01:31.780 --> 00:01:36.160 align:middle line:84%
+We can then use that executor
+service object reference
+
+34
+00:01:36.160 --> 00:01:38.510 align:middle line:90%
+to submit a task.
+
+35
+00:01:38.510 --> 00:01:40.330 align:middle line:84%
+And in this particular
+example, the task
+
+36
+00:01:40.330 --> 00:01:43.110 align:middle line:84%
+is going to be a
+callable, and we're
+
+37
+00:01:43.110 --> 00:01:46.470 align:middle line:84%
+going to submit the task to
+run in one of the threads
+
+38
+00:01:46.470 --> 00:01:50.370 align:middle line:84%
+in the background of the fixed
+size worker threads thread
+
+39
+00:01:50.370 --> 00:01:51.990 align:middle line:84%
+pool for the thread
+pool executors.
+
+40
+00:01:51.990 --> 00:01:53.580 align:middle line:90%
+You can see the code below.
+
+41
+00:01:53.580 --> 00:01:54.400 align:middle line:90%
+We call submit.
+
+42
+00:01:54.400 --> 00:01:56.830 align:middle line:90%
+We pass in a task.
+
+43
+00:01:56.830 --> 00:02:01.890 align:middle line:84%
+What we get back immediately is
+a future, which under the hood
+
+44
+00:02:01.890 --> 00:02:05.843 align:middle line:84%
+is implemented by a class in
+Java called a future task.
+
+45
+00:02:05.843 --> 00:02:07.260 align:middle line:84%
+But all we care
+about right now is
+
+46
+00:02:07.260 --> 00:02:09.940 align:middle line:84%
+we've got a future
+back for this thing.
+
+47
+00:02:09.940 --> 00:02:14.940 align:middle line:84%
+And then the computation
+that we have submitted
+
+48
+00:02:14.940 --> 00:02:16.715 align:middle line:84%
+can run in the
+background thread.
+
+49
+00:02:16.715 --> 00:02:18.090 align:middle line:84%
+So as you can see
+the computation
+
+50
+00:02:18.090 --> 00:02:21.150 align:middle line:84%
+that we submitted
+was this lambda
+
+51
+00:02:21.150 --> 00:02:26.100 align:middle line:84%
+callable, which will multiply
+two big fractions together
+
+52
+00:02:26.100 --> 00:02:29.580 align:middle line:84%
+and return a result. So
+that'll be chunking away
+
+53
+00:02:29.580 --> 00:02:31.960 align:middle line:90%
+in the background.
+
+54
+00:02:31.960 --> 00:02:34.120 align:middle line:84%
+Now when that asynchronous
+call completes,
+
+55
+00:02:34.120 --> 00:02:37.420 align:middle line:84%
+the future will be
+triggered, and the result
+
+56
+00:02:37.420 --> 00:02:40.840 align:middle line:84%
+will be available
+to a client, who
+
+57
+00:02:40.840 --> 00:02:43.010 align:middle line:90%
+can obtain it by calling get.
+
+58
+00:02:43.010 --> 00:02:45.220 align:middle line:84%
+And there's a couple of
+different approaches here.
+
+59
+00:02:45.220 --> 00:02:49.040 align:middle line:84%
+You can either call get and
+just block as I show here,
+
+60
+00:02:49.040 --> 00:02:51.610 align:middle line:84%
+which means that we'll
+wait until the call is
+
+61
+00:02:51.610 --> 00:02:55.480 align:middle line:84%
+either finished or it
+fails, and we can also
+
+62
+00:02:55.480 --> 00:03:00.940 align:middle line:84%
+call get in the way that will
+be either timed or polled.
+
+63
+00:03:00.940 --> 00:03:03.010 align:middle line:84%
+So depending on what
+the value of n is,
+
+64
+00:03:03.010 --> 00:03:06.220 align:middle line:84%
+we'll either return
+right away if we get--
+
+65
+00:03:06.220 --> 00:03:09.088 align:middle line:84%
+if the future's complete--
+if it's triggered,
+
+66
+00:03:09.088 --> 00:03:10.630 align:middle line:84%
+the asynchronous
+competition is done.
+
+67
+00:03:10.630 --> 00:03:12.005 align:middle line:84%
+We'll get a result.
+Otherwise, we
+
+68
+00:03:12.005 --> 00:03:14.215 align:middle line:90%
+get a null if the value of n 0.
+
+69
+00:03:14.215 --> 00:03:16.090 align:middle line:84%
+Otherwise, we'll wait
+up to that many seconds
+
+70
+00:03:16.090 --> 00:03:18.790 align:middle line:84%
+or that many milliseconds or
+that many microseconds in order
+
+71
+00:03:18.790 --> 00:03:22.410 align:middle line:90%
+for the call to finish.
+
+72
+00:03:22.410 --> 00:03:24.540 align:middle line:84%
+One of the key characteristics,
+of course, of this
+
+73
+00:03:24.540 --> 00:03:29.000 align:middle line:84%
+is that computations may
+complete in a different order
+
+74
+00:03:29.000 --> 00:03:32.130 align:middle line:84%
+than the asynchronous
+calls were actually made.
+
+75
+00:03:32.130 --> 00:03:34.720 align:middle line:84%
+And that's where
+things get tricky.
+
+76
+00:03:34.720 --> 00:03:37.380 align:middle line:84%
+And when we talk a little
+further about futures,
+
+77
+00:03:37.380 --> 00:03:39.660 align:middle line:84%
+you'll see that
+there's some dark sides
+
+78
+00:03:39.660 --> 00:03:43.830 align:middle line:84%
+to using futures and trying
+to efficiently handle out
+
+79
+00:03:43.830 --> 00:03:48.790 align:middle line:84%
+of order completions gets hard
+with the classic Java futures
+
+80
+00:03:48.790 --> 00:03:49.290 align:middle line:90%
+model.
+
+81
+00:03:49.290 --> 00:03:51.480 align:middle line:84%
+So just keep that in
+the back your head
+
+82
+00:03:51.480 --> 00:03:54.170 align:middle line:84%
+as we talk through the
+rest of the examples.

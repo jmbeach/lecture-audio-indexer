@@ -1,0 +1,650 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.500 align:middle line:90%
+
+
+2
+00:00:00.500 --> 00:00:03.360 align:middle line:84%
+So now that you know a bit
+about the completable futures
+
+3
+00:00:03.360 --> 00:00:06.510 align:middle line:84%
+framework, what its purpose
+is, how it maps onto some
+
+4
+00:00:06.510 --> 00:00:09.750 align:middle line:84%
+of the reactive programming
+principles, let's
+
+5
+00:00:09.750 --> 00:00:14.467 align:middle line:84%
+start to talk about the
+pros and cons of synchrony.
+
+6
+00:00:14.467 --> 00:00:16.050 align:middle line:84%
+And of course, to
+do this, we're going
+
+7
+00:00:16.050 --> 00:00:17.467 align:middle line:84%
+to have to start
+off by explaining
+
+8
+00:00:17.467 --> 00:00:19.260 align:middle line:84%
+what we mean by
+synchrony and what we
+
+9
+00:00:19.260 --> 00:00:21.240 align:middle line:90%
+mean by synchronous operations.
+
+10
+00:00:21.240 --> 00:00:23.340 align:middle line:84%
+The good news is even
+though you may or may not
+
+11
+00:00:23.340 --> 00:00:25.800 align:middle line:84%
+be familiar with these
+words, I guarantee you,
+
+12
+00:00:25.800 --> 00:00:29.070 align:middle line:84%
+if you've done any
+programming in the past,
+
+13
+00:00:29.070 --> 00:00:31.830 align:middle line:84%
+you're very familiar
+with these concepts.
+
+14
+00:00:31.830 --> 00:00:35.220 align:middle line:84%
+Method calls in a
+typical Java program
+
+15
+00:00:35.220 --> 00:00:37.860 align:middle line:90%
+are largely synchronous.
+
+16
+00:00:37.860 --> 00:00:40.080 align:middle line:84%
+For example, if you make a
+call on a Java collection
+
+17
+00:00:40.080 --> 00:00:43.560 align:middle line:84%
+like a HashMap or an
+Array List, if you
+
+18
+00:00:43.560 --> 00:00:44.970 align:middle line:84%
+think about the
+behaviors that we
+
+19
+00:00:44.970 --> 00:00:49.860 align:middle line:84%
+would pass into the typical
+Java stream aggregate operation,
+
+20
+00:00:49.860 --> 00:00:53.130 align:middle line:90%
+those are typically synchronous.
+
+21
+00:00:53.130 --> 00:00:56.250 align:middle line:84%
+And what this means
+is that the callee--
+
+22
+00:00:56.250 --> 00:00:58.080 align:middle line:90%
+the operation that's called--
+
+23
+00:00:58.080 --> 00:01:01.140 align:middle line:84%
+borrows the thread of
+control of its caller
+
+24
+00:01:01.140 --> 00:01:04.015 align:middle line:90%
+until its computation finishes.
+
+25
+00:01:04.015 --> 00:01:05.640 align:middle line:84%
+So you can see here
+is just an example.
+
+26
+00:01:05.640 --> 00:01:07.410 align:middle line:90%
+We make a bunch of calls.
+
+27
+00:01:07.410 --> 00:01:09.480 align:middle line:84%
+It's a sort of a
+request/response nature
+
+28
+00:01:09.480 --> 00:01:12.600 align:middle line:84%
+or an invocation
+and return model.
+
+29
+00:01:12.600 --> 00:01:16.910 align:middle line:84%
+And those are good
+examples of two-way calls.
+
+30
+00:01:16.910 --> 00:01:20.820 align:middle line:84%
+So let's talk about the
+pros of this approach.
+
+31
+00:01:20.820 --> 00:01:23.480 align:middle line:84%
+Well, first of all, it's
+very, very intuitive
+
+32
+00:01:23.480 --> 00:01:24.680 align:middle line:90%
+to program and debug.
+
+33
+00:01:24.680 --> 00:01:27.500 align:middle line:84%
+Most people who've
+programmed are
+
+34
+00:01:27.500 --> 00:01:30.050 align:middle line:84%
+very familiar with these
+common, two-way method
+
+35
+00:01:30.050 --> 00:01:32.700 align:middle line:84%
+patterns-- the
+invocation/return pattern
+
+36
+00:01:32.700 --> 00:01:34.460 align:middle line:84%
+and the request/response
+pattern.
+
+37
+00:01:34.460 --> 00:01:36.620 align:middle line:84%
+That's just the
+bread and butter.
+
+38
+00:01:36.620 --> 00:01:38.360 align:middle line:84%
+Unless you started
+out live programming
+
+39
+00:01:38.360 --> 00:01:42.290 align:middle line:84%
+with Promises in JavaScript is
+your first thing you've ever
+
+40
+00:01:42.290 --> 00:01:44.360 align:middle line:84%
+done, you're probably very
+familiar with this way
+
+41
+00:01:44.360 --> 00:01:46.560 align:middle line:90%
+of writing code.
+
+42
+00:01:46.560 --> 00:01:51.000 align:middle line:84%
+Another nice thing about this
+is that the use of synchrony
+
+43
+00:01:51.000 --> 00:01:57.180 align:middle line:84%
+allows the state that's part
+of the context of the caller
+
+44
+00:01:57.180 --> 00:02:02.200 align:middle line:84%
+to be retained when
+the callee returns.
+
+45
+00:02:02.200 --> 00:02:04.630 align:middle line:84%
+So what the heck does that
+mean, and why is that a win?
+
+46
+00:02:04.630 --> 00:02:07.572 align:middle line:84%
+Well, take a look at
+a very simple example.
+
+47
+00:02:07.572 --> 00:02:09.030 align:middle line:84%
+The whole point
+here is the concept
+
+48
+00:02:09.030 --> 00:02:10.500 align:middle line:90%
+of an activation record.
+
+49
+00:02:10.500 --> 00:02:13.920 align:middle line:84%
+And an activation record is
+simply a representation that
+
+50
+00:02:13.920 --> 00:02:17.190 align:middle line:84%
+a compiler in a runtime
+system uses to keep track
+
+51
+00:02:17.190 --> 00:02:23.730 align:middle line:84%
+of the context in which a method
+call executes on a runtime
+
+52
+00:02:23.730 --> 00:02:27.600 align:middle line:84%
+stack in a stack-oriented
+language like Java, or c++,
+
+53
+00:02:27.600 --> 00:02:29.730 align:middle line:90%
+or C, or C#.
+
+54
+00:02:29.730 --> 00:02:32.550 align:middle line:84%
+So the way this works, let's
+take a look at a little example
+
+55
+00:02:32.550 --> 00:02:34.800 align:middle line:90%
+called downloadContent.
+
+56
+00:02:34.800 --> 00:02:38.160 align:middle line:84%
+This particular example
+is going to take a URL
+
+57
+00:02:38.160 --> 00:02:41.910 align:middle line:84%
+and return a byte array
+that contains the contents
+
+58
+00:02:41.910 --> 00:02:43.235 align:middle line:90%
+of whatever is at that URL.
+
+59
+00:02:43.235 --> 00:02:44.610 align:middle line:84%
+And you'll notice
+that everything
+
+60
+00:02:44.610 --> 00:02:49.980 align:middle line:84%
+I've shown here in red is
+an example of local context
+
+61
+00:02:49.980 --> 00:02:53.250 align:middle line:84%
+or local state that's
+stored in the activation
+
+62
+00:02:53.250 --> 00:02:56.740 align:middle line:84%
+record of the download
+content method call.
+
+63
+00:02:56.740 --> 00:03:01.810 align:middle line:84%
+So buf is going to store a
+new buffer of size, BUFSIZE.
+
+64
+00:03:01.810 --> 00:03:07.350 align:middle line:84%
+Os is going to store a
+ByteArrayOutputStream object.
+
+65
+00:03:07.350 --> 00:03:10.790 align:middle line:84%
+Is is going to
+store an openStream.
+
+66
+00:03:10.790 --> 00:03:12.510 align:middle line:90%
+It's an input stream.
+
+67
+00:03:12.510 --> 00:03:16.350 align:middle line:90%
+Bytes is a local loop counter.
+
+68
+00:03:16.350 --> 00:03:20.580 align:middle line:84%
+And what you can see when
+you say, is.read(buf),
+
+69
+00:03:20.580 --> 00:03:22.110 align:middle line:90%
+you get back bytes.
+
+70
+00:03:22.110 --> 00:03:26.250 align:middle line:84%
+You can see when you say
+os.write(buf,0,bytes),
+
+71
+00:03:26.250 --> 00:03:28.830 align:middle line:84%
+as those calls are
+made-- as read is called,
+
+72
+00:03:28.830 --> 00:03:29.970 align:middle line:90%
+as write is called--
+
+73
+00:03:29.970 --> 00:03:33.240 align:middle line:84%
+when read is called, that
+pushes a new activation record
+
+74
+00:03:33.240 --> 00:03:34.740 align:middle line:90%
+on the top of the stack.
+
+75
+00:03:34.740 --> 00:03:36.990 align:middle line:84%
+And when read is done,
+it pops back off.
+
+76
+00:03:36.990 --> 00:03:40.640 align:middle line:84%
+And is, and buf,
+and bytes, and so on
+
+77
+00:03:40.640 --> 00:03:43.200 align:middle line:84%
+will have the
+appropriate values.
+
+78
+00:03:43.200 --> 00:03:46.530 align:middle line:84%
+They won't disappear
+after the method call,
+
+79
+00:03:46.530 --> 00:03:50.160 align:middle line:84%
+and that's because local
+caller state is retained
+
+80
+00:03:50.160 --> 00:03:52.200 align:middle line:90%
+when the callee returns.
+
+81
+00:03:52.200 --> 00:03:54.630 align:middle line:84%
+So that makes it very, very
+simple to write your code.
+
+82
+00:03:54.630 --> 00:03:57.510 align:middle line:84%
+You don't have to stash away
+your state somewhere, make
+
+83
+00:03:57.510 --> 00:04:00.750 align:middle line:84%
+an asynchronous call, when
+the response comes back,
+
+84
+00:04:00.750 --> 00:04:04.860 align:middle line:84%
+find that state from someplace,
+restore it, reconstitute it,
+
+85
+00:04:04.860 --> 00:04:05.940 align:middle line:90%
+and do the next thing.
+
+86
+00:04:05.940 --> 00:04:08.500 align:middle line:90%
+It's all very intuitive.
+
+87
+00:04:08.500 --> 00:04:13.730 align:middle line:84%
+However, there are some
+cons with synchrony.
+
+88
+00:04:13.730 --> 00:04:15.320 align:middle line:84%
+Probably the single
+biggest problem
+
+89
+00:04:15.320 --> 00:04:18.200 align:middle line:84%
+is that synchronous
+programming may not
+
+90
+00:04:18.200 --> 00:04:20.540 align:middle line:84%
+leverage all of the
+parallelism that's
+
+91
+00:04:20.540 --> 00:04:22.860 align:middle line:84%
+available in modern
+multicore systems.
+
+92
+00:04:22.860 --> 00:04:24.290 align:middle line:84%
+So you don't really
+get the kinds
+
+93
+00:04:24.290 --> 00:04:27.110 align:middle line:84%
+of speed-ups you might expect
+without a lot of effort
+
+94
+00:04:27.110 --> 00:04:29.160 align:middle line:90%
+on your part.
+
+95
+00:04:29.160 --> 00:04:31.920 align:middle line:84%
+One reason for this is
+that blocking threads--
+
+96
+00:04:31.920 --> 00:04:34.650 align:middle line:84%
+especially blocking
+threads in user code
+
+97
+00:04:34.650 --> 00:04:36.900 align:middle line:84%
+or blocking threads in
+user interface code--
+
+98
+00:04:36.900 --> 00:04:40.440 align:middle line:84%
+incur a lot of overhead
+due to synchronization,
+
+99
+00:04:40.440 --> 00:04:43.170 align:middle line:84%
+context switching, data
+movement, and memory management
+
+100
+00:04:43.170 --> 00:04:44.400 align:middle line:90%
+costs.
+
+101
+00:04:44.400 --> 00:04:48.510 align:middle line:90%
+And that's tricky enough.
+
+102
+00:04:48.510 --> 00:04:52.020 align:middle line:84%
+The other problem, of
+course, is that you often
+
+103
+00:04:52.020 --> 00:04:55.390 align:middle line:84%
+don't know how many
+threads to choose.
+
+104
+00:04:55.390 --> 00:04:57.810 align:middle line:84%
+So let's say you're going
+to write some code not
+
+105
+00:04:57.810 --> 00:05:00.990 align:middle line:84%
+unlike the
+ImageStreamGang example
+
+106
+00:05:00.990 --> 00:05:02.910 align:middle line:84%
+that we talked about
+when we were talking
+
+107
+00:05:02.910 --> 00:05:04.920 align:middle line:84%
+about parallel
+streams, where you're
+
+108
+00:05:04.920 --> 00:05:08.820 align:middle line:84%
+going to download images using
+streams and parallel streams.
+
+109
+00:05:08.820 --> 00:05:10.530 align:middle line:84%
+Well, one of the
+questions is, how big
+
+110
+00:05:10.530 --> 00:05:12.600 align:middle line:90%
+should the pool of threads be?
+
+111
+00:05:12.600 --> 00:05:16.230 align:middle line:84%
+If you make the pool
+of threads very large,
+
+112
+00:05:16.230 --> 00:05:18.930 align:middle line:84%
+then that may make your
+program run really fast,
+
+113
+00:05:18.930 --> 00:05:21.480 align:middle line:84%
+but you may end up
+wasting resources.
+
+114
+00:05:21.480 --> 00:05:23.910 align:middle line:84%
+If you make the pool
+of threads very small,
+
+115
+00:05:23.910 --> 00:05:26.370 align:middle line:84%
+then you may end up
+conserving resources,
+
+116
+00:05:26.370 --> 00:05:28.770 align:middle line:84%
+but your program may not
+run very fast because you're
+
+117
+00:05:28.770 --> 00:05:31.050 align:middle line:90%
+underutilizing the CPU.
+
+118
+00:05:31.050 --> 00:05:34.380 align:middle line:84%
+And obviously, this becomes very
+tricky for I/O-bound programs
+
+119
+00:05:34.380 --> 00:05:37.680 align:middle line:84%
+that typically need more
+threads to run efficiently.
+
+120
+00:05:37.680 --> 00:05:39.810 align:middle line:84%
+Now, there's all kinds
+of work arounds for this.
+
+121
+00:05:39.810 --> 00:05:41.820 align:middle line:84%
+We've talked about
+things like setting
+
+122
+00:05:41.820 --> 00:05:45.400 align:middle line:84%
+the common fork-join
+pool size via a property.
+
+123
+00:05:45.400 --> 00:05:48.180 align:middle line:84%
+We also talked about using
+the ManageBlocker mechanisms
+
+124
+00:05:48.180 --> 00:05:51.720 align:middle line:84%
+in order to do that, but it
+requires some extra thought
+
+125
+00:05:51.720 --> 00:05:56.170 align:middle line:84%
+and sometimes is more than
+you really want to deal with.
+
+126
+00:05:56.170 --> 00:05:58.320 align:middle line:84%
+This whole issue of changing
+the size of the pools
+
+127
+00:05:58.320 --> 00:06:00.760 align:middle line:84%
+is hard because,
+as we saw, setting
+
+128
+00:06:00.760 --> 00:06:03.580 align:middle line:84%
+the system properties is
+tricky, and it doesn't really
+
+129
+00:06:03.580 --> 00:06:06.980 align:middle line:84%
+work after you've initialize
+the fork-join pool.
+
+130
+00:06:06.980 --> 00:06:09.260 align:middle line:84%
+You could also use that
+ManageBlocker approach,
+
+131
+00:06:09.260 --> 00:06:12.380 align:middle line:84%
+but that only works with
+a common fork-join pool.
+
+132
+00:06:12.380 --> 00:06:15.590 align:middle line:84%
+So you're kind of forced
+into this Procrustean bed.
+
+133
+00:06:15.590 --> 00:06:19.520 align:middle line:84%
+So the bottom line here is
+that synchrony doesn't really
+
+134
+00:06:19.520 --> 00:06:23.300 align:middle line:84%
+come for free, and it
+can be tricky to program
+
+135
+00:06:23.300 --> 00:06:26.380 align:middle line:84%
+if your goal is to
+maximize utilization.

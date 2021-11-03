@@ -1,0 +1,278 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.690 align:middle line:90%
+
+
+2
+00:00:00.690 --> 00:00:02.370 align:middle line:84%
+Welcome to the next
+week of our course
+
+3
+00:00:02.370 --> 00:00:05.262 align:middle line:84%
+on parallel functional
+programming with Java.
+
+4
+00:00:05.262 --> 00:00:07.470 align:middle line:84%
+Now that we've covered the
+Java streams and fork-join
+
+5
+00:00:07.470 --> 00:00:10.080 align:middle line:84%
+frameworks, it's time
+to turn our attention
+
+6
+00:00:10.080 --> 00:00:12.840 align:middle line:84%
+to the final topic of
+the course, the Java
+
+7
+00:00:12.840 --> 00:00:14.910 align:middle line:84%
+completable futures
+framework, which
+
+8
+00:00:14.910 --> 00:00:17.130 align:middle line:84%
+supports a reactive
+programming model that's
+
+9
+00:00:17.130 --> 00:00:22.120 align:middle line:84%
+responsive, resilient,
+elastic, and message-driven.
+
+10
+00:00:22.120 --> 00:00:25.450 align:middle line:84%
+In parallel streams examples
+we've examined in prior weeks,
+
+11
+00:00:25.450 --> 00:00:27.730 align:middle line:84%
+the behaviors running
+in aggregate operations
+
+12
+00:00:27.730 --> 00:00:31.330 align:middle line:84%
+have all been synchronous, which
+means that the behavior borrows
+
+13
+00:00:31.330 --> 00:00:33.580 align:middle line:84%
+the thread in which
+it runs from its color
+
+14
+00:00:33.580 --> 00:00:36.400 align:middle line:84%
+and does not return control
+until its computations are
+
+15
+00:00:36.400 --> 00:00:38.010 align:middle line:90%
+done.
+
+16
+00:00:38.010 --> 00:00:41.370 align:middle line:84%
+For example, each call to
+the searchForWord method
+
+17
+00:00:41.370 --> 00:00:43.710 align:middle line:84%
+in the ParallelSearchStreamGang
+variance
+
+18
+00:00:43.710 --> 00:00:45.840 align:middle line:84%
+blocks the color
+until it finishes
+
+19
+00:00:45.840 --> 00:00:48.210 align:middle line:84%
+examining its input
+string to determine
+
+20
+00:00:48.210 --> 00:00:50.540 align:middle line:90%
+if there are any matches.
+
+21
+00:00:50.540 --> 00:00:53.300 align:middle line:84%
+There are pros and cons of
+using synchronous calls.
+
+22
+00:00:53.300 --> 00:00:55.310 align:middle line:84%
+On the pro side,
+synchronous calls
+
+23
+00:00:55.310 --> 00:00:58.880 align:middle line:84%
+are intuitive and easy to
+program since they map cleanly
+
+24
+00:00:58.880 --> 00:01:01.730 align:middle line:84%
+onto two-way method
+invocation and return patterns
+
+25
+00:01:01.730 --> 00:01:04.129 align:middle line:84%
+that we've all used to write
+conventional object-oriented
+
+26
+00:01:04.129 --> 00:01:05.650 align:middle line:90%
+programs.
+
+27
+00:01:05.650 --> 00:01:08.740 align:middle line:84%
+On the con side, however,
+synchronous calls often
+
+28
+00:01:08.740 --> 00:01:11.110 align:middle line:84%
+don't effectively
+leverage the parallelism
+
+29
+00:01:11.110 --> 00:01:13.430 align:middle line:90%
+inherent in multicore systems.
+
+30
+00:01:13.430 --> 00:01:15.880 align:middle line:84%
+For example, selecting the
+right number of threads
+
+31
+00:01:15.880 --> 00:01:17.470 align:middle line:84%
+to allocate for
+synchronous calls
+
+32
+00:01:17.470 --> 00:01:20.890 align:middle line:84%
+is hard since selecting too
+many threads waste memory
+
+33
+00:01:20.890 --> 00:01:24.370 align:middle line:84%
+and processing resources,
+but selecting too few threads
+
+34
+00:01:24.370 --> 00:01:26.735 align:middle line:90%
+can degrade performance.
+
+35
+00:01:26.735 --> 00:01:28.360 align:middle line:84%
+The Java completable
+features framework
+
+36
+00:01:28.360 --> 00:01:31.750 align:middle line:84%
+overcomes these synchronous
+processing limitations
+
+37
+00:01:31.750 --> 00:01:34.720 align:middle line:84%
+by triggering dependent
+actions upon the completion
+
+38
+00:01:34.720 --> 00:01:37.153 align:middle line:90%
+of asynchronous operations.
+
+39
+00:01:37.153 --> 00:01:39.070 align:middle line:84%
+Completable futures can
+be used in conjunction
+
+40
+00:01:39.070 --> 00:01:41.650 align:middle line:84%
+with thread pools to run
+multiple asynchronous
+
+41
+00:01:41.650 --> 00:01:44.230 align:middle line:84%
+operations in parallel
+as well as process
+
+42
+00:01:44.230 --> 00:01:46.640 align:middle line:90%
+their results in parallel.
+
+43
+00:01:46.640 --> 00:01:48.740 align:middle line:84%
+By default, completable
+futures framework
+
+44
+00:01:48.740 --> 00:01:52.440 align:middle line:84%
+runs operations asynchronously
+in the common fork-join pool.
+
+45
+00:01:52.440 --> 00:01:54.740 align:middle line:84%
+However, this framework
+can also be instructed
+
+46
+00:01:54.740 --> 00:01:58.280 align:middle line:84%
+to run asynchronous operations
+in other predefined or
+
+47
+00:01:58.280 --> 00:02:00.830 align:middle line:84%
+user-defined thread pools
+as long as they conform
+
+48
+00:02:00.830 --> 00:02:03.980 align:middle line:84%
+to the Java executor
+interface, which
+
+49
+00:02:03.980 --> 00:02:06.770 align:middle line:84%
+is more flexible than Java
+parallel streams framework
+
+50
+00:02:06.770 --> 00:02:10.729 align:middle line:84%
+that's just limited to
+the common fork-join pool.
+
+51
+00:02:10.729 --> 00:02:12.380 align:middle line:84%
+The lessons this week
+motivate the need
+
+52
+00:02:12.380 --> 00:02:14.300 align:middle line:84%
+for the completable
+futures framework
+
+53
+00:02:14.300 --> 00:02:17.030 align:middle line:84%
+and give an overview
+of its API, which
+
+54
+00:02:17.030 --> 00:02:19.790 align:middle line:84%
+consists of over 60
+public methods designed
+
+55
+00:02:19.790 --> 00:02:22.460 align:middle line:84%
+to improve the
+responsiveness, resilience,
+
+56
+00:02:22.460 --> 00:02:25.390 align:middle line:84%
+and elasticity of Java
+programs that leverage
+
+57
+00:02:25.390 --> 00:02:28.960 align:middle line:84%
+its message-driven,
+reactive, computing engine.
