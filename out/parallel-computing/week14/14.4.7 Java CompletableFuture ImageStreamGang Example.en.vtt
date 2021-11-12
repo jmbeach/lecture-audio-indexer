@@ -1,0 +1,532 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.390 align:middle line:90%
+
+
+2
+00:00:00.390 --> 00:00:01.807 align:middle line:84%
+So now we're going
+to get a chance
+
+3
+00:00:01.807 --> 00:00:04.050 align:middle line:84%
+to talk about
+StreamOfFuturesCollector.
+
+4
+00:00:04.050 --> 00:00:06.390 align:middle line:84%
+And this is going
+to wrap the allOf
+
+5
+00:00:06.390 --> 00:00:09.660 align:middle line:84%
+method to work with the
+Java streams framework.
+
+6
+00:00:09.660 --> 00:00:11.160 align:middle line:84%
+This is going to
+go by pretty fast.
+
+7
+00:00:11.160 --> 00:00:13.260 align:middle line:84%
+We've already talked
+about a variant of this
+
+8
+00:00:13.260 --> 00:00:15.397 align:middle line:90%
+we called FuturesCollector--
+
+9
+00:00:15.397 --> 00:00:16.980 align:middle line:84%
+which, in hindsight,
+I probably should
+
+10
+00:00:16.980 --> 00:00:19.313 align:middle line:84%
+have called
+ListOfFuturesCollector,
+
+11
+00:00:19.313 --> 00:00:20.730 align:middle line:84%
+but at the time I
+wrote it I never
+
+12
+00:00:20.730 --> 00:00:23.280 align:middle line:84%
+knew I would need a
+StreamOfFuturesCollector,
+
+13
+00:00:23.280 --> 00:00:25.290 align:middle line:84%
+so I didn't give it
+as descriptive a name
+
+14
+00:00:25.290 --> 00:00:26.760 align:middle line:90%
+as I should have.
+
+15
+00:00:26.760 --> 00:00:30.010 align:middle line:84%
+StreamOfFuturesCollector wraps
+the allOf arbitrary error
+
+16
+00:00:30.010 --> 00:00:32.870 align:middle line:84%
+key method to work with
+the Java streams framework,
+
+17
+00:00:32.870 --> 00:00:35.810 align:middle line:84%
+and it can converts a stream
+of completable futures
+
+18
+00:00:35.810 --> 00:00:38.180 align:middle line:84%
+into a single
+completable future that's
+
+19
+00:00:38.180 --> 00:00:40.910 align:middle line:84%
+triggered when all the futures
+in the stream complete.
+
+20
+00:00:40.910 --> 00:00:43.730 align:middle line:84%
+And, of course, it implements
+the Collector interface--
+
+21
+00:00:43.730 --> 00:00:46.490 align:middle line:84%
+which, as you recall, just
+accumulates the elements
+
+22
+00:00:46.490 --> 00:00:50.030 align:middle line:84%
+of the input stream into a
+mutable result container.
+
+23
+00:00:50.030 --> 00:00:52.920 align:middle line:84%
+And this does some
+really cool stuff.
+
+24
+00:00:52.920 --> 00:00:55.880 align:middle line:84%
+It's also a powerful
+wrapper, so it greatly
+
+25
+00:00:55.880 --> 00:00:56.780 align:middle line:90%
+simplifies your life.
+
+26
+00:00:56.780 --> 00:01:00.500 align:middle line:84%
+I strongly recommend using
+this kind of technique
+
+27
+00:01:00.500 --> 00:01:03.920 align:middle line:84%
+almost anytime you're tempted
+to write completable futures.
+
+28
+00:01:03.920 --> 00:01:05.980 align:middle line:84%
+It just makes life
+so much simpler.
+
+29
+00:01:05.980 --> 00:01:07.730 align:middle line:84%
+Here's what the
+implementation looks like.
+
+30
+00:01:07.730 --> 00:01:09.500 align:middle line:84%
+This is going to
+look very familiar.
+
+31
+00:01:09.500 --> 00:01:12.920 align:middle line:84%
+So StreamOfFuturesCollector
+implements Collector.
+
+32
+00:01:12.920 --> 00:01:15.090 align:middle line:90%
+It's a custom collector.
+
+33
+00:01:15.090 --> 00:01:17.150 align:middle line:84%
+The type of argument
+in the stream
+
+34
+00:01:17.150 --> 00:01:20.780 align:middle line:84%
+is the CompletableFuture to
+T. The type of mutable result
+
+35
+00:01:20.780 --> 00:01:23.510 align:middle line:84%
+container, the
+accumulator itself, is
+
+36
+00:01:23.510 --> 00:01:25.670 align:middle line:84%
+a list of
+CompletableFuture to T.
+
+37
+00:01:25.670 --> 00:01:28.490 align:middle line:84%
+And the finisher returns
+a CompletableFuture
+
+38
+00:01:28.490 --> 00:01:30.740 align:middle line:90%
+to a stream of T.
+
+39
+00:01:30.740 --> 00:01:33.500 align:middle line:84%
+Now, this is what differed from
+our previous implementation.
+
+40
+00:01:33.500 --> 00:01:36.200 align:middle line:84%
+The previous implementation
+had a CompletableFuture
+
+41
+00:01:36.200 --> 00:01:39.530 align:middle line:84%
+to a list of T. That was
+the FuturesCollector.
+
+42
+00:01:39.530 --> 00:01:42.530 align:middle line:84%
+But the StreamOfFuturesCollector
+has a CompletableFuture
+
+43
+00:01:42.530 --> 00:01:46.230 align:middle line:84%
+to a stream of T. Wow,
+why do we do that?
+
+44
+00:01:46.230 --> 00:01:48.200 align:middle line:84%
+Well, you'll see
+in just a second.
+
+45
+00:01:48.200 --> 00:01:50.520 align:middle line:84%
+Here are the various
+factory methods.
+
+46
+00:01:50.520 --> 00:01:52.940 align:middle line:84%
+The first several
+are exactly the same.
+
+47
+00:01:52.940 --> 00:01:56.120 align:middle line:84%
+Supplier returns a new
+constructor reference
+
+48
+00:01:56.120 --> 00:01:57.348 align:middle line:90%
+to an ArrayList.
+
+49
+00:01:57.348 --> 00:01:59.390 align:middle line:84%
+So we'll end up with a
+list of CompletableFutures
+
+50
+00:01:59.390 --> 00:02:03.800 align:middle line:84%
+to T as our mutable
+result container type.
+
+51
+00:02:03.800 --> 00:02:06.650 align:middle line:84%
+Accumulator just
+adds a new element
+
+52
+00:02:06.650 --> 00:02:08.630 align:middle line:84%
+that's a CompletableFuture
+to the list.
+
+53
+00:02:08.630 --> 00:02:11.120 align:middle line:90%
+Very simple, no locks needed.
+
+54
+00:02:11.120 --> 00:02:16.165 align:middle line:84%
+Doing a single-threaded stream
+here, a sequential stream.
+
+55
+00:02:16.165 --> 00:02:18.290 align:middle line:84%
+Just for kicks, we put the
+combiner method in here.
+
+56
+00:02:18.290 --> 00:02:19.998 align:middle line:84%
+It's identical to what
+we've seen before.
+
+57
+00:02:19.998 --> 00:02:22.280 align:middle line:84%
+They almost always
+look exactly the same.
+
+58
+00:02:22.280 --> 00:02:26.100 align:middle line:84%
+This method will never be
+called for sequential streams,
+
+59
+00:02:26.100 --> 00:02:28.910 align:middle line:84%
+but I just put it here to
+show it for completeness.
+
+60
+00:02:28.910 --> 00:02:32.750 align:middle line:84%
+And as before, all the fun
+stuff occurs in finisher.
+
+61
+00:02:32.750 --> 00:02:36.530 align:middle line:84%
+This method plays more
+or less the same purpose
+
+62
+00:02:36.530 --> 00:02:40.760 align:middle line:84%
+as the previous finisher
+for the futures collector
+
+63
+00:02:40.760 --> 00:02:44.108 align:middle line:84%
+implementation, with
+one little difference.
+
+64
+00:02:44.108 --> 00:02:45.650 align:middle line:84%
+And the main difference
+is it's going
+
+65
+00:02:45.650 --> 00:02:49.840 align:middle line:84%
+to return a CompletableFuture
+to a Stream of T,
+
+66
+00:02:49.840 --> 00:02:53.170 align:middle line:84%
+not a CompletableFuture
+to a list of T.
+
+67
+00:02:53.170 --> 00:02:57.190 align:middle line:84%
+We take the futures, list
+which is the mutable result
+
+68
+00:02:57.190 --> 00:02:59.170 align:middle line:84%
+container, which
+is an array list.
+
+69
+00:02:59.170 --> 00:03:02.020 align:middle line:84%
+We convert that array
+list into an array.
+
+70
+00:03:02.020 --> 00:03:05.290 align:middle line:84%
+We pass that array into the
+allOf arbitrary error key
+
+71
+00:03:05.290 --> 00:03:06.400 align:middle line:90%
+method.
+
+72
+00:03:06.400 --> 00:03:09.460 align:middle line:84%
+We get back a single
+completable future,
+
+73
+00:03:09.460 --> 00:03:13.480 align:middle line:84%
+which will trigger only when
+all the other futures complete.
+
+74
+00:03:13.480 --> 00:03:18.130 align:middle line:84%
+When that happens, we set
+up an action using thenApply
+
+75
+00:03:18.130 --> 00:03:21.400 align:middle line:84%
+to go ahead and
+get a single future
+
+76
+00:03:21.400 --> 00:03:23.240 align:middle line:84%
+to a stream of joined
+elements of type
+
+77
+00:03:23.240 --> 00:03:25.960 align:middle line:90%
+T. Here's how we do that.
+
+78
+00:03:25.960 --> 00:03:31.460 align:middle line:84%
+We take the futures list, turn
+it into a stream of futures,
+
+79
+00:03:31.460 --> 00:03:33.940 align:middle line:84%
+and then we go ahead and
+call the map operation,
+
+80
+00:03:33.940 --> 00:03:36.280 align:middle line:84%
+joining every one
+of those futures--
+
+81
+00:03:36.280 --> 00:03:41.210 align:middle line:84%
+completable futures-- to get the
+object that they correspond to.
+
+82
+00:03:41.210 --> 00:03:43.430 align:middle line:84%
+The call to join here, as
+before, will never block,
+
+83
+00:03:43.430 --> 00:03:45.660 align:middle line:84%
+because we would never
+have gotten to this point
+
+84
+00:03:45.660 --> 00:03:47.990 align:middle line:84%
+if all of the futures
+weren't finished--
+
+85
+00:03:47.990 --> 00:03:50.990 align:middle line:84%
+because that completable
+future return from allOf
+
+86
+00:03:50.990 --> 00:03:53.960 align:middle line:84%
+wouldn't have triggered,
+thenApply wouldn't be called,
+
+87
+00:03:53.960 --> 00:03:56.800 align:middle line:84%
+and we wouldn't
+find ourselves here.
+
+88
+00:03:56.800 --> 00:04:00.290 align:middle line:84%
+Now, as you can see,
+this returns a future--
+
+89
+00:04:00.290 --> 00:04:04.360 align:middle line:84%
+a completable future-- to a
+stream of elements of type
+
+90
+00:04:04.360 --> 00:04:08.350 align:middle line:84%
+T. And the reason we do
+this is because we want
+
+91
+00:04:08.350 --> 00:04:14.400 align:middle line:84%
+to take this stream, which
+we're going to basically use
+
+92
+00:04:14.400 --> 00:04:17.010 align:middle line:84%
+to wait until
+everything else is done,
+
+93
+00:04:17.010 --> 00:04:20.019 align:middle line:84%
+and when that is finished,
+we want to apply it,
+
+94
+00:04:20.019 --> 00:04:21.990 align:middle line:84%
+and we want to get
+it as a stream.
+
+95
+00:04:21.990 --> 00:04:23.850 align:middle line:84%
+So as you can see
+here, thenApply
+
+96
+00:04:23.850 --> 00:04:26.850 align:middle line:84%
+is going to take a
+stream, and that stream
+
+97
+00:04:26.850 --> 00:04:30.960 align:middle line:84%
+will then go ahead and
+remove all the empty elements
+
+98
+00:04:30.960 --> 00:04:36.240 align:middle line:84%
+and print out some
+diagnostics that are useful.
+
+99
+00:04:36.240 --> 00:04:38.720 align:middle line:84%
+Here's a bit more of the
+StreamOfFuturesCollector
+
+100
+00:04:38.720 --> 00:04:39.380 align:middle line:90%
+implementation.
+
+101
+00:04:39.380 --> 00:04:41.390 align:middle line:84%
+We've got a
+characteristics factor
+
+102
+00:04:41.390 --> 00:04:43.940 align:middle line:84%
+that returns type
+of characteristics
+
+103
+00:04:43.940 --> 00:04:46.250 align:middle line:84%
+we want for the stream, which
+basically are unordered.
+
+104
+00:04:46.250 --> 00:04:47.720 align:middle line:90%
+We don't care about ordering.
+
+105
+00:04:47.720 --> 00:04:49.910 align:middle line:84%
+And we have a
+factory method that
+
+106
+00:04:49.910 --> 00:04:53.000 align:middle line:84%
+creates a
+StreamOfFuturesCollector when
+
+107
+00:04:53.000 --> 00:04:54.560 align:middle line:90%
+you call the factory method.
+
+108
+00:04:54.560 --> 00:04:56.120 align:middle line:84%
+So that's, again,
+almost identical to
+
+109
+00:04:56.120 --> 00:04:58.030 align:middle line:90%
+what we saw before.

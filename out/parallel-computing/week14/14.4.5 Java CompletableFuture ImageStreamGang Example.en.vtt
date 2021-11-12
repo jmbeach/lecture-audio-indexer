@@ -1,0 +1,621 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.550 align:middle line:90%
+
+
+2
+00:00:00.550 --> 00:00:03.880 align:middle line:84%
+We're now ready to start
+talking about the second set
+
+3
+00:00:03.880 --> 00:00:07.540 align:middle line:84%
+of completion stage methods
+used for our Completable Futures
+
+4
+00:00:07.540 --> 00:00:10.730 align:middle line:84%
+rendition of the
+ImageStreamGang example.
+
+5
+00:00:10.730 --> 00:00:16.360 align:middle line:84%
+This method will be the
+applyFiltersAsync method.
+
+6
+00:00:16.360 --> 00:00:20.530 align:middle line:84%
+So this method is used to
+asynchronously filter and store
+
+7
+00:00:20.530 --> 00:00:24.070 align:middle line:84%
+downloaded images on
+the local file system.
+
+8
+00:00:24.070 --> 00:00:29.370 align:middle line:84%
+And as you can see here, this
+method is called as a behavior
+
+9
+00:00:29.370 --> 00:00:34.140 align:middle line:84%
+by the flatMap
+intermediate operation.
+
+10
+00:00:34.140 --> 00:00:37.620 align:middle line:84%
+What it will do is it will
+go ahead and asynchronously
+
+11
+00:00:37.620 --> 00:00:42.460 align:middle line:84%
+filter images and then
+store them into files.
+
+12
+00:00:42.460 --> 00:00:45.400 align:middle line:84%
+As before, if it
+doesn't have anything
+
+13
+00:00:45.400 --> 00:00:49.540 align:middle line:84%
+to work on-- if it turned
+out that URL that was trying
+
+14
+00:00:49.540 --> 00:00:52.000 align:middle line:84%
+to download was
+already cached, it'll
+
+15
+00:00:52.000 --> 00:00:56.590 align:middle line:84%
+just come in with an empty
+optional image optional.
+
+16
+00:00:56.590 --> 00:00:57.980 align:middle line:90%
+And it'll just be ignored.
+
+17
+00:00:57.980 --> 00:01:00.280 align:middle line:84%
+So we just pass the
+optionals down the stream.
+
+18
+00:01:00.280 --> 00:01:03.550 align:middle line:84%
+And we just ignore them if
+they have nothing to do.
+
+19
+00:01:03.550 --> 00:01:06.370 align:middle line:84%
+Because we use
+flatMap here, this
+
+20
+00:01:06.370 --> 00:01:09.640 align:middle line:84%
+will flatten all the
+filtered and stored images
+
+21
+00:01:09.640 --> 00:01:11.800 align:middle line:90%
+into a single output stream.
+
+22
+00:01:11.800 --> 00:01:13.550 align:middle line:84%
+So think about what's
+happening here.
+
+23
+00:01:13.550 --> 00:01:15.610 align:middle line:84%
+We're getting a stream
+of CompletableFutures
+
+24
+00:01:15.610 --> 00:01:20.460 align:middle line:84%
+to optional images, but
+images we want to download
+
+25
+00:01:20.460 --> 00:01:22.570 align:middle line:84%
+or are in the process
+of being downloaded.
+
+26
+00:01:22.570 --> 00:01:25.237 align:middle line:84%
+And for each image, we're going
+to apply multiple filters.
+
+27
+00:01:25.237 --> 00:01:27.570 align:middle line:84%
+So let's say, for sake of
+argument, that for each image,
+
+28
+00:01:27.570 --> 00:01:29.967 align:middle line:90%
+we have three filters to apply.
+
+29
+00:01:29.967 --> 00:01:31.550 align:middle line:84%
+As long as everything
+goes well, we're
+
+30
+00:01:31.550 --> 00:01:34.140 align:middle line:84%
+going to end up with three
+times the amount of output
+
+31
+00:01:34.140 --> 00:01:38.250 align:middle line:84%
+from flatMap as we took as input
+from the map operation that
+
+32
+00:01:38.250 --> 00:01:39.233 align:middle line:90%
+came before.
+
+33
+00:01:39.233 --> 00:01:40.650 align:middle line:84%
+So this is a good
+example of where
+
+34
+00:01:40.650 --> 00:01:44.190 align:middle line:84%
+we can have more output than
+we got as input, because we're
+
+35
+00:01:44.190 --> 00:01:48.700 align:middle line:84%
+going to be actually adding
+things into the output stream.
+
+36
+00:01:48.700 --> 00:01:50.470 align:middle line:84%
+It returns a stream
+of CompletableFutures
+
+37
+00:01:50.470 --> 00:01:54.220 align:middle line:84%
+to optional images, which
+will have an actual value,
+
+38
+00:01:54.220 --> 00:01:56.590 align:middle line:84%
+if the image is being
+filtered and stored,
+
+39
+00:01:56.590 --> 00:01:59.350 align:middle line:84%
+or will be empty if it's
+already been cached--
+
+40
+00:01:59.350 --> 00:02:01.610 align:middle line:90%
+same as before.
+
+41
+00:02:01.610 --> 00:02:05.210 align:middle line:90%
+Here is applyFiltersAsync.
+
+42
+00:02:05.210 --> 00:02:09.889 align:middle line:84%
+And this is a really interesting
+use of CompletableFutures
+
+43
+00:02:09.889 --> 00:02:13.610 align:middle line:84%
+and other features
+in this design.
+
+44
+00:02:13.610 --> 00:02:16.910 align:middle line:84%
+So its purpose is to
+asynchronously filter images
+
+45
+00:02:16.910 --> 00:02:19.250 align:middle line:90%
+and then store them into files.
+
+46
+00:02:19.250 --> 00:02:23.750 align:middle line:84%
+What it does is it creates
+a stream of all the filters
+
+47
+00:02:23.750 --> 00:02:25.550 align:middle line:90%
+we want to apply to each image.
+
+48
+00:02:25.550 --> 00:02:28.760 align:middle line:84%
+And these filters could be
+things like embossed filter,
+
+49
+00:02:28.760 --> 00:02:32.785 align:middle line:84%
+red-eye remove filter, removal
+filter, sharper filter--
+
+50
+00:02:32.785 --> 00:02:34.160 align:middle line:84%
+whatever filters
+you might happen
+
+51
+00:02:34.160 --> 00:02:37.540 align:middle line:84%
+to want to put in there--
+sunshine filter-- whatever.
+
+52
+00:02:37.540 --> 00:02:40.910 align:middle line:84%
+And we'll then end up
+with a stream of filters.
+
+53
+00:02:40.910 --> 00:02:43.730 align:middle line:84%
+And then for each
+filter in the stream,
+
+54
+00:02:43.730 --> 00:02:47.130 align:middle line:84%
+when the image future
+completes-- in other words,
+
+55
+00:02:47.130 --> 00:02:49.610 align:middle line:84%
+when we've finished
+downloading the image--
+
+56
+00:02:49.610 --> 00:02:55.360 align:middle line:84%
+we will then trigger the
+thenApplyAsync completion stage
+
+57
+00:02:55.360 --> 00:02:55.860 align:middle line:90%
+method.
+
+58
+00:02:55.860 --> 00:02:58.820 align:middle line:90%
+
+
+59
+00:02:58.820 --> 00:03:01.470 align:middle line:84%
+And what that does is it
+goes ahead and registers
+
+60
+00:03:01.470 --> 00:03:03.760 align:middle line:90%
+the action shown here.
+
+61
+00:03:03.760 --> 00:03:06.410 align:middle line:84%
+As always, that action is
+not executed immediately.
+
+62
+00:03:06.410 --> 00:03:10.180 align:middle line:84%
+But it will only run after
+the image future completes
+
+63
+00:03:10.180 --> 00:03:13.230 align:middle line:84%
+and, of course, there's a thread
+available in the fork-joint
+
+64
+00:03:13.230 --> 00:03:16.510 align:middle line:90%
+pool to run this action.
+
+65
+00:03:16.510 --> 00:03:18.520 align:middle line:84%
+What this action does
+is it takes a look
+
+66
+00:03:18.520 --> 00:03:21.460 align:middle line:84%
+at the optional
+image that it got.
+
+67
+00:03:21.460 --> 00:03:23.830 align:middle line:84%
+And it uses its Map
+method to see whether we
+
+68
+00:03:23.830 --> 00:03:25.520 align:middle line:90%
+have to do any work at all.
+
+69
+00:03:25.520 --> 00:03:29.050 align:middle line:84%
+If this was an optional
+image for an image
+
+70
+00:03:29.050 --> 00:03:31.580 align:middle line:84%
+that we'd already
+cached, it'll be empty.
+
+71
+00:03:31.580 --> 00:03:33.870 align:middle line:90%
+And so Map will be a noOpt.
+
+72
+00:03:33.870 --> 00:03:38.100 align:middle line:84%
+If it's not empty,
+then the Map method
+
+73
+00:03:38.100 --> 00:03:41.880 align:middle line:84%
+will go ahead and run the
+code, the lambda expression
+
+74
+00:03:41.880 --> 00:03:43.133 align:middle line:90%
+that we passed in here.
+
+75
+00:03:43.133 --> 00:03:45.300 align:middle line:84%
+And as you can see, what
+this lambda expression does
+
+76
+00:03:45.300 --> 00:03:47.790 align:middle line:84%
+is it takes the image
+that has been downloaded
+
+77
+00:03:47.790 --> 00:03:50.880 align:middle line:84%
+now and successfully
+completed downloading
+
+78
+00:03:50.880 --> 00:03:53.730 align:middle line:84%
+and it combines it
+with the image filter.
+
+79
+00:03:53.730 --> 00:03:57.090 align:middle line:84%
+And for each of those image
+filter image combinations,
+
+80
+00:03:57.090 --> 00:04:02.280 align:middle line:84%
+we run a function that makes
+a filter decorated with image
+
+81
+00:04:02.280 --> 00:04:03.660 align:middle line:90%
+and then executes it.
+
+82
+00:04:03.660 --> 00:04:05.760 align:middle line:84%
+So we make a filter
+decorated with the image.
+
+83
+00:04:05.760 --> 00:04:07.620 align:middle line:90%
+And then we run that code.
+
+84
+00:04:07.620 --> 00:04:09.150 align:middle line:84%
+That code is running
+in a background
+
+85
+00:04:09.150 --> 00:04:11.160 align:middle line:90%
+task in the fork-joint pool.
+
+86
+00:04:11.160 --> 00:04:15.000 align:middle line:84%
+And that will go ahead
+and filter the image,
+
+87
+00:04:15.000 --> 00:04:16.829 align:middle line:84%
+change its bytes
+and so on, and then
+
+88
+00:04:16.829 --> 00:04:18.522 align:middle line:90%
+store it into an output file.
+
+89
+00:04:18.522 --> 00:04:20.730 align:middle line:84%
+And if you look carefully
+at the code implementation,
+
+90
+00:04:20.730 --> 00:04:24.540 align:middle line:84%
+you'll see that this uses the
+decorator pattern to decorate
+
+91
+00:04:24.540 --> 00:04:27.930 align:middle line:84%
+the filters with some stuff
+that knows how to store images.
+
+92
+00:04:27.930 --> 00:04:29.200 align:middle line:90%
+And it's really cool.
+
+93
+00:04:29.200 --> 00:04:31.980 align:middle line:84%
+So it's a good example of
+applying the decorator pattern
+
+94
+00:04:31.980 --> 00:04:35.730 align:middle line:90%
+in a parallel processing model.
+
+95
+00:04:35.730 --> 00:04:40.860 align:middle line:84%
+As before, the action
+that thenApplyAsync runs
+
+96
+00:04:40.860 --> 00:04:42.450 align:middle line:84%
+occurs in the context
+of whatever gets
+
+97
+00:04:42.450 --> 00:04:44.940 align:middle line:84%
+returned from getExecutor,
+which in our case
+
+98
+00:04:44.940 --> 00:04:47.310 align:middle line:84%
+is set to the common
+fork-joint pool,
+
+99
+00:04:47.310 --> 00:04:49.590 align:middle line:84%
+but could easily be
+changed because of the way
+
+100
+00:04:49.590 --> 00:04:53.750 align:middle line:90%
+we programmed the solution.
+
+101
+00:04:53.750 --> 00:04:57.680 align:middle line:84%
+What thenApplyAsync returns
+is a CompletableFuture
+
+102
+00:04:57.680 --> 00:04:59.990 align:middle line:84%
+that will trigger
+when the image has
+
+103
+00:04:59.990 --> 00:05:02.360 align:middle line:84%
+finished being
+filtered and being
+
+104
+00:05:02.360 --> 00:05:04.230 align:middle line:90%
+stored in the file system.
+
+105
+00:05:04.230 --> 00:05:05.780 align:middle line:84%
+So we're going to
+end up, basically,
+
+106
+00:05:05.780 --> 00:05:09.740 align:middle line:84%
+with a bunch of
+CompletableFutures.
+
+107
+00:05:09.740 --> 00:05:12.560 align:middle line:90%
+And in fact, what happens here--
+
+108
+00:05:12.560 --> 00:05:16.980 align:middle line:84%
+if you look carefully, there
+is no terminal operation here.
+
+109
+00:05:16.980 --> 00:05:18.830 align:middle line:90%
+So a stream is returned.
+
+110
+00:05:18.830 --> 00:05:23.600 align:middle line:84%
+And we're going to return a
+stream of CompletableFutures
+
+111
+00:05:23.600 --> 00:05:28.390 align:middle line:84%
+to optional images that are in
+the process of being filtered
+
+112
+00:05:28.390 --> 00:05:30.100 align:middle line:90%
+and stored.
+
+113
+00:05:30.100 --> 00:05:31.055 align:middle line:90%
+So that's pretty cool.
+
+114
+00:05:31.055 --> 00:05:32.680 align:middle line:84%
+And the reason why
+we get a stream here
+
+115
+00:05:32.680 --> 00:05:34.390 align:middle line:90%
+is there's no call to collect.
+
+116
+00:05:34.390 --> 00:05:35.830 align:middle line:90%
+There's no call to reduce.
+
+117
+00:05:35.830 --> 00:05:38.300 align:middle line:84%
+There's no call to
+for each or whatever.
+
+118
+00:05:38.300 --> 00:05:41.380 align:middle line:90%
+We're going to return a stream.
+
+119
+00:05:41.380 --> 00:05:42.950 align:middle line:90%
+And that's perfectly acceptable.
+
+120
+00:05:42.950 --> 00:05:45.440 align:middle line:84%
+In fact, that's absolute
+what we have to do here.
+
+121
+00:05:45.440 --> 00:05:46.660 align:middle line:90%
+So we return a stream.
+
+122
+00:05:46.660 --> 00:05:49.540 align:middle line:84%
+And then we're going to
+rely on the next phase
+
+123
+00:05:49.540 --> 00:05:54.660 align:middle line:84%
+in the stream, which is collect,
+to trigger the processing.
+
+124
+00:05:54.660 --> 00:05:59.540 align:middle line:84%
+So what flatMap returns
+is this stream of futures
+
+125
+00:05:59.540 --> 00:06:03.470 align:middle line:84%
+that come back from the
+applyFiltersAsync method.
+
+126
+00:06:03.470 --> 00:06:06.035 align:middle line:84%
+And it puts them all
+into a single stream.
+
+127
+00:06:06.035 --> 00:06:08.300 align:middle line:84%
+So you don't have a
+stream of streams, which
+
+128
+00:06:08.300 --> 00:06:10.200 align:middle line:90%
+we would get if we used Map.
+
+129
+00:06:10.200 --> 00:06:14.720 align:middle line:84%
+Instead, we have a stream,
+because we used flatMap.
+
+130
+00:06:14.720 --> 00:06:18.550 align:middle line:84%
+And this stream, of course, will
+then be processed by Collect,
+
+131
+00:06:18.550 --> 00:06:21.190 align:middle line:90%
+as we'll talk about next.

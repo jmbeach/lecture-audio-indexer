@@ -1,0 +1,387 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.500 align:middle line:90%
+
+
+2
+00:00:00.500 --> 00:00:04.000 align:middle line:84%
+Let's continue on with
+our image crawler example.
+
+3
+00:00:04.000 --> 00:00:07.600 align:middle line:84%
+In this case, we'll focus
+on the countImages method.
+
+4
+00:00:07.600 --> 00:00:10.780 align:middle line:90%
+
+
+5
+00:00:10.780 --> 00:00:14.050 align:middle line:84%
+The countImages method is
+the main entry point method
+
+6
+00:00:14.050 --> 00:00:16.300 align:middle line:84%
+for counting images
+asynchronously.
+
+7
+00:00:16.300 --> 00:00:19.120 align:middle line:84%
+This is what we saw was
+called by the constructor
+
+8
+00:00:19.120 --> 00:00:21.660 align:middle line:84%
+in the previous
+part of the lesson.
+
+9
+00:00:21.660 --> 00:00:25.080 align:middle line:84%
+It's passed in the
+page URI in a depth.
+
+10
+00:00:25.080 --> 00:00:29.550 align:middle line:84%
+And if the depth is
+greater than the max depth
+
+11
+00:00:29.550 --> 00:00:32.369 align:middle line:84%
+that the user of the program
+has configured-- let's say,
+
+12
+00:00:32.369 --> 00:00:35.640 align:middle line:84%
+you don't want to traverse
+more than four levels deep
+
+13
+00:00:35.640 --> 00:00:36.840 align:middle line:90%
+in a hierarchy.
+
+14
+00:00:36.840 --> 00:00:39.780 align:middle line:84%
+In that case, we're going to go
+ahead and return mZero, which
+
+15
+00:00:39.780 --> 00:00:43.710 align:middle line:84%
+was that completed future we set
+in the initialization section
+
+16
+00:00:43.710 --> 00:00:46.770 align:middle line:84%
+for the fields that
+just returns a completed
+
+17
+00:00:46.770 --> 00:00:48.308 align:middle line:90%
+future with the value zeros.
+
+18
+00:00:48.308 --> 00:00:50.100 align:middle line:84%
+That indicates we aren't
+counting anything,
+
+19
+00:00:50.100 --> 00:00:52.030 align:middle line:90%
+in this case.
+
+20
+00:00:52.030 --> 00:00:55.770 align:middle line:84%
+Likewise, we also check to see
+whether or not we've already
+
+21
+00:00:55.770 --> 00:00:57.990 align:middle line:90%
+visited a given page URI.
+
+22
+00:00:57.990 --> 00:01:00.930 align:middle line:84%
+If you have a bunch of
+recursively-defined web pages,
+
+23
+00:01:00.930 --> 00:01:02.820 align:middle line:84%
+they could point to
+each other and you'd
+
+24
+00:01:02.820 --> 00:01:06.240 align:middle line:84%
+end up with cycles
+in your crawl graph.
+
+25
+00:01:06.240 --> 00:01:08.970 align:middle line:84%
+So to break those
+cycles, we do a call
+
+26
+00:01:08.970 --> 00:01:11.130 align:middle line:84%
+to a method known as
+putIfAbsent, which
+
+27
+00:01:11.130 --> 00:01:12.730 align:middle line:90%
+I'll explain in just a moment.
+
+28
+00:01:12.730 --> 00:01:16.050 align:middle line:84%
+And if putIfAbsent
+returns true, then that
+
+29
+00:01:16.050 --> 00:01:19.560 align:middle line:90%
+means that we are able to--
+
+30
+00:01:19.560 --> 00:01:21.750 align:middle line:84%
+this is the first time
+we've seen the page.
+
+31
+00:01:21.750 --> 00:01:23.370 align:middle line:84%
+If it returns false,
+it means we've
+
+32
+00:01:23.370 --> 00:01:26.280 align:middle line:84%
+seen it before, in which
+case, we're going to bail out.
+
+33
+00:01:26.280 --> 00:01:28.320 align:middle line:84%
+So we want to make sure
+we process each web page
+
+34
+00:01:28.320 --> 00:01:30.330 align:middle line:90%
+only one time.
+
+35
+00:01:30.330 --> 00:01:32.820 align:middle line:84%
+putIfAbsent is actually
+a little wrapper
+
+36
+00:01:32.820 --> 00:01:36.180 align:middle line:84%
+around the concurrent
+hash maps putIfAbsent
+
+37
+00:01:36.180 --> 00:01:40.390 align:middle line:84%
+method, which performs an
+atomic check then act method.
+
+38
+00:01:40.390 --> 00:01:43.950 align:middle line:84%
+So what that does is if the
+URI has not been seen before,
+
+39
+00:01:43.950 --> 00:01:47.040 align:middle line:84%
+it's atomically
+inserted into the map--
+
+40
+00:01:47.040 --> 00:01:49.350 align:middle line:84%
+which in our case, is
+HashSet, because we wrapped
+
+41
+00:01:49.350 --> 00:01:51.840 align:middle line:84%
+HashSet around HashMap,
+or concurrent HashSet
+
+42
+00:01:51.840 --> 00:01:53.370 align:middle line:90%
+around concurrent HashMap.
+
+43
+00:01:53.370 --> 00:01:56.670 align:middle line:84%
+And what happens then is
+next time we look it up,
+
+44
+00:01:56.670 --> 00:01:58.270 align:middle line:90%
+it will already be there.
+
+45
+00:01:58.270 --> 00:01:59.950 align:middle line:84%
+And so we'll go
+ahead and ignore it.
+
+46
+00:01:59.950 --> 00:02:02.670 align:middle line:84%
+And by using an atomic
+check and act method,
+
+47
+00:02:02.670 --> 00:02:05.280 align:middle line:84%
+we can have this call
+invoked from multiple threads
+
+48
+00:02:05.280 --> 00:02:07.710 align:middle line:84%
+of control without having
+to worry about incurring
+
+49
+00:02:07.710 --> 00:02:09.258 align:middle line:90%
+race conditions.
+
+50
+00:02:09.258 --> 00:02:10.800 align:middle line:84%
+If we've already
+seen a page, we just
+
+51
+00:02:10.800 --> 00:02:13.860 align:middle line:84%
+return zero because it's
+been counted previously.
+
+52
+00:02:13.860 --> 00:02:16.437 align:middle line:84%
+We don't want to
+double count it.
+
+53
+00:02:16.437 --> 00:02:18.770 align:middle line:84%
+The next thing we do is really
+the heart of this method.
+
+54
+00:02:18.770 --> 00:02:20.960 align:middle line:84%
+We call a helper
+method that's referred
+
+55
+00:02:20.960 --> 00:02:22.805 align:middle line:90%
+to as countImagesAsync.
+
+56
+00:02:22.805 --> 00:02:25.140 align:middle line:84%
+And we're going to talk
+about this in just a moment.
+
+57
+00:02:25.140 --> 00:02:28.280 align:middle line:84%
+We're going to pass in the
+page URI and the depth.
+
+58
+00:02:28.280 --> 00:02:30.860 align:middle line:84%
+Now what's going to come
+back from countImagesAsync
+
+59
+00:02:30.860 --> 00:02:32.930 align:middle line:90%
+will be a completable future.
+
+60
+00:02:32.930 --> 00:02:37.250 align:middle line:84%
+And what we do here is we put in
+this whenComplete method, which
+
+61
+00:02:37.250 --> 00:02:40.500 align:middle line:84%
+can be used to handle
+the outcome of the stage.
+
+62
+00:02:40.500 --> 00:02:42.900 align:middle line:84%
+Now if we have not
+got an exception,
+
+63
+00:02:42.900 --> 00:02:44.900 align:middle line:84%
+then we're going to print
+out how many images we
+
+64
+00:02:44.900 --> 00:02:46.820 align:middle line:90%
+found at that depth.
+
+65
+00:02:46.820 --> 00:02:48.350 align:middle line:84%
+If we have got an
+exception, we're
+
+66
+00:02:48.350 --> 00:02:52.400 align:middle line:84%
+going to go ahead and
+print out the message that
+
+67
+00:02:52.400 --> 00:02:56.250 align:middle line:84%
+indicates what the exception
+was, or where it occurred.
+
+68
+00:02:56.250 --> 00:02:58.920 align:middle line:84%
+These values, total and
+ex, are mutually exclusive.
+
+69
+00:02:58.920 --> 00:03:00.860 align:middle line:90%
+They can't both be non-null.
+
+70
+00:03:00.860 --> 00:03:03.800 align:middle line:84%
+So we decide what to do
+based on their values.
+
+71
+00:03:03.800 --> 00:03:08.270 align:middle line:84%
+It's also worth noting that
+whenComplete is always called,
+
+72
+00:03:08.270 --> 00:03:10.095 align:middle line:90%
+can't change the return value.
+
+73
+00:03:10.095 --> 00:03:12.470 align:middle line:84%
+It still is always going to
+come back to whatever it was.
+
+74
+00:03:12.470 --> 00:03:14.960 align:middle line:84%
+And it doesn't
+swallow the exception.
+
+75
+00:03:14.960 --> 00:03:18.628 align:middle line:84%
+So the exceptions are actually
+handled in the constructor
+
+76
+00:03:18.628 --> 00:03:19.670 align:middle line:90%
+that we looked at before.
+
+77
+00:03:19.670 --> 00:03:22.230 align:middle line:90%
+
+
+78
+00:03:22.230 --> 00:03:25.220 align:middle line:84%
+countImages returns
+a completable future
+
+79
+00:03:25.220 --> 00:03:27.030 align:middle line:84%
+to the number of
+images that were
+
+80
+00:03:27.030 --> 00:03:30.210 align:middle line:84%
+found at this depth
+in the recursion,
+
+81
+00:03:30.210 --> 00:03:32.780 align:middle line:84%
+and below, of course, because
+it's adding them altogether.

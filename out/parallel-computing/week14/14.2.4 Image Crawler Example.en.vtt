@@ -1,0 +1,800 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.500 align:middle line:90%
+
+
+2
+00:00:00.500 --> 00:00:04.080 align:middle line:84%
+We're now ready to talk about
+the fourth part of our image
+
+3
+00:00:04.080 --> 00:00:05.460 align:middle line:90%
+crawler example.
+
+4
+00:00:05.460 --> 00:00:07.950 align:middle line:84%
+And this will actually
+examine several methods.
+
+5
+00:00:07.950 --> 00:00:10.530 align:middle line:84%
+It'll examine the
+crawlLinksInPage method
+
+6
+00:00:10.530 --> 00:00:13.530 align:middle line:84%
+and the
+combineImageCounts method.
+
+7
+00:00:13.530 --> 00:00:15.690 align:middle line:84%
+Of all the methods
+we've seen so far,
+
+8
+00:00:15.690 --> 00:00:17.640 align:middle line:84%
+the crawlLinksInPage
+method is one
+
+9
+00:00:17.640 --> 00:00:19.600 align:middle line:90%
+of the most interesting ones.
+
+10
+00:00:19.600 --> 00:00:21.540 align:middle line:84%
+So let's take a look
+at that one first.
+
+11
+00:00:21.540 --> 00:00:25.280 align:middle line:84%
+This method returns
+a CompletableFuture
+
+12
+00:00:25.280 --> 00:00:28.110 align:middle line:84%
+to the number of
+Image Source URLs that
+
+13
+00:00:28.110 --> 00:00:31.560 align:middle line:84%
+are accessible via
+links in this page.
+
+14
+00:00:31.560 --> 00:00:33.990 align:middle line:84%
+And so as you'll
+see, it's going to be
+
+15
+00:00:33.990 --> 00:00:39.510 align:middle line:84%
+used as part of this recursive
+traversal of the web tree
+
+16
+00:00:39.510 --> 00:00:43.500 align:middle line:84%
+or the tree of links
+that are accessible
+
+17
+00:00:43.500 --> 00:00:46.710 align:middle line:84%
+through the nested document
+structure, nested director
+
+18
+00:00:46.710 --> 00:00:49.230 align:middle line:90%
+hierarchy.
+
+19
+00:00:49.230 --> 00:00:52.890 align:middle line:84%
+It's past the page, which is the
+document that we're looking at.
+
+20
+00:00:52.890 --> 00:00:55.440 align:middle line:84%
+And the first thing it does is
+it goes ahead and makes a call
+
+21
+00:00:55.440 --> 00:00:58.410 align:middle line:84%
+to the jsoup method
+select, except,
+
+22
+00:00:58.410 --> 00:01:00.330 align:middle line:84%
+unlike the previous
+time we used select
+
+23
+00:01:00.330 --> 00:01:03.480 align:middle line:84%
+where we selected the image
+source URLs, this time we're
+
+24
+00:01:03.480 --> 00:01:06.870 align:middle line:84%
+going to return a list of all
+the hyperlinks in this page.
+
+25
+00:01:06.870 --> 00:01:10.590 align:middle line:84%
+So that, of course, we'll go
+out and parse through the HTML
+
+26
+00:01:10.590 --> 00:01:12.930 align:middle line:84%
+in that page, find
+all the hyperlinks,
+
+27
+00:01:12.930 --> 00:01:16.820 align:middle line:84%
+and return a list
+of those hyperlinks.
+
+28
+00:01:16.820 --> 00:01:17.980 align:middle line:90%
+We then turn around--
+
+29
+00:01:17.980 --> 00:01:20.690 align:middle line:84%
+oh, and the fact that
+the select method
+
+30
+00:01:20.690 --> 00:01:23.030 align:middle line:84%
+runs synchronously--
+that's why we use
+
+31
+00:01:23.030 --> 00:01:24.410 align:middle line:90%
+the thenComposeAsync method.
+
+32
+00:01:24.410 --> 00:01:28.010 align:middle line:84%
+So this will run in a background
+thread in the worker thread
+
+33
+00:01:28.010 --> 00:01:30.860 align:middle line:90%
+of the common ForkJoinPool.
+
+34
+00:01:30.860 --> 00:01:34.280 align:middle line:84%
+We then turn around and
+convert that list of hyperlinks
+
+35
+00:01:34.280 --> 00:01:36.633 align:middle line:90%
+into a sequential stream.
+
+36
+00:01:36.633 --> 00:01:38.300 align:middle line:84%
+Don't need to use a
+parallel stream here
+
+37
+00:01:38.300 --> 00:01:41.190 align:middle line:84%
+for reasons that'll become
+obvious in just a moment.
+
+38
+00:01:41.190 --> 00:01:44.120 align:middle line:84%
+So now we have a stream of
+hyperlinks on this page.
+
+39
+00:01:44.120 --> 00:01:47.930 align:middle line:84%
+What we then do is we take
+each of those hyperlinks using
+
+40
+00:01:47.930 --> 00:01:51.320 align:middle line:84%
+the map intermediate
+operation, and we recursively
+
+41
+00:01:51.320 --> 00:01:53.860 align:middle line:90%
+call the countImages method.
+
+42
+00:01:53.860 --> 00:01:56.810 align:middle line:84%
+CountImages was the method
+we talked back and talked
+
+43
+00:01:56.810 --> 00:02:00.930 align:middle line:84%
+about back in part 2 of
+this particular lesson.
+
+44
+00:02:00.930 --> 00:02:05.990 align:middle line:84%
+And that's the one that
+takes a length and a depth
+
+45
+00:02:05.990 --> 00:02:08.990 align:middle line:84%
+and then starts the whole
+process in motion, except now
+
+46
+00:02:08.990 --> 00:02:10.532 align:middle line:84%
+what we're going to
+do is we're going
+
+47
+00:02:10.532 --> 00:02:12.470 align:middle line:84%
+to start the whole
+process in motion again,
+
+48
+00:02:12.470 --> 00:02:17.240 align:middle line:84%
+but for each of the hyperlinks
+that is on a given document
+
+49
+00:02:17.240 --> 00:02:18.283 align:middle line:90%
+page.
+
+50
+00:02:18.283 --> 00:02:19.825 align:middle line:84%
+The way that's going
+to work is we're
+
+51
+00:02:19.825 --> 00:02:23.313 align:middle line:84%
+going to use the getHyperLink
+method from our JSuper wrapper
+
+52
+00:02:23.313 --> 00:02:24.980 align:middle line:84%
+to get the hyperlink,
+which could either
+
+53
+00:02:24.980 --> 00:02:28.777 align:middle line:84%
+be a hyperlink into the web or
+hyperlink into the file system.
+
+54
+00:02:28.777 --> 00:02:29.360 align:middle line:90%
+We don't know.
+
+55
+00:02:29.360 --> 00:02:30.690 align:middle line:90%
+We don't care.
+
+56
+00:02:30.690 --> 00:02:33.710 align:middle line:84%
+That's what my JSuper
+wrapper encapsulates.
+
+57
+00:02:33.710 --> 00:02:37.820 align:middle line:84%
+And then we also pass in the
+depth, incrementing it by 1
+
+58
+00:02:37.820 --> 00:02:40.070 align:middle line:84%
+because we're going
+to go 1 level down
+
+59
+00:02:40.070 --> 00:02:44.660 align:middle line:84%
+in our hierarchy of recursively
+traversing the nested directory
+
+60
+00:02:44.660 --> 00:02:46.300 align:middle line:90%
+structure.
+
+61
+00:02:46.300 --> 00:02:48.690 align:middle line:84%
+So what we're going to
+get back from countImages,
+
+62
+00:02:48.690 --> 00:02:52.140 align:middle line:84%
+if you recall, is
+a CompletableFuture
+
+63
+00:02:52.140 --> 00:02:53.500 align:middle line:90%
+to an integer.
+
+64
+00:02:53.500 --> 00:02:56.860 align:middle line:84%
+And so for every
+hyperlink on this page,
+
+65
+00:02:56.860 --> 00:03:00.030 align:middle line:84%
+we're going to get back a
+stream of CompletableFutures
+
+66
+00:03:00.030 --> 00:03:02.870 align:middle line:90%
+to Integers.
+
+67
+00:03:02.870 --> 00:03:05.690 align:middle line:84%
+So count images itself
+runs asynchronously,
+
+68
+00:03:05.690 --> 00:03:07.110 align:middle line:90%
+as we saw before.
+
+69
+00:03:07.110 --> 00:03:11.810 align:middle line:84%
+And it returns a future to the
+number of images at this link
+
+70
+00:03:11.810 --> 00:03:13.530 align:middle line:90%
+and at this depth.
+
+71
+00:03:13.530 --> 00:03:16.830 align:middle line:84%
+So if you go back to the
+part two of this example,
+
+72
+00:03:16.830 --> 00:03:18.390 align:middle line:90%
+you'll see how that works.
+
+73
+00:03:18.390 --> 00:03:22.340 align:middle line:84%
+So now we've got a stream
+of these CompletableFutures.
+
+74
+00:03:22.340 --> 00:03:23.190 align:middle line:90%
+What do we do next?
+
+75
+00:03:23.190 --> 00:03:25.640 align:middle line:84%
+Well, we use our
+FuturesCollector,
+
+76
+00:03:25.640 --> 00:03:28.640 align:middle line:84%
+which we talked about when we
+were discussing our wrapper
+
+77
+00:03:28.640 --> 00:03:32.480 align:middle line:84%
+class for the
+Arbitrary-arity allOf
+
+78
+00:03:32.480 --> 00:03:35.000 align:middle line:90%
+method in CompletableFutures.
+
+79
+00:03:35.000 --> 00:03:38.600 align:middle line:84%
+And we use the FuturesCollector
+that we had before in order
+
+80
+00:03:38.600 --> 00:03:42.410 align:middle line:84%
+to be able to create a single
+completable future that
+
+81
+00:03:42.410 --> 00:03:45.570 align:middle line:84%
+will be triggered when all the
+futures in the stream complete.
+
+82
+00:03:45.570 --> 00:03:47.480 align:middle line:84%
+So when all that
+recursive traversal,
+
+83
+00:03:47.480 --> 00:03:49.730 align:middle line:84%
+which could actually
+go many levels,
+
+84
+00:03:49.730 --> 00:03:52.490 align:middle line:84%
+depending on what we've
+set max depth to be--
+
+85
+00:03:52.490 --> 00:03:54.950 align:middle line:84%
+when all those futures
+in the stream complete,
+
+86
+00:03:54.950 --> 00:03:57.650 align:middle line:84%
+then and only then will
+the CompletableFuture
+
+87
+00:03:57.650 --> 00:04:03.800 align:middle line:84%
+return from FutureCollector
+to Future complete.
+
+88
+00:04:03.800 --> 00:04:05.510 align:middle line:84%
+And when that happens,
+when we finally
+
+89
+00:04:05.510 --> 00:04:08.480 align:middle line:84%
+finished all the
+traversal, we have a list
+
+90
+00:04:08.480 --> 00:04:11.300 align:middle line:90%
+of, essentially, integers.
+
+91
+00:04:11.300 --> 00:04:13.860 align:middle line:84%
+And then we go ahead
+and we reduce them.
+
+92
+00:04:13.860 --> 00:04:15.960 align:middle line:84%
+So we turn the
+list into a stream.
+
+93
+00:04:15.960 --> 00:04:19.430 align:middle line:84%
+And then we reduce them by
+summing everything together.
+
+94
+00:04:19.430 --> 00:04:22.520 align:middle line:84%
+So what we'll get as the
+result of this function
+
+95
+00:04:22.520 --> 00:04:26.090 align:middle line:84%
+is basically going to
+be a CompletableFuture
+
+96
+00:04:26.090 --> 00:04:32.810 align:middle line:84%
+to an integer, which constitutes
+a count of all the images
+
+97
+00:04:32.810 --> 00:04:35.540 align:middle line:84%
+reachable from this
+particular page
+
+98
+00:04:35.540 --> 00:04:38.180 align:middle line:84%
+by crawling all
+of its hyperlinks.
+
+99
+00:04:38.180 --> 00:04:40.610 align:middle line:84%
+Now, this gets a future
+back, and that future
+
+100
+00:04:40.610 --> 00:04:45.880 align:middle line:84%
+will be flattened by the
+thenComposeAsync method that
+
+101
+00:04:45.880 --> 00:04:50.943 align:middle line:84%
+passed in crawlLinksInPage
+as its action.
+
+102
+00:04:50.943 --> 00:04:52.610 align:middle line:84%
+The last thing we're
+going to talk about
+
+103
+00:04:52.610 --> 00:04:55.460 align:middle line:84%
+is the combineImageCounts
+method.
+
+104
+00:04:55.460 --> 00:04:58.090 align:middle line:84%
+And just to refresh you on
+where we are in our crawl,
+
+105
+00:04:58.090 --> 00:05:01.760 align:middle line:84%
+so at this point, we would
+have initiated the crawl
+
+106
+00:05:01.760 --> 00:05:04.760 align:middle line:84%
+to get the number of images that
+were reachable from the page.
+
+107
+00:05:04.760 --> 00:05:06.980 align:middle line:84%
+That's what the
+crawlLinksInPage method
+
+108
+00:05:06.980 --> 00:05:08.510 align:middle line:90%
+did that we just talked about.
+
+109
+00:05:08.510 --> 00:05:12.170 align:middle line:84%
+We would have also initiated
+the getImagesInPage method
+
+110
+00:05:12.170 --> 00:05:14.270 align:middle line:84%
+to find out how many
+images were on this page.
+
+111
+00:05:14.270 --> 00:05:15.770 align:middle line:84%
+And the last thing
+we're going to do
+
+112
+00:05:15.770 --> 00:05:19.652 align:middle line:84%
+is we're going to invoke the
+combineImageCounts method,
+
+113
+00:05:19.652 --> 00:05:21.860 align:middle line:84%
+and this will go ahead and
+count the number of images
+
+114
+00:05:21.860 --> 00:05:24.710 align:middle line:84%
+on the page and the ones that
+are accessible by our links
+
+115
+00:05:24.710 --> 00:05:25.870 align:middle line:90%
+on this page.
+
+116
+00:05:25.870 --> 00:05:29.450 align:middle line:84%
+And to do this, we pass in
+the two CompletableFutures,
+
+117
+00:05:29.450 --> 00:05:32.420 align:middle line:84%
+imagesInPageF, and
+imagesInLinksF.
+
+118
+00:05:32.420 --> 00:05:35.630 align:middle line:84%
+And so this is a classic
+example of joining together
+
+119
+00:05:35.630 --> 00:05:37.350 align:middle line:90%
+the results.
+
+120
+00:05:37.350 --> 00:05:40.250 align:middle line:84%
+So let's take a look
+at combineImageCounts.
+
+121
+00:05:40.250 --> 00:05:41.900 align:middle line:84%
+I think you may
+already have a sense
+
+122
+00:05:41.900 --> 00:05:43.680 align:middle line:90%
+of what we're going to do here.
+
+123
+00:05:43.680 --> 00:05:46.190 align:middle line:84%
+We're going to end up taking
+those CompleteableFutures
+
+124
+00:05:46.190 --> 00:05:48.110 align:middle line:84%
+in as parameters,
+and then we're going
+
+125
+00:05:48.110 --> 00:05:53.720 align:middle line:84%
+to use the composition
+method thenCombine, which
+
+126
+00:05:53.720 --> 00:05:55.310 align:middle line:84%
+is the completion
+stage method we've
+
+127
+00:05:55.310 --> 00:05:59.420 align:middle line:84%
+talked about before that will
+take two CompletableFutures.
+
+128
+00:05:59.420 --> 00:06:01.760 align:middle line:84%
+And only when they
+both complete,
+
+129
+00:06:01.760 --> 00:06:03.973 align:middle line:84%
+will we go ahead
+and run its action.
+
+130
+00:06:03.973 --> 00:06:05.390 align:middle line:84%
+And its action
+here as you can see
+
+131
+00:06:05.390 --> 00:06:08.240 align:middle line:90%
+is to sum the results together.
+
+132
+00:06:08.240 --> 00:06:11.870 align:middle line:84%
+So summing results together
+is a very quick operation.
+
+133
+00:06:11.870 --> 00:06:15.020 align:middle line:84%
+And, therefore, it's
+probably overkill to use
+
+134
+00:06:15.020 --> 00:06:16.640 align:middle line:90%
+thenCombineAsync here.
+
+135
+00:06:16.640 --> 00:06:19.290 align:middle line:84%
+We could do it, but it's
+probably not worth it.
+
+136
+00:06:19.290 --> 00:06:21.620 align:middle line:84%
+We're probably better off
+just using thenCombine.
+
+137
+00:06:21.620 --> 00:06:24.080 align:middle line:84%
+Because by the
+time we go to sum,
+
+138
+00:06:24.080 --> 00:06:25.610 align:middle line:90%
+all the hard work's been done.
+
+139
+00:06:25.610 --> 00:06:27.650 align:middle line:84%
+And now we're just adding
+two integers together,
+
+140
+00:06:27.650 --> 00:06:31.440 align:middle line:90%
+and that'll take no time at all.
+
+141
+00:06:31.440 --> 00:06:33.000 align:middle line:84%
+So that's the end
+of this example.
+
+142
+00:06:33.000 --> 00:06:36.230 align:middle line:84%
+I think you'll have a lot of
+fun going through this carefully
+
+143
+00:06:36.230 --> 00:06:40.410 align:middle line:84%
+and rereading the code and
+running it to see what it does.
+
+144
+00:06:40.410 --> 00:06:42.740 align:middle line:84%
+It's really a
+fascinating example
+
+145
+00:06:42.740 --> 00:06:46.610 align:middle line:84%
+of how to take the
+advanced features of Java's
+
+146
+00:06:46.610 --> 00:06:50.960 align:middle line:84%
+CompletableFutures framework
+and apply them to a real world
+
+147
+00:06:50.960 --> 00:06:53.660 align:middle line:84%
+complex application
+that would otherwise
+
+148
+00:06:53.660 --> 00:06:55.460 align:middle line:90%
+be rather tricky to write.
+
+149
+00:06:55.460 --> 00:06:59.210 align:middle line:84%
+You might also have fun trying
+to rewrite this program using
+
+150
+00:06:59.210 --> 00:07:01.460 align:middle line:84%
+parallel streams
+instead of using
+
+151
+00:07:01.460 --> 00:07:04.250 align:middle line:84%
+ComputableFutures and
+then timing it to see
+
+152
+00:07:04.250 --> 00:07:05.995 align:middle line:90%
+which one performs better.
+
+153
+00:07:05.995 --> 00:07:08.370 align:middle line:84%
+I haven't actually gone to
+the trouble of doing that yet.
+
+154
+00:07:08.370 --> 00:07:10.888 align:middle line:84%
+But if somebody gets inspired
+and wants to try that,
+
+155
+00:07:10.888 --> 00:07:13.180 align:middle line:84%
+I'd be very interested in
+knowing whether the completed
+
+156
+00:07:13.180 --> 00:07:16.160 align:middle line:84%
+a futures version is faster than
+the parallel streams version.
+
+157
+00:07:16.160 --> 00:07:18.350 align:middle line:84%
+I kind of have a feeling
+that it would be,
+
+158
+00:07:18.350 --> 00:07:21.890 align:middle line:84%
+and that's because the whole
+model of processing here really
+
+159
+00:07:21.890 --> 00:07:24.320 align:middle line:84%
+lends itself better
+to asynchrony
+
+160
+00:07:24.320 --> 00:07:26.990 align:middle line:84%
+than the
+divide-and-conquer approach
+
+161
+00:07:26.990 --> 00:07:31.460 align:middle line:84%
+that parallel streams tries
+to enforce on the programming
+
+162
+00:07:31.460 --> 00:07:34.760 align:middle line:84%
+model, which may be too
+much of a procrustean bed
+
+163
+00:07:34.760 --> 00:07:36.560 align:middle line:84%
+to work effectively
+in this case.
+
+164
+00:07:36.560 --> 00:07:38.690 align:middle line:84%
+And the real problem here
+is that these directory
+
+165
+00:07:38.690 --> 00:07:40.700 align:middle line:84%
+hierarchies are not
+really evenly balanced,
+
+166
+00:07:40.700 --> 00:07:45.580 align:middle line:84%
+so I think asynchrony is
+probably a better way to go.

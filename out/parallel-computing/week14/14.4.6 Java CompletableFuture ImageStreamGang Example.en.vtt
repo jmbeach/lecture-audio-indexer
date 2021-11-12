@@ -1,0 +1,418 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:01.500 align:middle line:90%
+
+
+2
+00:00:01.500 --> 00:00:04.088 align:middle line:84%
+We're getting towards the end
+of our ImageStreamGang example.
+
+3
+00:00:04.088 --> 00:00:05.630 align:middle line:84%
+And what we're going
+to here is we're
+
+4
+00:00:05.630 --> 00:00:09.260 align:middle line:84%
+going to cover its use of
+arbitrary-arity methods.
+
+5
+00:00:09.260 --> 00:00:11.060 align:middle line:84%
+And some of this will
+look quite familiar
+
+6
+00:00:11.060 --> 00:00:13.100 align:middle line:84%
+because it's really
+quite the same as what
+
+7
+00:00:13.100 --> 00:00:17.210 align:middle line:84%
+we had done for our earlier
+examples with the image
+
+8
+00:00:17.210 --> 00:00:21.080 align:middle line:84%
+counter, web crawler, and
+the earlier descriptions we
+
+9
+00:00:21.080 --> 00:00:23.770 align:middle line:90%
+did of futures collector.
+
+10
+00:00:23.770 --> 00:00:25.405 align:middle line:84%
+So basically,
+here's the context.
+
+11
+00:00:25.405 --> 00:00:27.460 align:middle line:84%
+flatMap's going to
+end up returning
+
+12
+00:00:27.460 --> 00:00:30.100 align:middle line:84%
+this stream of
+completable futures
+
+13
+00:00:30.100 --> 00:00:32.020 align:middle line:84%
+that are associated
+with processing that's
+
+14
+00:00:32.020 --> 00:00:33.580 align:middle line:90%
+all running asynchronously.
+
+15
+00:00:33.580 --> 00:00:35.800 align:middle line:84%
+And we'd like to be
+able to consolidate
+
+16
+00:00:35.800 --> 00:00:37.870 align:middle line:84%
+all that into a single
+completable future
+
+17
+00:00:37.870 --> 00:00:39.275 align:middle line:90%
+to wait reactively for it.
+
+18
+00:00:39.275 --> 00:00:41.650 align:middle line:84%
+And the way we're going to do
+that is we're going to call
+
+19
+00:00:41.650 --> 00:00:46.510 align:middle line:84%
+collect passing in the result of
+the two future factory method.
+
+20
+00:00:46.510 --> 00:00:50.140 align:middle line:84%
+And that will end up giving
+us just one completable future
+
+21
+00:00:50.140 --> 00:00:52.840 align:middle line:84%
+to handle, not hundreds, or
+dozens, or however many things
+
+22
+00:00:52.840 --> 00:00:55.450 align:middle line:90%
+we're trying to download.
+
+23
+00:00:55.450 --> 00:00:57.850 align:middle line:84%
+As always, when
+collect is hit, that
+
+24
+00:00:57.850 --> 00:00:59.510 align:middle line:84%
+triggers everything
+else to start so.
+
+25
+00:00:59.510 --> 00:01:01.600 align:middle line:84%
+So none of the things
+we've talked about thus far
+
+26
+00:01:01.600 --> 00:01:03.430 align:middle line:84%
+actually begin until
+collect is hit.
+
+27
+00:01:03.430 --> 00:01:05.150 align:middle line:90%
+No surprise there.
+
+28
+00:01:05.150 --> 00:01:09.300 align:middle line:84%
+And it will then go
+ahead and give us back
+
+29
+00:01:09.300 --> 00:01:11.850 align:middle line:90%
+a single completable future.
+
+30
+00:01:11.850 --> 00:01:14.010 align:middle line:84%
+And that single
+completable future
+
+31
+00:01:14.010 --> 00:01:17.160 align:middle line:84%
+is produced by a
+collector called
+
+32
+00:01:17.160 --> 00:01:19.470 align:middle line:90%
+StreamOfFuturesCollector.
+
+33
+00:01:19.470 --> 00:01:21.760 align:middle line:84%
+And we're going to talk
+about that just in a second.
+
+34
+00:01:21.760 --> 00:01:24.420 align:middle line:84%
+And that stream of
+futures collector
+
+35
+00:01:24.420 --> 00:01:28.208 align:middle line:84%
+will wrap the
+arbitrary-arity allOf method.
+
+36
+00:01:28.208 --> 00:01:30.250 align:middle line:84%
+Kind of a mouthful, but
+hopefully, at this point,
+
+37
+00:01:30.250 --> 00:01:34.160 align:middle line:84%
+it's becoming more
+intuitive to you.
+
+38
+00:01:34.160 --> 00:01:37.130 align:middle line:84%
+When that single
+completable future triggers,
+
+39
+00:01:37.130 --> 00:01:38.630 align:middle line:84%
+we're just going
+to log the results,
+
+40
+00:01:38.630 --> 00:01:41.750 align:middle line:84%
+just to do something at the
+end, using the thenApply method.
+
+41
+00:01:41.750 --> 00:01:45.020 align:middle line:84%
+And you can see here, what
+we're going to do with Java 9,
+
+42
+00:01:45.020 --> 00:01:49.070 align:middle line:84%
+if we're running this code on
+the Java 9 version of the JDK
+
+43
+00:01:49.070 --> 00:01:52.400 align:middle line:84%
+or above, we can use
+a really cool feature
+
+44
+00:01:52.400 --> 00:01:58.700 align:middle line:84%
+in the stream.flatMap
+method, which now works with
+
+45
+00:01:58.700 --> 00:02:00.560 align:middle line:90%
+optional::stream.
+
+46
+00:02:00.560 --> 00:02:02.570 align:middle line:84%
+And what that does is
+that gets rid of all
+
+47
+00:02:02.570 --> 00:02:03.770 align:middle line:90%
+the empty optional values.
+
+48
+00:02:03.770 --> 00:02:05.187 align:middle line:84%
+Because we could
+have had a number
+
+49
+00:02:05.187 --> 00:02:08.270 align:middle line:84%
+of empty optionals in this
+stream because we were ignoring
+
+50
+00:02:08.270 --> 00:02:10.210 align:middle line:90%
+cached images.
+
+51
+00:02:10.210 --> 00:02:12.263 align:middle line:84%
+If we're stuck with
+Java 8, which sadly
+
+52
+00:02:12.263 --> 00:02:13.930 align:middle line:84%
+would be the case if
+we were programming
+
+53
+00:02:13.930 --> 00:02:16.367 align:middle line:84%
+with current
+versions of Android--
+
+54
+00:02:16.367 --> 00:02:18.200 align:middle line:84%
+I don't think this will
+change anytime soon.
+
+55
+00:02:18.200 --> 00:02:20.890 align:middle line:84%
+But if you're using versions
+of Android that support Java 8
+
+56
+00:02:20.890 --> 00:02:23.410 align:middle line:84%
+only, then we have to do
+something a little bit more
+
+57
+00:02:23.410 --> 00:02:24.010 align:middle line:90%
+crufty.
+
+58
+00:02:24.010 --> 00:02:26.920 align:middle line:84%
+So rather than doing this
+really cool, simple code,
+
+59
+00:02:26.920 --> 00:02:30.790 align:middle line:84%
+instead, we have to
+say stream.filter,
+
+60
+00:02:30.790 --> 00:02:32.890 align:middle line:84%
+get rid of things
+that are not present.
+
+61
+00:02:32.890 --> 00:02:36.760 align:middle line:84%
+Get rid of empty elements, and
+then map(Optional::get) to get
+
+62
+00:02:36.760 --> 00:02:39.280 align:middle line:84%
+the result. So that's
+just a bit more verbose.
+
+63
+00:02:39.280 --> 00:02:40.520 align:middle line:90%
+This is a little cleaner.
+
+64
+00:02:40.520 --> 00:02:43.210 align:middle line:84%
+But if you're using Android,
+you're stuck with this code.
+
+65
+00:02:43.210 --> 00:02:46.270 align:middle line:84%
+If you're using other versions
+that support Java 9 and above,
+
+66
+00:02:46.270 --> 00:02:48.880 align:middle line:90%
+you can go with a clean code.
+
+67
+00:02:48.880 --> 00:02:52.180 align:middle line:84%
+For my money, the Java 8
+version is a lot more verbose
+
+68
+00:02:52.180 --> 00:02:54.700 align:middle line:90%
+and not as desirable.
+
+69
+00:02:54.700 --> 00:02:56.830 align:middle line:84%
+In fact, you can see
+how verbose it is.
+
+70
+00:02:56.830 --> 00:02:59.570 align:middle line:84%
+I actually said it was verbose
+multiple times in the slide.
+
+71
+00:02:59.570 --> 00:03:02.390 align:middle line:90%
+So it's really verbose.
+
+72
+00:03:02.390 --> 00:03:04.130 align:middle line:84%
+The final thing we
+do here is we wait
+
+73
+00:03:04.130 --> 00:03:06.560 align:middle line:84%
+until all the asynchronous
+processing is completed
+
+74
+00:03:06.560 --> 00:03:10.910 align:middle line:84%
+by using the join call,
+which will block until all
+
+75
+00:03:10.910 --> 00:03:13.010 align:middle line:84%
+of those asynchronous
+computations finish, which
+
+76
+00:03:13.010 --> 00:03:15.650 align:middle line:84%
+could actually
+take a bit of time.
+
+77
+00:03:15.650 --> 00:03:19.720 align:middle line:84%
+This is the one and only call to
+join in the entire async stream
+
+78
+00:03:19.720 --> 00:03:20.440 align:middle line:90%
+pipeline.
+
+79
+00:03:20.440 --> 00:03:21.740 align:middle line:90%
+And that's reassuring.
+
+80
+00:03:21.740 --> 00:03:25.510 align:middle line:84%
+It's good to know that, because
+that's exactly what we want.
+
+81
+00:03:25.510 --> 00:03:27.053 align:middle line:84%
+There really should
+only be one call.
+
+82
+00:03:27.053 --> 00:03:28.970 align:middle line:84%
+We don't want to be doing
+this more than once.
+
+83
+00:03:28.970 --> 00:03:32.670 align:middle line:84%
+That'll just slow things
+down unnecessarily.
+
+84
+00:03:32.670 --> 00:03:34.500 align:middle line:84%
+After everything
+finishes, then we
+
+85
+00:03:34.500 --> 00:03:36.780 align:middle line:84%
+can go ahead and
+display the images.
+
+86
+00:03:36.780 --> 00:03:39.330 align:middle line:84%
+If we're running on Android,
+we can pop up a nice browser
+
+87
+00:03:39.330 --> 00:03:42.890 align:middle line:84%
+to browse the images
+and have a good time.

@@ -1,0 +1,645 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.247 align:middle line:90%
+
+
+2
+00:00:00.247 --> 00:00:01.830 align:middle line:84%
+So now that we've
+talked about the use
+
+3
+00:00:01.830 --> 00:00:04.080 align:middle line:84%
+of the supplyAsync
+factory method,
+
+4
+00:00:04.080 --> 00:00:06.720 align:middle line:84%
+let's talk about several
+completion stage methods
+
+5
+00:00:06.720 --> 00:00:10.350 align:middle line:84%
+that are applied in the
+completable futures version
+
+6
+00:00:10.350 --> 00:00:13.390 align:middle line:90%
+of the ImageStreamGang example.
+
+7
+00:00:13.390 --> 00:00:17.110 align:middle line:84%
+We're going to start first
+by talking about the download
+
+8
+00:00:17.110 --> 00:00:19.600 align:middle line:90%
+DownloadImageAsync method.
+
+9
+00:00:19.600 --> 00:00:21.610 align:middle line:84%
+And as we'll see,
+this is the method
+
+10
+00:00:21.610 --> 00:00:24.220 align:middle line:84%
+that's going to be
+used as a behavior
+
+11
+00:00:24.220 --> 00:00:26.890 align:middle line:84%
+to the map
+intermediate operation,
+
+12
+00:00:26.890 --> 00:00:29.440 align:middle line:84%
+and it's going to
+take as input, as we
+
+13
+00:00:29.440 --> 00:00:34.570 align:middle line:84%
+will see, the completable
+future to an optional URL.
+
+14
+00:00:34.570 --> 00:00:37.090 align:middle line:84%
+And then it'll decide what to
+do based on whether there's
+
+15
+00:00:37.090 --> 00:00:39.290 align:middle line:84%
+actually a value in there
+or not, in other words,
+
+16
+00:00:39.290 --> 00:00:40.967 align:middle line:90%
+whether it's been cached or not.
+
+17
+00:00:40.967 --> 00:00:42.550 align:middle line:84%
+Just to reiterate,
+we only want to try
+
+18
+00:00:42.550 --> 00:00:45.740 align:middle line:90%
+to download non-cached images.
+
+19
+00:00:45.740 --> 00:00:50.300 align:middle line:84%
+So the DownloadImageAsync
+method will asynchronously
+
+20
+00:00:50.300 --> 00:00:56.530 align:middle line:84%
+download a non-cached image
+and store it in memory.
+
+21
+00:00:56.530 --> 00:01:00.200 align:middle line:84%
+Later behaviors will simply
+ignore empty Optional images.
+
+22
+00:01:00.200 --> 00:01:04.090 align:middle line:84%
+So if we get an
+empty Optional URL
+
+23
+00:01:04.090 --> 00:01:07.610 align:middle line:84%
+as the input to this
+particular method,
+
+24
+00:01:07.610 --> 00:01:11.188 align:middle line:84%
+it will simply create
+an empty Optional image,
+
+25
+00:01:11.188 --> 00:01:12.730 align:middle line:84%
+and that'll get
+passed on the stream,
+
+26
+00:01:12.730 --> 00:01:16.090 align:middle line:84%
+and then the next phase
+will just ignore that.
+
+27
+00:01:16.090 --> 00:01:18.280 align:middle line:84%
+This will return a stream
+of CompletableFutures
+
+28
+00:01:18.280 --> 00:01:21.410 align:middle line:84%
+to Optional images which will
+have a value if the image is
+
+29
+00:01:21.410 --> 00:01:23.290 align:middle line:84%
+in the process of
+being downloaded,
+
+30
+00:01:23.290 --> 00:01:25.750 align:middle line:84%
+or it will simply be empty
+if it's already cached.
+
+31
+00:01:25.750 --> 00:01:29.170 align:middle line:84%
+Again, we need this because
+asynchronous processing
+
+32
+00:01:29.170 --> 00:01:33.010 align:middle line:84%
+doesn't play well with the
+filter intermediate operations.
+
+33
+00:01:33.010 --> 00:01:35.860 align:middle line:84%
+We can't filter these things
+out without turning stuff
+
+34
+00:01:35.860 --> 00:01:40.200 align:middle line:84%
+into synchronous calls, which we
+don't want to do in this case.
+
+35
+00:01:40.200 --> 00:01:44.260 align:middle line:84%
+Here is the DownloadImageAsync
+method implementation.
+
+36
+00:01:44.260 --> 00:01:47.190 align:middle line:84%
+So you can see, it takes
+a CompletableFuture
+
+37
+00:01:47.190 --> 00:01:52.080 align:middle line:84%
+to an Optional URL, and we
+call this thing urlFuture.
+
+38
+00:01:52.080 --> 00:01:56.940 align:middle line:84%
+And this future
+will be triggered
+
+39
+00:01:56.940 --> 00:02:04.120 align:middle line:84%
+when we know whether or not
+the image has been cached.
+
+40
+00:02:04.120 --> 00:02:06.970 align:middle line:84%
+So when the urlFuture
+completes, we
+
+41
+00:02:06.970 --> 00:02:09.759 align:middle line:84%
+will initiate an
+asynchronous download.
+
+42
+00:02:09.759 --> 00:02:11.720 align:middle line:90%
+That's what the comment means.
+
+43
+00:02:11.720 --> 00:02:13.990 align:middle line:84%
+So let's assume
+that the future has
+
+44
+00:02:13.990 --> 00:02:16.510 align:middle line:84%
+been triggered, indicating that
+we know whether something's
+
+45
+00:02:16.510 --> 00:02:17.212 align:middle line:90%
+cached or not.
+
+46
+00:02:17.212 --> 00:02:18.670 align:middle line:84%
+We don't know if
+it's cached or not
+
+47
+00:02:18.670 --> 00:02:22.060 align:middle line:84%
+yet, we just know that we know
+that it's been cached or not.
+
+48
+00:02:22.060 --> 00:02:25.500 align:middle line:84%
+In that case, we call the
+thenApplyAsync completion stage
+
+49
+00:02:25.500 --> 00:02:29.250 align:middle line:84%
+method and we pass
+it in an action,
+
+50
+00:02:29.250 --> 00:02:31.950 align:middle line:84%
+and we'll talk about the
+action in the second.
+
+51
+00:02:31.950 --> 00:02:34.890 align:middle line:84%
+That action, of course, won't
+be executed immediately but only
+
+52
+00:02:34.890 --> 00:02:39.450 align:middle line:90%
+after the urlFuture completes.
+
+53
+00:02:39.450 --> 00:02:43.200 align:middle line:84%
+When the urlFuture
+completes, we go ahead
+
+54
+00:02:43.200 --> 00:02:46.210 align:middle line:84%
+and we say, urlOptional,
+because that's
+
+55
+00:02:46.210 --> 00:02:47.460 align:middle line:90%
+what we'll have at that point.
+
+56
+00:02:47.460 --> 00:02:50.430 align:middle line:84%
+We'll have an optional
+object that points
+
+57
+00:02:50.430 --> 00:02:52.200 align:middle line:90%
+to a URL, that contains a URL.
+
+58
+00:02:52.200 --> 00:02:55.000 align:middle line:90%
+We say, urlOptional.map.
+
+59
+00:02:55.000 --> 00:02:59.820 align:middle line:84%
+And .map a very interesting
+method on Optional that takes
+
+60
+00:02:59.820 --> 00:03:01.750 align:middle line:84%
+the behavior that's
+passed to it,
+
+61
+00:03:01.750 --> 00:03:06.030 align:middle line:84%
+and if the Optional is empty,
+does nothing and returns
+
+62
+00:03:06.030 --> 00:03:07.560 align:middle line:90%
+an empty Optional.
+
+63
+00:03:07.560 --> 00:03:11.400 align:middle line:84%
+If the Optional
+has a value, it'll
+
+64
+00:03:11.400 --> 00:03:14.230 align:middle line:84%
+run behavior that's
+passed to it.
+
+65
+00:03:14.230 --> 00:03:17.950 align:middle line:84%
+So in this case, if we
+need to download the image,
+
+66
+00:03:17.950 --> 00:03:22.890 align:middle line:84%
+then the map call will
+invoke the blocking download
+
+67
+00:03:22.890 --> 00:03:25.710 align:middle line:84%
+parameter that's passed to
+it, that method of reference,
+
+68
+00:03:25.710 --> 00:03:31.260 align:middle line:84%
+and will return back a
+CompletableFuture-- or sorry,
+
+69
+00:03:31.260 --> 00:03:36.190 align:middle line:84%
+it'll return back an Optional
+that describes what happened.
+
+70
+00:03:36.190 --> 00:03:42.070 align:middle line:84%
+The thenApplyAsync method
+will run blocking download
+
+71
+00:03:42.070 --> 00:03:46.940 align:middle line:84%
+in a background thread in the
+pool if urlOpt is not empty.
+
+72
+00:03:46.940 --> 00:03:49.000 align:middle line:84%
+So tying look at this
+more holistically,
+
+73
+00:03:49.000 --> 00:03:51.910 align:middle line:84%
+if we ended up needing
+to download something,
+
+74
+00:03:51.910 --> 00:03:55.060 align:middle line:84%
+it'll be downloaded, and it'll
+be downloaded in a background
+
+75
+00:03:55.060 --> 00:03:58.120 align:middle line:90%
+thread in the fork-join pool.
+
+76
+00:03:58.120 --> 00:04:00.910 align:middle line:84%
+The particular pool is set
+by the getExecutor method,
+
+77
+00:04:00.910 --> 00:04:02.392 align:middle line:90%
+as I showed you before.
+
+78
+00:04:02.392 --> 00:04:03.850 align:middle line:84%
+That is simply a
+helper method that
+
+79
+00:04:03.850 --> 00:04:08.410 align:middle line:84%
+returns the common fork-join
+pool reference, and away we go.
+
+80
+00:04:08.410 --> 00:04:11.200 align:middle line:84%
+But by using it this way,
+it's trivial to change
+
+81
+00:04:11.200 --> 00:04:13.708 align:middle line:84%
+to a different pool
+if we so desire.
+
+82
+00:04:13.708 --> 00:04:16.000 align:middle line:84%
+Now, the other thing we'll
+notice as we talk about this
+
+83
+00:04:16.000 --> 00:04:18.459 align:middle line:84%
+is that the
+blockingDownload method
+
+84
+00:04:18.459 --> 00:04:20.290 align:middle line:84%
+will use the managed
+blocker interface
+
+85
+00:04:20.290 --> 00:04:22.490 align:middle line:90%
+that we've talked about before.
+
+86
+00:04:22.490 --> 00:04:24.860 align:middle line:84%
+So here is the
+blockingDownload method.
+
+87
+00:04:24.860 --> 00:04:27.010 align:middle line:84%
+This is the one that's
+being called here.
+
+88
+00:04:27.010 --> 00:04:30.100 align:middle line:84%
+And blockingDownload
+takes a URL,
+
+89
+00:04:30.100 --> 00:04:33.480 align:middle line:84%
+and downloads it and
+converts it into an image.
+
+90
+00:04:33.480 --> 00:04:35.500 align:middle line:84%
+So that's the overall
+behavior that it's doing,
+
+91
+00:04:35.500 --> 00:04:38.530 align:middle line:84%
+and that's that implementation
+for the blocking download
+
+92
+00:04:38.530 --> 00:04:43.660 align:middle line:84%
+method resides in the
+ImageStreamGang.java file.
+
+93
+00:04:43.660 --> 00:04:47.920 align:middle line:84%
+Under the hood, blockingDownload
+uses the blocking task call
+
+94
+00:04:47.920 --> 00:04:52.060 align:middle line:84%
+in managedBlock method, and
+that wraps the managedBlocker
+
+95
+00:04:52.060 --> 00:04:54.670 align:middle line:84%
+interface as we showed before
+when we were discussing
+
+96
+00:04:54.670 --> 00:04:57.370 align:middle line:90%
+the common fork-join pool.
+
+97
+00:04:57.370 --> 00:04:59.050 align:middle line:84%
+And that, as you may
+recall, will auto
+
+98
+00:04:59.050 --> 00:05:02.920 align:middle line:84%
+expand the number of threads
+in the common fork-join pool's
+
+99
+00:05:02.920 --> 00:05:06.700 align:middle line:84%
+worker thread pool to handle
+the blocking image download.
+
+100
+00:05:06.700 --> 00:05:12.230 align:middle line:84%
+So we'll basically replenish
+the threads if things block.
+
+101
+00:05:12.230 --> 00:05:15.530 align:middle line:84%
+In particular, lambda
+supplier that we pass in here
+
+102
+00:05:15.530 --> 00:05:18.157 align:middle line:84%
+will be a call to the
+download image method.
+
+103
+00:05:18.157 --> 00:05:20.240 align:middle line:84%
+Sorry for all the different
+levels of interaction,
+
+104
+00:05:20.240 --> 00:05:23.090 align:middle line:84%
+but they all play a role
+here one way or another.
+
+105
+00:05:23.090 --> 00:05:25.000 align:middle line:84%
+Just to reiterate
+that, by the way,
+
+106
+00:05:25.000 --> 00:05:30.470 align:middle line:84%
+DownloadImageAsync arranges
+to call blockingDownload
+
+107
+00:05:30.470 --> 00:05:32.700 align:middle line:84%
+if we need to download
+an image, in other words,
+
+108
+00:05:32.700 --> 00:05:34.070 align:middle line:90%
+if it wasn't already cached.
+
+109
+00:05:34.070 --> 00:05:37.220 align:middle line:84%
+That will run asynchronously
+in a pool thread.
+
+110
+00:05:37.220 --> 00:05:42.830 align:middle line:84%
+BlockingDownload, in turn,
+uses the the managedBlocker
+
+111
+00:05:42.830 --> 00:05:46.130 align:middle line:84%
+interface in order to finally
+call the download image
+
+112
+00:05:46.130 --> 00:05:48.500 align:middle line:84%
+function, and that's
+something that actually
+
+113
+00:05:48.500 --> 00:05:49.730 align:middle line:90%
+arranges to do real work.
+
+114
+00:05:49.730 --> 00:05:51.605 align:middle line:84%
+Everything else is just
+setting it everything
+
+115
+00:05:51.605 --> 00:05:54.380 align:middle line:84%
+up with the threading
+and optionals and so on.
+
+116
+00:05:54.380 --> 00:05:56.510 align:middle line:84%
+DownloadImage, as
+you can see here,
+
+117
+00:05:56.510 --> 00:06:01.500 align:middle line:84%
+is going to download the content
+of the URL and return an image.
+
+118
+00:06:01.500 --> 00:06:03.733 align:middle line:84%
+I'm not going to show you
+the download content call.
+
+119
+00:06:03.733 --> 00:06:04.650 align:middle line:90%
+You can go look at it.
+
+120
+00:06:04.650 --> 00:06:05.630 align:middle line:90%
+It's in the code.
+
+121
+00:06:05.630 --> 00:06:09.890 align:middle line:84%
+It basically just opens up
+a connection to the server
+
+122
+00:06:09.890 --> 00:06:12.288 align:middle line:84%
+and downloads the content
+and turns it into an image.
+
+123
+00:06:12.288 --> 00:06:14.080 align:middle line:84%
+So that's what actually
+does the real work.
+
+124
+00:06:14.080 --> 00:06:16.910 align:middle line:84%
+But that can do it in
+a background thread,
+
+125
+00:06:16.910 --> 00:06:18.710 align:middle line:84%
+and that'll help to
+expand the thread
+
+126
+00:06:18.710 --> 00:06:23.490 align:middle line:84%
+pool, the common
+fork-join pool as needed.
+
+127
+00:06:23.490 --> 00:06:27.050 align:middle line:84%
+The return value from
+download image a sync
+
+128
+00:06:27.050 --> 00:06:30.920 align:middle line:84%
+is a CompletableFuture
+to an optional image
+
+129
+00:06:30.920 --> 00:06:33.680 align:middle line:84%
+that will complete when the
+image finishes downloading.
+
+130
+00:06:33.680 --> 00:06:35.690 align:middle line:84%
+So when the image is
+finally downloaded,
+
+131
+00:06:35.690 --> 00:06:38.600 align:middle line:84%
+that image will be completed,
+and the CompletableFuture
+
+132
+00:06:38.600 --> 00:06:41.960 align:middle line:84%
+will be triggered, and then
+the next stage can take place
+
+133
+00:06:41.960 --> 00:06:44.770 align:middle line:90%
+in the pipeline of the stream.

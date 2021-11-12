@@ -1,0 +1,386 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.500 align:middle line:90%
+
+
+2
+00:00:00.500 --> 00:00:03.400 align:middle line:84%
+So now that we've looked at
+multiple, very sophisticated
+
+3
+00:00:03.400 --> 00:00:06.700 align:middle line:84%
+examples of applying
+advanced features
+
+4
+00:00:06.700 --> 00:00:08.500 align:middle line:84%
+in the computable
+futures framework,
+
+5
+00:00:08.500 --> 00:00:12.490 align:middle line:84%
+let's take stock of what we've
+seen and wrap everything up.
+
+6
+00:00:12.490 --> 00:00:14.440 align:middle line:84%
+We'll start by talking
+about the pros,
+
+7
+00:00:14.440 --> 00:00:18.470 align:middle line:84%
+the benefits of using the Java
+completable futures framework.
+
+8
+00:00:18.470 --> 00:00:20.530 align:middle line:84%
+And as we do this,
+we'll evaluate them
+
+9
+00:00:20.530 --> 00:00:22.600 align:middle line:84%
+relative to the parallel
+streams framework,
+
+10
+00:00:22.600 --> 00:00:24.975 align:middle line:84%
+although we could evaluate
+them relative to other things.
+
+11
+00:00:24.975 --> 00:00:27.670 align:middle line:84%
+But we'll focus on comparing
+completable futures
+
+12
+00:00:27.670 --> 00:00:29.590 align:middle line:90%
+with parallel streams.
+
+13
+00:00:29.590 --> 00:00:31.590 align:middle line:84%
+So one of the things that
+completable futures do
+
+14
+00:00:31.590 --> 00:00:33.240 align:middle line:84%
+a really nice job
+of is, they greatly
+
+15
+00:00:33.240 --> 00:00:37.240 align:middle line:84%
+simplify the programming
+of asynchronous operations
+
+16
+00:00:37.240 --> 00:00:39.740 align:middle line:84%
+to give us better
+structure, better controls,
+
+17
+00:00:39.740 --> 00:00:41.880 align:middle line:84%
+so we don't just have
+things randomly happening,
+
+18
+00:00:41.880 --> 00:00:45.830 align:middle line:84%
+but we can do things in a
+much more linear manner.
+
+19
+00:00:45.830 --> 00:00:47.890 align:middle line:84%
+Obviously, as we've
+shown now multiple times,
+
+20
+00:00:47.890 --> 00:00:50.680 align:middle line:84%
+they support
+dependent actions that
+
+21
+00:00:50.680 --> 00:00:54.280 align:middle line:84%
+trigger upon the completion
+of asynchronous operations.
+
+22
+00:00:54.280 --> 00:00:57.730 align:middle line:84%
+And these asynchronous
+operations, as you've seen,
+
+23
+00:00:57.730 --> 00:00:58.900 align:middle line:90%
+can be forked.
+
+24
+00:00:58.900 --> 00:01:00.400 align:middle line:90%
+They can be changed.
+
+25
+00:01:00.400 --> 00:01:05.880 align:middle line:84%
+They can be joined in a
+relatively intuitive way.
+
+26
+00:01:05.880 --> 00:01:10.610 align:middle line:84%
+And in fact, they actually allow
+asynchronous programs to appear
+
+27
+00:01:10.610 --> 00:01:12.870 align:middle line:90%
+much like synchronous programs.
+
+28
+00:01:12.870 --> 00:01:16.358 align:middle line:84%
+So as you can see here, we
+have this chain of methods,
+
+29
+00:01:16.358 --> 00:01:17.900 align:middle line:84%
+and even though some
+of those methods
+
+30
+00:01:17.900 --> 00:01:19.850 align:middle line:84%
+are taking place in
+other threads of control,
+
+31
+00:01:19.850 --> 00:01:23.233 align:middle line:84%
+we can program them in a
+relatively synchronous way.
+
+32
+00:01:23.233 --> 00:01:25.150 align:middle line:84%
+It's just that they're
+running asynchronously,
+
+33
+00:01:25.150 --> 00:01:27.050 align:middle line:84%
+but we're dealing
+with their outputs
+
+34
+00:01:27.050 --> 00:01:30.610 align:middle line:84%
+in a synchronous way,
+which is really cool.
+
+35
+00:01:30.610 --> 00:01:32.560 align:middle line:84%
+We also have this
+wonderful ability
+
+36
+00:01:32.560 --> 00:01:35.950 align:middle line:84%
+to run operations in parallel
+in some type of thread pool.
+
+37
+00:01:35.950 --> 00:01:37.570 align:middle line:84%
+And we've got a lot
+of choices here.
+
+38
+00:01:37.570 --> 00:01:41.680 align:middle line:84%
+We can either choose to use
+the common fork join pool,
+
+39
+00:01:41.680 --> 00:01:46.750 align:middle line:84%
+or some user-specified fork join
+pool, or a cache thread pool
+
+40
+00:01:46.750 --> 00:01:49.750 align:middle line:84%
+or a fixed size thread pool
+or a custom thread pool.
+
+41
+00:01:49.750 --> 00:01:53.580 align:middle line:84%
+You name it, we get a
+choice of what to do.
+
+42
+00:01:53.580 --> 00:01:55.580 align:middle line:84%
+There's no explicit
+synchronization or threading
+
+43
+00:01:55.580 --> 00:01:57.350 align:middle line:90%
+required, often.
+
+44
+00:01:57.350 --> 00:01:59.580 align:middle line:84%
+Sometimes, there'll be some
+synchronization required.
+
+45
+00:01:59.580 --> 00:02:01.460 align:middle line:84%
+But if we need
+synchronization, we're
+
+46
+00:02:01.460 --> 00:02:04.850 align:middle line:84%
+almost always able to
+leverage various Java class
+
+47
+00:02:04.850 --> 00:02:09.680 align:middle line:84%
+libraries to do the locking
+and protect our dangerously
+
+48
+00:02:09.680 --> 00:02:12.200 align:middle line:84%
+shared mutable state from
+concurrency and race conditions
+
+49
+00:02:12.200 --> 00:02:14.915 align:middle line:90%
+and other types of hazards.
+
+50
+00:02:14.915 --> 00:02:16.290 align:middle line:84%
+Perhaps the main
+reason, however,
+
+51
+00:02:16.290 --> 00:02:19.140 align:middle line:84%
+to use completable futures is,
+they're a lot more efficient
+
+52
+00:02:19.140 --> 00:02:20.250 align:middle line:90%
+than parallel streams.
+
+53
+00:02:20.250 --> 00:02:24.240 align:middle line:84%
+So they run a lot faster, as you
+can see from the examples here,
+
+54
+00:02:24.240 --> 00:02:27.980 align:middle line:84%
+comparing and contrasting the
+completable future version
+
+55
+00:02:27.980 --> 00:02:29.880 align:middle line:84%
+with the parallel
+streams version.
+
+56
+00:02:29.880 --> 00:02:32.732 align:middle line:84%
+We get a performance win
+alternating between the two
+
+57
+00:02:32.732 --> 00:02:34.440 align:middle line:84%
+different versions of
+completable future,
+
+58
+00:02:34.440 --> 00:02:38.130 align:middle line:84%
+but they're always faster
+than parallel streams.
+
+59
+00:02:38.130 --> 00:02:39.720 align:middle line:84%
+Of course, your
+mileage may vary,
+
+60
+00:02:39.720 --> 00:02:42.330 align:middle line:84%
+and I strongly recommend
+you look at the Java
+
+61
+00:02:42.330 --> 00:02:44.580 align:middle line:84%
+micro-benchmarking
+harness to learn more
+
+62
+00:02:44.580 --> 00:02:47.620 align:middle line:90%
+about these kinds of things.
+
+63
+00:02:47.620 --> 00:02:50.560 align:middle line:84%
+It's also the case that
+combining completable futures
+
+64
+00:02:50.560 --> 00:02:52.480 align:middle line:84%
+with sequential
+streams is often a win.
+
+65
+00:02:52.480 --> 00:02:54.130 align:middle line:90%
+We saw that here.
+
+66
+00:02:54.130 --> 00:02:57.340 align:middle line:84%
+Streams can be used to guide
+the overall flow of control,
+
+67
+00:02:57.340 --> 00:02:59.350 align:middle line:84%
+and the completable
+futures can be
+
+68
+00:02:59.350 --> 00:03:03.160 align:middle line:84%
+used to efficiently perform
+asynchronous operations
+
+69
+00:03:03.160 --> 00:03:04.130 align:middle line:90%
+in parallel.
+
+70
+00:03:04.130 --> 00:03:07.910 align:middle line:84%
+So we get the best of
+both worlds, if you will.
+
+71
+00:03:07.910 --> 00:03:10.420 align:middle line:84%
+In my experience, trying
+to combine parallel streams
+
+72
+00:03:10.420 --> 00:03:14.330 align:middle line:84%
+and completable futures
+tends to be overkill.
+
+73
+00:03:14.330 --> 00:03:15.780 align:middle line:90%
+It's like wearing 75 seat belts.
+
+74
+00:03:15.780 --> 00:03:16.780 align:middle line:90%
+You don't need them all.
+
+75
+00:03:16.780 --> 00:03:18.425 align:middle line:84%
+You probably need
+a couple, or one.
+
+76
+00:03:18.425 --> 00:03:20.230 align:middle line:90%
+Just make sure you wear one.
+
+77
+00:03:20.230 --> 00:03:23.680 align:middle line:84%
+So they work well together,
+but parallel streams
+
+78
+00:03:23.680 --> 00:03:26.080 align:middle line:84%
+and completable futures
+probably ends up
+
+79
+00:03:26.080 --> 00:03:29.380 align:middle line:84%
+having too much concurrency, and
+it just cancels each other out
+
+80
+00:03:29.380 --> 00:03:30.630 align:middle line:90%
+eventually.

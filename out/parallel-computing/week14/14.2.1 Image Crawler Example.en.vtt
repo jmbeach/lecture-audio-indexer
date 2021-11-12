@@ -1,0 +1,394 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.500 align:middle line:90%
+
+
+2
+00:00:00.500 --> 00:00:03.370 align:middle line:84%
+We're now ready to start looking
+at our case study example that
+
+3
+00:00:03.370 --> 00:00:05.450 align:middle line:84%
+demonstrates how Java
+Completable Futures can
+
+4
+00:00:05.450 --> 00:00:07.565 align:middle line:84%
+be applied to the
+image crawler example.
+
+5
+00:00:07.565 --> 00:00:10.240 align:middle line:90%
+
+
+6
+00:00:10.240 --> 00:00:12.610 align:middle line:84%
+In particular, we're going
+to focus on the image counter
+
+7
+00:00:12.610 --> 00:00:18.040 align:middle line:84%
+class and the implementation of
+the image counter constructor.
+
+8
+00:00:18.040 --> 00:00:21.160 align:middle line:84%
+This example shows how many
+Completable Future methods
+
+9
+00:00:21.160 --> 00:00:26.370 align:middle line:84%
+can be applied in a program that
+crawls web pages recursively.
+
+10
+00:00:26.370 --> 00:00:29.220 align:middle line:84%
+As the web pages are
+crawled, the program
+
+11
+00:00:29.220 --> 00:00:32.220 align:middle line:84%
+counts the number of
+images on each page,
+
+12
+00:00:32.220 --> 00:00:37.170 align:middle line:84%
+and each page that's
+reachable from the root page.
+
+13
+00:00:37.170 --> 00:00:40.090 align:middle line:84%
+The root folder can either
+reside locally, in other words,
+
+14
+00:00:40.090 --> 00:00:43.830 align:middle line:84%
+be file system based, or it can
+be accessed remotely, and thus,
+
+15
+00:00:43.830 --> 00:00:45.970 align:middle line:90%
+be web based.
+
+16
+00:00:45.970 --> 00:00:47.720 align:middle line:84%
+Let's start by looking
+at the ImageCounter
+
+17
+00:00:47.720 --> 00:00:49.730 align:middle line:90%
+class and constructor.
+
+18
+00:00:49.730 --> 00:00:54.390 align:middle line:84%
+The ImageCounter class is
+the heart of this program.
+
+19
+00:00:54.390 --> 00:00:57.230 align:middle line:84%
+And again, the program can
+be found in my EX folder
+
+20
+00:00:57.230 --> 00:01:00.890 align:middle line:90%
+on my GitHub repository.
+
+21
+00:01:00.890 --> 00:01:03.030 align:middle line:84%
+The ImageCounter
+class will be used
+
+22
+00:01:03.030 --> 00:01:05.840 align:middle line:84%
+to structure the way in which
+we count the number of images
+
+23
+00:01:05.840 --> 00:01:08.533 align:middle line:84%
+in a recursively defined
+folder structure, using many
+
+24
+00:01:08.533 --> 00:01:10.950 align:middle line:84%
+of the features that are defined
+in the Completable Future
+
+25
+00:01:10.950 --> 00:01:12.400 align:middle line:90%
+framework.
+
+26
+00:01:12.400 --> 00:01:14.340 align:middle line:90%
+It defines several fields.
+
+27
+00:01:14.340 --> 00:01:18.950 align:middle line:84%
+The mUniqueIDs field is going
+to use a concurrent hash set
+
+28
+00:01:18.950 --> 00:01:22.460 align:middle line:84%
+in order to cache unique
+URIs that have already
+
+29
+00:01:22.460 --> 00:01:25.790 align:middle line:84%
+been processed so we don't
+bother revisiting a URI
+
+30
+00:01:25.790 --> 00:01:27.845 align:middle line:90%
+that we've already seen before.
+
+31
+00:01:27.845 --> 00:01:29.220 align:middle line:84%
+We also have
+another field called
+
+32
+00:01:29.220 --> 00:01:33.205 align:middle line:84%
+M0 that stores a completed
+future with a value of 0.
+
+33
+00:01:33.205 --> 00:01:34.830 align:middle line:84%
+And you'll see how
+we use this in order
+
+34
+00:01:34.830 --> 00:01:37.080 align:middle line:84%
+to simplify some
+of the logic when
+
+35
+00:01:37.080 --> 00:01:42.670 align:middle line:84%
+we have to drop out of our
+crawl for various reasons.
+
+36
+00:01:42.670 --> 00:01:46.678 align:middle line:84%
+Here's the image
+counter constructor.
+
+37
+00:01:46.678 --> 00:01:48.470 align:middle line:84%
+The first thing that
+we do is we go and get
+
+38
+00:01:48.470 --> 00:01:51.950 align:middle line:84%
+the root URI of the web page
+we want to start crawling.
+
+39
+00:01:51.950 --> 00:01:54.200 align:middle line:84%
+And this comes through
+an option singleton
+
+40
+00:01:54.200 --> 00:01:55.880 align:middle line:84%
+that can be set
+through a command line
+
+41
+00:01:55.880 --> 00:01:59.770 align:middle line:84%
+option or some other
+configuration file.
+
+42
+00:01:59.770 --> 00:02:02.740 align:middle line:84%
+After we know what root
+URI we want to crawl,
+
+43
+00:02:02.740 --> 00:02:06.700 align:middle line:84%
+we then go ahead and invoke
+the count images method.
+
+44
+00:02:06.700 --> 00:02:08.620 align:middle line:84%
+And that starts
+the count of images
+
+45
+00:02:08.620 --> 00:02:11.890 align:middle line:84%
+at the root URI with
+an initial depth of 1,
+
+46
+00:02:11.890 --> 00:02:13.270 align:middle line:90%
+since it's the root.
+
+47
+00:02:13.270 --> 00:02:16.360 align:middle line:84%
+And this will return a
+future to an integer, which
+
+48
+00:02:16.360 --> 00:02:19.870 align:middle line:84%
+will be essentially a count
+of the number of images
+
+49
+00:02:19.870 --> 00:02:22.060 align:middle line:90%
+that were reachable.
+
+50
+00:02:22.060 --> 00:02:24.060 align:middle line:84%
+If something goes wrong,
+if an exception occurs,
+
+51
+00:02:24.060 --> 00:02:25.810 align:middle line:84%
+we're simply going to
+return 0, indicating
+
+52
+00:02:25.810 --> 00:02:28.520 align:middle line:90%
+we didn't count anything.
+
+53
+00:02:28.520 --> 00:02:31.470 align:middle line:84%
+We then go ahead and
+accept the total,
+
+54
+00:02:31.470 --> 00:02:34.790 align:middle line:84%
+which will hopefully be non-zero
+if an exception did not occur.
+
+55
+00:02:34.790 --> 00:02:36.800 align:middle line:84%
+And we print the total
+number of images that are
+
+56
+00:02:36.800 --> 00:02:40.150 align:middle line:90%
+reachable from the given URI.
+
+57
+00:02:40.150 --> 00:02:42.030 align:middle line:84%
+We finish up with
+a call to join.
+
+58
+00:02:42.030 --> 00:02:44.400 align:middle line:84%
+This is the only call
+to join in the program.
+
+59
+00:02:44.400 --> 00:02:47.910 align:middle line:84%
+And this will block until all
+of the Completable Futures
+
+60
+00:02:47.910 --> 00:02:48.683 align:middle line:90%
+finish running.
+
+61
+00:02:48.683 --> 00:02:50.100 align:middle line:84%
+And the reason we
+put this here is
+
+62
+00:02:50.100 --> 00:02:52.170 align:middle line:84%
+because if we don't
+have a join call here,
+
+63
+00:02:52.170 --> 00:02:55.410 align:middle line:84%
+then this program will
+simply fall off of main,
+
+64
+00:02:55.410 --> 00:02:57.420 align:middle line:84%
+and the process will shut
+down, and we'll never
+
+65
+00:02:57.420 --> 00:02:58.927 align:middle line:90%
+get to see the results at all.
+
+66
+00:02:58.927 --> 00:03:00.510 align:middle line:84%
+As I mentioned before,
+you want to try
+
+67
+00:03:00.510 --> 00:03:03.808 align:middle line:84%
+to minimize the number of calls
+to join wherever possible.
+
+68
+00:03:03.808 --> 00:03:05.850 align:middle line:84%
+But here is one where we
+really needed to have it
+
+69
+00:03:05.850 --> 00:03:08.960 align:middle line:90%
+so that we could get a result.
+
+70
+00:03:08.960 --> 00:03:10.840 align:middle line:84%
+An alternative
+constructor implementation
+
+71
+00:03:10.840 --> 00:03:14.110 align:middle line:84%
+for image counter could
+use the handle method
+
+72
+00:03:14.110 --> 00:03:16.930 align:middle line:84%
+to deal with exceptions,
+rather than exceptionally.
+
+73
+00:03:16.930 --> 00:03:19.990 align:middle line:84%
+As you can see here,
+when handles is called,
+
+74
+00:03:19.990 --> 00:03:22.540 align:middle line:84%
+if an exception has
+been thrown, then we
+
+75
+00:03:22.540 --> 00:03:24.980 align:middle line:90%
+go ahead and set total to 0.
+
+76
+00:03:24.980 --> 00:03:28.330 align:middle line:84%
+We know an exception will be
+thrown if the ex value here
+
+77
+00:03:28.330 --> 00:03:31.100 align:middle line:90%
+is non null.
+
+78
+00:03:31.100 --> 00:03:33.267 align:middle line:84%
+Irrespective of whether or
+not something went wrong,
+
+79
+00:03:33.267 --> 00:03:35.267 align:middle line:84%
+we're going to go ahead
+and print the total out.
+
+80
+00:03:35.267 --> 00:03:37.790 align:middle line:84%
+So if there was an exception,
+the total will be 0.
+
+81
+00:03:37.790 --> 00:03:40.340 align:middle line:84%
+If there's not the exception,
+than the total here
+
+82
+00:03:40.340 --> 00:03:45.100 align:middle line:84%
+will be the result returned
+from the count images method.

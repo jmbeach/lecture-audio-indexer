@@ -1,0 +1,265 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.530 align:middle line:90%
+
+
+2
+00:00:00.530 --> 00:00:02.240 align:middle line:84%
+Welcome to the final
+week of our course
+
+3
+00:00:02.240 --> 00:00:05.020 align:middle line:84%
+on parallel functional
+programming with Java.
+
+4
+00:00:05.020 --> 00:00:08.080 align:middle line:84%
+Now that we've covered the
+basic and advanced features
+
+5
+00:00:08.080 --> 00:00:10.180 align:middle line:84%
+of the CompletableFutures
+framework,
+
+6
+00:00:10.180 --> 00:00:13.940 align:middle line:84%
+we showcase these features
+in two case study apps.
+
+7
+00:00:13.940 --> 00:00:16.780 align:middle line:84%
+The first app shows how advanced
+CompletableFuture methods can
+
+8
+00:00:16.780 --> 00:00:20.800 align:middle line:84%
+be applied to a program that
+crawls web pages recursively
+
+9
+00:00:20.800 --> 00:00:25.000 align:middle line:84%
+and counts the number of images
+it encounters on each page.
+
+10
+00:00:25.000 --> 00:00:27.070 align:middle line:84%
+These web pages can
+either reside locally
+
+11
+00:00:27.070 --> 00:00:29.230 align:middle line:84%
+on a computer's file
+system, or can be
+
+12
+00:00:29.230 --> 00:00:32.189 align:middle line:90%
+accessed remotely via the web.
+
+13
+00:00:32.189 --> 00:00:34.540 align:middle line:84%
+We next demonstrate advanced
+CompletableFuture methods
+
+14
+00:00:34.540 --> 00:00:37.690 align:middle line:84%
+in the context of yet another
+variant of the ImageStreamGang
+
+15
+00:00:37.690 --> 00:00:39.420 align:middle line:90%
+app.
+
+16
+00:00:39.420 --> 00:00:42.870 align:middle line:84%
+The ImageStreamGang app we
+covered in a previous week used
+
+17
+00:00:42.870 --> 00:00:46.440 align:middle line:84%
+the parallel streams framework
+to synchronously download,
+
+18
+00:00:46.440 --> 00:00:49.980 align:middle line:84%
+transform, store, and display
+images obtained from remote web
+
+19
+00:00:49.980 --> 00:00:51.470 align:middle line:90%
+servers.
+
+20
+00:00:51.470 --> 00:00:53.360 align:middle line:84%
+This variant of
+the ImageStreamGang
+
+21
+00:00:53.360 --> 00:00:56.420 align:middle line:84%
+app we cover this week
+uses the CompletableFutures
+
+22
+00:00:56.420 --> 00:01:00.260 align:middle line:84%
+framework to asynchronously
+download, transform, store,
+
+23
+00:01:00.260 --> 00:01:03.820 align:middle line:84%
+and display images obtained
+from remote web servers.
+
+24
+00:01:03.820 --> 00:01:06.730 align:middle line:84%
+This variant also shows how
+to combine CompletableFutures
+
+25
+00:01:06.730 --> 00:01:08.860 align:middle line:84%
+with sequential
+streams to provide
+
+26
+00:01:08.860 --> 00:01:12.490 align:middle line:84%
+a powerful and well-structured
+reactive programming model,
+
+27
+00:01:12.490 --> 00:01:15.490 align:middle line:84%
+where streams guide the
+overall flow of control
+
+28
+00:01:15.490 --> 00:01:17.590 align:middle line:84%
+and CompletableFutures
+efficiently perform
+
+29
+00:01:17.590 --> 00:01:20.540 align:middle line:84%
+asynchronous
+operations in parallel.
+
+30
+00:01:20.540 --> 00:01:23.210 align:middle line:84%
+Both case studies
+demonstrate key benefits
+
+31
+00:01:23.210 --> 00:01:25.400 align:middle line:84%
+of the CompletableFutures
+framework.
+
+32
+00:01:25.400 --> 00:01:28.700 align:middle line:84%
+For example, this framework
+enables the forking,
+
+33
+00:01:28.700 --> 00:01:31.670 align:middle line:84%
+chaining, and joining of
+asynchronous operations
+
+34
+00:01:31.670 --> 00:01:34.040 align:middle line:90%
+in a relatively intuitive way.
+
+35
+00:01:34.040 --> 00:01:37.220 align:middle line:84%
+In particular, it enables
+asynchronous programs
+
+36
+00:01:37.220 --> 00:01:40.220 align:middle line:84%
+to appear something like
+synchronous programs,
+
+37
+00:01:40.220 --> 00:01:42.830 align:middle line:84%
+because dependent actions
+can be chained together
+
+38
+00:01:42.830 --> 00:01:46.360 align:middle line:84%
+by the so-called fluent
+interface programming model.
+
+39
+00:01:46.360 --> 00:01:48.510 align:middle line:84%
+In addition,
+CompletableFutures often
+
+40
+00:01:48.510 --> 00:01:51.330 align:middle line:84%
+perform better than parallel
+streams, and are certainly
+
+41
+00:01:51.330 --> 00:01:53.550 align:middle line:84%
+more flexible in their
+use of thread pools,
+
+42
+00:01:53.550 --> 00:01:56.700 align:middle line:84%
+since they aren't limited
+to just the ForkJoinPool,
+
+43
+00:01:56.700 --> 00:01:59.760 align:middle line:84%
+but instead can run in both
+predefined and user-defined
+
+44
+00:01:59.760 --> 00:02:04.010 align:middle line:84%
+thread pools that conform to
+the Java executor interface.
+
+45
+00:02:04.010 --> 00:02:06.100 align:middle line:84%
+However, there
+are some downsides
+
+46
+00:02:06.100 --> 00:02:08.639 align:middle line:84%
+to using the
+CompletableFutures framework.
+
+47
+00:02:08.639 --> 00:02:10.680 align:middle line:84%
+In particular,
+CompletableFutures
+
+48
+00:02:10.680 --> 00:02:13.140 align:middle line:84%
+are harder to program
+than parallel streams,
+
+49
+00:02:13.140 --> 00:02:15.360 align:middle line:84%
+due to the fact that the
+asynchrony patterns required
+
+50
+00:02:15.360 --> 00:02:19.080 align:middle line:84%
+to program them are less
+intuitive to most developers,
+
+51
+00:02:19.080 --> 00:02:21.300 align:middle line:84%
+compared with the synchrony
+patterns supported
+
+52
+00:02:21.300 --> 00:02:23.440 align:middle line:90%
+by parallel streams.
+
+53
+00:02:23.440 --> 00:02:27.160 align:middle line:84%
+As usual, it's essential
+to know the best practices
+
+54
+00:02:27.160 --> 00:02:31.070 align:middle line:84%
+and patterns in order to program
+CompletableFutures effectively.

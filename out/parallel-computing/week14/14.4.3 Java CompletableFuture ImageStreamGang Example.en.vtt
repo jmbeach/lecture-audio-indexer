@@ -1,0 +1,473 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.277 align:middle line:90%
+
+
+2
+00:00:00.277 --> 00:00:01.860 align:middle line:84%
+Now that I've given
+you the bird's eye
+
+3
+00:00:01.860 --> 00:00:04.770 align:middle line:84%
+view of all the different
+phases in the stream,
+
+4
+00:00:04.770 --> 00:00:06.600 align:middle line:84%
+let's start talking
+about how to apply
+
+5
+00:00:06.600 --> 00:00:10.440 align:middle line:84%
+specific categories of
+computable future methods,
+
+6
+00:00:10.440 --> 00:00:12.960 align:middle line:84%
+starting with the
+factory methods.
+
+7
+00:00:12.960 --> 00:00:18.790 align:middle line:84%
+We're going to apply this Apply
+Async factory method here.
+
+8
+00:00:18.790 --> 00:00:22.200 align:middle line:84%
+So what this method is
+going to be used to do
+
+9
+00:00:22.200 --> 00:00:25.800 align:middle line:84%
+is initiate an
+asynchronous check
+
+10
+00:00:25.800 --> 00:00:28.530 align:middle line:84%
+to see if images
+are cached locally.
+
+11
+00:00:28.530 --> 00:00:33.180 align:middle line:84%
+And that's what happens when
+Map calls the behavior Check
+
+12
+00:00:33.180 --> 00:00:35.318 align:middle line:90%
+URL Cached Async.
+
+13
+00:00:35.318 --> 00:00:37.360 align:middle line:84%
+And we're going to look
+at that in just a second.
+
+14
+00:00:37.360 --> 00:00:39.068 align:middle line:84%
+And that will go ahead
+and asynchronously
+
+15
+00:00:39.068 --> 00:00:42.350 align:middle line:84%
+check to see if the URL has
+already been downloaded.
+
+16
+00:00:42.350 --> 00:00:46.190 align:middle line:84%
+The Map call here returns a
+stream of completable futures
+
+17
+00:00:46.190 --> 00:00:52.130 align:middle line:84%
+to optional URLS, where
+the value of the URL
+
+18
+00:00:52.130 --> 00:00:54.920 align:middle line:84%
+will be where the URL
+will have a value,
+
+19
+00:00:54.920 --> 00:00:57.410 align:middle line:84%
+where the option will have
+a value, if the URL is not
+
+20
+00:00:57.410 --> 00:01:02.060 align:middle line:84%
+cached, or the option
+will be considered empty
+
+21
+00:01:02.060 --> 00:01:03.530 align:middle line:90%
+if it is already cached.
+
+22
+00:01:03.530 --> 00:01:08.210 align:middle line:84%
+As we'll see here, later phases,
+later stages in this stream
+
+23
+00:01:08.210 --> 00:01:13.260 align:middle line:84%
+pipeline, we'll simply ignore
+empty optional URL values.
+
+24
+00:01:13.260 --> 00:01:16.500 align:middle line:84%
+So if something was cached,
+we're just going to ignore it.
+
+25
+00:01:16.500 --> 00:01:20.090 align:middle line:84%
+And the way we ignore it is we
+just make an empty optional.
+
+26
+00:01:20.090 --> 00:01:22.070 align:middle line:84%
+And that'll be ignored
+by everything else.
+
+27
+00:01:22.070 --> 00:01:25.850 align:middle line:84%
+The reason we have to do this is
+because we can't use the filter
+
+28
+00:01:25.850 --> 00:01:28.370 align:middle line:84%
+operation with
+asynchronous computations,
+
+29
+00:01:28.370 --> 00:01:30.620 align:middle line:84%
+the way we could do for
+synchronous computations, just
+
+30
+00:01:30.620 --> 00:01:34.490 align:middle line:84%
+one of the quirks of using
+parallel streams or streams.
+
+31
+00:01:34.490 --> 00:01:36.920 align:middle line:84%
+They kind of think they
+want to work primarily
+
+32
+00:01:36.920 --> 00:01:38.270 align:middle line:90%
+with synchronous stuff.
+
+33
+00:01:38.270 --> 00:01:40.070 align:middle line:84%
+And we're kind of
+shoehorning them to work
+
+34
+00:01:40.070 --> 00:01:41.070 align:middle line:90%
+with asynchronous stuff.
+
+35
+00:01:41.070 --> 00:01:44.120 align:middle line:84%
+But not every method can
+be used as conveniently
+
+36
+00:01:44.120 --> 00:01:46.390 align:middle line:90%
+as we might want.
+
+37
+00:01:46.390 --> 00:01:51.720 align:middle line:84%
+So here is the Check
+URL Cached Async method.
+
+38
+00:01:51.720 --> 00:01:55.530 align:middle line:84%
+And this uses the Supply Async
+factory method internally
+
+39
+00:01:55.530 --> 00:01:58.860 align:middle line:84%
+to go ahead and check to
+see if the URL is cached.
+
+40
+00:01:58.860 --> 00:01:59.700 align:middle line:90%
+Here's what it does.
+
+41
+00:01:59.700 --> 00:02:02.940 align:middle line:84%
+It goes ahead and calls the
+Supply Async Factory method
+
+42
+00:02:02.940 --> 00:02:05.400 align:middle line:84%
+on completable future,
+which registers
+
+43
+00:02:05.400 --> 00:02:10.350 align:middle line:84%
+an action that will then be run
+asynchronously in a given pool.
+
+44
+00:02:10.350 --> 00:02:11.850 align:middle line:84%
+Now, if you take a
+look here, you'll
+
+45
+00:02:11.850 --> 00:02:14.640 align:middle line:84%
+see that we actually
+give it a pool this time.
+
+46
+00:02:14.640 --> 00:02:16.830 align:middle line:84%
+So normally, we've just
+been using the default
+
+47
+00:02:16.830 --> 00:02:20.460 align:middle line:84%
+Supply Async, which just runs
+in the common fork joint pool.
+
+48
+00:02:20.460 --> 00:02:22.500 align:middle line:84%
+For a variety of reasons,
+not the least of which
+
+49
+00:02:22.500 --> 00:02:26.670 align:middle line:84%
+is illustrated if you go look at
+the version 2 of this program,
+
+50
+00:02:26.670 --> 00:02:30.510 align:middle line:84%
+we wanted to be able to provide
+different kinds of pools.
+
+51
+00:02:30.510 --> 00:02:33.450 align:middle line:84%
+In this particular
+case, however, this pool
+
+52
+00:02:33.450 --> 00:02:35.830 align:middle line:90%
+uses the common fork joint pool.
+
+53
+00:02:35.830 --> 00:02:39.300 align:middle line:84%
+So if you go and look at the
+code and the framework that
+
+54
+00:02:39.300 --> 00:02:42.180 align:middle line:84%
+initializes the whole
+thing, we set the executor
+
+55
+00:02:42.180 --> 00:02:45.210 align:middle line:84%
+to be the fork join
+pool common pool.
+
+56
+00:02:45.210 --> 00:02:47.310 align:middle line:84%
+So when the get executor
+method is called here--
+
+57
+00:02:47.310 --> 00:02:48.690 align:middle line:90%
+it's just an accesor method--
+
+58
+00:02:48.690 --> 00:02:50.487 align:middle line:84%
+it'll get the common
+fork joint pool.
+
+59
+00:02:50.487 --> 00:02:52.320 align:middle line:84%
+But I do this because
+it's trivial to switch
+
+60
+00:02:52.320 --> 00:02:54.150 align:middle line:84%
+to use different
+pools and then see
+
+61
+00:02:54.150 --> 00:02:58.160 align:middle line:84%
+if there's any implication
+with respect to performance.
+
+62
+00:02:58.160 --> 00:03:00.680 align:middle line:84%
+The actual action
+that's registered here
+
+63
+00:03:00.680 --> 00:03:06.250 align:middle line:84%
+is going to use the optional
+of nullable factory method.
+
+64
+00:03:06.250 --> 00:03:09.830 align:middle line:84%
+And what this does is
+it's going to take the--
+
+65
+00:03:09.830 --> 00:03:14.100 align:middle line:84%
+it's going to end up having
+either null or URL pass to it.
+
+66
+00:03:14.100 --> 00:03:15.740 align:middle line:84%
+So of nullable is
+a factory method
+
+67
+00:03:15.740 --> 00:03:19.190 align:middle line:84%
+that can create an optional,
+even with a null value.
+
+68
+00:03:19.190 --> 00:03:21.650 align:middle line:84%
+If it's a null value,
+it'll be an empty optional.
+
+69
+00:03:21.650 --> 00:03:24.410 align:middle line:84%
+If it's a non-null value,
+it'll be an optional
+
+70
+00:03:24.410 --> 00:03:25.742 align:middle line:90%
+with a value present.
+
+71
+00:03:25.742 --> 00:03:27.200 align:middle line:84%
+And what we're
+going to do here, is
+
+72
+00:03:27.200 --> 00:03:30.500 align:middle line:84%
+we're going to end up calling
+the URL cache method, which
+
+73
+00:03:30.500 --> 00:03:32.210 align:middle line:84%
+we'll talk about
+in just a moment,
+
+74
+00:03:32.210 --> 00:03:34.710 align:middle line:84%
+just to check to see
+if the URL is cached.
+
+75
+00:03:34.710 --> 00:03:37.450 align:middle line:84%
+If the URL is cached,
+we return null,
+
+76
+00:03:37.450 --> 00:03:39.200 align:middle line:84%
+because we want to
+make an empty optional,
+
+77
+00:03:39.200 --> 00:03:40.760 align:middle line:84%
+because we're
+going to ignore it.
+
+78
+00:03:40.760 --> 00:03:44.060 align:middle line:84%
+If the URL is not cached,
+we return the URL,
+
+79
+00:03:44.060 --> 00:03:47.940 align:middle line:84%
+so we'll end up with an
+optional containing that URL.
+
+80
+00:03:47.940 --> 00:03:49.350 align:middle line:90%
+Here's what URL cache does.
+
+81
+00:03:49.350 --> 00:03:52.290 align:middle line:84%
+It goes out, and it uses
+the stream framework
+
+82
+00:03:52.290 --> 00:03:55.910 align:middle line:84%
+to check to see if we've already
+created a file with the name
+
+83
+00:03:55.910 --> 00:03:57.660 align:middle line:84%
+corresponding to the
+filter, because there
+
+84
+00:03:57.660 --> 00:03:58.660 align:middle line:90%
+can be multiple filters.
+
+85
+00:03:58.660 --> 00:04:00.030 align:middle line:90%
+We check to see if those exist.
+
+86
+00:04:00.030 --> 00:04:02.970 align:middle line:84%
+If there's any of them the
+accounts greater than zero,
+
+87
+00:04:02.970 --> 00:04:05.190 align:middle line:84%
+we know that it's
+already cached.
+
+88
+00:04:05.190 --> 00:04:08.820 align:middle line:84%
+And the URL cached
+method with one parameter
+
+89
+00:04:08.820 --> 00:04:11.520 align:middle line:84%
+calls the URL cached
+method with two parameters.
+
+90
+00:04:11.520 --> 00:04:13.020 align:middle line:84%
+And that just goes
+and checks to see
+
+91
+00:04:13.020 --> 00:04:16.381 align:middle line:84%
+if there's a file with that
+name already in the file system.
+
+92
+00:04:16.381 --> 00:04:18.089 align:middle line:84%
+And I think as I
+mentioned when we talked
+
+93
+00:04:18.089 --> 00:04:20.250 align:middle line:84%
+about complete futures,
+they're clearly
+
+94
+00:04:20.250 --> 00:04:22.530 align:middle line:84%
+better ways of implementing
+an image cache.
+
+95
+00:04:22.530 --> 00:04:25.260 align:middle line:84%
+You should really take advantage
+of the max age parameter
+
+96
+00:04:25.260 --> 00:04:28.680 align:middle line:84%
+you could use with
+HTTP and web servers.
+
+97
+00:04:28.680 --> 00:04:31.820 align:middle line:84%
+But this is just a way to
+get the program to run.

@@ -1,0 +1,168 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.500 align:middle line:90%
+
+
+2
+00:00:00.500 --> 00:00:02.820 align:middle line:84%
+Let's now go ahead and
+talk about the downsides
+
+3
+00:00:02.820 --> 00:00:05.590 align:middle line:90%
+of completable futures.
+
+4
+00:00:05.590 --> 00:00:07.210 align:middle line:84%
+Again, we'll compare
+and contrast them
+
+5
+00:00:07.210 --> 00:00:09.500 align:middle line:90%
+with parallel streams.
+
+6
+00:00:09.500 --> 00:00:11.630 align:middle line:84%
+The main difference
+is, it's easier
+
+7
+00:00:11.630 --> 00:00:15.020 align:middle line:84%
+to program parallel streams
+than completable futures.
+
+8
+00:00:15.020 --> 00:00:18.350 align:middle line:84%
+If you look at these two
+chunks of code side by side,
+
+9
+00:00:18.350 --> 00:00:21.960 align:middle line:84%
+the overall control flow
+looks relatively the same.
+
+10
+00:00:21.960 --> 00:00:25.370 align:middle line:84%
+But when you peek in to see how
+the behaviors are implemented,
+
+11
+00:00:25.370 --> 00:00:27.410 align:middle line:84%
+you'll quickly see that
+the asynchronous code,
+
+12
+00:00:27.410 --> 00:00:30.320 align:middle line:84%
+the asynchronous behaviors,
+are a lot more complicated
+
+13
+00:00:30.320 --> 00:00:31.820 align:middle line:90%
+than the synchronous ones.
+
+14
+00:00:31.820 --> 00:00:33.740 align:middle line:84%
+And that's really no
+surprise, but it's
+
+15
+00:00:33.740 --> 00:00:35.540 align:middle line:90%
+just something to remember.
+
+16
+00:00:35.540 --> 00:00:37.200 align:middle line:84%
+So there's a
+trade-off to consider
+
+17
+00:00:37.200 --> 00:00:40.620 align:middle line:84%
+between computing performance
+and programmer productivity
+
+18
+00:00:40.620 --> 00:00:43.430 align:middle line:84%
+when choosing amongst
+these different frameworks.
+
+19
+00:00:43.430 --> 00:00:45.290 align:middle line:84%
+As a general rule,
+completable futures
+
+20
+00:00:45.290 --> 00:00:47.390 align:middle line:84%
+are more efficient
+more scalable,
+
+21
+00:00:47.390 --> 00:00:50.013 align:middle line:84%
+but harder to program,
+because people typically
+
+22
+00:00:50.013 --> 00:00:52.180 align:middle line:84%
+don't understand asynchrony
+patterns as well as they
+
+23
+00:00:52.180 --> 00:00:54.460 align:middle line:90%
+understand synchrony patterns.
+
+24
+00:00:54.460 --> 00:00:57.370 align:middle line:84%
+And also, parallel streams
+are easier to program
+
+25
+00:00:57.370 --> 00:01:00.580 align:middle line:84%
+but less efficient and
+scalable, although they're often
+
+26
+00:01:00.580 --> 00:01:02.455 align:middle line:90%
+good enough.
+
+27
+00:01:02.455 --> 00:01:04.330 align:middle line:84%
+One of the neat things
+about parallel streams
+
+28
+00:01:04.330 --> 00:01:06.100 align:middle line:84%
+is, you can use
+sequential streams
+
+29
+00:01:06.100 --> 00:01:08.590 align:middle line:84%
+for the initial development
+and then trivially
+
+30
+00:01:08.590 --> 00:01:12.700 align:middle line:84%
+make them parallel later
+by just changing stream
+
+31
+00:01:12.700 --> 00:01:16.520 align:middle line:84%
+to parallel stream, as
+we've seen repeatedly.
+
+32
+00:01:16.520 --> 00:01:20.050 align:middle line:84%
+So as always, it really helps
+to know the best practices,
+
+33
+00:01:20.050 --> 00:01:22.120 align:middle line:84%
+helps to know the
+patterns, in order
+
+34
+00:01:22.120 --> 00:01:24.070 align:middle line:90%
+to use anything effectively.
+
+35
+00:01:24.070 --> 00:01:27.810 align:middle line:84%
+And completable futures
+are really no different.

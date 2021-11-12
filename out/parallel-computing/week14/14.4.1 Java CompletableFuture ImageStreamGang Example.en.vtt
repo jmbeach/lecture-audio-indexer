@@ -1,0 +1,599 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.500 align:middle line:90%
+
+
+2
+00:00:00.500 --> 00:00:04.440 align:middle line:84%
+Now that we finished covering
+the image counter case study,
+
+3
+00:00:04.440 --> 00:00:07.450 align:middle line:84%
+let's turn our attention
+to another case study.
+
+4
+00:00:07.450 --> 00:00:11.700 align:middle line:84%
+This is a completable
+futures variant
+
+5
+00:00:11.700 --> 00:00:14.810 align:middle line:90%
+of the ImageStreamGang example.
+
+6
+00:00:14.810 --> 00:00:17.540 align:middle line:84%
+And so we'll start
+off by reviewing
+
+7
+00:00:17.540 --> 00:00:20.630 align:middle line:84%
+the design of the
+ImageStreamGang app,
+
+8
+00:00:20.630 --> 00:00:23.030 align:middle line:84%
+and then we'll focus
+primarily on the way
+
+9
+00:00:23.030 --> 00:00:26.340 align:middle line:84%
+in which the completable futures
+version compares and contrasts
+
+10
+00:00:26.340 --> 00:00:28.370 align:middle line:84%
+to the earlier version
+we looked at that
+
+11
+00:00:28.370 --> 00:00:32.220 align:middle line:90%
+was based on parallel streams.
+
+12
+00:00:32.220 --> 00:00:34.530 align:middle line:84%
+And of course, as always,
+you can download this app
+
+13
+00:00:34.530 --> 00:00:38.310 align:middle line:84%
+from my GitHub repository in
+the ImageStreamGang folder.
+
+14
+00:00:38.310 --> 00:00:40.960 align:middle line:90%
+
+
+15
+00:00:40.960 --> 00:00:46.230 align:middle line:84%
+So this app applies a number
+of Java parallelism frameworks
+
+16
+00:00:46.230 --> 00:00:49.450 align:middle line:90%
+that do the following things.
+
+17
+00:00:49.450 --> 00:00:52.630 align:middle line:84%
+One thing it does is it
+ignores cached images.
+
+18
+00:00:52.630 --> 00:00:54.630 align:middle line:84%
+So if you have a list
+of URLs to download
+
+19
+00:00:54.630 --> 00:00:57.100 align:middle line:84%
+and you've already
+downloaded some of them,
+
+20
+00:00:57.100 --> 00:00:58.930 align:middle line:90%
+they'll just be ignored.
+
+21
+00:00:58.930 --> 00:01:04.069 align:middle line:84%
+The next thing we do is we
+download the non-cached images.
+
+22
+00:01:04.069 --> 00:01:05.750 align:middle line:84%
+The third thing we
+do is we apply a list
+
+23
+00:01:05.750 --> 00:01:09.170 align:middle line:90%
+of filters to each image.
+
+24
+00:01:09.170 --> 00:01:11.300 align:middle line:84%
+We go ahead and store
+the filtered images
+
+25
+00:01:11.300 --> 00:01:13.688 align:middle line:84%
+in the local file
+system on the device.
+
+26
+00:01:13.688 --> 00:01:15.230 align:middle line:84%
+And then the final
+thing we do, which
+
+27
+00:01:15.230 --> 00:01:17.900 align:middle line:84%
+is sort of outside the scope
+of those earlier steps,
+
+28
+00:01:17.900 --> 00:01:20.990 align:middle line:84%
+is we take the results that have
+been stored in the file system,
+
+29
+00:01:20.990 --> 00:01:23.383 align:middle line:84%
+and we display them
+to the user somehow.
+
+30
+00:01:23.383 --> 00:01:25.550 align:middle line:84%
+There's a couple different
+variants of this program.
+
+31
+00:01:25.550 --> 00:01:28.850 align:middle line:84%
+One uses Android as
+the user interface.
+
+32
+00:01:28.850 --> 00:01:31.040 align:middle line:90%
+One uses command line.
+
+33
+00:01:31.040 --> 00:01:33.440 align:middle line:84%
+They share the vast
+amount of code,
+
+34
+00:01:33.440 --> 00:01:35.000 align:middle line:84%
+because it doesn't
+really matter.
+
+35
+00:01:35.000 --> 00:01:37.760 align:middle line:84%
+Android supports the features
+that we're using here, just
+
+36
+00:01:37.760 --> 00:01:39.170 align:middle line:90%
+like other versions of Java.
+
+37
+00:01:39.170 --> 00:01:41.060 align:middle line:84%
+Although there are
+some subtle differences
+
+38
+00:01:41.060 --> 00:01:43.710 align:middle line:90%
+that we'll talk about later.
+
+39
+00:01:43.710 --> 00:01:45.950 align:middle line:84%
+Now, I mentioned before
+that we've already
+
+40
+00:01:45.950 --> 00:01:49.118 align:middle line:84%
+looked at one implementation
+of this program.
+
+41
+00:01:49.118 --> 00:01:50.660 align:middle line:84%
+The earlier version
+that we looked at
+
+42
+00:01:50.660 --> 00:01:54.410 align:middle line:84%
+was the Java parallel
+ImageStreamGang example.
+
+43
+00:01:54.410 --> 00:01:56.580 align:middle line:84%
+And if you take a look
+on the left-hand side,
+
+44
+00:01:56.580 --> 00:02:01.430 align:middle line:84%
+you'll see the architecture of
+the parallel streams version,
+
+45
+00:02:01.430 --> 00:02:06.770 align:middle line:84%
+where we have a fork/join
+thread pool that
+
+46
+00:02:06.770 --> 00:02:09.120 align:middle line:84%
+will process the different
+images in parallel.
+
+47
+00:02:09.120 --> 00:02:12.690 align:middle line:84%
+And you can see the
+pipeline of steps.
+
+48
+00:02:12.690 --> 00:02:15.240 align:middle line:84%
+All of the behaviors in
+the parallel stream variant
+
+49
+00:02:15.240 --> 00:02:16.590 align:middle line:90%
+are synchronous.
+
+50
+00:02:16.590 --> 00:02:19.800 align:middle line:84%
+So we synchronously check
+if an image is cached.
+
+51
+00:02:19.800 --> 00:02:23.070 align:middle line:84%
+We synchronously check to
+see if we synchronously
+
+52
+00:02:23.070 --> 00:02:23.890 align:middle line:90%
+download an image.
+
+53
+00:02:23.890 --> 00:02:25.920 align:middle line:84%
+If it was not cached,
+we synchronously
+
+54
+00:02:25.920 --> 00:02:27.330 align:middle line:90%
+apply the filters--
+
+55
+00:02:27.330 --> 00:02:29.530 align:middle line:90%
+and so on and so forth.
+
+56
+00:02:29.530 --> 00:02:32.650 align:middle line:84%
+In contrast, all
+of the behaviors
+
+57
+00:02:32.650 --> 00:02:35.860 align:middle line:84%
+that we use for the
+completable futures variant
+
+58
+00:02:35.860 --> 00:02:37.420 align:middle line:90%
+are asynchronous.
+
+59
+00:02:37.420 --> 00:02:39.700 align:middle line:84%
+But before I get too
+far ahead of myself,
+
+60
+00:02:39.700 --> 00:02:42.850 align:middle line:84%
+notice how all of those
+asynchronous behaviors
+
+61
+00:02:42.850 --> 00:02:48.280 align:middle line:84%
+are guided by the use of
+Java sequential streams.
+
+62
+00:02:48.280 --> 00:02:50.770 align:middle line:84%
+So we're going to end up
+taking a list of URLs,
+
+63
+00:02:50.770 --> 00:02:54.860 align:middle line:84%
+and then we will asynchronously
+check to see if they're cached.
+
+64
+00:02:54.860 --> 00:02:58.580 align:middle line:84%
+If they are not cached, we will
+asynchronously download them.
+
+65
+00:02:58.580 --> 00:03:00.625 align:middle line:84%
+We will then asynchronously
+apply the filters.
+
+66
+00:03:00.625 --> 00:03:02.500 align:middle line:84%
+We will collect everything
+up, and then we'll
+
+67
+00:03:02.500 --> 00:03:04.430 align:middle line:90%
+go ahead and log the results.
+
+68
+00:03:04.430 --> 00:03:09.730 align:middle line:84%
+So somewhat similar flow,
+because both of the programs
+
+69
+00:03:09.730 --> 00:03:11.077 align:middle line:90%
+are using streams.
+
+70
+00:03:11.077 --> 00:03:12.910 align:middle line:84%
+But as you see, as we
+get further into this,
+
+71
+00:03:12.910 --> 00:03:15.740 align:middle line:84%
+the behaviors are
+quite different.
+
+72
+00:03:15.740 --> 00:03:18.520 align:middle line:84%
+So this is basically the
+high-level view of this.
+
+73
+00:03:18.520 --> 00:03:21.040 align:middle line:84%
+The stream provides
+the guidance.
+
+74
+00:03:21.040 --> 00:03:25.000 align:middle line:84%
+We will ignore any images that
+are cached asynchronously.
+
+75
+00:03:25.000 --> 00:03:27.310 align:middle line:84%
+We're going to check
+this asynchronously using
+
+76
+00:03:27.310 --> 00:03:29.710 align:middle line:84%
+supplyAsync, as
+you'll see shortly.
+
+77
+00:03:29.710 --> 00:03:32.260 align:middle line:84%
+We're then going to download
+these non-cached images
+
+78
+00:03:32.260 --> 00:03:33.760 align:middle line:90%
+asynchronously.
+
+79
+00:03:33.760 --> 00:03:36.130 align:middle line:90%
+As those downloads complete--
+
+80
+00:03:36.130 --> 00:03:39.160 align:middle line:84%
+asynchronously-- we will apply
+a list of filters and store
+
+81
+00:03:39.160 --> 00:03:41.080 align:middle line:84%
+the filtered images
+in the file system--
+
+82
+00:03:41.080 --> 00:03:42.740 align:middle line:90%
+asynchronously.
+
+83
+00:03:42.740 --> 00:03:46.630 align:middle line:84%
+And then we're going to go ahead
+and trigger all this stream
+
+84
+00:03:46.630 --> 00:03:49.750 align:middle line:84%
+processing to run
+asynchronously by using
+
+85
+00:03:49.750 --> 00:03:53.510 align:middle line:84%
+a variant of the
+FuturesCollector class.
+
+86
+00:03:53.510 --> 00:03:54.760 align:middle line:90%
+And this variant is very cool.
+
+87
+00:03:54.760 --> 00:03:56.810 align:middle line:84%
+It's called stream
+of FuturesCollector.
+
+88
+00:03:56.810 --> 00:04:00.790 align:middle line:84%
+But we'll talk about
+that in a little bit.
+
+89
+00:04:00.790 --> 00:04:03.582 align:middle line:84%
+When we're all done, we'll
+go ahead and get the results
+
+90
+00:04:03.582 --> 00:04:05.290 align:middle line:84%
+and print the results
+of the computation,
+
+91
+00:04:05.290 --> 00:04:08.800 align:middle line:90%
+just to show what happened.
+
+92
+00:04:08.800 --> 00:04:10.450 align:middle line:84%
+Ultimately, after
+we're finished here,
+
+93
+00:04:10.450 --> 00:04:12.490 align:middle line:84%
+as with the parallel
+stream version,
+
+94
+00:04:12.490 --> 00:04:15.290 align:middle line:84%
+we'll display the
+images to the user.
+
+95
+00:04:15.290 --> 00:04:17.079 align:middle line:84%
+Now, one of the
+things to note here
+
+96
+00:04:17.079 --> 00:04:21.070 align:middle line:84%
+is the use of completable
+futures in conjunction
+
+97
+00:04:21.070 --> 00:04:25.360 align:middle line:84%
+with streams helps to close
+the gap between the domain
+
+98
+00:04:25.360 --> 00:04:27.430 align:middle line:90%
+intent and the implementation--
+
+99
+00:04:27.430 --> 00:04:30.590 align:middle line:84%
+and more importantly,
+efficiently close the gap.
+
+100
+00:04:30.590 --> 00:04:35.770 align:middle line:84%
+So the stream part helps to
+close the gap from a logical,
+
+101
+00:04:35.770 --> 00:04:38.320 align:middle line:84%
+understand what the heck's
+going on perspective.
+
+102
+00:04:38.320 --> 00:04:39.820 align:middle line:84%
+And the use of
+completable futures
+
+103
+00:04:39.820 --> 00:04:42.730 align:middle line:84%
+helps to close the gap in
+a way that's efficient.
+
+104
+00:04:42.730 --> 00:04:45.460 align:middle line:84%
+And we'll talk, shortly, about
+what we mean by efficient here,
+
+105
+00:04:45.460 --> 00:04:48.010 align:middle line:84%
+because it really turns out
+that this is a better way
+
+106
+00:04:48.010 --> 00:04:52.090 align:middle line:84%
+to go than using the parallel
+streams approach if performance
+
+107
+00:04:52.090 --> 00:04:53.650 align:middle line:90%
+is all that matters.
+
+108
+00:04:53.650 --> 00:04:56.410 align:middle line:84%
+But even though everything's
+done asynchronously,
+
+109
+00:04:56.410 --> 00:05:00.940 align:middle line:84%
+the use of streams still
+helps to get across the fact
+
+110
+00:05:00.940 --> 00:05:02.800 align:middle line:90%
+that there's a flow here.
+
+111
+00:05:02.800 --> 00:05:06.080 align:middle line:84%
+And to some extent, unlike
+the image counter example--
+
+112
+00:05:06.080 --> 00:05:09.460 align:middle line:84%
+which I think is super, duper
+cool, but is a little bit
+
+113
+00:05:09.460 --> 00:05:11.230 align:middle line:84%
+hard to get your head
+around, because all
+
+114
+00:05:11.230 --> 00:05:13.170 align:middle line:84%
+the asynchrony
+stuff is going on,
+
+115
+00:05:13.170 --> 00:05:17.080 align:middle line:84%
+and it's not really guided by
+something as well-structured
+
+116
+00:05:17.080 --> 00:05:20.017 align:middle line:84%
+as the sequential
+streams are in this case.
+
+117
+00:05:20.017 --> 00:05:21.850 align:middle line:84%
+Now, maybe it's just
+the fact that I already
+
+118
+00:05:21.850 --> 00:05:24.460 align:middle line:84%
+knew the flow of the
+logic because I'd written
+
+119
+00:05:24.460 --> 00:05:25.990 align:middle line:90%
+the parallel streams version--
+
+120
+00:05:25.990 --> 00:05:28.360 align:middle line:84%
+and actually, a sequential
+streams version-- earlier.
+
+121
+00:05:28.360 --> 00:05:30.250 align:middle line:84%
+But I find it perhaps
+a bit more intuitive
+
+122
+00:05:30.250 --> 00:05:32.170 align:middle line:84%
+to structure and
+guide things using
+
+123
+00:05:32.170 --> 00:05:33.910 align:middle line:84%
+sequential streams,
+and then have
+
+124
+00:05:33.910 --> 00:05:37.570 align:middle line:84%
+the asynchronous computations
+run as part of the behavior
+
+125
+00:05:37.570 --> 00:05:39.120 align:middle line:90%
+portion.

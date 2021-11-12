@@ -1,0 +1,755 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.540 align:middle line:90%
+
+
+2
+00:00:00.540 --> 00:00:04.140 align:middle line:84%
+We'll now talk about part 3
+of the image crawler example.
+
+3
+00:00:04.140 --> 00:00:05.850 align:middle line:84%
+This will focus on
+the implementation
+
+4
+00:00:05.850 --> 00:00:09.360 align:middle line:84%
+of the countImagesAsync
+method, which
+
+5
+00:00:09.360 --> 00:00:13.710 align:middle line:84%
+will demonstrate other
+interesting completable future
+
+6
+00:00:13.710 --> 00:00:16.920 align:middle line:90%
+API calls.
+
+7
+00:00:16.920 --> 00:00:19.950 align:middle line:84%
+This helper method creates
+several lambda variables
+
+8
+00:00:19.950 --> 00:00:23.610 align:middle line:84%
+in order to simplify
+its implementation.
+
+9
+00:00:23.610 --> 00:00:26.340 align:middle line:84%
+Basically, this
+implementation, which
+
+10
+00:00:26.340 --> 00:00:27.840 align:middle line:84%
+we'll talk about
+in just a moment
+
+11
+00:00:27.840 --> 00:00:32.580 align:middle line:84%
+is an implementation of
+the control flow shown
+
+12
+00:00:32.580 --> 00:00:34.553 align:middle line:90%
+in this data flow diagram.
+
+13
+00:00:34.553 --> 00:00:36.720 align:middle line:84%
+We had talked about this
+much earlier in the course.
+
+14
+00:00:36.720 --> 00:00:39.300 align:middle line:84%
+And now it's finally time
+to look at this in detail.
+
+15
+00:00:39.300 --> 00:00:42.510 align:middle line:84%
+But let me just review
+the data flow diagram
+
+16
+00:00:42.510 --> 00:00:44.260 align:middle line:90%
+and show the flow of control.
+
+17
+00:00:44.260 --> 00:00:47.250 align:middle line:84%
+So we have four tasks
+in this implementation.
+
+18
+00:00:47.250 --> 00:00:51.320 align:middle line:84%
+Task 1 will get the start
+page asynchronously.
+
+19
+00:00:51.320 --> 00:00:55.280 align:middle line:84%
+Task 2 and task 3 will
+then run in parallel
+
+20
+00:00:55.280 --> 00:00:57.380 align:middle line:90%
+when task 1 is finished.
+
+21
+00:00:57.380 --> 00:01:00.500 align:middle line:84%
+Task 2 will count the images
+on the page asynchronously.
+
+22
+00:01:00.500 --> 00:01:04.069 align:middle line:84%
+And task 3 will count the
+images of all pages reachable
+
+23
+00:01:04.069 --> 00:01:05.730 align:middle line:90%
+from this page asynchronously.
+
+24
+00:01:05.730 --> 00:01:08.720 align:middle line:84%
+So we're basically going
+to traverse the hyperlinks
+
+25
+00:01:08.720 --> 00:01:11.650 align:middle line:84%
+and count the number of images
+that are available there
+
+26
+00:01:11.650 --> 00:01:13.700 align:middle line:90%
+or available through them.
+
+27
+00:01:13.700 --> 00:01:17.340 align:middle line:84%
+As I said before, both of these
+tasks can run at the same time.
+
+28
+00:01:17.340 --> 00:01:19.610 align:middle line:84%
+And when both of
+these tasks finish,
+
+29
+00:01:19.610 --> 00:01:22.430 align:middle line:84%
+then we will combine
+the results to get
+
+30
+00:01:22.430 --> 00:01:26.030 align:middle line:84%
+the final sum of all
+the images on this page
+
+31
+00:01:26.030 --> 00:01:28.317 align:middle line:84%
+and all the images
+reachable from this page.
+
+32
+00:01:28.317 --> 00:01:29.900 align:middle line:84%
+So you can see, this
+is a good example
+
+33
+00:01:29.900 --> 00:01:33.050 align:middle line:84%
+of basically starting
+something asynchronously,
+
+34
+00:01:33.050 --> 00:01:37.190 align:middle line:84%
+forking off to do two
+things in parallel.
+
+35
+00:01:37.190 --> 00:01:39.800 align:middle line:84%
+And then we'll see a bunch
+of chained operations there,
+
+36
+00:01:39.800 --> 00:01:42.290 align:middle line:84%
+and then finally joining the
+control flow back together
+
+37
+00:01:42.290 --> 00:01:44.870 align:middle line:84%
+again in order to
+get the final count.
+
+38
+00:01:44.870 --> 00:01:47.370 align:middle line:84%
+And all of this stuff
+takes place asynchronously.
+
+39
+00:01:47.370 --> 00:01:49.490 align:middle line:90%
+So it's very cool.
+
+40
+00:01:49.490 --> 00:01:50.820 align:middle line:90%
+Here's the actual source code.
+
+41
+00:01:50.820 --> 00:01:53.540 align:middle line:84%
+This is the code that
+starts off task 1.
+
+42
+00:01:53.540 --> 00:01:56.910 align:middle line:84%
+We're going to call a helper
+method called getStartPage,
+
+43
+00:01:56.910 --> 00:02:00.410 align:middle line:84%
+which will asynchronously
+get the page or the contents
+
+44
+00:02:00.410 --> 00:02:05.600 align:middle line:84%
+of the page at the given
+root URI or the page URI.
+
+45
+00:02:05.600 --> 00:02:09.470 align:middle line:84%
+Here is the getStartPage
+implementation.
+
+46
+00:02:09.470 --> 00:02:13.260 align:middle line:84%
+And you can see what it does
+is it takes this pageUri,
+
+47
+00:02:13.260 --> 00:02:16.510 align:middle line:84%
+and it uses the
+supplyAsync method
+
+48
+00:02:16.510 --> 00:02:20.510 align:middle line:84%
+to find CompletableFuture
+to register an action that
+
+49
+00:02:20.510 --> 00:02:23.240 align:middle line:84%
+will then run asynchronously
+in a background
+
+50
+00:02:23.240 --> 00:02:28.220 align:middle line:84%
+thread in the default
+common fork joint pool.
+
+51
+00:02:28.220 --> 00:02:31.530 align:middle line:84%
+The particular action that
+we're going to invoke here
+
+52
+00:02:31.530 --> 00:02:36.900 align:middle line:84%
+will go ahead and use a little
+wrapper around the open source
+
+53
+00:02:36.900 --> 00:02:39.340 align:middle line:90%
+Java jsoup library.
+
+54
+00:02:39.340 --> 00:02:43.260 align:middle line:84%
+jsoup is a library that
+can be used to parse HTML.
+
+55
+00:02:43.260 --> 00:02:45.480 align:middle line:84%
+And it works both
+for web content,
+
+56
+00:02:45.480 --> 00:02:47.550 align:middle line:84%
+things reachable
+over the network,
+
+57
+00:02:47.550 --> 00:02:49.810 align:middle line:90%
+as well as local file content.
+
+58
+00:02:49.810 --> 00:02:51.720 align:middle line:84%
+And I wrote a little
+wrapper to hide
+
+59
+00:02:51.720 --> 00:02:54.350 align:middle line:84%
+whether we're going to be
+crawling through the web
+
+60
+00:02:54.350 --> 00:02:56.100 align:middle line:84%
+or crawling through
+the local file system,
+
+61
+00:02:56.100 --> 00:02:58.590 align:middle line:84%
+just to make it easier to
+write one piece of code that
+
+62
+00:02:58.590 --> 00:03:01.830 align:middle line:84%
+worked independent of where
+the actual recursive directory
+
+63
+00:03:01.830 --> 00:03:03.490 align:middle line:90%
+hierarchy resides.
+
+64
+00:03:03.490 --> 00:03:06.000 align:middle line:84%
+And just for fun I
+called this JSuper.
+
+65
+00:03:06.000 --> 00:03:07.770 align:middle line:90%
+It had to be a pun on jsoup.
+
+66
+00:03:07.770 --> 00:03:10.150 align:middle line:90%
+So we get the JSuper wrapper.
+
+67
+00:03:10.150 --> 00:03:12.520 align:middle line:84%
+And then we call
+the getPage method,
+
+68
+00:03:12.520 --> 00:03:14.490 align:middle line:90%
+which passes in the pageUri.
+
+69
+00:03:14.490 --> 00:03:18.130 align:middle line:84%
+and that will go ahead
+and download that page.
+
+70
+00:03:18.130 --> 00:03:21.240 align:middle line:84%
+Now the getPage
+method is synchronous
+
+71
+00:03:21.240 --> 00:03:24.690 align:middle line:84%
+and therefore we have to wrap
+this up in an asynchronous call
+
+72
+00:03:24.690 --> 00:03:26.640 align:middle line:90%
+to avoid blocking the code.
+
+73
+00:03:26.640 --> 00:03:29.340 align:middle line:84%
+jsoup doesn't know about
+completable futures,
+
+74
+00:03:29.340 --> 00:03:30.780 align:middle line:84%
+it's just an
+asynchronous-- sorry,
+
+75
+00:03:30.780 --> 00:03:35.010 align:middle line:84%
+it's just a synchronous library
+for downloading and parsing
+
+76
+00:03:35.010 --> 00:03:38.400 align:middle line:90%
+and processing HTML pages.
+
+77
+00:03:38.400 --> 00:03:40.680 align:middle line:84%
+What gets returned here
+is a CompletableFuture
+
+78
+00:03:40.680 --> 00:03:46.350 align:middle line:84%
+to a document, which will be
+available once the page has
+
+79
+00:03:46.350 --> 00:03:47.895 align:middle line:90%
+finished downloading.
+
+80
+00:03:47.895 --> 00:03:50.690 align:middle line:90%
+
+
+81
+00:03:50.690 --> 00:03:54.450 align:middle line:84%
+So what we get back from
+StartPage will be a PageFuture,
+
+82
+00:03:54.450 --> 00:03:56.960 align:middle line:84%
+so it's a CompletableFuture
+to the document.
+
+83
+00:03:56.960 --> 00:04:00.140 align:middle line:84%
+Document is another jsoup
+data structure which basically
+
+84
+00:04:00.140 --> 00:04:02.880 align:middle line:90%
+contains the HTML content.
+
+85
+00:04:02.880 --> 00:04:05.190 align:middle line:90%
+So then we use pageF.
+
+86
+00:04:05.190 --> 00:04:07.320 align:middle line:84%
+And this CompletableFuture
+will be used
+
+87
+00:04:07.320 --> 00:04:11.140 align:middle line:90%
+to launch the next two tasks.
+
+88
+00:04:11.140 --> 00:04:16.290 align:middle line:84%
+So we're going to be able to run
+task 2 and task 3 in parallel.
+
+89
+00:04:16.290 --> 00:04:18.959 align:middle line:84%
+But they don't start
+running until pageF
+
+90
+00:04:18.959 --> 00:04:21.105 align:middle line:90%
+completes its downloading.
+
+91
+00:04:21.105 --> 00:04:22.980 align:middle line:84%
+So as you can see what's
+going to happen here
+
+92
+00:04:22.980 --> 00:04:27.480 align:middle line:84%
+is we're going to use task 2
+to get the images in the page.
+
+93
+00:04:27.480 --> 00:04:31.150 align:middle line:84%
+And we're going to use task 3
+to crawl the links in the page.
+
+94
+00:04:31.150 --> 00:04:33.390 align:middle line:84%
+And those two tasks
+will run asynchronously
+
+95
+00:04:33.390 --> 00:04:38.380 align:middle line:84%
+as soon as the PageFuture is
+completed, after the page is
+
+96
+00:04:38.380 --> 00:04:40.400 align:middle line:90%
+finished downloading.
+
+97
+00:04:40.400 --> 00:04:42.110 align:middle line:84%
+Let's take a look
+first at task 2.
+
+98
+00:04:42.110 --> 00:04:45.800 align:middle line:84%
+Task 2 is going to go ahead and
+use several completion stage
+
+99
+00:04:45.800 --> 00:04:48.380 align:middle line:84%
+methods from the
+CompletableFuture framework
+
+100
+00:04:48.380 --> 00:04:51.800 align:middle line:84%
+to asynchronously count the
+number of images on a page
+
+101
+00:04:51.800 --> 00:04:54.710 align:middle line:84%
+and return a future
+to that count.
+
+102
+00:04:54.710 --> 00:04:56.600 align:middle line:84%
+And it's going to
+do this by calling
+
+103
+00:04:56.600 --> 00:05:00.590 align:middle line:84%
+the getImagesInPage
+method in the context
+
+104
+00:05:00.590 --> 00:05:04.310 align:middle line:84%
+of the thenApplyAsync
+completion stage method.
+
+105
+00:05:04.310 --> 00:05:09.680 align:middle line:84%
+So if you recall, thenApplyAsync
+will run this action
+
+106
+00:05:09.680 --> 00:05:12.060 align:middle line:90%
+in a background thread.
+
+107
+00:05:12.060 --> 00:05:14.900 align:middle line:84%
+So let's go take a look at
+how getImagesInPage works.
+
+108
+00:05:14.900 --> 00:05:17.600 align:middle line:84%
+It's a very straightforward
+little wrapper function.
+
+109
+00:05:17.600 --> 00:05:20.210 align:middle line:84%
+And it simply
+synchronously returns
+
+110
+00:05:20.210 --> 00:05:25.550 align:middle line:84%
+a collection of image
+source URLs in this page.
+
+111
+00:05:25.550 --> 00:05:29.060 align:middle line:84%
+And we do this by
+calling the select method
+
+112
+00:05:29.060 --> 00:05:34.880 align:middle line:84%
+on the document object given the
+name phrase and the parameter.
+
+113
+00:05:34.880 --> 00:05:40.742 align:middle line:84%
+And we select anything on that
+page that has the img tag.
+
+114
+00:05:40.742 --> 00:05:42.200 align:middle line:84%
+And under the hood,
+of course, this
+
+115
+00:05:42.200 --> 00:05:46.130 align:middle line:84%
+is using the jsoup HTML
+parsing library, which
+
+116
+00:05:46.130 --> 00:05:48.650 align:middle line:84%
+operates synchronously,
+hence the need
+
+117
+00:05:48.650 --> 00:05:52.790 align:middle line:84%
+to have this method
+called via thenApplyAsync.
+
+118
+00:05:52.790 --> 00:05:56.090 align:middle line:84%
+thenApplyAsync will set
+the wheels in motion.
+
+119
+00:05:56.090 --> 00:05:58.310 align:middle line:90%
+It returns a CompletableFuture.
+
+120
+00:05:58.310 --> 00:06:00.950 align:middle line:84%
+When we have figured out
+all the images in the page,
+
+121
+00:06:00.950 --> 00:06:04.280 align:middle line:84%
+that comes back as you can
+see as an elements object.
+
+122
+00:06:04.280 --> 00:06:06.680 align:middle line:84%
+An elements object is
+basically a collection.
+
+123
+00:06:06.680 --> 00:06:09.750 align:middle line:84%
+And so when
+getImagesInPage completes,
+
+124
+00:06:09.750 --> 00:06:15.770 align:middle line:84%
+we then apply an action that
+gets the size of the elements
+
+125
+00:06:15.770 --> 00:06:19.640 align:middle line:84%
+list and that will be returned
+in a CompletableFuture.
+
+126
+00:06:19.640 --> 00:06:21.860 align:middle line:84%
+Now the reason we use
+thenApply here as opposed
+
+127
+00:06:21.860 --> 00:06:23.870 align:middle line:84%
+to thenApplyAsync
+is because it's
+
+128
+00:06:23.870 --> 00:06:27.710 align:middle line:84%
+going to be very fast to return
+the size of that collection.
+
+129
+00:06:27.710 --> 00:06:29.690 align:middle line:84%
+In contrast, this call
+may have taken a while
+
+130
+00:06:29.690 --> 00:06:32.640 align:middle line:84%
+to run because it has
+to parse the HTML code.
+
+131
+00:06:32.640 --> 00:06:35.660 align:middle line:84%
+So that's why we ran it via
+thenApplyAsync, so it wouldn't
+
+132
+00:06:35.660 --> 00:06:37.640 align:middle line:90%
+block the calling thread.
+
+133
+00:06:37.640 --> 00:06:41.300 align:middle line:84%
+What we get back from thenApply
+is a CompletableFuture
+
+134
+00:06:41.300 --> 00:06:45.100 align:middle line:84%
+to a count of the number
+of images on the page.
+
+135
+00:06:45.100 --> 00:06:47.340 align:middle line:90%
+Let's now take a look at task 3.
+
+136
+00:06:47.340 --> 00:06:51.390 align:middle line:84%
+Task 3 will use the
+thenComposeAsync method
+
+137
+00:06:51.390 --> 00:06:54.810 align:middle line:84%
+to count the number of
+images in links on this page
+
+138
+00:06:54.810 --> 00:06:58.050 align:middle line:84%
+and it will return a
+future to this count.
+
+139
+00:06:58.050 --> 00:07:01.680 align:middle line:84%
+And this is a very nice example
+of thenComposeAsync for reasons
+
+140
+00:07:01.680 --> 00:07:03.687 align:middle line:90%
+we'll see in just a moment.
+
+141
+00:07:03.687 --> 00:07:05.520 align:middle line:84%
+So that the actual
+method that's called here
+
+142
+00:07:05.520 --> 00:07:08.610 align:middle line:90%
+is called crawlLinksInPage.
+
+143
+00:07:08.610 --> 00:07:11.940 align:middle line:84%
+And this method returns
+a CompletableFuture
+
+144
+00:07:11.940 --> 00:07:14.760 align:middle line:84%
+to the number of
+image source URLs
+
+145
+00:07:14.760 --> 00:07:18.030 align:middle line:84%
+that are accessible
+via links in this page.
+
+146
+00:07:18.030 --> 00:07:20.610 align:middle line:84%
+So now we're really going to
+do the recursive crawling.
+
+147
+00:07:20.610 --> 00:07:25.050 align:middle line:84%
+And because crawlLinksInPage
+returns a CompletableFuture
+
+148
+00:07:25.050 --> 00:07:28.200 align:middle line:84%
+and then thenComposeAsync
+returns CompletableFuture,
+
+149
+00:07:28.200 --> 00:07:31.080 align:middle line:84%
+we wrap things up in
+thenComposeAsync to make
+
+150
+00:07:31.080 --> 00:07:34.560 align:middle line:84%
+sure we don't end up with
+nested CompletableFutures.
+
+151
+00:07:34.560 --> 00:07:36.803 align:middle line:84%
+So if we were to
+call some call here,
+
+152
+00:07:36.803 --> 00:07:38.220 align:middle line:84%
+we might end it
+with nested calls.
+
+153
+00:07:38.220 --> 00:07:43.020 align:middle line:84%
+But we use thenCompose in order
+to flatten the value return
+
+154
+00:07:43.020 --> 00:07:44.680 align:middle line:90%
+by crawlLinksInPage.
+
+155
+00:07:44.680 --> 00:07:47.070 align:middle line:84%
+For example, if we
+used thenComposeAsync,
+
+156
+00:07:47.070 --> 00:07:50.700 align:middle line:84%
+we would have nested
+CompletableFutures
+
+157
+00:07:50.700 --> 00:07:53.320 align:middle line:84%
+to integers, which
+would not be good.
