@@ -1,0 +1,789 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.185 align:middle line:90%
+
+
+2
+00:00:00.185 --> 00:00:01.560 align:middle line:84%
+We're now going
+to talk about how
+
+3
+00:00:01.560 --> 00:00:05.040 align:middle line:90%
+to handle runtime exceptions.
+
+4
+00:00:05.040 --> 00:00:08.760 align:middle line:84%
+And we'll see runtime
+exception handling is basically
+
+5
+00:00:08.760 --> 00:00:11.100 align:middle line:84%
+a variant of a
+completion stage method,
+
+6
+00:00:11.100 --> 00:00:13.050 align:middle line:84%
+but they're special
+enough in terms
+
+7
+00:00:13.050 --> 00:00:17.450 align:middle line:84%
+of their purpose, we kind of
+talk about them separately.
+
+8
+00:00:17.450 --> 00:00:20.540 align:middle line:84%
+Exception handling for
+asynchronous computations
+
+9
+00:00:20.540 --> 00:00:24.320 align:middle line:84%
+is more complex normally
+than exception handling
+
+10
+00:00:24.320 --> 00:00:27.530 align:middle line:90%
+for synchronous computations.
+
+11
+00:00:27.530 --> 00:00:30.830 align:middle line:84%
+So for the conventional
+synchronous exception handling
+
+12
+00:00:30.830 --> 00:00:34.250 align:middle line:84%
+model, if an exception
+occurs somewhere
+
+13
+00:00:34.250 --> 00:00:36.080 align:middle line:90%
+in a call chain series--
+
+14
+00:00:36.080 --> 00:00:38.660 align:middle line:84%
+a synchronous call
+chain series--
+
+15
+00:00:38.660 --> 00:00:40.850 align:middle line:84%
+a synchronous, not
+asynchronous call chain,
+
+16
+00:00:40.850 --> 00:00:43.880 align:middle line:84%
+but a synchronous
+call chain series--
+
+17
+00:00:43.880 --> 00:00:46.880 align:middle line:84%
+then the exception
+that's thrown will just
+
+18
+00:00:46.880 --> 00:00:49.190 align:middle line:90%
+propagate up the stack.
+
+19
+00:00:49.190 --> 00:00:52.370 align:middle line:84%
+So if we're down at some level
+and a bunch of method calls
+
+20
+00:00:52.370 --> 00:00:56.050 align:middle line:84%
+were method 1 calls method 2,
+calls method 3, calls method 4,
+
+21
+00:00:56.050 --> 00:00:58.220 align:middle line:84%
+and method 4 throws
+an exception,
+
+22
+00:00:58.220 --> 00:01:02.030 align:middle line:84%
+like an IO exception, that
+will then propagate up the call
+
+23
+00:01:02.030 --> 00:01:05.690 align:middle line:84%
+stack until we finally
+find a handler that knows
+
+24
+00:01:05.690 --> 00:01:07.150 align:middle line:90%
+how to handle that exception.
+
+25
+00:01:07.150 --> 00:01:08.900 align:middle line:84%
+And of course, if we
+don't find a handler,
+
+26
+00:01:08.900 --> 00:01:10.850 align:middle line:84%
+it'll fall off the
+top of the stack,
+
+27
+00:01:10.850 --> 00:01:13.310 align:middle line:84%
+and then the program
+will probably blow up.
+
+28
+00:01:13.310 --> 00:01:16.740 align:middle line:84%
+Or maybe if you've registered
+an un-call exception handler,
+
+29
+00:01:16.740 --> 00:01:18.380 align:middle line:90%
+it'll catch it and save the day.
+
+30
+00:01:18.380 --> 00:01:20.740 align:middle line:84%
+But the point is that
+things go up and down
+
+31
+00:01:20.740 --> 00:01:23.780 align:middle line:84%
+the synchronous call stack,
+where things are finally
+
+32
+00:01:23.780 --> 00:01:26.130 align:middle line:90%
+caught and handled.
+
+33
+00:01:26.130 --> 00:01:29.300 align:middle line:84%
+However, completable futures
+that run asynchronously
+
+34
+00:01:29.300 --> 00:01:32.847 align:middle line:84%
+don't conform to this
+conventional call stack model,
+
+35
+00:01:32.847 --> 00:01:34.430 align:middle line:84%
+because things are
+going to be running
+
+36
+00:01:34.430 --> 00:01:37.670 align:middle line:84%
+in the background and the thread
+at which they were started--
+
+37
+00:01:37.670 --> 00:01:40.680 align:middle line:84%
+like, where we call supply
+is sync here, for example--
+
+38
+00:01:40.680 --> 00:01:43.970 align:middle line:84%
+it's not going to be
+typically where the call is
+
+39
+00:01:43.970 --> 00:01:45.890 align:middle line:90%
+going to be handled.
+
+40
+00:01:45.890 --> 00:01:47.620 align:middle line:84%
+So completion stage
+methods can run
+
+41
+00:01:47.620 --> 00:01:49.480 align:middle line:84%
+in a whole pile of
+different worker threads,
+
+42
+00:01:49.480 --> 00:01:52.960 align:middle line:84%
+especially if you use the
+async variant of these things.
+
+43
+00:01:52.960 --> 00:01:56.210 align:middle line:84%
+Then, it almost certainly will
+run in a different thread.
+
+44
+00:01:56.210 --> 00:02:00.880 align:middle line:84%
+So we have to find some way of
+being able to handle exceptions
+
+45
+00:02:00.880 --> 00:02:04.000 align:middle line:84%
+that occur asynchronously,
+but do it in a way that
+
+46
+00:02:04.000 --> 00:02:06.600 align:middle line:90%
+doesn't drive us insane.
+
+47
+00:02:06.600 --> 00:02:10.919 align:middle line:84%
+And that's why we have
+these exception handling
+
+48
+00:02:10.919 --> 00:02:12.810 align:middle line:90%
+completion stage methods.
+
+49
+00:02:12.810 --> 00:02:14.910 align:middle line:84%
+And they're able to handle
+runtime exceptions that
+
+50
+00:02:14.910 --> 00:02:16.740 align:middle line:84%
+occur asynchronously,
+but we catch them
+
+51
+00:02:16.740 --> 00:02:20.130 align:middle line:84%
+in a way that makes them
+look more civilized and more
+
+52
+00:02:20.130 --> 00:02:22.320 align:middle line:90%
+controlled.
+
+53
+00:02:22.320 --> 00:02:25.350 align:middle line:84%
+As you can see,
+there's several methods
+
+54
+00:02:25.350 --> 00:02:27.990 align:middle line:84%
+that I would put into this
+category of exception handling
+
+55
+00:02:27.990 --> 00:02:30.280 align:middle line:90%
+or exception-related methods.
+
+56
+00:02:30.280 --> 00:02:32.730 align:middle line:84%
+There's the when complete,
+handle, and exceptionally
+
+57
+00:02:32.730 --> 00:02:33.900 align:middle line:90%
+methods.
+
+58
+00:02:33.900 --> 00:02:35.550 align:middle line:84%
+And in earlier
+versions of Java, there
+
+59
+00:02:35.550 --> 00:02:39.330 align:middle line:84%
+was an async variant for
+when complete and handled.
+
+60
+00:02:39.330 --> 00:02:42.190 align:middle line:84%
+With later versions of
+Java, namely, Java 12--
+
+61
+00:02:42.190 --> 00:02:44.817 align:middle line:84%
+which was released
+relatively recently
+
+62
+00:02:44.817 --> 00:02:47.400 align:middle line:84%
+to the making of this video, by
+the time you watch this video,
+
+63
+00:02:47.400 --> 00:02:50.040 align:middle line:84%
+there could be later
+versions of Java, of course--
+
+64
+00:02:50.040 --> 00:02:53.422 align:middle line:84%
+they added an async version
+for exceptionally as well.
+
+65
+00:02:53.422 --> 00:02:55.380 align:middle line:84%
+And you'll see, as we
+talk about these methods,
+
+66
+00:02:55.380 --> 00:02:58.195 align:middle line:84%
+they all do somewhat
+different things.
+
+67
+00:02:58.195 --> 00:02:59.820 align:middle line:84%
+So let's take a look
+at an example that
+
+68
+00:02:59.820 --> 00:03:02.790 align:middle line:84%
+will help make it
+clear how to use
+
+69
+00:03:02.790 --> 00:03:05.700 align:middle line:84%
+these different exception
+handling completion stage
+
+70
+00:03:05.700 --> 00:03:06.780 align:middle line:90%
+methods.
+
+71
+00:03:06.780 --> 00:03:12.290 align:middle line:84%
+This particular example is
+going to asynchronously create
+
+72
+00:03:12.290 --> 00:03:17.270 align:middle line:84%
+a big fraction passing in 100 as
+the numerator and some variable
+
+73
+00:03:17.270 --> 00:03:18.750 align:middle line:90%
+as the denominator.
+
+74
+00:03:18.750 --> 00:03:21.557 align:middle line:84%
+And if this denominator is
+zero, then obviously, we're
+
+75
+00:03:21.557 --> 00:03:22.640 align:middle line:90%
+going to get an exception.
+
+76
+00:03:22.640 --> 00:03:24.230 align:middle line:84%
+Because if you
+create a big fraction
+
+77
+00:03:24.230 --> 00:03:30.070 align:middle line:84%
+with a denominator of zero,
+then that's an erroneous number.
+
+78
+00:03:30.070 --> 00:03:32.230 align:middle line:84%
+Now if you don't
+handle an exception,
+
+79
+00:03:32.230 --> 00:03:33.540 align:middle line:90%
+the program will be terminated.
+
+80
+00:03:33.540 --> 00:03:36.027 align:middle line:84%
+So we don't want to
+have that happen.
+
+81
+00:03:36.027 --> 00:03:38.110 align:middle line:84%
+So let's take a look at a
+couple of different ways
+
+82
+00:03:38.110 --> 00:03:39.198 align:middle line:90%
+to deal with this.
+
+83
+00:03:39.198 --> 00:03:40.740 align:middle line:84%
+The first way to
+deal with this would
+
+84
+00:03:40.740 --> 00:03:43.810 align:middle line:90%
+be to use that handle method.
+
+85
+00:03:43.810 --> 00:03:46.630 align:middle line:84%
+And the handle
+completion stage method
+
+86
+00:03:46.630 --> 00:03:49.000 align:middle line:84%
+will handle the outcome
+of the previous stage.
+
+87
+00:03:49.000 --> 00:03:50.740 align:middle line:84%
+And it's always
+called regardless of
+
+88
+00:03:50.740 --> 00:03:53.505 align:middle line:84%
+whether an exception
+is thrown or not.
+
+89
+00:03:53.505 --> 00:03:54.880 align:middle line:84%
+And the reason
+it's always called
+
+90
+00:03:54.880 --> 00:03:57.490 align:middle line:84%
+is it's actually passed
+a pair of values.
+
+91
+00:03:57.490 --> 00:04:00.920 align:middle line:84%
+One is the value if things
+completed non-exceptionally,
+
+92
+00:04:00.920 --> 00:04:02.800 align:middle line:84%
+or successfully,
+and the other is
+
+93
+00:04:02.800 --> 00:04:06.142 align:middle line:84%
+the exception that occurs
+if an exception is thrown.
+
+94
+00:04:06.142 --> 00:04:07.600 align:middle line:84%
+So let's say, for
+sake of argument,
+
+95
+00:04:07.600 --> 00:04:09.430 align:middle line:90%
+that an exception was thrown.
+
+96
+00:04:09.430 --> 00:04:13.450 align:middle line:84%
+Well, we're going to handle that
+exception by simply converting
+
+97
+00:04:13.450 --> 00:04:16.570 align:middle line:84%
+whatever went wrong
+to the value zero,
+
+98
+00:04:16.570 --> 00:04:19.019 align:middle line:90%
+and swallow the exception.
+
+99
+00:04:19.019 --> 00:04:22.502 align:middle line:84%
+Conversely, the normal path,
+when fraction was not null,
+
+100
+00:04:22.502 --> 00:04:24.210 align:middle line:84%
+we just take the
+fraction and multiply it
+
+101
+00:04:24.210 --> 00:04:27.100 align:middle line:90%
+by some other number.
+
+102
+00:04:27.100 --> 00:04:31.750 align:middle line:84%
+Handle must return a value and
+then can thus change the return
+
+103
+00:04:31.750 --> 00:04:33.520 align:middle line:90%
+value, as we show here.
+
+104
+00:04:33.520 --> 00:04:36.950 align:middle line:84%
+And this will also
+swallow the exception.
+
+105
+00:04:36.950 --> 00:04:38.840 align:middle line:84%
+When we're all done,
+no matter what,
+
+106
+00:04:38.840 --> 00:04:41.007 align:middle line:84%
+we go ahead and print the
+result, which would either
+
+107
+00:04:41.007 --> 00:04:45.650 align:middle line:84%
+be the result of multiplying the
+fraction by a reduced fraction,
+
+108
+00:04:45.650 --> 00:04:49.733 align:middle line:84%
+or zero, depending on whether
+an exception occurred.
+
+109
+00:04:49.733 --> 00:04:51.150 align:middle line:84%
+Here's another way
+to handle this.
+
+110
+00:04:51.150 --> 00:04:53.820 align:middle line:84%
+This uses the
+exceptionally method.
+
+111
+00:04:53.820 --> 00:04:56.790 align:middle line:84%
+And this one is a bit more like
+traditional exception handling,
+
+112
+00:04:56.790 --> 00:04:58.860 align:middle line:90%
+except it works asynchronously.
+
+113
+00:04:58.860 --> 00:05:01.590 align:middle line:84%
+Once again, we create
+ourselves a big fraction
+
+114
+00:05:01.590 --> 00:05:03.390 align:middle line:84%
+that might have a
+denominator of zero,
+
+115
+00:05:03.390 --> 00:05:06.540 align:middle line:84%
+so it might or might
+not throw an exception.
+
+116
+00:05:06.540 --> 00:05:08.370 align:middle line:84%
+We then have the
+thenApply method.
+
+117
+00:05:08.370 --> 00:05:11.250 align:middle line:84%
+In this case, if all
+goes well, then we're
+
+118
+00:05:11.250 --> 00:05:15.180 align:middle line:84%
+going to go ahead and multiply
+the fraction by the reduced
+
+119
+00:05:15.180 --> 00:05:16.800 align:middle line:90%
+fraction constant.
+
+120
+00:05:16.800 --> 00:05:18.100 align:middle line:90%
+Everything's fine.
+
+121
+00:05:18.100 --> 00:05:20.850 align:middle line:84%
+And if that happens,
+we're going to skip
+
+122
+00:05:20.850 --> 00:05:22.620 align:middle line:90%
+the exceptionally method.
+
+123
+00:05:22.620 --> 00:05:24.270 align:middle line:84%
+Conversely, if an
+exception is thrown,
+
+124
+00:05:24.270 --> 00:05:26.740 align:middle line:84%
+the thenApply method
+will be skipped.
+
+125
+00:05:26.740 --> 00:05:28.980 align:middle line:84%
+And if an exception
+occurs, control
+
+126
+00:05:28.980 --> 00:05:33.230 align:middle line:84%
+will transfer automatically
+to the exceptionally method.
+
+127
+00:05:33.230 --> 00:05:37.710 align:middle line:84%
+And that will handle the case
+where the denominator was zero,
+
+128
+00:05:37.710 --> 00:05:40.390 align:middle line:84%
+and therefore, an
+exception was thrown.
+
+129
+00:05:40.390 --> 00:05:42.670 align:middle line:84%
+For this particular
+example, maybe a little bit
+
+130
+00:05:42.670 --> 00:05:45.010 align:middle line:84%
+sleazy here, but we're going
+to swallow the exception
+
+131
+00:05:45.010 --> 00:05:47.680 align:middle line:84%
+by converting the exception
+to the zero result,
+
+132
+00:05:47.680 --> 00:05:49.190 align:middle line:84%
+just to show you
+something to do--
+
+133
+00:05:49.190 --> 00:05:51.648 align:middle line:84%
+not necessarily the best thing
+to do to swallow exceptions,
+
+134
+00:05:51.648 --> 00:05:52.627 align:middle line:90%
+by the way.
+
+135
+00:05:52.627 --> 00:05:54.710 align:middle line:84%
+And then we turn around
+and print the results out,
+
+136
+00:05:54.710 --> 00:05:56.835 align:middle line:84%
+which will either be zero
+if an exception occurred,
+
+137
+00:05:56.835 --> 00:06:00.520 align:middle line:84%
+or the result of multiplying
+the big fraction.
+
+138
+00:06:00.520 --> 00:06:03.110 align:middle line:84%
+There is yet another way
+we can deal with things,
+
+139
+00:06:03.110 --> 00:06:05.700 align:middle line:90%
+and that's to use whenComplete.
+
+140
+00:06:05.700 --> 00:06:07.750 align:middle line:84%
+The whenComplete
+method is called
+
+141
+00:06:07.750 --> 00:06:12.050 align:middle line:84%
+like handle under both normal
+and exceptional conditions.
+
+142
+00:06:12.050 --> 00:06:15.620 align:middle line:84%
+As before, it passes in
+two parameters, fraction
+
+143
+00:06:15.620 --> 00:06:16.400 align:middle line:90%
+and the exception.
+
+144
+00:06:16.400 --> 00:06:18.590 align:middle line:84%
+And these values are
+mutually exclusive.
+
+145
+00:06:18.590 --> 00:06:21.347 align:middle line:84%
+Either one of them is
+null, or one of them is--
+
+146
+00:06:21.347 --> 00:06:23.930 align:middle line:84%
+either one of them is null, the
+other is null, and one of them
+
+147
+00:06:23.930 --> 00:06:27.400 align:middle line:84%
+is non-null, and other is
+non-null, but not both.
+
+148
+00:06:27.400 --> 00:06:30.130 align:middle line:84%
+If the fraction is not
+null, it means it succeeded.
+
+149
+00:06:30.130 --> 00:06:32.280 align:middle line:84%
+So you go ahead and
+print out the result.
+
+150
+00:06:32.280 --> 00:06:35.580 align:middle line:84%
+If the exception
+occurred, we print out
+
+151
+00:06:35.580 --> 00:06:37.590 align:middle line:90%
+the message of the exception.
+
+152
+00:06:37.590 --> 00:06:39.723 align:middle line:90%
+Why did it fail?
+
+153
+00:06:39.723 --> 00:06:41.140 align:middle line:84%
+Was it because we
+divided by zero?
+
+154
+00:06:41.140 --> 00:06:43.040 align:middle line:90%
+And so on.
+
+155
+00:06:43.040 --> 00:06:47.120 align:middle line:84%
+whenComplete is somewhat
+like Java streams peak.
+
+156
+00:06:47.120 --> 00:06:49.220 align:middle line:90%
+It has a side effect.
+
+157
+00:06:49.220 --> 00:06:52.440 align:middle line:84%
+It doesn't change the
+return value at all,
+
+158
+00:06:52.440 --> 00:06:54.080 align:middle line:84%
+and most importantly--
+and somewhat
+
+159
+00:06:54.080 --> 00:06:56.968 align:middle line:84%
+non-intuitively-- it doesn't
+actually swallow the exception.
+
+160
+00:06:56.968 --> 00:06:58.760 align:middle line:84%
+So that exception will
+keep propagating up.
+
+161
+00:06:58.760 --> 00:07:00.500 align:middle line:84%
+So you'll have to
+figure out how to catch
+
+162
+00:07:00.500 --> 00:07:02.570 align:middle line:84%
+the exception through
+some other means,
+
+163
+00:07:02.570 --> 00:07:04.320 align:middle line:90%
+probably by using exceptionally.
+
+164
+00:07:04.320 --> 00:07:05.820 align:middle line:84%
+But the key thing
+about whenComplete
+
+165
+00:07:05.820 --> 00:07:08.080 align:middle line:90%
+is it always gets called.

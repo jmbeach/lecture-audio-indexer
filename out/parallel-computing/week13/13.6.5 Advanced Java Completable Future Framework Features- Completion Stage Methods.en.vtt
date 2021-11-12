@@ -1,0 +1,444 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.500 align:middle line:90%
+
+
+2
+00:00:00.500 --> 00:00:04.670 align:middle line:84%
+We'll now talk about part II
+of our two-stage completion
+
+3
+00:00:04.670 --> 00:00:06.820 align:middle line:90%
+methods discussion.
+
+4
+00:00:06.820 --> 00:00:10.420 align:middle line:84%
+The previous part, part I,
+talked about two-stage methods
+
+5
+00:00:10.420 --> 00:00:12.727 align:middle line:90%
+that did and-ing conjunction.
+
+6
+00:00:12.727 --> 00:00:14.560 align:middle line:84%
+This one, we'll talk
+about two-stage methods
+
+7
+00:00:14.560 --> 00:00:18.085 align:middle line:90%
+that do or-ing or disjunction.
+
+8
+00:00:18.085 --> 00:00:20.460 align:middle line:84%
+The particular method we're
+going to look at in this case
+
+9
+00:00:20.460 --> 00:00:22.960 align:middle line:90%
+is called acceptEither.
+
+10
+00:00:22.960 --> 00:00:25.500 align:middle line:84%
+And as you can see,
+it's going to take
+
+11
+00:00:25.500 --> 00:00:27.510 align:middle line:84%
+either result that
+finishes first and then do
+
+12
+00:00:27.510 --> 00:00:30.980 align:middle line:90%
+some action in response.
+
+13
+00:00:30.980 --> 00:00:33.740 align:middle line:84%
+This is an example of
+a logical disjunction.
+
+14
+00:00:33.740 --> 00:00:37.250 align:middle line:84%
+It will work whether one
+finishes or the other.
+
+15
+00:00:37.250 --> 00:00:41.420 align:middle line:84%
+And it'll handle the result of
+either of the previous stages
+
+16
+00:00:41.420 --> 00:00:44.020 align:middle line:90%
+results.
+
+17
+00:00:44.020 --> 00:00:47.290 align:middle line:84%
+Once again, there are two
+functions that are used here.
+
+18
+00:00:47.290 --> 00:00:50.050 align:middle line:84%
+One of them will be the function
+that invokes acceptEither,
+
+19
+00:00:50.050 --> 00:00:52.360 align:middle line:84%
+which we don't see of
+course in the signature,
+
+20
+00:00:52.360 --> 00:00:54.310 align:middle line:84%
+but it's implicit,
+and the other will
+
+21
+00:00:54.310 --> 00:00:58.060 align:middle line:84%
+be the future that's
+passed to acceptEither,
+
+22
+00:00:58.060 --> 00:00:59.770 align:middle line:90%
+which is called other.
+
+23
+00:00:59.770 --> 00:01:02.387 align:middle line:84%
+So when either of those
+finish, then the action
+
+24
+00:01:02.387 --> 00:01:03.220 align:middle line:90%
+will be called back.
+
+25
+00:01:03.220 --> 00:01:05.260 align:middle line:84%
+And as you can see, this
+is a consumer action.
+
+26
+00:01:05.260 --> 00:01:06.010 align:middle line:90%
+Go back over here.
+
+27
+00:01:06.010 --> 00:01:07.570 align:middle line:90%
+It's consumer action.
+
+28
+00:01:07.570 --> 00:01:09.830 align:middle line:84%
+And that means
+there is no return.
+
+29
+00:01:09.830 --> 00:01:14.175 align:middle line:84%
+So it just is a
+CompletableFuture to void.
+
+30
+00:01:14.175 --> 00:01:16.050 align:middle line:84%
+And by returning a
+CompletableFuture to void,
+
+31
+00:01:16.050 --> 00:01:18.050 align:middle line:84%
+it means that we can't
+get a result back for it.
+
+32
+00:01:18.050 --> 00:01:21.540 align:middle line:84%
+Although we can go ahead
+and Join on it and have it
+
+33
+00:01:21.540 --> 00:01:24.580 align:middle line:84%
+wait until it's
+finished running.
+
+34
+00:01:24.580 --> 00:01:29.770 align:middle line:84%
+You would, typically, use the
+method here, the acceptEither
+
+35
+00:01:29.770 --> 00:01:32.688 align:middle line:84%
+method, at the end of a
+chain of completion stages.
+
+36
+00:01:32.688 --> 00:01:35.230 align:middle line:84%
+Probably not that useful to put
+anywhere else unless you have
+
+37
+00:01:35.230 --> 00:01:36.438 align:middle line:90%
+a Join or something after it.
+
+38
+00:01:36.438 --> 00:01:39.230 align:middle line:84%
+But it is often useful
+to put at the end.
+
+39
+00:01:39.230 --> 00:01:41.140 align:middle line:84%
+So let's talk about a
+kind of a fun example
+
+40
+00:01:41.140 --> 00:01:43.930 align:middle line:84%
+to illustrate how this
+particular method can be used.
+
+41
+00:01:43.930 --> 00:01:45.430 align:middle line:84%
+What we're going
+to do here is we're
+
+42
+00:01:45.430 --> 00:01:49.910 align:middle line:84%
+going to create two
+CompletableFutures that
+
+43
+00:01:49.910 --> 00:01:54.680 align:middle line:84%
+will contain the results of
+sorting a given list using two
+
+44
+00:01:54.680 --> 00:01:58.250 align:middle line:84%
+different algorithms in two
+different background worker
+
+45
+00:01:58.250 --> 00:02:00.380 align:middle line:90%
+threads in the ForkJoinPool.
+
+46
+00:02:00.380 --> 00:02:01.610 align:middle line:90%
+So that's pretty cool.
+
+47
+00:02:01.610 --> 00:02:04.250 align:middle line:84%
+And we're going to do
+this because despite all
+
+48
+00:02:04.250 --> 00:02:08.090 align:middle line:84%
+the schooling you may have
+had with analyzing, sorting
+
+49
+00:02:08.090 --> 00:02:11.320 align:middle line:84%
+algorithms in terms of their
+asymptotic time, complexity,
+
+50
+00:02:11.320 --> 00:02:13.940 align:middle line:84%
+and best case and worst
+case and average case,
+
+51
+00:02:13.940 --> 00:02:17.210 align:middle line:84%
+it's still, honestly, a bit of a
+crapshoot as to which algorithm
+
+52
+00:02:17.210 --> 00:02:20.820 align:middle line:90%
+is fastest for any given input.
+
+53
+00:02:20.820 --> 00:02:23.450 align:middle line:84%
+So is quickSort best
+to sort this list?
+
+54
+00:02:23.450 --> 00:02:25.790 align:middle line:84%
+Is mergeSort best
+to sort this list?
+
+55
+00:02:25.790 --> 00:02:27.260 align:middle line:90%
+We don't really know.
+
+56
+00:02:27.260 --> 00:02:29.690 align:middle line:84%
+So rather than try to sit
+there and guess and probably
+
+57
+00:02:29.690 --> 00:02:31.630 align:middle line:84%
+guess wrong,
+instead, we're going
+
+58
+00:02:31.630 --> 00:02:34.340 align:middle line:84%
+to take advantage of this
+proliferation of cores
+
+59
+00:02:34.340 --> 00:02:39.200 align:middle line:84%
+that we have in our brave new
+multicore and many core world,
+
+60
+00:02:39.200 --> 00:02:41.780 align:middle line:84%
+and we're going to go ahead
+and run both those sorting
+
+61
+00:02:41.780 --> 00:02:44.960 align:middle line:84%
+algorithms at the same
+time, in parallel.
+
+62
+00:02:44.960 --> 00:02:47.090 align:middle line:84%
+And then we're going
+to use acceptEither
+
+63
+00:02:47.090 --> 00:02:48.650 align:middle line:84%
+to take the result
+from whichever
+
+64
+00:02:48.650 --> 00:02:50.960 align:middle line:90%
+one happens to finish first.
+
+65
+00:02:50.960 --> 00:02:53.210 align:middle line:84%
+So if quickSort
+finishes first, we're
+
+66
+00:02:53.210 --> 00:02:56.570 align:middle line:84%
+going to print the results
+of the output from quickSort.
+
+67
+00:02:56.570 --> 00:02:58.340 align:middle line:84%
+If mergeSort
+finishes first, we're
+
+68
+00:02:58.340 --> 00:03:01.550 align:middle line:84%
+going to print the results
+of the output of mergeSort.
+
+69
+00:03:01.550 --> 00:03:04.100 align:middle line:84%
+Now, it turns out that
+acceptEitehr does not
+
+70
+00:03:04.100 --> 00:03:08.170 align:middle line:84%
+cancel the second future
+after the first one completes,
+
+71
+00:03:08.170 --> 00:03:09.568 align:middle line:90%
+and that's by design.
+
+72
+00:03:09.568 --> 00:03:11.360 align:middle line:84%
+It may turn out that
+that CompletableFuture
+
+73
+00:03:11.360 --> 00:03:14.060 align:middle line:84%
+is needed for something else
+in some other computation,
+
+74
+00:03:14.060 --> 00:03:16.010 align:middle line:84%
+so it doesn't
+bother canceling it.
+
+75
+00:03:16.010 --> 00:03:17.960 align:middle line:84%
+Besides, as we
+talked about before,
+
+76
+00:03:17.960 --> 00:03:20.550 align:middle line:84%
+canceling is a little bit
+wonky with CompletableFuture,
+
+77
+00:03:20.550 --> 00:03:23.145 align:middle line:84%
+so it really wouldn't save you
+anything in the first place.
+
+78
+00:03:23.145 --> 00:03:25.520 align:middle line:84%
+But the bottom line is that
+whichever one finishes first,
+
+79
+00:03:25.520 --> 00:03:27.740 align:middle line:84%
+we'll take its result
+and we'll simply
+
+80
+00:03:27.740 --> 00:03:30.290 align:middle line:84%
+ignore the other result
+that comes whenever
+
+81
+00:03:30.290 --> 00:03:32.770 align:middle line:90%
+it comes, if it ever comes.
+
+82
+00:03:32.770 --> 00:03:35.140 align:middle line:84%
+What we do here is we
+take the results list,
+
+83
+00:03:35.140 --> 00:03:37.690 align:middle line:84%
+and for each element in
+the list, we go ahead
+
+84
+00:03:37.690 --> 00:03:42.820 align:middle line:84%
+and we print out the
+result in mixed fraction
+
+85
+00:03:42.820 --> 00:03:45.145 align:middle line:90%
+form, proper fraction form.
+
+86
+00:03:45.145 --> 00:03:46.520 align:middle line:84%
+So this is a really
+neat example.
+
+87
+00:03:46.520 --> 00:03:50.110 align:middle line:84%
+It really demonstrates what you
+can do with a multicore world
+
+88
+00:03:50.110 --> 00:03:52.540 align:middle line:84%
+where you've got a proliferation
+of processing resources,
+
+89
+00:03:52.540 --> 00:03:55.240 align:middle line:84%
+and you can be extravagant
+and do a whole bunch of things
+
+90
+00:03:55.240 --> 00:03:57.910 align:middle line:84%
+in parallel, and
+just pick the winner,
+
+91
+00:03:57.910 --> 00:04:00.280 align:middle line:84%
+and not care about
+the fact that you're
+
+92
+00:04:00.280 --> 00:04:02.440 align:middle line:90%
+burning CPU cycles wantonly.
+
+93
+00:04:02.440 --> 00:04:05.070 align:middle line:90%
+It's often perfectly OK.

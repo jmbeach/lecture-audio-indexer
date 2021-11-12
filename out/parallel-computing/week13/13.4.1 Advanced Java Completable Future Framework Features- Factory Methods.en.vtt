@@ -1,0 +1,389 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.500 align:middle line:90%
+
+
+2
+00:00:00.500 --> 00:00:02.940 align:middle line:84%
+We're now ready to step
+into the wonderful world
+
+3
+00:00:02.940 --> 00:00:05.280 align:middle line:84%
+of advanced Java
+completable future features.
+
+4
+00:00:05.280 --> 00:00:08.280 align:middle line:84%
+And we're going to start with
+the methods that kick things
+
+5
+00:00:08.280 --> 00:00:10.920 align:middle line:90%
+off, the factory methods.
+
+6
+00:00:10.920 --> 00:00:13.380 align:middle line:84%
+As we alluded to
+earlier very briefly,
+
+7
+00:00:13.380 --> 00:00:18.740 align:middle line:84%
+factory methods initiate
+asynchronous computations.
+
+8
+00:00:18.740 --> 00:00:20.360 align:middle line:84%
+So as we can see,
+there's actually
+
+9
+00:00:20.360 --> 00:00:23.060 align:middle line:84%
+four factory methods
+that are defined as part
+
+10
+00:00:23.060 --> 00:00:25.370 align:middle line:90%
+of the completed future API.
+
+11
+00:00:25.370 --> 00:00:28.130 align:middle line:84%
+These computations may or
+may not return a value,
+
+12
+00:00:28.130 --> 00:00:30.330 align:middle line:90%
+depending on which one you use.
+
+13
+00:00:30.330 --> 00:00:37.140 align:middle line:84%
+These supply async method allows
+two-way calls via supplier,
+
+14
+00:00:37.140 --> 00:00:40.080 align:middle line:84%
+and I should hasten to say
+two-way asynchronous caused
+
+15
+00:00:40.080 --> 00:00:41.760 align:middle line:90%
+via a supplier.
+
+16
+00:00:41.760 --> 00:00:43.390 align:middle line:84%
+On the right hand
+side of the slide,
+
+17
+00:00:43.390 --> 00:00:46.410 align:middle line:84%
+you can see that there's two
+different variants of supply
+
+18
+00:00:46.410 --> 00:00:47.700 align:middle line:90%
+async.
+
+19
+00:00:47.700 --> 00:00:50.760 align:middle line:84%
+They both take supplier
+parameters, but one of them
+
+20
+00:00:50.760 --> 00:00:54.330 align:middle line:84%
+uses the default
+common fork-join pool.
+
+21
+00:00:54.330 --> 00:00:57.810 align:middle line:84%
+And the other uses whatever
+the given executor pool is,
+
+22
+00:00:57.810 --> 00:01:01.740 align:middle line:84%
+and both of these methods
+return a completable future,
+
+23
+00:01:01.740 --> 00:01:05.550 align:middle line:84%
+which when complete will
+have the result of whatever
+
+24
+00:01:05.550 --> 00:01:09.190 align:middle line:90%
+the supplier's computation was.
+
+25
+00:01:09.190 --> 00:01:11.800 align:middle line:84%
+You can pass parameters
+and return a value
+
+26
+00:01:11.800 --> 00:01:12.910 align:middle line:90%
+from supply async.
+
+27
+00:01:12.910 --> 00:01:16.430 align:middle line:84%
+Here's a small variant
+of what we saw before.
+
+28
+00:01:16.430 --> 00:01:20.140 align:middle line:84%
+You can see that we
+can go ahead and create
+
+29
+00:01:20.140 --> 00:01:21.700 align:middle line:84%
+a lambda expression
+that will run
+
+30
+00:01:21.700 --> 00:01:23.440 align:middle line:90%
+in the background in a pool--
+
+31
+00:01:23.440 --> 00:01:27.550 align:middle line:84%
+in the fork-join pool,
+and we can pass parameters
+
+32
+00:01:27.550 --> 00:01:31.543 align:middle line:84%
+to this using effectively
+final objects.
+
+33
+00:01:31.543 --> 00:01:33.960 align:middle line:84%
+And we'll come back and talk
+about this particular example
+
+34
+00:01:33.960 --> 00:01:35.440 align:middle line:90%
+later in more detail.
+
+35
+00:01:35.440 --> 00:01:41.720 align:middle line:84%
+This is the example from my EX 8
+folder in my GitHub repository.
+
+36
+00:01:41.720 --> 00:01:45.950 align:middle line:84%
+There's also a pair of functions
+called run async that enable
+
+37
+00:01:45.950 --> 00:01:48.500 align:middle line:90%
+one-way calls via a runnable.
+
+38
+00:01:48.500 --> 00:01:51.050 align:middle line:84%
+So they both take runnables,
+which, as you recall
+
+39
+00:01:51.050 --> 00:01:52.610 align:middle line:90%
+have no return value.
+
+40
+00:01:52.610 --> 00:01:55.950 align:middle line:84%
+One uses the common
+fork-join pool by default.
+
+41
+00:01:55.950 --> 00:01:59.990 align:middle line:84%
+The other uses the executor
+that's passed in its parameter,
+
+42
+00:01:59.990 --> 00:02:02.030 align:middle line:84%
+and both of these return
+a completable future
+
+43
+00:02:02.030 --> 00:02:04.160 align:middle line:90%
+that has no results.
+
+44
+00:02:04.160 --> 00:02:06.320 align:middle line:84%
+You can basically
+wait on it, but you
+
+45
+00:02:06.320 --> 00:02:08.535 align:middle line:90%
+can't get a result from it.
+
+46
+00:02:08.535 --> 00:02:10.410 align:middle line:84%
+Here's a very simple
+example that illustrates
+
+47
+00:02:10.410 --> 00:02:12.210 align:middle line:90%
+how you could use this.
+
+48
+00:02:12.210 --> 00:02:13.710 align:middle line:84%
+Once again, you can
+pass parameters,
+
+49
+00:02:13.710 --> 00:02:15.580 align:middle line:90%
+but no values can be returned.
+
+50
+00:02:15.580 --> 00:02:17.760 align:middle line:84%
+So if you want to
+do something that
+
+51
+00:02:17.760 --> 00:02:21.262 align:middle line:84%
+has a side effect
+or a result, you're
+
+52
+00:02:21.262 --> 00:02:23.220 align:middle line:84%
+going to have to do it
+through some other means
+
+53
+00:02:23.220 --> 00:02:26.100 align:middle line:84%
+than passing a value back
+because obviously void
+
+54
+00:02:26.100 --> 00:02:28.300 align:middle line:90%
+is not a return value.
+
+55
+00:02:28.300 --> 00:02:30.860 align:middle line:84%
+How we can do it here is by
+using some kind of operation
+
+56
+00:02:30.860 --> 00:02:34.390 align:middle line:84%
+that has a side effect
+such as printing
+
+57
+00:02:34.390 --> 00:02:38.530 align:middle line:84%
+the results of converting
+the multiplied big fraction
+
+58
+00:02:38.530 --> 00:02:40.760 align:middle line:90%
+to a mixed string, for example.
+
+59
+00:02:40.760 --> 00:02:44.270 align:middle line:84%
+And so system.out.println has
+side effects that do that,
+
+60
+00:02:44.270 --> 00:02:49.020 align:middle line:84%
+but there is no value return
+because it's a runnable.
+
+61
+00:02:49.020 --> 00:02:52.170 align:middle line:84%
+Supply async is by far
+the most popular way
+
+62
+00:02:52.170 --> 00:02:56.580 align:middle line:84%
+to initiate operations in the
+completable futures framework.
+
+63
+00:02:56.580 --> 00:02:59.235 align:middle line:84%
+And I very rarely, if
+ever, use run async.
+
+64
+00:02:59.235 --> 00:03:01.290 align:middle line:84%
+I almost always
+use supply async.
+
+65
+00:03:01.290 --> 00:03:05.820 align:middle line:84%
+But just be aware that run async
+is there if you need to use it.
+
+66
+00:03:05.820 --> 00:03:07.590 align:middle line:84%
+All of the asynchronous
+functionality
+
+67
+00:03:07.590 --> 00:03:10.230 align:middle line:84%
+that's invoked by
+these factory methods
+
+68
+00:03:10.230 --> 00:03:12.480 align:middle line:90%
+will run in a thread pool.
+
+69
+00:03:12.480 --> 00:03:15.700 align:middle line:84%
+And by default, the common
+fork-join pool is used,
+
+70
+00:03:15.700 --> 00:03:19.590 align:middle line:84%
+but you're able to provide
+your own predefined pool
+
+71
+00:03:19.590 --> 00:03:21.960 align:middle line:90%
+or an existing predefined pool.
+
+72
+00:03:21.960 --> 00:03:23.850 align:middle line:84%
+Or a user-defined
+pool can also be
+
+73
+00:03:23.850 --> 00:03:27.150 align:middle line:84%
+provided here as long as
+it conforms to the executor
+
+74
+00:03:27.150 --> 00:03:29.340 align:middle line:90%
+interface.
+
+75
+00:03:29.340 --> 00:03:32.220 align:middle line:84%
+In contrast, Java
+parallel streams
+
+76
+00:03:32.220 --> 00:03:35.700 align:middle line:84%
+are designed for exclusive
+use with fork-join pools,
+
+77
+00:03:35.700 --> 00:03:37.980 align:middle line:84%
+in particular the
+common fork-joint pool.
+
+78
+00:03:37.980 --> 00:03:41.340 align:middle line:84%
+So that's an example of a
+limitation with their model
+
+79
+00:03:41.340 --> 00:03:42.085 align:middle line:90%
+or at least--
+
+80
+00:03:42.085 --> 00:03:43.890 align:middle line:84%
+maybe not a limitation
+is the wrong word--
+
+81
+00:03:43.890 --> 00:03:48.150 align:middle line:84%
+but an inflexibility with the
+parallel streams model that's
+
+82
+00:03:48.150 --> 00:03:53.000 align:middle line:84%
+been removed for the Java
+completable future model.

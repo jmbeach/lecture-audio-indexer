@@ -1,0 +1,731 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.880 align:middle line:90%
+
+
+2
+00:00:00.880 --> 00:00:03.730 align:middle line:84%
+So now that we've had a chance
+to talk about these different
+
+3
+00:00:03.730 --> 00:00:05.260 align:middle line:84%
+types of Completion-Stage
+methods--
+
+4
+00:00:05.260 --> 00:00:09.250 align:middle line:84%
+those that trigger after one
+previous stage completes,
+
+5
+00:00:09.250 --> 00:00:12.700 align:middle line:84%
+those that trigger after two,
+both of two previous stages
+
+6
+00:00:12.700 --> 00:00:15.770 align:middle line:84%
+complete, or one of two previous
+stages complete, and so on--
+
+7
+00:00:15.770 --> 00:00:17.380 align:middle line:84%
+let's take some time
+to actually apply
+
+8
+00:00:17.380 --> 00:00:19.870 align:middle line:84%
+these Completion-Stage methods
+and see what they actually
+
+9
+00:00:19.870 --> 00:00:22.215 align:middle line:90%
+do in practice.
+
+10
+00:00:22.215 --> 00:00:24.340 align:middle line:84%
+So once again, we're going
+to come back and revisit
+
+11
+00:00:24.340 --> 00:00:27.620 align:middle line:84%
+our good friend, the
+big fraction class.
+
+12
+00:00:27.620 --> 00:00:30.610 align:middle line:84%
+And this time, we're
+going to go ahead and show
+
+13
+00:00:30.610 --> 00:00:35.170 align:middle line:84%
+these Completion-Stage methods
+via a test function called
+
+14
+00:00:35.170 --> 00:00:38.560 align:middle line:84%
+TestFractionMultiplications1,
+which
+
+15
+00:00:38.560 --> 00:00:41.440 align:middle line:84%
+implies there's a
+TestFractionMultiplications2
+
+16
+00:00:41.440 --> 00:00:43.000 align:middle line:90%
+method, which there is.
+
+17
+00:00:43.000 --> 00:00:46.270 align:middle line:84%
+And this, of course, appears
+in my GitHub repository
+
+18
+00:00:46.270 --> 00:00:49.300 align:middle line:90%
+in the EX8 folder.
+
+19
+00:00:49.300 --> 00:00:52.240 align:middle line:84%
+So what does this
+particular test program do?
+
+20
+00:00:52.240 --> 00:00:56.200 align:middle line:84%
+Well, it goes ahead
+and calls a stream
+
+21
+00:00:56.200 --> 00:00:59.200 align:middle line:84%
+generate factory
+method to generate
+
+22
+00:00:59.200 --> 00:01:00.790 align:middle line:90%
+a bunch of big fractions.
+
+23
+00:01:00.790 --> 00:01:03.730 align:middle line:84%
+So it's going to generate
+an unbounded number
+
+24
+00:01:03.730 --> 00:01:06.280 align:middle line:84%
+of large random and
+unreduced fractions,
+
+25
+00:01:06.280 --> 00:01:07.840 align:middle line:84%
+but of course,
+we're going to limit
+
+26
+00:01:07.840 --> 00:01:12.560 align:middle line:84%
+it to be sMAX fractions, which
+still could be a large number.
+
+27
+00:01:12.560 --> 00:01:15.680 align:middle line:84%
+And let's just take a quick
+recap on how this works.
+
+28
+00:01:15.680 --> 00:01:17.920 align:middle line:84%
+This is the
+makeBigFraction method
+
+29
+00:01:17.920 --> 00:01:20.860 align:middle line:84%
+that creates a large and
+random big fraction, which,
+
+30
+00:01:20.860 --> 00:01:23.920 align:middle line:84%
+in our case, will be
+un-reduced for this use case.
+
+31
+00:01:23.920 --> 00:01:27.100 align:middle line:84%
+It takes in the random number
+generator and a Boolean
+
+32
+00:01:27.100 --> 00:01:29.620 align:middle line:84%
+to indicate whether
+to reduce it or not.
+
+33
+00:01:29.620 --> 00:01:32.830 align:middle line:84%
+We generate an absolutely
+gigantic big integer
+
+34
+00:01:32.830 --> 00:01:35.650 align:middle line:90%
+randomly for our numerator.
+
+35
+00:01:35.650 --> 00:01:38.740 align:middle line:84%
+We divide that
+gigantic big integer
+
+36
+00:01:38.740 --> 00:01:41.590 align:middle line:84%
+by a number between
+1 and 10 to make
+
+37
+00:01:41.590 --> 00:01:43.840 align:middle line:90%
+a somewhat smaller denominator.
+
+38
+00:01:43.840 --> 00:01:47.170 align:middle line:84%
+And then we use the valueOf
+factory method on BigFraction
+
+39
+00:01:47.170 --> 00:01:49.930 align:middle line:84%
+to combine the numerator
+and denominator,
+
+40
+00:01:49.930 --> 00:01:51.850 align:middle line:84%
+make a big fraction,
+and in this case,
+
+41
+00:01:51.850 --> 00:01:55.870 align:middle line:84%
+it's not reduced because
+we passed in a false flag
+
+42
+00:01:55.870 --> 00:01:59.080 align:middle line:90%
+over here.
+
+43
+00:01:59.080 --> 00:02:00.640 align:middle line:84%
+So with that in
+mind, we've now got
+
+44
+00:02:00.640 --> 00:02:04.180 align:middle line:84%
+this stream of
+big fractions that
+
+45
+00:02:04.180 --> 00:02:06.620 align:middle line:84%
+are large and random
+and un-reduced.
+
+46
+00:02:06.620 --> 00:02:09.580 align:middle line:84%
+And now we're going to go
+ahead and call the map method,
+
+47
+00:02:09.580 --> 00:02:12.340 align:middle line:84%
+and we're going to
+pass in a function that
+
+48
+00:02:12.340 --> 00:02:15.400 align:middle line:84%
+will reduce and multiply
+all of these big fractions
+
+49
+00:02:15.400 --> 00:02:16.635 align:middle line:90%
+asynchronously.
+
+50
+00:02:16.635 --> 00:02:18.010 align:middle line:84%
+So let's go ahead
+and take a look
+
+51
+00:02:18.010 --> 00:02:22.300 align:middle line:84%
+at what the
+reduceAndMultiplyFraction
+
+52
+00:02:22.300 --> 00:02:24.020 align:middle line:90%
+function object looks like.
+
+53
+00:02:24.020 --> 00:02:27.130 align:middle line:84%
+So this is a lambda function
+that asynchronously reduces
+
+54
+00:02:27.130 --> 00:02:29.440 align:middle line:90%
+and multiplies big fractions.
+
+55
+00:02:29.440 --> 00:02:31.840 align:middle line:84%
+And what it does is it goes
+ahead and asynchronously
+
+56
+00:02:31.840 --> 00:02:35.290 align:middle line:84%
+reduces a big fraction using
+supplyAsync to kick it off
+
+57
+00:02:35.290 --> 00:02:37.060 align:middle line:90%
+in the background.
+
+58
+00:02:37.060 --> 00:02:41.530 align:middle line:84%
+And then as that completes, the
+thenCompose Completion-Stage
+
+59
+00:02:41.530 --> 00:02:44.770 align:middle line:84%
+method is called, which
+takes the reduced fraction
+
+60
+00:02:44.770 --> 00:02:47.440 align:middle line:84%
+and then kicks off another
+asynchronous operation
+
+61
+00:02:47.440 --> 00:02:50.320 align:middle line:84%
+to reduce that big fraction-- to
+take that reduced big fraction
+
+62
+00:02:50.320 --> 00:02:53.008 align:middle line:84%
+and multiply it by some
+other big fraction.
+
+63
+00:02:53.008 --> 00:02:55.300 align:middle line:84%
+So this is actually going to
+take a fair amount of time
+
+64
+00:02:55.300 --> 00:02:57.540 align:middle line:90%
+to run.
+
+65
+00:02:57.540 --> 00:03:00.540 align:middle line:84%
+thenCompose acts like
+flatMap to ensure
+
+66
+00:03:00.540 --> 00:03:04.230 align:middle line:84%
+there's only one level of
+CompletableFuture nesting here.
+
+67
+00:03:04.230 --> 00:03:07.950 align:middle line:84%
+And that's because
+CompletableFuture supplyAsync
+
+68
+00:03:07.950 --> 00:03:10.830 align:middle line:84%
+will end up creating
+a CompletableFuture,
+
+69
+00:03:10.830 --> 00:03:14.820 align:middle line:84%
+and then Compose will also want
+to return a CompletableFuture.
+
+70
+00:03:14.820 --> 00:03:16.950 align:middle line:84%
+But it's smart enough
+to de-nest these things
+
+71
+00:03:16.950 --> 00:03:19.210 align:middle line:90%
+and flatten them out.
+
+72
+00:03:19.210 --> 00:03:22.000 align:middle line:84%
+Now we could also have
+simply used thenApplyAsync,
+
+73
+00:03:22.000 --> 00:03:24.430 align:middle line:84%
+rather than having
+to do thenCompose and
+
+74
+00:03:24.430 --> 00:03:25.870 align:middle line:90%
+CompletableFuture supplyAsync.
+
+75
+00:03:25.870 --> 00:03:29.320 align:middle line:84%
+We could just call
+thenApplyAsync and given it
+
+76
+00:03:29.320 --> 00:03:32.860 align:middle line:84%
+the action that it wants
+to run in a background
+
+77
+00:03:32.860 --> 00:03:34.890 align:middle line:90%
+thread in the thread pool.
+
+78
+00:03:34.890 --> 00:03:36.610 align:middle line:84%
+So that's an
+alternative means that
+
+79
+00:03:36.610 --> 00:03:39.700 align:middle line:84%
+avoids having to call a
+supplyAsync a second time.
+
+80
+00:03:39.700 --> 00:03:41.540 align:middle line:84%
+And there are sort
+of pros and cons.
+
+81
+00:03:41.540 --> 00:03:43.415 align:middle line:84%
+I kind of like this
+approach a little better.
+
+82
+00:03:43.415 --> 00:03:46.430 align:middle line:84%
+It's a little
+cleaner for my money.
+
+83
+00:03:46.430 --> 00:03:49.850 align:middle line:84%
+The output of the map
+operation is a stream
+
+84
+00:03:49.850 --> 00:03:52.970 align:middle line:84%
+of CompletableFutures to
+asynchronous operations
+
+85
+00:03:52.970 --> 00:03:55.400 align:middle line:84%
+that are reducing
+and multiplying
+
+86
+00:03:55.400 --> 00:03:57.510 align:middle line:90%
+a whole pile of big fractions.
+
+87
+00:03:57.510 --> 00:04:00.260 align:middle line:84%
+So you've got a large number
+of these things flowing through
+
+88
+00:04:00.260 --> 00:04:04.088 align:middle line:84%
+at this point, assuming that
+that sMAX fractions was big.
+
+89
+00:04:04.088 --> 00:04:05.630 align:middle line:84%
+So what are we going
+to do with this?
+
+90
+00:04:05.630 --> 00:04:07.797 align:middle line:84%
+How are we going to manage
+all of these asynchronous
+
+91
+00:04:07.797 --> 00:04:08.750 align:middle line:90%
+computations?
+
+92
+00:04:08.750 --> 00:04:10.730 align:middle line:84%
+Well, if you've
+noticed so far, we've
+
+93
+00:04:10.730 --> 00:04:13.910 align:middle line:84%
+been using our good friend,
+sequential stream to kind
+
+94
+00:04:13.910 --> 00:04:16.123 align:middle line:90%
+of wrap all of this stuff up.
+
+95
+00:04:16.123 --> 00:04:17.540 align:middle line:84%
+So what we're going
+to do is we're
+
+96
+00:04:17.540 --> 00:04:19.279 align:middle line:84%
+going to go ahead
+and use the Collect
+
+97
+00:04:19.279 --> 00:04:21.649 align:middle line:90%
+operation on the stream.
+
+98
+00:04:21.649 --> 00:04:24.910 align:middle line:84%
+And that's going to go ahead
+and return a single completable
+
+99
+00:04:24.910 --> 00:04:28.900 align:middle line:84%
+future to a list
+of big fractions
+
+100
+00:04:28.900 --> 00:04:31.720 align:middle line:84%
+that are being reduced and
+multiplied asynchronously.
+
+101
+00:04:31.720 --> 00:04:35.140 align:middle line:84%
+And the magic behind
+this is a class
+
+102
+00:04:35.140 --> 00:04:37.260 align:middle line:84%
+we'll talk about in
+just a minute, when
+
+103
+00:04:37.260 --> 00:04:43.290 align:middle line:84%
+we talk about arbitrary-arity
+methods in CompletableFuture
+
+104
+00:04:43.290 --> 00:04:44.225 align:middle line:90%
+called allOf.
+
+105
+00:04:44.225 --> 00:04:45.600 align:middle line:84%
+And we're going
+to talk about how
+
+106
+00:04:45.600 --> 00:04:48.210 align:middle line:84%
+to wrap up allOf
+arbitrary-arity method
+
+107
+00:04:48.210 --> 00:04:49.890 align:middle line:84%
+inside of a really
+helpful wrapper
+
+108
+00:04:49.890 --> 00:04:53.170 align:middle line:90%
+class called FuturesCollector.
+
+109
+00:04:53.170 --> 00:04:56.350 align:middle line:84%
+And FuturesCollector.toFuture
+is a factory method
+
+110
+00:04:56.350 --> 00:04:59.860 align:middle line:84%
+that returns a
+collector that collects
+
+111
+00:04:59.860 --> 00:05:04.690 align:middle line:84%
+a stream of completable
+futures to objects of type T
+
+112
+00:05:04.690 --> 00:05:10.252 align:middle line:84%
+into a single completable future
+to a list of objects of type T.
+
+113
+00:05:10.252 --> 00:05:12.460 align:middle line:84%
+And we'll talk more about
+how that works in a second.
+
+114
+00:05:12.460 --> 00:05:15.040 align:middle line:84%
+This is a good example
+of reactive programming.
+
+115
+00:05:15.040 --> 00:05:17.770 align:middle line:84%
+We're going to get back a
+single completable future that
+
+116
+00:05:17.770 --> 00:05:20.830 align:middle line:84%
+will be triggered when all
+these other asynchronous calls
+
+117
+00:05:20.830 --> 00:05:22.870 align:middle line:90%
+complete.
+
+118
+00:05:22.870 --> 00:05:24.970 align:middle line:84%
+When all those asynchronous
+calls complete,
+
+119
+00:05:24.970 --> 00:05:28.750 align:middle line:84%
+when they're finally done, the
+thenAccept completion stage
+
+120
+00:05:28.750 --> 00:05:30.280 align:middle line:90%
+method will get called back.
+
+121
+00:05:30.280 --> 00:05:32.770 align:middle line:84%
+And what that does is
+it will sort and print
+
+122
+00:05:32.770 --> 00:05:37.770 align:middle line:84%
+the list that we got back as a
+result of doing the collection
+
+123
+00:05:37.770 --> 00:05:40.330 align:middle line:90%
+and the collector.
+
+124
+00:05:40.330 --> 00:05:42.220 align:middle line:84%
+Here's what sort
+and print list does.
+
+125
+00:05:42.220 --> 00:05:44.350 align:middle line:84%
+This is kind of
+what we saw before.
+
+126
+00:05:44.350 --> 00:05:46.150 align:middle line:84%
+It's going to take a
+list of big fractions
+
+127
+00:05:46.150 --> 00:05:48.220 align:middle line:84%
+that have been reduced
+and multiplied.
+
+128
+00:05:48.220 --> 00:05:50.002 align:middle line:84%
+And because we're
+just kind of lazy
+
+129
+00:05:50.002 --> 00:05:52.210 align:middle line:84%
+and we don't want to figure
+out which version of sort
+
+130
+00:05:52.210 --> 00:05:54.970 align:middle line:84%
+works best, we're going
+to asynchronously run
+
+131
+00:05:54.970 --> 00:05:57.160 align:middle line:84%
+quickSort on the list,
+and asynchronously
+
+132
+00:05:57.160 --> 00:05:59.110 align:middle line:90%
+run mergeSort on the list.
+
+133
+00:05:59.110 --> 00:06:01.150 align:middle line:84%
+And then whichever
+one finishes first,
+
+134
+00:06:01.150 --> 00:06:03.160 align:middle line:84%
+we're going to take
+that result and we're
+
+135
+00:06:03.160 --> 00:06:07.040 align:middle line:84%
+going to go ahead and print
+out the sorted list, converting
+
+136
+00:06:07.040 --> 00:06:11.040 align:middle line:90%
+everything into a mixed string.
+
+137
+00:06:11.040 --> 00:06:13.200 align:middle line:90%
+So that's pretty cool.
+
+138
+00:06:13.200 --> 00:06:15.090 align:middle line:84%
+Now if the future
+is already completed
+
+139
+00:06:15.090 --> 00:06:17.790 align:middle line:84%
+by the time we get
+to accept either--
+
+140
+00:06:17.790 --> 00:06:21.330 align:middle line:84%
+if that sorting takes place
+so quickly, that by the time
+
+141
+00:06:21.330 --> 00:06:23.760 align:middle line:84%
+accept gets called,
+it will end up
+
+142
+00:06:23.760 --> 00:06:29.670 align:middle line:84%
+running this action in
+the thread of the caller.
+
+143
+00:06:29.670 --> 00:06:33.450 align:middle line:84%
+So it'll be the UI thread, or
+the main thread, or whatever.
+
+144
+00:06:33.450 --> 00:06:36.000 align:middle line:84%
+If, for some other reason,
+it is not completed,
+
+145
+00:06:36.000 --> 00:06:38.190 align:middle line:84%
+then it'll probably
+run in the thread
+
+146
+00:06:38.190 --> 00:06:39.720 align:middle line:90%
+where the previous stage ran.
+
+147
+00:06:39.720 --> 00:06:42.120 align:middle line:84%
+So remember, those stages are
+running in the background.
+
+148
+00:06:42.120 --> 00:06:43.950 align:middle line:84%
+And so if they take
+a while to run,
+
+149
+00:06:43.950 --> 00:06:46.210 align:middle line:84%
+it'll run in the
+background thread.
+
+150
+00:06:46.210 --> 00:06:49.180 align:middle line:84%
+In either case,
+cancel is not called
+
+151
+00:06:49.180 --> 00:06:52.810 align:middle line:84%
+on the second completable future
+after the first one completes.
+
+152
+00:06:52.810 --> 00:06:55.440 align:middle line:90%
+And again, that's by design.

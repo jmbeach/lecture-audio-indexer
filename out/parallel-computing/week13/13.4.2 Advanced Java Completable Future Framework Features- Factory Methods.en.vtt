@@ -1,0 +1,243 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.570 align:middle line:90%
+
+
+2
+00:00:00.570 --> 00:00:02.970 align:middle line:84%
+So now that I've outlined
+what a factory method is
+
+3
+00:00:02.970 --> 00:00:05.460 align:middle line:84%
+and given you a couple of
+examples of factory methods,
+
+4
+00:00:05.460 --> 00:00:08.265 align:middle line:84%
+supply async and run
+async, let's take a look
+
+5
+00:00:08.265 --> 00:00:10.140 align:middle line:84%
+and see how we could
+actually apply a factory
+
+6
+00:00:10.140 --> 00:00:11.160 align:middle line:90%
+method in practice.
+
+7
+00:00:11.160 --> 00:00:13.077 align:middle line:84%
+And, of course, what
+we're going to apply here
+
+8
+00:00:13.077 --> 00:00:15.390 align:middle line:90%
+will be the supply async method.
+
+9
+00:00:15.390 --> 00:00:18.330 align:middle line:84%
+So this is basically
+the same example
+
+10
+00:00:18.330 --> 00:00:21.990 align:middle line:84%
+that we saw before except
+now rather than using
+
+11
+00:00:21.990 --> 00:00:25.470 align:middle line:84%
+the complete method and
+using an explicit thread,
+
+12
+00:00:25.470 --> 00:00:27.660 align:middle line:84%
+we're going to use
+supply async in order
+
+13
+00:00:27.660 --> 00:00:30.120 align:middle line:84%
+to be able to
+initiate computations
+
+14
+00:00:30.120 --> 00:00:33.730 align:middle line:84%
+that run in the background
+and multiply big fractions.
+
+15
+00:00:33.730 --> 00:00:35.680 align:middle line:84%
+So when we call
+supply async, that
+
+16
+00:00:35.680 --> 00:00:38.800 align:middle line:84%
+will arrange to execute
+a supplier lambda
+
+17
+00:00:38.800 --> 00:00:40.840 align:middle line:84%
+in the common fork-join
+pool because we don't
+
+18
+00:00:40.840 --> 00:00:43.510 align:middle line:90%
+give an explicit pool here.
+
+19
+00:00:43.510 --> 00:00:45.610 align:middle line:84%
+And here we define
+a supplier lambda
+
+20
+00:00:45.610 --> 00:00:49.260 align:middle line:84%
+that multiplies two
+big fractions together.
+
+21
+00:00:49.260 --> 00:00:50.910 align:middle line:84%
+These computations,
+the one that's
+
+22
+00:00:50.910 --> 00:00:53.280 align:middle line:84%
+running in the background in
+the pool and anything that
+
+23
+00:00:53.280 --> 00:00:58.930 align:middle line:84%
+occurs after the call to supply
+async, can run concurrently.
+
+24
+00:00:58.930 --> 00:01:02.830 align:middle line:84%
+As before, we use join to block
+until the result is complete,
+
+25
+00:01:02.830 --> 00:01:07.080 align:middle line:84%
+and then we go ahead and
+get the mixed string.
+
+26
+00:01:07.080 --> 00:01:09.330 align:middle line:84%
+One of the nice things about
+using completable futures
+
+27
+00:01:09.330 --> 00:01:12.120 align:middle line:84%
+is we don't have
+to know anything
+
+28
+00:01:12.120 --> 00:01:15.060 align:middle line:84%
+about how to create and
+start a Java thread.
+
+29
+00:01:15.060 --> 00:01:18.210 align:middle line:84%
+So Java thread management
+is completely removed.
+
+30
+00:01:18.210 --> 00:01:21.180 align:middle line:84%
+We also don't have to create
+a separate Java thread,
+
+31
+00:01:21.180 --> 00:01:24.510 align:middle line:84%
+but instead we can leverage
+existing threads that
+
+32
+00:01:24.510 --> 00:01:27.810 align:middle line:84%
+occur in the context of
+the common fork-join pool
+
+33
+00:01:27.810 --> 00:01:30.630 align:middle line:90%
+in this particular example.
+
+34
+00:01:30.630 --> 00:01:33.300 align:middle line:84%
+Moreover, we also don't
+need to complete anything.
+
+35
+00:01:33.300 --> 00:01:36.450 align:middle line:84%
+The way in which this works
+is that the completable future
+
+36
+00:01:36.450 --> 00:01:38.250 align:middle line:84%
+that we get back
+from supply async
+
+37
+00:01:38.250 --> 00:01:43.410 align:middle line:84%
+will automatically be triggered
+when the asynchronous operation
+
+38
+00:01:43.410 --> 00:01:45.360 align:middle line:84%
+running in the
+background, namely
+
+39
+00:01:45.360 --> 00:01:49.620 align:middle line:84%
+the supplier lambda we gave the
+supply async, finishes running.
+
+40
+00:01:49.620 --> 00:01:51.930 align:middle line:84%
+So we don't need to complete
+this future explicitly
+
+41
+00:01:51.930 --> 00:01:54.660 align:middle line:84%
+because supply async,
+the factory method,
+
+42
+00:01:54.660 --> 00:01:56.910 align:middle line:84%
+actually return the
+complete future that we're
+
+43
+00:01:56.910 --> 00:01:59.180 align:middle line:90%
+going to join with.
+
+44
+00:01:59.180 --> 00:02:01.280 align:middle line:84%
+However, we still have
+this wacky problem
+
+45
+00:02:01.280 --> 00:02:03.410 align:middle line:84%
+of having to call
+join explicitly.
+
+46
+00:02:03.410 --> 00:02:05.060 align:middle line:84%
+And so as we get
+further along, we
+
+47
+00:02:05.060 --> 00:02:07.640 align:middle line:84%
+start talking about other
+methods, particularly
+
+48
+00:02:07.640 --> 00:02:10.220 align:middle line:90%
+the completion stage methods.
+
+49
+00:02:10.220 --> 00:02:12.320 align:middle line:84%
+We'll see how we can get
+rid of this dependency
+
+50
+00:02:12.320 --> 00:02:13.990 align:middle line:90%
+on calling join.

@@ -1,0 +1,292 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.610 align:middle line:90%
+
+
+2
+00:00:00.610 --> 00:00:03.580 align:middle line:84%
+Now that I've given you a brief
+overview of the basic Java
+
+3
+00:00:03.580 --> 00:00:06.400 align:middle line:84%
+completable future
+features, let's take a look
+
+4
+00:00:06.400 --> 00:00:08.920 align:middle line:84%
+and see how we could actually
+apply them in practice
+
+5
+00:00:08.920 --> 00:00:12.770 align:middle line:90%
+to operate on big fractions.
+
+6
+00:00:12.770 --> 00:00:15.600 align:middle line:84%
+This will also give us a
+chance to once again underscore
+
+7
+00:00:15.600 --> 00:00:17.600 align:middle line:84%
+the limitations with these
+basic features, which
+
+8
+00:00:17.600 --> 00:00:20.215 align:middle line:84%
+should come as no surprise
+since, after all, they're
+
+9
+00:00:20.215 --> 00:00:22.340 align:middle line:84%
+really not that much
+different from what we get out
+
+10
+00:00:22.340 --> 00:00:27.040 align:middle line:84%
+of the box with
+conventional futures.
+
+11
+00:00:27.040 --> 00:00:29.950 align:middle line:84%
+This example is going
+to go ahead and multiply
+
+12
+00:00:29.950 --> 00:00:33.410 align:middle line:84%
+big fractions with a
+completable future.
+
+13
+00:00:33.410 --> 00:00:35.510 align:middle line:84%
+And so you can see on
+the right-hand side,
+
+14
+00:00:35.510 --> 00:00:38.890 align:middle line:84%
+we're going to have a
+visualization of the code
+
+15
+00:00:38.890 --> 00:00:40.212 align:middle line:90%
+as an interaction diagram.
+
+16
+00:00:40.212 --> 00:00:41.920 align:middle line:84%
+And on the left-hand
+side, we're actually
+
+17
+00:00:41.920 --> 00:00:43.825 align:middle line:90%
+to have the code itself.
+
+18
+00:00:43.825 --> 00:00:45.450 align:middle line:84%
+So the first thing
+we do is we go ahead
+
+19
+00:00:45.450 --> 00:00:48.920 align:middle line:84%
+and we make ourselves
+an empty future.
+
+20
+00:00:48.920 --> 00:00:50.930 align:middle line:84%
+And then we go ahead
+and create a new thread
+
+21
+00:00:50.930 --> 00:00:55.820 align:middle line:84%
+and start it to run a
+computation in the background.
+
+22
+00:00:55.820 --> 00:00:59.720 align:middle line:84%
+As you can see, this computation
+will go ahead and multiply
+
+23
+00:00:59.720 --> 00:01:03.450 align:middle line:90%
+big fractions via big integers.
+
+24
+00:01:03.450 --> 00:01:05.602 align:middle line:84%
+These computations
+run concurrently.
+
+25
+00:01:05.602 --> 00:01:07.310 align:middle line:84%
+So what we're ever
+running the background
+
+26
+00:01:07.310 --> 00:01:11.920 align:middle line:84%
+runs concurrently with ever
+whatever comes after start.
+
+27
+00:01:11.920 --> 00:01:14.490 align:middle line:84%
+And then we can explicitly
+complete the future
+
+28
+00:01:14.490 --> 00:01:18.180 align:middle line:84%
+with the result. And when
+that happens, the call to join
+
+29
+00:01:18.180 --> 00:01:19.625 align:middle line:90%
+will be able to return.
+
+30
+00:01:19.625 --> 00:01:21.000 align:middle line:84%
+And we can go on
+and do something
+
+31
+00:01:21.000 --> 00:01:23.370 align:middle line:84%
+like convert it to
+a mixed fraction.
+
+32
+00:01:23.370 --> 00:01:26.040 align:middle line:90%
+
+
+33
+00:01:26.040 --> 00:01:28.033 align:middle line:84%
+This example, while
+illustrating how easy it
+
+34
+00:01:28.033 --> 00:01:29.700 align:middle line:84%
+is to program with
+these basic features,
+
+35
+00:01:29.700 --> 00:01:32.200 align:middle line:84%
+also underscores
+the limitations.
+
+36
+00:01:32.200 --> 00:01:37.050 align:middle line:84%
+So once again, as was the case
+with classic Java futures,
+
+37
+00:01:37.050 --> 00:01:41.280 align:middle line:84%
+you can't chain them fluently
+to handle asynchronous results.
+
+38
+00:01:41.280 --> 00:01:43.380 align:middle line:84%
+You can't trigger
+them reactively.
+
+39
+00:01:43.380 --> 00:01:46.530 align:middle line:84%
+You can't treat them efficiently
+as a collection of futures.
+
+40
+00:01:46.530 --> 00:01:48.450 align:middle line:84%
+All the same problems
+with completable future
+
+41
+00:01:48.450 --> 00:01:52.380 align:middle line:84%
+are basically still there
+lock, stock, and barrel
+
+42
+00:01:52.380 --> 00:01:57.060 align:middle line:84%
+with completable future for
+the basic features section.
+
+43
+00:01:57.060 --> 00:02:01.080 align:middle line:84%
+Moreover, the use of join
+as a blocking call has
+
+44
+00:02:01.080 --> 00:02:03.840 align:middle line:84%
+all the same downsides
+to using get.
+
+45
+00:02:03.840 --> 00:02:05.970 align:middle line:84%
+It tends to underutilize
+processor cores.
+
+46
+00:02:05.970 --> 00:02:07.590 align:middle line:90%
+It increases overhead.
+
+47
+00:02:07.590 --> 00:02:10.919 align:middle line:84%
+And in fact, there is no
+timeout version of join.
+
+48
+00:02:10.919 --> 00:02:14.143 align:middle line:84%
+So if we're tempted to
+use get, then we still
+
+49
+00:02:14.143 --> 00:02:15.810 align:middle line:84%
+have all the same
+problems we did before
+
+50
+00:02:15.810 --> 00:02:19.750 align:middle line:84%
+with the vanilla futures, that
+doing this is inefficient.
+
+51
+00:02:19.750 --> 00:02:22.020 align:middle line:84%
+It's hard to figure out
+how much time to wait.
+
+52
+00:02:22.020 --> 00:02:23.590 align:middle line:84%
+It's just not the
+right thing to do.
+
+53
+00:02:23.590 --> 00:02:25.007 align:middle line:84%
+It's almost always
+the wrong thing
+
+54
+00:02:25.007 --> 00:02:30.700 align:middle line:84%
+to do to use timed access
+to the results of futures.
+
+55
+00:02:30.700 --> 00:02:34.300 align:middle line:84%
+Therefore, what we
+really need are a way
+
+56
+00:02:34.300 --> 00:02:37.507 align:middle line:84%
+to leverage the more advanced
+features of computable futures.
+
+57
+00:02:37.507 --> 00:02:39.340 align:middle line:84%
+And of course, it
+wouldn't hurt to know more
+
+58
+00:02:39.340 --> 00:02:41.290 align:middle line:84%
+about those features
+so we can understand
+
+59
+00:02:41.290 --> 00:02:43.090 align:middle line:84%
+how to use them
+effectively in the programs
+
+60
+00:02:43.090 --> 00:02:45.180 align:middle line:90%
+that we plan to develop.

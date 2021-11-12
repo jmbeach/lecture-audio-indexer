@@ -1,0 +1,882 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.500 align:middle line:90%
+
+
+2
+00:00:00.500 --> 00:00:03.720 align:middle line:84%
+Let's now take a deeper
+dive into the structure
+
+3
+00:00:03.720 --> 00:00:06.750 align:middle line:84%
+and functionality of these
+single-stage completion
+
+4
+00:00:06.750 --> 00:00:08.170 align:middle line:90%
+methods.
+
+5
+00:00:08.170 --> 00:00:09.630 align:middle line:84%
+These are the
+methods that complete
+
+6
+00:00:09.630 --> 00:00:13.780 align:middle line:84%
+after a single previous
+stage completes.
+
+7
+00:00:13.780 --> 00:00:15.960 align:middle line:84%
+We'll start with one
+of the simplest ones--
+
+8
+00:00:15.960 --> 00:00:19.170 align:middle line:90%
+the method called thenApply.
+
+9
+00:00:19.170 --> 00:00:21.900 align:middle line:84%
+You can see its
+signature up here.
+
+10
+00:00:21.900 --> 00:00:27.670 align:middle line:84%
+thenApply will apply
+a function action
+
+11
+00:00:27.670 --> 00:00:29.600 align:middle line:84%
+to the results of
+the previous stage.
+
+12
+00:00:29.600 --> 00:00:32.020 align:middle line:84%
+So when the completable
+future of the previous stage
+
+13
+00:00:32.020 --> 00:00:36.340 align:middle line:84%
+is completed and triggers, that
+causes the thenApply method
+
+14
+00:00:36.340 --> 00:00:37.630 align:middle line:90%
+to be called.
+
+15
+00:00:37.630 --> 00:00:40.180 align:middle line:84%
+The thenApply future
+framework calls it back.
+
+16
+00:00:40.180 --> 00:00:43.180 align:middle line:84%
+And that will then go ahead
+and apply the function
+
+17
+00:00:43.180 --> 00:00:47.180 align:middle line:84%
+to the values of
+the previous stage.
+
+18
+00:00:47.180 --> 00:00:50.760 align:middle line:84%
+thenApply itself
+returns a future
+
+19
+00:00:50.760 --> 00:00:53.380 align:middle line:84%
+that will contain the
+results of the action.
+
+20
+00:00:53.380 --> 00:00:56.010 align:middle line:84%
+That really is a proxy to
+the result of the action.
+
+21
+00:00:56.010 --> 00:00:58.893 align:middle line:84%
+So after that future completes,
+after this computation
+
+22
+00:00:58.893 --> 00:01:00.810 align:middle line:84%
+completes, then that
+future will be triggered,
+
+23
+00:01:00.810 --> 00:01:03.710 align:middle line:84%
+and we'll get the
+results of this action.
+
+24
+00:01:03.710 --> 00:01:06.740 align:middle line:84%
+You typically want
+to use thenApply
+
+25
+00:01:06.740 --> 00:01:13.640 align:middle line:84%
+for quick, asynchronous
+actions that return a value,
+
+26
+00:01:13.640 --> 00:01:16.083 align:middle line:84%
+rather than return a
+completable future.
+
+27
+00:01:16.083 --> 00:01:17.750 align:middle line:84%
+You'll notice I use
+the word future here
+
+28
+00:01:17.750 --> 00:01:19.130 align:middle line:90%
+as kind of a shorthand.
+
+29
+00:01:19.130 --> 00:01:21.770 align:middle line:84%
+I almost always mean
+completable future.
+
+30
+00:01:21.770 --> 00:01:23.660 align:middle line:84%
+Just got tedious to
+write completable future
+
+31
+00:01:23.660 --> 00:01:24.360 align:middle line:90%
+all over the place.
+
+32
+00:01:24.360 --> 00:01:25.818 align:middle line:84%
+But when we talk
+about futures now,
+
+33
+00:01:25.818 --> 00:01:29.100 align:middle line:84%
+we're talking about completable
+futures, not Java futures.
+
+34
+00:01:29.100 --> 00:01:30.720 align:middle line:84%
+So in this particular
+case, after we
+
+35
+00:01:30.720 --> 00:01:34.350 align:middle line:84%
+finished reducing
+the big fraction,
+
+36
+00:01:34.350 --> 00:01:39.760 align:middle line:84%
+then we're going to go ahead and
+convert it to a mixed string.
+
+37
+00:01:39.760 --> 00:01:43.450 align:middle line:84%
+So thenApply is called, and
+reducing a reduced fraction
+
+38
+00:01:43.450 --> 00:01:45.790 align:middle line:84%
+to a mixed string is a very
+quick, synchronous action.
+
+39
+00:01:45.790 --> 00:01:49.930 align:middle line:84%
+Doesn't need to run in its
+own thread, for example.
+
+40
+00:01:49.930 --> 00:01:52.990 align:middle line:84%
+Let's now talk about another
+method that looks superficially
+
+41
+00:01:52.990 --> 00:01:54.610 align:middle line:84%
+similar to thenApply,
+but actually
+
+42
+00:01:54.610 --> 00:01:56.960 align:middle line:84%
+has a very important
+distinction.
+
+43
+00:01:56.960 --> 00:02:00.100 align:middle line:84%
+This is called the
+thenCompose method.
+
+44
+00:02:00.100 --> 00:02:04.300 align:middle line:84%
+And thenCompose also
+applies a function action
+
+45
+00:02:04.300 --> 00:02:09.220 align:middle line:84%
+to the results of the previous
+stage when it completes.
+
+46
+00:02:09.220 --> 00:02:11.500 align:middle line:84%
+And what it does is it
+returns a future that
+
+47
+00:02:11.500 --> 00:02:16.490 align:middle line:84%
+contains a result of the action
+directly, not a nested future.
+
+48
+00:02:16.490 --> 00:02:19.960 align:middle line:84%
+And that's the main
+difference between thenCompose
+
+49
+00:02:19.960 --> 00:02:20.860 align:middle line:90%
+and thenApply.
+
+50
+00:02:20.860 --> 00:02:23.830 align:middle line:84%
+thenCompose can end up
+with nesting of futures--
+
+51
+00:02:23.830 --> 00:02:26.740 align:middle line:84%
+completable futures--
+whereas thenApply
+
+52
+00:02:26.740 --> 00:02:31.210 align:middle line:84%
+can end up with nested futures,
+whereas thenCompose will not.
+
+53
+00:02:31.210 --> 00:02:35.440 align:middle line:84%
+So it's often very useful
+to flatten the results.
+
+54
+00:02:35.440 --> 00:02:37.150 align:middle line:84%
+So you could think
+of thenCompose
+
+55
+00:02:37.150 --> 00:02:42.610 align:middle line:84%
+as being a bit similar to the
+concept of flatMap on a stream
+
+56
+00:02:42.610 --> 00:02:45.970 align:middle line:84%
+or on an optional, where it
+flattens things out and doesn't
+
+57
+00:02:45.970 --> 00:02:48.200 align:middle line:90%
+allow nesting to continue.
+
+58
+00:02:48.200 --> 00:02:52.175 align:middle line:84%
+So in this simple example,
+if you use thenCompose
+
+59
+00:02:52.175 --> 00:02:53.800 align:middle line:84%
+with completable
+futures, you'll end up
+
+60
+00:02:53.800 --> 00:02:55.780 align:middle line:84%
+with a single
+completable future.
+
+61
+00:02:55.780 --> 00:02:57.370 align:middle line:84%
+Whereas if you
+use thenApply, you
+
+62
+00:02:57.370 --> 00:03:01.260 align:middle line:84%
+can end up with nested
+completable futures.
+
+63
+00:03:01.260 --> 00:03:04.440 align:middle line:84%
+Let's give an example to make
+this a little bit more clear.
+
+64
+00:03:04.440 --> 00:03:11.130 align:middle line:84%
+So it's best to use thenCompose
+for longer-running asynchronous
+
+65
+00:03:11.130 --> 00:03:14.710 align:middle line:90%
+actions that return a future.
+
+66
+00:03:14.710 --> 00:03:17.050 align:middle line:84%
+Well, let's take a
+look at an example.
+
+67
+00:03:17.050 --> 00:03:21.480 align:middle line:84%
+So here we've got a function
+that will reduce and multiply
+
+68
+00:03:21.480 --> 00:03:22.800 align:middle line:90%
+big fractions.
+
+69
+00:03:22.800 --> 00:03:24.940 align:middle line:84%
+So this is called
+reduceAndMultiplyFractions.
+
+70
+00:03:24.940 --> 00:03:27.360 align:middle line:90%
+That's the name of the variable.
+
+71
+00:03:27.360 --> 00:03:28.920 align:middle line:84%
+And you can see
+that what it does
+
+72
+00:03:28.920 --> 00:03:32.460 align:middle line:84%
+is it uses the CompletableFuture
+supplyAsync method to go
+
+73
+00:03:32.460 --> 00:03:36.760 align:middle line:84%
+ahead and reduce some
+unproduced big fraction.
+
+74
+00:03:36.760 --> 00:03:38.280 align:middle line:84%
+And again, just
+for brevity's sake,
+
+75
+00:03:38.280 --> 00:03:40.140 align:middle line:84%
+I used BF instead
+of Big Fraction,
+
+76
+00:03:40.140 --> 00:03:42.307 align:middle line:84%
+because it was getting too
+long to fit on the slide.
+
+77
+00:03:42.307 --> 00:03:44.410 align:middle line:90%
+
+
+78
+00:03:44.410 --> 00:03:47.230 align:middle line:84%
+What we do now is
+after we've started
+
+79
+00:03:47.230 --> 00:03:49.030 align:middle line:84%
+to do that reduction--
+remember, the
+
+80
+00:03:49.030 --> 00:03:51.700 align:middle line:84%
+reduce operation will
+return a big fraction.
+
+81
+00:03:51.700 --> 00:03:54.760 align:middle line:84%
+supplyAsync will wrap that
+up in a completable future.
+
+82
+00:03:54.760 --> 00:03:58.700 align:middle line:84%
+And after that reduce is
+done, the thenCompose method
+
+83
+00:03:58.700 --> 00:04:00.250 align:middle line:90%
+will be called.
+
+84
+00:04:00.250 --> 00:04:05.140 align:middle line:84%
+And what thenCompose does is it
+takes the reduced big fraction,
+
+85
+00:04:05.140 --> 00:04:08.560 align:middle line:84%
+and it goes ahead
+and it asynchronously
+
+86
+00:04:08.560 --> 00:04:11.170 align:middle line:84%
+multiplies that reduced
+big fraction by something
+
+87
+00:04:11.170 --> 00:04:14.020 align:middle line:84%
+else-- some other
+fraction, let's say.
+
+88
+00:04:14.020 --> 00:04:18.630 align:middle line:84%
+Well, a supplyAsync returns
+a completable future,
+
+89
+00:04:18.630 --> 00:04:21.793 align:middle line:84%
+and thenCompose also returns
+a completable future.
+
+90
+00:04:21.793 --> 00:04:23.460 align:middle line:84%
+So you might think,
+won't we end up with
+
+91
+00:04:23.460 --> 00:04:26.100 align:middle line:84%
+a [? CompletableFuture ?] to
+a [? CompletableFuture? ?] And
+
+92
+00:04:26.100 --> 00:04:31.620 align:middle line:84%
+the answer is no, because
+thenCompose flattens
+
+93
+00:04:31.620 --> 00:04:34.980 align:middle line:84%
+the nesting so there's only a
+single completable future that
+
+94
+00:04:34.980 --> 00:04:37.920 align:middle line:84%
+comes back, which is what
+you can see up at the top
+
+95
+00:04:37.920 --> 00:04:42.770 align:middle line:84%
+as the return type for
+this particular result.
+
+96
+00:04:42.770 --> 00:04:46.850 align:middle line:84%
+Were we to use thenApply
+instead of thenCompose,
+
+97
+00:04:46.850 --> 00:04:50.630 align:middle line:84%
+we would end up with
+nested completable futures,
+
+98
+00:04:50.630 --> 00:04:53.210 align:middle line:84%
+because the action for
+thenApply would return
+
+99
+00:04:53.210 --> 00:04:55.540 align:middle line:84%
+a completable future,
+and thenApply would then
+
+100
+00:04:55.540 --> 00:04:57.860 align:middle line:84%
+wrap a completable
+future around that,
+
+101
+00:04:57.860 --> 00:05:00.890 align:middle line:84%
+so it would return a completable
+future to a completable future.
+
+102
+00:05:00.890 --> 00:05:03.350 align:middle line:84%
+Now, that will work,
+but my goodness it
+
+103
+00:05:03.350 --> 00:05:05.450 align:middle line:90%
+gets ugly very quickly.
+
+104
+00:05:05.450 --> 00:05:09.570 align:middle line:84%
+So thenCompose doesn't
+have that problem.
+
+105
+00:05:09.570 --> 00:05:11.540 align:middle line:84%
+There's another way
+to do this, however,
+
+106
+00:05:11.540 --> 00:05:14.190 align:middle line:84%
+that uses a different
+variant of thenApply.
+
+107
+00:05:14.190 --> 00:05:15.710 align:middle line:84%
+There's also a
+variant of thenApply
+
+108
+00:05:15.710 --> 00:05:17.690 align:middle line:90%
+called thenApplyAsync.
+
+109
+00:05:17.690 --> 00:05:21.770 align:middle line:84%
+And thenApplyAsync will go
+ahead and take its action
+
+110
+00:05:21.770 --> 00:05:24.800 align:middle line:84%
+and arrange to run
+it in another thread
+
+111
+00:05:24.800 --> 00:05:27.400 align:middle line:90%
+in the common ForkJoinPool.
+
+112
+00:05:27.400 --> 00:05:32.470 align:middle line:84%
+So that will end up not creating
+another completable future
+
+113
+00:05:32.470 --> 00:05:36.820 align:middle line:84%
+nesting, but will have
+the side effect of running
+
+114
+00:05:36.820 --> 00:05:40.160 align:middle line:90%
+the action in the ForkJoinPool.
+
+115
+00:05:40.160 --> 00:05:43.420 align:middle line:84%
+So it's often the case that you
+can use thenApplyAsync in lieu
+
+116
+00:05:43.420 --> 00:05:46.850 align:middle line:90%
+of thenCompose and supplyAsync.
+
+117
+00:05:46.850 --> 00:05:49.180 align:middle line:84%
+And I actually like that
+supplyAsync quite a bit,
+
+118
+00:05:49.180 --> 00:05:51.970 align:middle line:84%
+although there's some situations
+where you're better off using
+
+119
+00:05:51.970 --> 00:05:55.990 align:middle line:90%
+supplyAysnc and thenCompose.
+
+120
+00:05:55.990 --> 00:05:59.830 align:middle line:84%
+supplyAsync will return
+a completable future
+
+121
+00:05:59.830 --> 00:06:02.300 align:middle line:90%
+to a completable future here.
+
+122
+00:06:02.300 --> 00:06:04.540 align:middle line:84%
+And you can use
+this little idiom
+
+123
+00:06:04.540 --> 00:06:09.370 align:middle line:84%
+in order to be able to
+remove the nesting by using
+
+124
+00:06:09.370 --> 00:06:10.190 align:middle line:90%
+thenCompose.
+
+125
+00:06:10.190 --> 00:06:13.510 align:middle line:84%
+So here's an example where
+we have a lambda expression
+
+126
+00:06:13.510 --> 00:06:18.340 align:middle line:84%
+that we pass to supplyAsync, and
+we call this longRunnerReturns
+
+127
+00:06:18.340 --> 00:06:20.680 align:middle line:90%
+Completable Future, or CF.
+
+128
+00:06:20.680 --> 00:06:23.680 align:middle line:84%
+So that will actually end up
+creating a completable future
+
+129
+00:06:23.680 --> 00:06:26.590 align:middle line:84%
+to a completable future to
+come back from supplyAsync.
+
+130
+00:06:26.590 --> 00:06:28.990 align:middle line:84%
+If we then go ahead and
+connect it with thenCompose
+
+131
+00:06:28.990 --> 00:06:32.050 align:middle line:84%
+and use the
+Function.identity call,
+
+132
+00:06:32.050 --> 00:06:35.620 align:middle line:84%
+we can flatten it so
+there's just one level
+
+133
+00:06:35.620 --> 00:06:37.600 align:middle line:90%
+of completable future here.
+
+134
+00:06:37.600 --> 00:06:41.260 align:middle line:84%
+So we can avoid having to
+call join when flattening
+
+135
+00:06:41.260 --> 00:06:42.520 align:middle line:90%
+nested completable futures.
+
+136
+00:06:42.520 --> 00:06:45.160 align:middle line:84%
+And avoiding calling join
+is a really good thing
+
+137
+00:06:45.160 --> 00:06:48.920 align:middle line:90%
+to remember to try to do that.
+
+138
+00:06:48.920 --> 00:06:52.850 align:middle line:84%
+You could also use
+thenComposeAsync.
+
+139
+00:06:52.850 --> 00:06:54.350 align:middle line:84%
+So what you can
+do then-- and you
+
+140
+00:06:54.350 --> 00:06:56.240 align:middle line:84%
+could go ahead and
+say thenComposeAsync,
+
+141
+00:06:56.240 --> 00:06:59.090 align:middle line:84%
+and you could do
+some other operation
+
+142
+00:06:59.090 --> 00:07:02.280 align:middle line:84%
+that blocks and returns
+a completable future.
+
+143
+00:07:02.280 --> 00:07:04.700 align:middle line:84%
+So thenComposeAsync
+can be used to avoid
+
+144
+00:07:04.700 --> 00:07:07.795 align:middle line:84%
+having to call supplyAsync
+again in a chain.
+
+145
+00:07:07.795 --> 00:07:09.920 align:middle line:84%
+So these are all just
+different variants of things,
+
+146
+00:07:09.920 --> 00:07:12.170 align:middle line:84%
+different variants
+of thenCompose,
+
+147
+00:07:12.170 --> 00:07:13.850 align:middle line:90%
+different variants of thenApply.
+
+148
+00:07:13.850 --> 00:07:17.790 align:middle line:84%
+And they have different side
+effects that are pretty cool.
+
+149
+00:07:17.790 --> 00:07:21.400 align:middle line:84%
+Let's now turn our attention
+to yet another completion
+
+150
+00:07:21.400 --> 00:07:23.530 align:middle line:84%
+stage method that's
+triggered by the completion
+
+151
+00:07:23.530 --> 00:07:27.820 align:middle line:84%
+of a single previous stage, and
+that's the thenAccept method.
+
+152
+00:07:27.820 --> 00:07:31.450 align:middle line:84%
+thenAccept takes an
+action that's a consumer--
+
+153
+00:07:31.450 --> 00:07:34.540 align:middle line:84%
+and that will be applied to the
+result of the previous stage
+
+154
+00:07:34.540 --> 00:07:35.625 align:middle line:90%
+when it completes.
+
+155
+00:07:35.625 --> 00:07:38.860 align:middle line:84%
+And if you recall, a
+consumer-- it takes in a value,
+
+156
+00:07:38.860 --> 00:07:41.720 align:middle line:90%
+but doesn't return anything.
+
+157
+00:07:41.720 --> 00:07:45.640 align:middle line:84%
+And so as you can see
+here, it essentially
+
+158
+00:07:45.640 --> 00:07:49.510 align:middle line:84%
+acts as a callback that needs
+to have some kind of side effect
+
+159
+00:07:49.510 --> 00:07:52.850 align:middle line:90%
+to do most anything useful.
+
+160
+00:07:52.850 --> 00:07:54.410 align:middle line:84%
+It returns a future
+to Void, which
+
+161
+00:07:54.410 --> 00:07:57.050 align:middle line:90%
+means there is no return value.
+
+162
+00:07:57.050 --> 00:08:01.510 align:middle line:84%
+We typically use thenAccept
+only at the tailend
+
+163
+00:08:01.510 --> 00:08:04.390 align:middle line:90%
+of a chain of completion stages.
+
+164
+00:08:04.390 --> 00:08:06.580 align:middle line:84%
+So going back to our
+example that we've
+
+165
+00:08:06.580 --> 00:08:09.190 align:middle line:84%
+been using throughout
+the lessons
+
+166
+00:08:09.190 --> 00:08:12.280 align:middle line:84%
+to showcase this concept of
+chaining that you can find
+
+167
+00:08:12.280 --> 00:08:15.730 align:middle line:84%
+in my ex8 folder in
+the GitHub repository,
+
+168
+00:08:15.730 --> 00:08:19.790 align:middle line:84%
+this example asynchronously
+reduces a big fraction.
+
+169
+00:08:19.790 --> 00:08:21.790 align:middle line:84%
+When that finishes, it
+converts the big fraction
+
+170
+00:08:21.790 --> 00:08:23.150 align:middle line:90%
+to a mixed string.
+
+171
+00:08:23.150 --> 00:08:27.310 align:middle line:84%
+And then thenAccept
+method is called,
+
+172
+00:08:27.310 --> 00:08:30.970 align:middle line:84%
+and that will have the side
+effect to take that string
+
+173
+00:08:30.970 --> 00:08:33.090 align:middle line:90%
+and print it out.
+
+174
+00:08:33.090 --> 00:08:36.480 align:middle line:84%
+So the println method
+reference that's passed in here
+
+175
+00:08:36.480 --> 00:08:42.230 align:middle line:84%
+has a side effect of
+printing the mixed string.
+
+176
+00:08:42.230 --> 00:08:44.810 align:middle line:84%
+The downside of using
+thenAccept anywhere
+
+177
+00:08:44.810 --> 00:08:49.250 align:middle line:84%
+except the very, very end of
+a chain of completion stage
+
+178
+00:08:49.250 --> 00:08:52.550 align:middle line:84%
+methods is your lead to the
+dreaded callback hell that's
+
+179
+00:08:52.550 --> 00:08:56.000 align:middle line:84%
+so prominent if you program
+with things like JavaScript,
+
+180
+00:08:56.000 --> 00:08:59.330 align:middle line:84%
+where it's quite a pain to
+deal with these nestings.
+
+181
+00:08:59.330 --> 00:09:02.480 align:middle line:84%
+So I encourage you
+to avoid using that
+
+182
+00:09:02.480 --> 00:09:06.650 align:middle line:84%
+except at the end of these
+long chains of completion stage
+
+183
+00:09:06.650 --> 00:09:08.200 align:middle line:90%
+methods.

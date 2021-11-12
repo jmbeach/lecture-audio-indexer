@@ -1,0 +1,725 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.500 align:middle line:90%
+
+
+2
+00:00:00.500 --> 00:00:02.900 align:middle line:84%
+So now that we've talked
+about factory methods--
+
+3
+00:00:02.900 --> 00:00:05.310 align:middle line:90%
+it set the wheels in motion--
+
+4
+00:00:05.310 --> 00:00:09.060 align:middle line:84%
+it's time to turn our attention
+to the bulk of the methods
+
+5
+00:00:09.060 --> 00:00:12.630 align:middle line:84%
+in the completable futures API,
+which are the completion stage
+
+6
+00:00:12.630 --> 00:00:13.890 align:middle line:90%
+methods.
+
+7
+00:00:13.890 --> 00:00:15.990 align:middle line:84%
+And these completion
+stage methods
+
+8
+00:00:15.990 --> 00:00:19.380 align:middle line:84%
+chained together
+dependent actions
+
+9
+00:00:19.380 --> 00:00:22.770 align:middle line:84%
+that perform processing
+of the results
+
+10
+00:00:22.770 --> 00:00:25.110 align:middle line:84%
+of asynchronous
+computations and also
+
+11
+00:00:25.110 --> 00:00:29.990 align:middle line:84%
+help provide various types
+of composition behaviors.
+
+12
+00:00:29.990 --> 00:00:32.530 align:middle line:84%
+So let's talk about how we can
+use completion stage methods
+
+13
+00:00:32.530 --> 00:00:35.850 align:middle line:90%
+to chain actions together.
+
+14
+00:00:35.850 --> 00:00:38.260 align:middle line:84%
+A completable future can
+serve as a completion
+
+15
+00:00:38.260 --> 00:00:42.940 align:middle line:84%
+stage for processing of
+asynchronous results.
+
+16
+00:00:42.940 --> 00:00:46.210 align:middle line:84%
+And basically what this means
+is that the dependent action can
+
+17
+00:00:46.210 --> 00:00:49.060 align:middle line:84%
+get called back automatically
+by the computable futures
+
+18
+00:00:49.060 --> 00:00:53.650 align:middle line:84%
+framework when an asynchronous
+call finishes and returns
+
+19
+00:00:53.650 --> 00:00:56.290 align:middle line:84%
+its result, in other words,
+when the completable future
+
+20
+00:00:56.290 --> 00:00:58.080 align:middle line:90%
+triggers.
+
+21
+00:00:58.080 --> 00:01:01.360 align:middle line:84%
+Let's take a look at an example
+here to illustrate this.
+
+22
+00:01:01.360 --> 00:01:03.960 align:middle line:84%
+This example is going
+to go ahead and create
+
+23
+00:01:03.960 --> 00:01:08.190 align:middle line:90%
+a new unreduced big fraction.
+
+24
+00:01:08.190 --> 00:01:11.460 align:middle line:84%
+You can see it's got
+a very large numerator
+
+25
+00:01:11.460 --> 00:01:12.600 align:middle line:90%
+as a big integer.
+
+26
+00:01:12.600 --> 00:01:16.290 align:middle line:84%
+It's got a very large
+denominator as a big integer.
+
+27
+00:01:16.290 --> 00:01:19.350 align:middle line:84%
+And then it has the false flag
+that says don't reduce now.
+
+28
+00:01:19.350 --> 00:01:22.060 align:middle line:84%
+We'll reduce it later
+in the background.
+
+29
+00:01:22.060 --> 00:01:24.380 align:middle line:84%
+We then go ahead and
+create a supplier lambda
+
+30
+00:01:24.380 --> 00:01:31.610 align:middle line:84%
+that when called will reduce
+the unreduced big fraction,
+
+31
+00:01:31.610 --> 00:01:33.630 align:middle line:84%
+and then we go ahead
+and call supply async,
+
+32
+00:01:33.630 --> 00:01:35.120 align:middle line:90%
+which is our factory method.
+
+33
+00:01:35.120 --> 00:01:39.570 align:middle line:84%
+And that passes in that supplier
+lambda, which in the background
+
+34
+00:01:39.570 --> 00:01:43.070 align:middle line:84%
+now will reduce that
+unreduced big fractions,
+
+35
+00:01:43.070 --> 00:01:44.630 align:middle line:90%
+so that's what it will do.
+
+36
+00:01:44.630 --> 00:01:48.290 align:middle line:84%
+Now supply async returns
+a completable future.
+
+37
+00:01:48.290 --> 00:01:53.210 align:middle line:84%
+And when the
+reduction is finished,
+
+38
+00:01:53.210 --> 00:01:56.020 align:middle line:84%
+then the completable
+future triggers,
+
+39
+00:01:56.020 --> 00:02:00.310 align:middle line:84%
+and that will cause the then
+apply completion stage method
+
+40
+00:02:00.310 --> 00:02:03.830 align:middle line:84%
+to invoke its action, which
+in this case, as you see,
+
+41
+00:02:03.830 --> 00:02:09.080 align:middle line:84%
+is going to convert the
+improper fraction to a mixed
+
+42
+00:02:09.080 --> 00:02:11.600 align:middle line:90%
+fraction or a mixed string.
+
+43
+00:02:11.600 --> 00:02:15.830 align:middle line:84%
+And so that will then run only
+when the reduction finishes
+
+44
+00:02:15.830 --> 00:02:18.840 align:middle line:90%
+occurring asynchronously.
+
+45
+00:02:18.840 --> 00:02:21.630 align:middle line:84%
+You can chain together
+these completion stage
+
+46
+00:02:21.630 --> 00:02:25.380 align:middle line:84%
+methods fluently using the
+so-called fluent interface
+
+47
+00:02:25.380 --> 00:02:26.430 align:middle line:90%
+pattern.
+
+48
+00:02:26.430 --> 00:02:28.320 align:middle line:84%
+And what happens
+here is after we've
+
+49
+00:02:28.320 --> 00:02:32.670 align:middle line:84%
+converted the reduced
+fraction to a mixed string,
+
+50
+00:02:32.670 --> 00:02:36.280 align:middle line:84%
+we can then accept
+that particular result
+
+51
+00:02:36.280 --> 00:02:37.620 align:middle line:90%
+and print it out.
+
+52
+00:02:37.620 --> 00:02:39.240 align:middle line:84%
+So then accept
+doesn't actually get
+
+53
+00:02:39.240 --> 00:02:42.330 align:middle line:84%
+called until the completable
+future returned from then
+
+54
+00:02:42.330 --> 00:02:46.530 align:middle line:84%
+apply finishes its action
+'til its action completes.
+
+55
+00:02:46.530 --> 00:02:49.830 align:middle line:84%
+And at that point, we can then
+accept it, and by accepting it,
+
+56
+00:02:49.830 --> 00:02:51.390 align:middle line:84%
+we pass in a method
+reference, which
+
+57
+00:02:51.390 --> 00:02:55.517 align:middle line:84%
+will print the mixed string
+out to the standard output.
+
+58
+00:02:55.517 --> 00:02:57.600 align:middle line:84%
+So you can see we can chain
+these things together.
+
+59
+00:02:57.600 --> 00:03:01.570 align:middle line:84%
+You cannot do this with
+conventional Java classic
+
+60
+00:03:01.570 --> 00:03:02.070 align:middle line:90%
+futures.
+
+61
+00:03:02.070 --> 00:03:04.580 align:middle line:90%
+Just doesn't work it all.
+
+62
+00:03:04.580 --> 00:03:07.040 align:middle line:84%
+The way to think of this as
+the various parameters that
+
+63
+00:03:07.040 --> 00:03:11.360 align:middle line:84%
+are passed into the factory
+methods and the completion
+
+64
+00:03:11.360 --> 00:03:15.500 align:middle line:84%
+stage methods are basically
+actions, lambda actions,
+
+65
+00:03:15.500 --> 00:03:17.570 align:middle line:84%
+method references,
+and so on, which
+
+66
+00:03:17.570 --> 00:03:20.300 align:middle line:84%
+are intended to be
+registered with the framework
+
+67
+00:03:20.300 --> 00:03:22.580 align:middle line:90%
+and then applied later.
+
+68
+00:03:22.580 --> 00:03:25.820 align:middle line:84%
+And the lambda
+action will be called
+
+69
+00:03:25.820 --> 00:03:29.840 align:middle line:84%
+only after the previous
+stage completes successfully,
+
+70
+00:03:29.840 --> 00:03:33.980 align:middle line:84%
+so only after we finished the
+previous stage will the action
+
+71
+00:03:33.980 --> 00:03:38.202 align:middle line:90%
+for the next stage be called.
+
+72
+00:03:38.202 --> 00:03:40.410 align:middle line:84%
+And this is what we mean
+when we talk about chaining.
+
+73
+00:03:40.410 --> 00:03:43.650 align:middle line:84%
+When I talk about chaining
+together the results,
+
+74
+00:03:43.650 --> 00:03:46.320 align:middle line:84%
+chaining them fluently,
+it's that syntax
+
+75
+00:03:46.320 --> 00:03:48.760 align:middle line:84%
+that we're describing
+that I'm showing you here.
+
+76
+00:03:48.760 --> 00:03:50.190 align:middle line:90%
+And what's so cool about this--
+
+77
+00:03:50.190 --> 00:03:51.732 align:middle line:84%
+I mentioned this
+before, but it might
+
+78
+00:03:51.732 --> 00:03:54.870 align:middle line:84%
+make a little bit more sense now
+that you've seen more context--
+
+79
+00:03:54.870 --> 00:03:56.850 align:middle line:84%
+this allows us to
+treat asynchronous
+
+80
+00:03:56.850 --> 00:04:00.750 align:middle line:84%
+processing very similar to how
+we do synchronous processing.
+
+81
+00:04:00.750 --> 00:04:03.560 align:middle line:84%
+We can just have fluent
+calls where you do something,
+
+82
+00:04:03.560 --> 00:04:04.450 align:middle line:90%
+you can get a result.
+
+83
+00:04:04.450 --> 00:04:07.080 align:middle line:84%
+You do something, you can get a
+result. You do something else,
+
+84
+00:04:07.080 --> 00:04:09.630 align:middle line:84%
+you get a result because we're
+basically chaining together.
+
+85
+00:04:09.630 --> 00:04:11.980 align:middle line:84%
+And it looks as though
+these calls are running
+
+86
+00:04:11.980 --> 00:04:13.980 align:middle line:84%
+synchronously, but,
+in fact, they're
+
+87
+00:04:13.980 --> 00:04:17.180 align:middle line:84%
+running when the asynchronous
+operation's complete.
+
+88
+00:04:17.180 --> 00:04:20.130 align:middle line:84%
+So it's a really cool way to
+make asynchronous programming
+
+89
+00:04:20.130 --> 00:04:22.180 align:middle line:84%
+look like synchronous
+programming,
+
+90
+00:04:22.180 --> 00:04:25.680 align:middle line:84%
+so I take my hat off to the
+designers of completable future
+
+91
+00:04:25.680 --> 00:04:29.323 align:middle line:84%
+because it was a really
+clever way to go.
+
+92
+00:04:29.323 --> 00:04:31.240 align:middle line:84%
+So basically you can
+think about these actions
+
+93
+00:04:31.240 --> 00:04:35.470 align:middle line:84%
+as being deferred until the
+previous stage completes
+
+94
+00:04:35.470 --> 00:04:37.300 align:middle line:84%
+and, of course, until
+a fork-join thread
+
+95
+00:04:37.300 --> 00:04:39.920 align:middle line:90%
+is available to run them.
+
+96
+00:04:39.920 --> 00:04:44.420 align:middle line:84%
+We'll talk later about how
+the stages are run here.
+
+97
+00:04:44.420 --> 00:04:47.000 align:middle line:84%
+Sometimes they borrow the
+thread of the previous stage.
+
+98
+00:04:47.000 --> 00:04:50.650 align:middle line:84%
+Sometimes they're run in a
+separate thread in the pool.
+
+99
+00:04:50.650 --> 00:04:53.040 align:middle line:84%
+Now what is the reason
+for doing all this stuff?
+
+100
+00:04:53.040 --> 00:04:54.480 align:middle line:84%
+Well, the reason
+here is to avoid
+
+101
+00:04:54.480 --> 00:04:59.070 align:middle line:84%
+blocking a calling
+thread or a user thread
+
+102
+00:04:59.070 --> 00:05:04.400 align:middle line:84%
+until the result absolutely
+must be obtained.
+
+103
+00:05:04.400 --> 00:05:09.160 align:middle line:84%
+So as a good rule of thumb, try
+to avoid calling join or get
+
+104
+00:05:09.160 --> 00:05:12.470 align:middle line:84%
+unless you absolutely need to do
+it, unless you really, really,
+
+105
+00:05:12.470 --> 00:05:16.170 align:middle line:84%
+really need to have that
+result. Server side code
+
+106
+00:05:16.170 --> 00:05:18.360 align:middle line:84%
+that uses completable
+futures may
+
+107
+00:05:18.360 --> 00:05:20.793 align:middle line:84%
+be able to avoid
+blocking completely.
+
+108
+00:05:20.793 --> 00:05:21.960 align:middle line:90%
+You may never have to block.
+
+109
+00:05:21.960 --> 00:05:24.690 align:middle line:84%
+You just set things in motion,
+and the last thing you do
+
+110
+00:05:24.690 --> 00:05:27.840 align:middle line:84%
+is send a response back to
+the client when you're all
+
+111
+00:05:27.840 --> 00:05:29.930 align:middle line:90%
+done running asynchronously.
+
+112
+00:05:29.930 --> 00:05:32.993 align:middle line:84%
+Clients may need
+to join sparingly.
+
+113
+00:05:32.993 --> 00:05:34.910 align:middle line:84%
+And you typically need
+to join when you really
+
+114
+00:05:34.910 --> 00:05:37.520 align:middle line:84%
+need the result in order
+to give it to the user.
+
+115
+00:05:37.520 --> 00:05:39.170 align:middle line:84%
+And I'll also show
+you some examples
+
+116
+00:05:39.170 --> 00:05:41.030 align:middle line:84%
+when we talk about
+our test programs
+
+117
+00:05:41.030 --> 00:05:43.105 align:middle line:84%
+where we have to use
+join because otherwise
+
+118
+00:05:43.105 --> 00:05:44.480 align:middle line:84%
+our program will
+start everything
+
+119
+00:05:44.480 --> 00:05:47.640 align:middle line:84%
+asynchronously and then
+return from the main function.
+
+120
+00:05:47.640 --> 00:05:49.520 align:middle line:84%
+The process will shut
+down, and we'll never
+
+121
+00:05:49.520 --> 00:05:51.680 align:middle line:90%
+see the results of our tests.
+
+122
+00:05:51.680 --> 00:05:54.188 align:middle line:84%
+So that's a good example
+of when to use joint,
+
+123
+00:05:54.188 --> 00:05:55.730 align:middle line:84%
+but you should really
+try to use join
+
+124
+00:05:55.730 --> 00:05:59.930 align:middle line:90%
+in a very, very sparing way.
+
+125
+00:05:59.930 --> 00:06:02.410 align:middle line:84%
+And the goal of all
+this, not blocking,
+
+126
+00:06:02.410 --> 00:06:03.850 align:middle line:90%
+is to improve responsiveness.
+
+127
+00:06:03.850 --> 00:06:07.450 align:middle line:84%
+Remember that reactive
+programming manifesto principle
+
+128
+00:06:07.450 --> 00:06:08.620 align:middle line:90%
+of being responsive.
+
+129
+00:06:08.620 --> 00:06:10.150 align:middle line:90%
+So don't block the client.
+
+130
+00:06:10.150 --> 00:06:13.000 align:middle line:84%
+Let the client thread
+do its own thing
+
+131
+00:06:13.000 --> 00:06:16.440 align:middle line:90%
+until we get the results back.
+
+132
+00:06:16.440 --> 00:06:19.830 align:middle line:84%
+The completable future serves
+as the completion stage
+
+133
+00:06:19.830 --> 00:06:21.540 align:middle line:84%
+for asynchronous
+result processing.
+
+134
+00:06:21.540 --> 00:06:24.250 align:middle line:84%
+I like to think about this--
+when I read those words,
+
+135
+00:06:24.250 --> 00:06:27.420 align:middle line:84%
+I like to think about
+this in terms of analogy.
+
+136
+00:06:27.420 --> 00:06:29.610 align:middle line:90%
+And the analogy is juggling.
+
+137
+00:06:29.610 --> 00:06:31.543 align:middle line:84%
+So if you have ever
+done any juggling,
+
+138
+00:06:31.543 --> 00:06:33.210 align:middle line:84%
+you know that the
+goal is to try to keep
+
+139
+00:06:33.210 --> 00:06:37.980 align:middle line:84%
+as many balls in the air,
+grabbing them synchronously
+
+140
+00:06:37.980 --> 00:06:40.200 align:middle line:84%
+only long enough to transfer
+them and throw them back
+
+141
+00:06:40.200 --> 00:06:43.630 align:middle line:84%
+up again to float in
+the air asynchronously.
+
+142
+00:06:43.630 --> 00:06:47.940 align:middle line:84%
+And the same thing is true
+for the completion stages
+
+143
+00:06:47.940 --> 00:06:49.410 align:middle line:90%
+and completable futures.
+
+144
+00:06:49.410 --> 00:06:54.420 align:middle line:84%
+You really want to keep
+things floating in the air
+
+145
+00:06:54.420 --> 00:06:57.210 align:middle line:84%
+by letting them run
+asynchronously and only grab
+
+146
+00:06:57.210 --> 00:06:59.370 align:middle line:84%
+them long enough to start
+another asynchronous
+
+147
+00:06:59.370 --> 00:07:00.480 align:middle line:90%
+computation.
+
+148
+00:07:00.480 --> 00:07:01.980 align:middle line:84%
+So that's a way to
+think about this.
+
+149
+00:07:01.980 --> 00:07:04.480 align:middle line:84%
+The big win is to keep lots of
+things running asynchronously
+
+150
+00:07:04.480 --> 00:07:06.960 align:middle line:84%
+and only grab them long
+enough to start them
+
+151
+00:07:06.960 --> 00:07:10.040 align:middle line:84%
+up again asynchronously or to
+print the results or something.

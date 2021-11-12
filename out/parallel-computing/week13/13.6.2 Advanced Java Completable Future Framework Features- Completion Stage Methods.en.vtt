@@ -1,0 +1,518 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.750 align:middle line:90%
+
+
+2
+00:00:00.750 --> 00:00:02.970 align:middle line:84%
+We're now ready to
+start talking more
+
+3
+00:00:02.970 --> 00:00:05.430 align:middle line:84%
+in depth about the
+CompletionStage methods.
+
+4
+00:00:05.430 --> 00:00:07.980 align:middle line:84%
+But before we do that,
+I want to talk about
+
+5
+00:00:07.980 --> 00:00:11.388 align:middle line:84%
+how to group them into
+different categories.
+
+6
+00:00:11.388 --> 00:00:12.930 align:middle line:84%
+And the reason why
+we want to do this
+
+7
+00:00:12.930 --> 00:00:15.510 align:middle line:84%
+is, if you take a look
+at the pie chart here,
+
+8
+00:00:15.510 --> 00:00:19.230 align:middle line:84%
+you can see that about
+2/3 of the 60-plus methods
+
+9
+00:00:19.230 --> 00:00:22.980 align:middle line:84%
+in the CompletableFuture API
+are CompletionStage methods.
+
+10
+00:00:22.980 --> 00:00:25.150 align:middle line:84%
+So there are an
+awful lot of them.
+
+11
+00:00:25.150 --> 00:00:28.110 align:middle line:84%
+And it turns out that we
+can further classify them
+
+12
+00:00:28.110 --> 00:00:29.640 align:middle line:90%
+into three groups.
+
+13
+00:00:29.640 --> 00:00:33.420 align:middle line:84%
+We can classify them in terms
+of CompletionStage methods
+
+14
+00:00:33.420 --> 00:00:38.040 align:middle line:84%
+that are triggered when one
+previous stage finishes,
+
+15
+00:00:38.040 --> 00:00:39.990 align:middle line:84%
+CompletionStage
+methods that trigger
+
+16
+00:00:39.990 --> 00:00:43.820 align:middle line:84%
+when both of two
+previous stages trigger,
+
+17
+00:00:43.820 --> 00:00:48.630 align:middle line:84%
+and CompletionStage methods
+that trigger when either of two
+
+18
+00:00:48.630 --> 00:00:50.560 align:middle line:90%
+previous stages are complete.
+
+19
+00:00:50.560 --> 00:00:53.260 align:middle line:84%
+So those are the
+three categories here.
+
+20
+00:00:53.260 --> 00:00:56.220 align:middle line:84%
+And we'll break them
+down in those ways.
+
+21
+00:00:56.220 --> 00:00:59.160 align:middle line:84%
+We'll start by talking about
+CompletionStage methods that
+
+22
+00:00:59.160 --> 00:01:04.950 align:middle line:84%
+will be triggered and run when a
+single previous stage finishes.
+
+23
+00:01:04.950 --> 00:01:07.500 align:middle line:84%
+As you can see,
+there's four of them.
+
+24
+00:01:07.500 --> 00:01:09.600 align:middle line:84%
+But they also have
+these async variants.
+
+25
+00:01:09.600 --> 00:01:11.880 align:middle line:84%
+So there's really
+about eight of them.
+
+26
+00:01:11.880 --> 00:01:14.550 align:middle line:84%
+The methods are thenApply,
+thenCompose, thenAccept,
+
+27
+00:01:14.550 --> 00:01:16.260 align:middle line:90%
+and thenRun.
+
+28
+00:01:16.260 --> 00:01:18.750 align:middle line:84%
+They take different types
+of parameters, functions,
+
+29
+00:01:18.750 --> 00:01:20.910 align:middle line:90%
+consumers, and runnables.
+
+30
+00:01:20.910 --> 00:01:25.380 align:middle line:84%
+They all typically
+will apply some action
+
+31
+00:01:25.380 --> 00:01:27.713 align:middle line:84%
+as the result of
+a previous stage.
+
+32
+00:01:27.713 --> 00:01:29.130 align:middle line:84%
+And we'll talk
+about those nuances
+
+33
+00:01:29.130 --> 00:01:30.450 align:middle line:90%
+as we walk through them.
+
+34
+00:01:30.450 --> 00:01:32.610 align:middle line:84%
+And then they return
+various kinds of results.
+
+35
+00:01:32.610 --> 00:01:35.070 align:middle line:84%
+They typically return
+a CompletableFuture,
+
+36
+00:01:35.070 --> 00:01:36.690 align:middle line:84%
+which, when completed,
+will give you
+
+37
+00:01:36.690 --> 00:01:39.520 align:middle line:84%
+the results of whatever
+the behavior is.
+
+38
+00:01:39.520 --> 00:01:41.220 align:middle line:84%
+So in the case of
+thenApply, you'll
+
+39
+00:01:41.220 --> 00:01:42.940 align:middle line:84%
+get back the results
+of the function
+
+40
+00:01:42.940 --> 00:01:45.320 align:middle line:84%
+when the function is
+finished running, and so on.
+
+41
+00:01:45.320 --> 00:01:47.820 align:middle line:84%
+Now, again, I'm going to talk
+about all these things in more
+
+42
+00:01:47.820 --> 00:01:48.320 align:middle line:90%
+detail.
+
+43
+00:01:48.320 --> 00:01:50.680 align:middle line:84%
+So I'm not going to read all
+the elements on the table.
+
+44
+00:01:50.680 --> 00:01:52.920 align:middle line:84%
+This is just here for
+you to see at a glance
+
+45
+00:01:52.920 --> 00:01:55.630 align:middle line:90%
+what things group where.
+
+46
+00:01:55.630 --> 00:01:58.420 align:middle line:84%
+There are some of the
+methods, the ones that
+
+47
+00:01:58.420 --> 00:02:01.420 align:middle line:84%
+don't have async as
+their suffix, that
+
+48
+00:02:01.420 --> 00:02:05.320 align:middle line:84%
+run in either the invoking
+thread, or more likely,
+
+49
+00:02:05.320 --> 00:02:09.130 align:middle line:84%
+in the same worker thread as
+the previous stage that just
+
+50
+00:02:09.130 --> 00:02:12.130 align:middle line:84%
+completed that triggered
+these CompletionStage
+
+51
+00:02:12.130 --> 00:02:14.280 align:middle line:90%
+methods to be called.
+
+52
+00:02:14.280 --> 00:02:16.800 align:middle line:84%
+And which of those two
+choices is actually used
+
+53
+00:02:16.800 --> 00:02:18.480 align:middle line:84%
+depends on various
+runtime factors we'll
+
+54
+00:02:18.480 --> 00:02:20.290 align:middle line:90%
+talk about as we go along.
+
+55
+00:02:20.290 --> 00:02:24.510 align:middle line:84%
+For sake of discussion, or
+just to keep things moving,
+
+56
+00:02:24.510 --> 00:02:26.880 align:middle line:84%
+usually these methods
+run in the same thread
+
+57
+00:02:26.880 --> 00:02:28.870 align:middle line:90%
+as the previous stage.
+
+58
+00:02:28.870 --> 00:02:31.210 align:middle line:84%
+There's also a
+parallel set of methods
+
+59
+00:02:31.210 --> 00:02:33.670 align:middle line:90%
+that have the async suffix.
+
+60
+00:02:33.670 --> 00:02:37.870 align:middle line:84%
+And these variants will
+run in another thread
+
+61
+00:02:37.870 --> 00:02:39.335 align:middle line:90%
+in the common ForkJoinPool.
+
+62
+00:02:39.335 --> 00:02:41.710 align:middle line:84%
+So they don't run in the same
+thread that just completed.
+
+63
+00:02:41.710 --> 00:02:43.810 align:middle line:84%
+But they will be put
+into the ForkJoinPool
+
+64
+00:02:43.810 --> 00:02:47.900 align:middle line:84%
+and get a chance to compete for
+other worker threads to run.
+
+65
+00:02:47.900 --> 00:02:49.600 align:middle line:84%
+And there are pros
+and cons of why
+
+66
+00:02:49.600 --> 00:02:51.852 align:middle line:84%
+you might choose
+to use async versus
+
+67
+00:02:51.852 --> 00:02:53.310 align:middle line:84%
+non-async variants
+of these methods
+
+68
+00:02:53.310 --> 00:02:55.870 align:middle line:90%
+that we'll talk about later.
+
+69
+00:02:55.870 --> 00:02:57.810 align:middle line:84%
+So those are the
+methods that complete
+
+70
+00:02:57.810 --> 00:02:59.592 align:middle line:84%
+when a single previous
+stage is done.
+
+71
+00:02:59.592 --> 00:03:01.050 align:middle line:84%
+They're the methods
+that get called
+
+72
+00:03:01.050 --> 00:03:03.540 align:middle line:84%
+when a single previous
+stage completes.
+
+73
+00:03:03.540 --> 00:03:05.640 align:middle line:84%
+There's also a set
+of methods that
+
+74
+00:03:05.640 --> 00:03:10.295 align:middle line:84%
+are called after the completion
+of both of two previous stages.
+
+75
+00:03:10.295 --> 00:03:11.670 align:middle line:84%
+So you can think
+of those methods
+
+76
+00:03:11.670 --> 00:03:15.030 align:middle line:84%
+as effectively being a
+logical "and" operation.
+
+77
+00:03:15.030 --> 00:03:19.670 align:middle line:84%
+And these methods include
+thenCombine, thenAcceptBoth,
+
+78
+00:03:19.670 --> 00:03:21.470 align:middle line:90%
+and runAfterBoth.
+
+79
+00:03:21.470 --> 00:03:24.500 align:middle line:84%
+And for thenCombine
+and thenAcceptBoth,
+
+80
+00:03:24.500 --> 00:03:26.960 align:middle line:84%
+they take BiFunctions,
+because they're going
+
+81
+00:03:26.960 --> 00:03:30.030 align:middle line:90%
+to end up taking two inputs.
+
+82
+00:03:30.030 --> 00:03:32.030 align:middle line:84%
+And they're going to
+return to CompletableFuture
+
+83
+00:03:32.030 --> 00:03:35.950 align:middle line:84%
+with the results of
+calling various functions.
+
+84
+00:03:35.950 --> 00:03:38.030 align:middle line:84%
+And so, again, we'll
+talk about some
+
+85
+00:03:38.030 --> 00:03:39.890 align:middle line:90%
+of these different methods.
+
+86
+00:03:39.890 --> 00:03:42.470 align:middle line:84%
+As before, there's
+both non-async versions
+
+87
+00:03:42.470 --> 00:03:43.940 align:middle line:90%
+and async versions.
+
+88
+00:03:43.940 --> 00:03:47.740 align:middle line:84%
+And the same behaviors accrue
+as we talked about earlier.
+
+89
+00:03:47.740 --> 00:03:49.490 align:middle line:84%
+The ones that are
+non-async will typically
+
+90
+00:03:49.490 --> 00:03:52.640 align:middle line:84%
+run in the thread of
+the previous stage,
+
+91
+00:03:52.640 --> 00:03:54.110 align:middle line:90%
+or one of the previous stages.
+
+92
+00:03:54.110 --> 00:03:55.670 align:middle line:84%
+And the ones that
+are async versions
+
+93
+00:03:55.670 --> 00:03:59.540 align:middle line:84%
+will run in another
+thread in the thread pool.
+
+94
+00:03:59.540 --> 00:04:02.570 align:middle line:84%
+And then the final category of
+these CompletionStage methods
+
+95
+00:04:02.570 --> 00:04:07.280 align:middle line:84%
+are ones that complete after
+either of two previous stages
+
+96
+00:04:07.280 --> 00:04:08.610 align:middle line:90%
+complete.
+
+97
+00:04:08.610 --> 00:04:11.150 align:middle line:84%
+So you can think of these
+as basically being logical
+
+98
+00:04:11.150 --> 00:04:14.310 align:middle line:84%
+"or" operations,
+one or the other.
+
+99
+00:04:14.310 --> 00:04:15.830 align:middle line:84%
+So whichever thing
+finishes first,
+
+100
+00:04:15.830 --> 00:04:19.190 align:middle line:90%
+then we'll run our action.
+
+101
+00:04:19.190 --> 00:04:23.330 align:middle line:84%
+These methods include
+applyToEither, acceptEither,
+
+102
+00:04:23.330 --> 00:04:24.800 align:middle line:90%
+and runAfterEither.
+
+103
+00:04:24.800 --> 00:04:29.465 align:middle line:84%
+And there's also corresponding
+async variants of these.
+
+104
+00:04:29.465 --> 00:04:31.840 align:middle line:84%
+And so, again, we'll look at
+some examples of this stuff.
+
+105
+00:04:31.840 --> 00:04:34.270 align:middle line:84%
+You can come back and
+consult this table
+
+106
+00:04:34.270 --> 00:04:37.150 align:middle line:84%
+to orient yourself if
+you're writing code,
+
+107
+00:04:37.150 --> 00:04:39.880 align:middle line:84%
+and you get lost as to which
+method you're looking at
+
+108
+00:04:39.880 --> 00:04:42.510 align:middle line:90%
+falls into which category.

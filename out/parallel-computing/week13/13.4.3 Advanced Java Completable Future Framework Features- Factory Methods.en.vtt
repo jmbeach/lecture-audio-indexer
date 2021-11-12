@@ -1,0 +1,655 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.870 align:middle line:90%
+
+
+2
+00:00:00.870 --> 00:00:03.893 align:middle line:84%
+Now that we've talked about
+how to use factory methods,
+
+3
+00:00:03.893 --> 00:00:06.060 align:middle line:84%
+I thought it might be
+interesting to see how factory
+
+4
+00:00:06.060 --> 00:00:08.737 align:middle line:90%
+methods are defined internally.
+
+5
+00:00:08.737 --> 00:00:10.320 align:middle line:84%
+So what we're going
+to do in this case
+
+6
+00:00:10.320 --> 00:00:14.280 align:middle line:84%
+is we're going to take a look
+at some of the code path that's
+
+7
+00:00:14.280 --> 00:00:17.220 align:middle line:84%
+run by the completable
+futures framework
+
+8
+00:00:17.220 --> 00:00:20.617 align:middle line:84%
+after the supply async
+method is invoked.
+
+9
+00:00:20.617 --> 00:00:22.200 align:middle line:84%
+So we're going to
+use our same example
+
+10
+00:00:22.200 --> 00:00:25.560 align:middle line:84%
+as before except now we're
+going to peek under the hood
+
+11
+00:00:25.560 --> 00:00:28.220 align:middle line:90%
+and see how it works.
+
+12
+00:00:28.220 --> 00:00:30.130 align:middle line:84%
+Notice, of course,
+that supply async
+
+13
+00:00:30.130 --> 00:00:32.920 align:middle line:90%
+does not create a new thread.
+
+14
+00:00:32.920 --> 00:00:36.280 align:middle line:84%
+Instead, it returns
+a future that
+
+15
+00:00:36.280 --> 00:00:39.460 align:middle line:84%
+will be completed
+by a worker thread
+
+16
+00:00:39.460 --> 00:00:42.910 align:middle line:84%
+after it finishes running
+the supplier lambda passed
+
+17
+00:00:42.910 --> 00:00:47.020 align:middle line:84%
+to it in the context of
+the common fork-join pool.
+
+18
+00:00:47.020 --> 00:00:49.380 align:middle line:84%
+Here's the supplier lambda
+that multiplies the two
+
+19
+00:00:49.380 --> 00:00:52.320 align:middle line:84%
+big fractions together and
+keep your eye on the supplier
+
+20
+00:00:52.320 --> 00:00:53.820 align:middle line:84%
+parameter because
+this is what we're
+
+21
+00:00:53.820 --> 00:00:58.680 align:middle line:84%
+going to follow as it flows
+through the completable futures
+
+22
+00:00:58.680 --> 00:01:01.110 align:middle line:90%
+internals.
+
+23
+00:01:01.110 --> 00:01:04.230 align:middle line:84%
+Again, we can use our wonderful
+effectively final variables
+
+24
+00:01:04.230 --> 00:01:07.710 align:middle line:84%
+to pass parameters to
+the supplier lambda.
+
+25
+00:01:07.710 --> 00:01:10.830 align:middle line:84%
+And also keep that in mind, too,
+because those variables are,
+
+26
+00:01:10.830 --> 00:01:13.230 align:middle line:84%
+quote, captured and
+then they're actually
+
+27
+00:01:13.230 --> 00:01:16.110 align:middle line:84%
+going to be accessed
+when we run this supplier
+
+28
+00:01:16.110 --> 00:01:20.407 align:middle line:84%
+lambda in the background
+in the thread pool.
+
+29
+00:01:20.407 --> 00:01:22.240 align:middle line:84%
+The way this is going
+to work under the hood
+
+30
+00:01:22.240 --> 00:01:25.990 align:middle line:84%
+is that the worker thread that
+executes the supplier lambda
+
+31
+00:01:25.990 --> 00:01:30.550 align:middle line:84%
+will invoke its get method
+to get the code in the lambda
+
+32
+00:01:30.550 --> 00:01:32.830 align:middle line:84%
+and actually perform
+the computation.
+
+33
+00:01:32.830 --> 00:01:35.050 align:middle line:84%
+Remember that's one
+of the key themes
+
+34
+00:01:35.050 --> 00:01:38.620 align:middle line:84%
+and the key benefits
+of a lambda expression.
+
+35
+00:01:38.620 --> 00:01:41.230 align:middle line:84%
+It allows us to provide
+so-called behavioral
+
+36
+00:01:41.230 --> 00:01:42.523 align:middle line:90%
+parametrization.
+
+37
+00:01:42.523 --> 00:01:44.440 align:middle line:84%
+And what we're doing
+here is we're wrapping up
+
+38
+00:01:44.440 --> 00:01:47.710 align:middle line:84%
+all the behavior we
+want into a lambda,
+
+39
+00:01:47.710 --> 00:01:51.670 align:middle line:84%
+and then we're passing it
+to be run in another thread.
+
+40
+00:01:51.670 --> 00:01:53.440 align:middle line:84%
+And so we're actually
+deferring the time
+
+41
+00:01:53.440 --> 00:01:56.740 align:middle line:84%
+at which this lambda will be
+evaluated until it's actually
+
+42
+00:01:56.740 --> 00:01:59.170 align:middle line:90%
+invoked in a different context.
+
+43
+00:01:59.170 --> 00:02:01.790 align:middle line:84%
+So that's actually a
+good example, by the way,
+
+44
+00:02:01.790 --> 00:02:03.760 align:middle line:84%
+of the command
+processor pattern, which
+
+45
+00:02:03.760 --> 00:02:09.250 align:middle line:84%
+we've talked about before in
+the context of other mechanisms
+
+46
+00:02:09.250 --> 00:02:10.419 align:middle line:90%
+that are available in Java.
+
+47
+00:02:10.419 --> 00:02:13.990 align:middle line:84%
+So factory method so
+supply sync is really
+
+48
+00:02:13.990 --> 00:02:19.030 align:middle line:84%
+applying the command processor
+pattern among other things.
+
+49
+00:02:19.030 --> 00:02:21.520 align:middle line:84%
+Here is what the supply
+async method does.
+
+50
+00:02:21.520 --> 00:02:24.587 align:middle line:84%
+Now I'm not going to show
+you all of the code here,
+
+51
+00:02:24.587 --> 00:02:26.170 align:middle line:84%
+but I'm going to
+show you enough of it
+
+52
+00:02:26.170 --> 00:02:27.822 align:middle line:90%
+so you can make sense out of it.
+
+53
+00:02:27.822 --> 00:02:30.280 align:middle line:84%
+If you want to watch-- if you
+want to look at all the code,
+
+54
+00:02:30.280 --> 00:02:31.822 align:middle line:84%
+just click on the
+link at the bottom,
+
+55
+00:02:31.822 --> 00:02:33.940 align:middle line:84%
+and that will take
+you to the location
+
+56
+00:02:33.940 --> 00:02:37.830 align:middle line:84%
+where the source
+code can be browsed.
+
+57
+00:02:37.830 --> 00:02:42.440 align:middle line:84%
+So as you can see, supply
+async is passed a supplier,
+
+58
+00:02:42.440 --> 00:02:45.680 align:middle line:84%
+and, of course, that supplier
+is mapping onto this supplier
+
+59
+00:02:45.680 --> 00:02:46.790 align:middle line:90%
+lambda.
+
+60
+00:02:46.790 --> 00:02:50.210 align:middle line:84%
+And that supplier
+is then passed down
+
+61
+00:02:50.210 --> 00:02:53.870 align:middle line:84%
+into other parts of
+the completable futures
+
+62
+00:02:53.870 --> 00:02:56.055 align:middle line:90%
+implementation.
+
+63
+00:02:56.055 --> 00:02:57.680 align:middle line:84%
+This is, of course,
+what it looks like.
+
+64
+00:02:57.680 --> 00:02:59.720 align:middle line:84%
+That's the supplier
+parameter that's
+
+65
+00:02:59.720 --> 00:03:03.620 align:middle line:84%
+bound to the lambda that's
+passed the supply async.
+
+66
+00:03:03.620 --> 00:03:07.160 align:middle line:84%
+And you can see here that
+there's a new internal class.
+
+67
+00:03:07.160 --> 00:03:10.220 align:middle line:84%
+Remember I mentioned there's
+two dozen nested classes
+
+68
+00:03:10.220 --> 00:03:13.150 align:middle line:84%
+in the completable future
+framework implementation.
+
+69
+00:03:13.150 --> 00:03:16.820 align:middle line:84%
+Well, one of them is a
+class called async supply.
+
+70
+00:03:16.820 --> 00:03:20.180 align:middle line:84%
+And you can see that you
+call async supply passing
+
+71
+00:03:20.180 --> 00:03:22.850 align:middle line:84%
+in a supplier and
+another parameter
+
+72
+00:03:22.850 --> 00:03:26.260 align:middle line:84%
+that we're not going to
+talk about right now.
+
+73
+00:03:26.260 --> 00:03:31.570 align:middle line:84%
+This async supply
+object is enqueued
+
+74
+00:03:31.570 --> 00:03:36.650 align:middle line:84%
+into the fork-join pool's
+common pool by default.
+
+75
+00:03:36.650 --> 00:03:39.580 align:middle line:84%
+So you can see here that when
+you pass this end to supply
+
+76
+00:03:39.580 --> 00:03:42.700 align:middle line:84%
+async and you don't
+provide your own pool
+
+77
+00:03:42.700 --> 00:03:45.250 align:middle line:84%
+but you just let it use
+the common pool, that's
+
+78
+00:03:45.250 --> 00:03:48.190 align:middle line:84%
+how the common pool is
+associated with that supplier.
+
+79
+00:03:48.190 --> 00:03:53.020 align:middle line:84%
+And this is one example
+of message passing
+
+80
+00:03:53.020 --> 00:03:55.750 align:middle line:84%
+that is one of those reactive
+programming principles we
+
+81
+00:03:55.750 --> 00:03:56.600 align:middle line:90%
+talked about before.
+
+82
+00:03:56.600 --> 00:03:58.060 align:middle line:90%
+So we're creating a message--
+
+83
+00:03:58.060 --> 00:04:00.790 align:middle line:84%
+the supply async message
+is being created,
+
+84
+00:04:00.790 --> 00:04:04.960 align:middle line:84%
+and we're using that to pass
+in the supplier to be executed
+
+85
+00:04:04.960 --> 00:04:06.705 align:middle line:90%
+in that common pool.
+
+86
+00:04:06.705 --> 00:04:08.080 align:middle line:84%
+And that, of
+course, that message
+
+87
+00:04:08.080 --> 00:04:12.830 align:middle line:84%
+will end up going into the pool,
+and it'll be treated as a task.
+
+88
+00:04:12.830 --> 00:04:18.440 align:middle line:84%
+The async supply class, which
+we created an instance of here,
+
+89
+00:04:18.440 --> 00:04:24.430 align:middle line:84%
+extends the async class, which
+is yet another nested class,
+
+90
+00:04:24.430 --> 00:04:29.890 align:middle line:84%
+and async extends
+fork-join task and runnable
+
+91
+00:04:29.890 --> 00:04:32.740 align:middle line:84%
+so it can be executed
+in a thread pool.
+
+92
+00:04:32.740 --> 00:04:36.370 align:middle line:84%
+So this async class
+extends classes
+
+93
+00:04:36.370 --> 00:04:38.410 align:middle line:84%
+that are used to
+make sure that we
+
+94
+00:04:38.410 --> 00:04:41.945 align:middle line:84%
+can execute this thing in the
+context of the fork-join pool.
+
+95
+00:04:41.945 --> 00:04:44.320 align:middle line:84%
+And some of this is going to
+look a little familiar based
+
+96
+00:04:44.320 --> 00:04:47.590 align:middle line:84%
+on our earlier discussions
+of the other classes that
+
+97
+00:04:47.590 --> 00:04:49.630 align:middle line:84%
+are used with the
+fork-join pool, things
+
+98
+00:04:49.630 --> 00:04:55.320 align:middle line:84%
+like the recursive task
+and recursive action.
+
+99
+00:04:55.320 --> 00:04:57.530 align:middle line:84%
+Here's the constructor
+for async supply.
+
+100
+00:04:57.530 --> 00:05:01.940 align:middle line:84%
+You can see that this goes
+ahead and takes the supplier
+
+101
+00:05:01.940 --> 00:05:06.260 align:middle line:84%
+parameter called fn for function
+I suppose and goes ahead
+
+102
+00:05:06.260 --> 00:05:08.940 align:middle line:84%
+and assigns that
+to a local field.
+
+103
+00:05:08.940 --> 00:05:10.940 align:middle line:84%
+And remember that that
+supplier parameter
+
+104
+00:05:10.940 --> 00:05:13.550 align:middle line:84%
+is the original supplier
+lambda that will multiply
+
+105
+00:05:13.550 --> 00:05:16.000 align:middle line:90%
+the big fractions together.
+
+106
+00:05:16.000 --> 00:05:18.960 align:middle line:84%
+And then at some
+point, the exact method
+
+107
+00:05:18.960 --> 00:05:23.520 align:middle line:84%
+is called by a worker thread
+in the fork-join pool.
+
+108
+00:05:23.520 --> 00:05:27.000 align:middle line:84%
+And that exact method then
+turns around and says fn--
+
+109
+00:05:27.000 --> 00:05:29.910 align:middle line:84%
+which is the field
+that we stashed away
+
+110
+00:05:29.910 --> 00:05:32.100 align:middle line:84%
+with the parameter that
+was passed all the way down
+
+111
+00:05:32.100 --> 00:05:33.510 align:middle line:90%
+from supply async--
+
+112
+00:05:33.510 --> 00:05:35.880 align:middle line:90%
+it says fn.get.
+
+113
+00:05:35.880 --> 00:05:39.600 align:middle line:84%
+And that call to dotget
+will trigger the invocation
+
+114
+00:05:39.600 --> 00:05:44.250 align:middle line:84%
+of the supplier lambda that
+will perform the multiplication
+
+115
+00:05:44.250 --> 00:05:47.520 align:middle line:84%
+of the big fractions
+asynchronously in a worker
+
+116
+00:05:47.520 --> 00:05:49.835 align:middle line:90%
+thread in the fork-join pool.
+
+117
+00:05:49.835 --> 00:05:51.210 align:middle line:84%
+So that's what's
+going to happen.
+
+118
+00:05:51.210 --> 00:05:52.668 align:middle line:84%
+And you can see in
+that case, we're
+
+119
+00:05:52.668 --> 00:05:54.510 align:middle line:84%
+going to get the result
+of this, and then
+
+120
+00:05:54.510 --> 00:05:57.810 align:middle line:84%
+that'll be able to be passed
+back up through the completion
+
+121
+00:05:57.810 --> 00:06:00.030 align:middle line:84%
+stage mechanisms we'll
+talk about later.
+
+122
+00:06:00.030 --> 00:06:02.570 align:middle line:90%
+
+
+123
+00:06:02.570 --> 00:06:05.540 align:middle line:84%
+This particular get
+method could of course
+
+124
+00:06:05.540 --> 00:06:09.740 align:middle line:84%
+use the fork-join pool manage
+blocker mechanism in order
+
+125
+00:06:09.740 --> 00:06:13.650 align:middle line:84%
+to auto scale the pool size if
+this were a blocking operation.
+
+126
+00:06:13.650 --> 00:06:15.380 align:middle line:84%
+Now in this
+particular case, it's
+
+127
+00:06:15.380 --> 00:06:18.310 align:middle line:84%
+just doing the multiplication
+of two big fractions, which
+
+128
+00:06:18.310 --> 00:06:20.810 align:middle line:84%
+may take a while to run, but
+it's not really going to block.
+
+129
+00:06:20.810 --> 00:06:26.040 align:middle line:84%
+So it would probably be overkill
+to use the fork-join pool
+
+130
+00:06:26.040 --> 00:06:27.632 align:middle line:90%
+manage blocker mechanism.
+
+131
+00:06:27.632 --> 00:06:29.840 align:middle line:84%
+But there's no reason we
+can't do that, and, in fact,
+
+132
+00:06:29.840 --> 00:06:32.510 align:middle line:84%
+when you do do
+that, then the get
+
+133
+00:06:32.510 --> 00:06:34.700 align:middle line:84%
+call will, in fact, use
+that mechanism, which
+
+134
+00:06:34.700 --> 00:06:37.220 align:middle line:84%
+works very nicely
+to spawn new threads
+
+135
+00:06:37.220 --> 00:06:39.250 align:middle line:90%
+as we've talked about before.

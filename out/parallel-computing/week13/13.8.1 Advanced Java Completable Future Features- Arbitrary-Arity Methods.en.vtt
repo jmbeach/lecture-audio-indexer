@@ -1,0 +1,179 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:00.500 align:middle line:90%
+
+
+2
+00:00:00.500 --> 00:00:04.019 align:middle line:84%
+So we're now going to talk
+about arbitrary-arity methods.
+
+3
+00:00:04.019 --> 00:00:05.940 align:middle line:84%
+And arbitrary-arity
+methods are used
+
+4
+00:00:05.940 --> 00:00:09.480 align:middle line:84%
+to process an array of
+completable futures in bulk,
+
+5
+00:00:09.480 --> 00:00:14.100 align:middle line:84%
+and there can be an arbitrary
+number of them in the array.
+
+6
+00:00:14.100 --> 00:00:18.350 align:middle line:84%
+These methods
+return a future that
+
+7
+00:00:18.350 --> 00:00:20.540 align:middle line:84%
+are triggered after
+the completion
+
+8
+00:00:20.540 --> 00:00:22.910 align:middle line:90%
+of any or all futures.
+
+9
+00:00:22.910 --> 00:00:25.040 align:middle line:84%
+And if you take a look,
+you can see that there's
+
+10
+00:00:25.040 --> 00:00:27.333 align:middle line:90%
+one method here called allOf.
+
+11
+00:00:27.333 --> 00:00:29.000 align:middle line:84%
+And that, obviously,
+is going to trigger
+
+12
+00:00:29.000 --> 00:00:33.990 align:middle line:84%
+when all the completable futures
+passed as a parameter complete.
+
+13
+00:00:33.990 --> 00:00:35.990 align:middle line:84%
+And then there's
+also anyOf, which
+
+14
+00:00:35.990 --> 00:00:40.830 align:middle line:84%
+will trigger after any of the
+parameters passed to the anyOf
+
+15
+00:00:40.830 --> 00:00:42.120 align:middle line:90%
+method complete.
+
+16
+00:00:42.120 --> 00:00:43.620 align:middle line:90%
+So pretty straightforward.
+
+17
+00:00:43.620 --> 00:00:47.100 align:middle line:84%
+And again, arity just
+means number of parameters.
+
+18
+00:00:47.100 --> 00:00:50.810 align:middle line:84%
+So arbitrary-arity means you can
+have a variable number of them.
+
+19
+00:00:50.810 --> 00:00:54.950 align:middle line:84%
+The future that's returned
+from anyOf or allOf
+
+20
+00:00:54.950 --> 00:00:58.580 align:middle line:84%
+can be used to
+wait for any or all
+
+21
+00:00:58.580 --> 00:01:04.500 align:middle line:84%
+of the incompletable futures in
+the varargs array to complete.
+
+22
+00:01:04.500 --> 00:01:06.510 align:middle line:84%
+Now, notice, this
+wait doesn't usually
+
+23
+00:01:06.510 --> 00:01:09.060 align:middle line:84%
+mean blocking, although
+you could block on join.
+
+24
+00:01:09.060 --> 00:01:12.605 align:middle line:84%
+But instead, it typically
+uses completion stage methods,
+
+25
+00:01:12.605 --> 00:01:13.980 align:middle line:84%
+or a completion
+stage method that
+
+26
+00:01:13.980 --> 00:01:17.820 align:middle line:84%
+will be triggered when all the
+other operations, or the first
+
+27
+00:01:17.820 --> 00:01:20.130 align:middle line:84%
+of those operations,
+will complete--
+
+28
+00:01:20.130 --> 00:01:23.640 align:middle line:84%
+depending, of course, whether
+you're using allOf or anyOf.
+
+29
+00:01:23.640 --> 00:01:25.890 align:middle line:84%
+We're going to focus on allOf
+here, which is basically
+
+30
+00:01:25.890 --> 00:01:29.910 align:middle line:84%
+like thenCombine on steroids,
+because you can wait for more
+
+31
+00:01:29.910 --> 00:01:32.920 align:middle line:90%
+than just two previous stages.
+
+32
+00:01:32.920 --> 00:01:35.350 align:middle line:84%
+It turns out, that these
+arbitrary-arity methods
+
+33
+00:01:35.350 --> 00:01:39.783 align:middle line:84%
+are very hard to program without
+using some type of wrapper.
+
+34
+00:01:39.783 --> 00:01:41.200 align:middle line:84%
+And so what we're
+going to do next
+
+35
+00:01:41.200 --> 00:01:43.390 align:middle line:84%
+is show a simple
+wrapper that illustrates
+
+36
+00:01:43.390 --> 00:01:46.450 align:middle line:84%
+how to use them in a
+much more convenient way
+
+37
+00:01:46.450 --> 00:01:50.050 align:middle line:90%
+in the context of Java streams.
